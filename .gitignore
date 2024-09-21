@@ -1,0 +1,7 @@
+venv
+takina/__pycache__
+takina/extensions/__pycache__
+takina/extensions/help_forum/__pycache__
+database
+.env
+.ruff_cache
