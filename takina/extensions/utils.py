@@ -4,10 +4,15 @@ import nextcord
 
 MODERATOR_ROLE_ID = 830875873027817484
 
-
 class Utils(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot: commands.Bot = bot
+    
+    @commands.command()
+    async def ping(self, ctx: commands.Context):
+        """Ping the bot."""
+        latency = round(self._bot.latency * 1000)
+        await ctx.send(f"Success! Takina is awake. Ping: {latency}ms")
 
     @commands.command()
     @commands.has_role(MODERATOR_ROLE_ID)
@@ -36,7 +41,6 @@ class Utils(commands.Cog):
             await ctx.send("Please specify a positive number of messages to purge.")
             return
 
-        # Perform the purge
         deleted = await ctx.channel.purge(limit=amount)
         await ctx.send(f"Successfully purged {len(deleted)} messages.", delete_after=3)
 

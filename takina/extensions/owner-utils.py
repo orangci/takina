@@ -11,31 +11,36 @@ class OwnerUtils(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def disable(self, ctx: commands.Context, command: str):
-        if cmd == "hinder":
-            await ctx.send("You cannot hinder the hinder command.")
+        if cmd == "disable":
+            await ctx.send("You cannot disable the disable command.")
         else:
             command = self._bot.get_command(command)
             if command is None:
                 await ctx.send("Command not found.")
                 return
             command.enabled = not command.enabled
-            await ctx.send(f"Successfully hindered {command}.")
+            await ctx.send(f"Successfully disabled {command}.")
 
-    @commands.command()
-    @commands.is_owner()
+    @commands.command(aliases=["perms", "owners", "maintainer", "maintainers"])
     async def owner(self, ctx: commands.Context):
         owner_names = []
         for owner_id in self._bot.owner_ids:
             owner = self._bot.get_user(owner_id) or await self._bot.fetch_user(owner_id)
             if owner:
-                owner_names.append(owner.display_name)
+                owner_names.append("**" + owner.display_name + "**")
+                is_owner = True
             else:
                 owner_names.append(f"Unknown User (ID: {owner_id})")
 
         owner_names_str = ", ".join(owner_names)
-        await ctx.send(
-            f"You have owner-level permissions when interacting with Anna. Anna's current owners are: {owner_names_str}"
-        )
+        if is_owner:
+            await ctx.send(
+                f"You have maintainer-level permissions when interacting with Takina. Current users who hold maintainer-level permissions: {owner_names_str}"
+            )
+        else:
+            await ctx.send(
+                f"You are not a maintainer of Takina. Current users who hold maintainer-level permissions: {owner_names_str}"
+            )
 
     @commands.command(aliases=["rx"])
     @commands.is_owner()
@@ -43,11 +48,6 @@ class OwnerUtils(commands.Cog):
         if not args:
             reloaded_extensions = []
             failed_extensions = []
-
-            if nextcord.version_info < (3, 0, 0):
-                extensions.append("onami")
-            if os.getenv("HASDB"):
-                extensions.append("extensions.tags_reworked")
 
             for ext in extensions:
                 try:
@@ -74,7 +74,7 @@ class OwnerUtils(commands.Cog):
             except Exception as error:
                 await ctx.send(f"Failed to reload `{extension}`: {error}")
 
-    @commands.command()
+    @commands.command(alises=["rsc"])
     @commands.is_owner()
     async def reload_slash_command(self, ctx: commands.Context) -> None:
         await ctx.bot.sync_application_commands()
