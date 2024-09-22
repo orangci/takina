@@ -59,6 +59,7 @@ extensions = [
     "extensions.mal_linking_system",
     "extensions.info",
     "extensions.moderation",
+    "extensions.moderation_slash",
     "extensions.roles",
 ]
 

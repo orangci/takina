@@ -123,7 +123,6 @@ class Unmute(commands.Cog):
         except nextcord.HTTPException:
             await ctx.reply("An error occurred while trying to unmute this member.", mention_author=False)
 
-
 class Kick(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
