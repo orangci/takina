@@ -49,7 +49,7 @@ class MangaSearch(commands.Cog):
 
         except Exception as e:
             embed = nextcord.Embed(title="Error", description=str(e), color=0x2E51A2)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(name="manga", description="Get information about a manga")
     async def slash_manga(

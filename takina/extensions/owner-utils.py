@@ -12,14 +12,14 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def disable(self, ctx: commands.Context, command: str):
         if cmd == "disable":
-            await ctx.send("You cannot disable the disable command.")
+            await ctx.reply("You cannot disable the disable command.", mention_author=False)
         else:
             command = self._bot.get_command(command)
             if command is None:
-                await ctx.send("Command not found.")
+                await ctx.reply("Command not found.", mention_author=False)
                 return
             command.enabled = not command.enabled
-            await ctx.send(f"Successfully disabled {command}.")
+            await ctx.reply(f"Successfully disabled {command}.", mention_author=False)
 
     @commands.command(aliases=["perms", "owners", "maintainer", "maintainers"])
     async def owner(self, ctx: commands.Context):
@@ -34,13 +34,13 @@ class OwnerUtils(commands.Cog):
 
         owner_names_str = ", ".join(owner_names)
         if is_owner:
-            await ctx.send(
+            await ctx.reply(
                 f"You have maintainer-level permissions when interacting with Takina. Current users who hold maintainer-level permissions: {owner_names_str}"
-            )
+            , mention_author=False)
         else:
-            await ctx.send(
+            await ctx.reply(
                 f"You are not a maintainer of Takina. Current users who hold maintainer-level permissions: {owner_names_str}"
-            )
+            , mention_author=False)
 
     @commands.command(aliases=["rx"])
     @commands.is_owner()
@@ -62,23 +62,23 @@ class OwnerUtils(commands.Cog):
                     f"\nFailed to reload the following extensions:\n"
                     + "\n".join(failed_extensions)
                 )
-                await ctx.send(f"{success_message}{error_message}")
+                await ctx.reply(f"{success_message}{error_message}", mention_author=False)
             else:
-                await ctx.send(success_message)
+                await ctx.reply(success_message, mention_author=False)
 
         else:
             try:
                 extension = args[0]
                 self._bot.reload_extension("extensions." + extension)
-                await ctx.send(f"Successfully reloaded `extensions.{extension}`.")
+                await ctx.reply(f"Successfully reloaded `extensions.{extension}`.", mention_author=False)
             except Exception as error:
-                await ctx.send(f"Failed to reload `{extension}`: {error}")
+                await ctx.reply(f"Failed to reload `{extension}`: {error}", mention_author=False)
 
     @commands.command(alises=["rsc"])
     @commands.is_owner()
     async def reload_slash_command(self, ctx: commands.Context) -> None:
         await ctx.bot.sync_application_commands()
-        await ctx.send("Successfully synced bot application commands.")
+        await ctx.reply("Successfully synced bot application commands.", mention_author=False)
 
     @commands.command(aliases=["ux"])
     @commands.is_owner()
@@ -86,9 +86,9 @@ class OwnerUtils(commands.Cog):
         extension = args[0]
         try:
             self._bot.unload_extension("extensions." + extension)
-            await ctx.send(f"Successfully unloaded `extensions.{extension}`.")
+            await ctx.reply(f"Successfully unloaded `extensions.{extension}`.", mention_author=False)
         except commands.ExtensionNotLoaded:
-            await ctx.send(f"`extensions.{extension}` was already unloaded.")
+            await ctx.reply(f"`extensions.{extension}` was already unloaded.", mention_author=False)
 
     @commands.command(aliases=["lx"])
     @commands.is_owner()
@@ -97,8 +97,8 @@ class OwnerUtils(commands.Cog):
         try:
             self._bot.load_extension("extensions." + extension)
         except commands.ExtensionAlreadyLoaded:
-            await ctx.send(f"'extensions.{extension}' was already loaded.")
-        await ctx.send(f"Successfully loaded `extensions.{extension}`.")
+            await ctx.reply(f"'extensions.{extension}' was already loaded.", mention_author=False)
+        await ctx.reply(f"Successfully loaded `extensions.{extension}`.", mention_author=False)
 
 
 def setup(bot: commands.Bot) -> None:

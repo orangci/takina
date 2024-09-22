@@ -56,7 +56,10 @@ extensions = [
     "extensions.mal_profiles",
     "extensions.anime",
     "extensions.manga",
-    "extensions.mal_linking_system"
+    "extensions.mal_linking_system",
+    "extensions.info",
+    "extensions.moderation",
+    "extensions.roles",
 ]
 
 for extension in extensions:
