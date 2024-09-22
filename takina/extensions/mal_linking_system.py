@@ -8,7 +8,7 @@ import secrets
 import base64
 import asyncio
 
-class MyAnimeListLinking(commands.Cog):
+class MAL_Linking_System(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.client_id = os.getenv("MAL_CLIENT_ID")
