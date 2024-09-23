@@ -14,15 +14,31 @@ async def request(url, *args, **kwargs):
 class AnimeSearch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+    
+    async def fetch_anime(self, anime_name: str):
+        url1 = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
+        url2 = f"https://api.jikan.moe/v4/anime/{anime_name}"
+
+        try:
+            data = await request(url1)
+            if data and data.get("data"):
+                return data["data"][0]
+
+            data = await request(url2)
+            if data and data.get("data"):
+                return data["data"] 
+
+        except Exception as e:
+            logging.error(f"Error fetching anime: {str(e)}")
+            raise e
 
     @commands.command()
     async def anime(self, ctx: commands.Context, *, anime_name: str):
         """Command for searching anime on MyAnimeList. Usage example: `a?anime Lycoris Recoil"""
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
-            data = await request(url)
-            if data and data.get("data"):
-                anime = data["data"][0]
+            anime = await self.fetch_anime(anime_name)
+            if anime:
                 title = anime.get("title")
                 episodes = anime.get("episodes")
                 # score = anime.get("score")
@@ -71,9 +87,8 @@ class AnimeSearch(commands.Cog):
         """Slash command for searching anime on MyAnimeList. Usage example: `/anime anime_name:Lycoris Recoil"""
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
-            data = await request(url)
-            if data and data.get("data"):
-                anime = data["data"][0]
+            anime = await self.fetch_anime(anime_name)
+            if anime:
                 title = anime.get("title")
                 episodes = anime.get("episodes")
                 # score = anime.get("score")

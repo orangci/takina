@@ -15,14 +15,30 @@ class MangaSearch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def fetch_manga(self, manga_name: str):
+        url1 = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
+        url2 = f"https://api.jikan.moe/v4/manga/{manga_name}"
+
+        try:
+            data = await request(url1)
+            if data and data.get("data"):
+                return data["data"][0]
+
+            data = await request(url2)
+            if data and data.get("data"):
+                return data["data"] 
+
+        except Exception as e:
+            logging.error(f"Error fetching manga: {str(e)}")
+            raise e
+
     @commands.command()
     async def manga(self, ctx: commands.Context, *, manga_name: str):
-        """Command for searching manga on MyAnimeList. Usage example: `a?manga Shikanoko Nokonoko Koshitantan"""
+        """Command for searching manga on MymangaList. Usage example: `a?manga Shikanoko Nokonoko Koshitantan"""
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
         try:
-            data = await request(url)
-            if data and data.get("data"):
-                manga = data["data"][0]
+            manga = await self.fetch_manga(manga_name)
+            if manga:
                 title = manga.get("title")
                 chapters = manga.get("chapters")
                 score = manga.get("score")
@@ -57,12 +73,11 @@ class MangaSearch(commands.Cog):
         interaction: Interaction,
         manga_name: str = SlashOption(description="Name of the manga"),
     ):
-        """Slash command for searching manga on MyAnimeList. Usage example: `/manga manga_name:Shikanoko Nokonoko Koshitantan"""
+        """Slash command for searching manga on MymangaList. Usage example: `/manga manga_name:Shikanoko Nokonoko Koshitantan"""
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
         try:
-            data = await request(url)
-            if data and data.get("data"):
-                manga = data["data"][0]
+            manga = await self.fetch_manga(manga_name)
+            if manga:
                 title = manga.get("title")
                 chapters = manga.get("chapters")
                 score = manga.get("score")
