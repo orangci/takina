@@ -2,7 +2,7 @@ import re
 from nextcord.ext import commands
 import nextcord
 
-MODERATOR_ROLE_ID = 830875873027817484
+MODERATOR_ROLE_ID = 1287036416521539696
 
 def extract_user_id(mention: str) -> str:
     match = re.match(r'<@!?(\d+)>', mention)
@@ -30,7 +30,7 @@ class Utils(commands.Cog):
         *,
         message: str,
     ):
-        """Send a message as Anna."""
+        """Send a message as Takina."""
         if channel and message:
             await channel.send(message)
         elif message:
