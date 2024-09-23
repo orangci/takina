@@ -61,6 +61,7 @@ extensions = [
     "extensions.moderation",
     "extensions.moderation_slash",
     "extensions.roles",
+    "extensions.seasonals",
 ]
 
 for extension in extensions:
