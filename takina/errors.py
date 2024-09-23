@@ -24,8 +24,8 @@ class Errors(commands.Cog):
             description = "You do not have sufficient permissions to run this command; command is restricted to Takina's maintainers."
             error_type = "Maintainer Only Command"
 
-        elif isinstance(error, commands.UserInputError):
-            description = "It seems that you've made a mistake while entering the command. Please check your command syntax and ensure all required parameters are provided correctly. Run `?help command` for information on how to correctly use a command."
+        elif isinstance(error, commands.UserInputError) or isinstance(error, commands.BadArgument):
+            description = "It seems that you've made a mistake while entering the command. Please check your command syntax and ensure all required parameters are provided correctly. **Run `?help command` for information on how to correctly use a command.**"
             error_type = "User Input Error"
 
         elif isinstance(error, commands.CommandNotFound):

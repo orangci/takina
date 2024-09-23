@@ -31,7 +31,7 @@ class CharacterSearch(commands.Cog):
 
     @commands.command(aliases=["waifu", "chr"])
     async def character(self, ctx: commands.Context, *, character_name: str):
-        """Command for searching character on MyAnimeList."""
+        """Command for searching character on MyAnimeList. Usage: `?chr character_name` or `?chr character_MAL_ID`."""
         try:
             character = await self.fetch_character(character_name)
 
@@ -64,7 +64,7 @@ class CharacterSearch(commands.Cog):
     async def slash_character(
         self,
         interaction: Interaction,
-        character_name: str = SlashOption(description="Name of the character"),
+        character_name: str = SlashOption(description="Name or MAL ID of the character"),
     ):
         """Slash command for searching characters on MyAnimeList."""
         try:

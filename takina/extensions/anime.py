@@ -33,7 +33,7 @@ class AnimeSearch(commands.Cog):
 
     @commands.command()
     async def anime(self, ctx: commands.Context, *, anime_name: str):
-        """Command for searching anime on MyAnimeList. Usage example: `?anime Lycoris Recoil"""
+        """Command for searching anime on MyAnimeList. Usage example: `?anime Lycoris Recoil`."""
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)
@@ -83,7 +83,7 @@ class AnimeSearch(commands.Cog):
         interaction: Interaction,
         anime_name: str = SlashOption(description="Name of the anime"),
     ):
-        """Slash command for searching anime on MyAnimeList. Usage example: `/anime anime_name:Lycoris Recoil"""
+        """Slash command for searching anime on MyAnimeList. Usage example: `/anime anime_name:Lycoris Recoil`."""
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)

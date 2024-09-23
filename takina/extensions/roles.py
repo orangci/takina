@@ -20,7 +20,7 @@ class Roles(commands.Cog):
     @role.command(name="add")
     @commands.has_permissions(manage_roles=True)
     async def add(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
-        """Adds a role to a member."""
+        """Adds a role to a member.Usage: `?role add role member`."""
         if member is None:
             member = ctx.author
         else:
@@ -45,7 +45,7 @@ class Roles(commands.Cog):
     @role.command(name="remove")
     @commands.has_permissions(manage_roles=True)
     async def remove(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
-        """Removes a role from a member."""
+        """Removes a role from a member. Usage: `?role remove role member`."""
         if member is None:
             member = ctx.author
         else:
@@ -66,16 +66,6 @@ class Roles(commands.Cog):
             await ctx.reply("I don't have permission to remove that role.", mention_author=False)
         except nextcord.HTTPException as e:
             await ctx.reply(f"An error occurred: {str(e)}", mention_author=False)
-
-    @role.error
-    async def role_error(self, ctx: commands.Context, error):
-        """Handle errors for the role command group."""
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.reply("You don't have permission to manage roles.", mention_author=False)
-        elif isinstance(error, commands.BadArgument):
-            await ctx.reply("Invalid role or user. Please mention the correct role and member.", mention_author=False)
-        else:
-            await ctx.reply(f"An error occurred: {str(error)}", mention_author=False)
 
 def setup(bot):
     bot.add_cog(Roles(bot))

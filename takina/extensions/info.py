@@ -14,6 +14,7 @@ class UserInfo(commands.Cog):
 
     @commands.command(name="userinfo")
     async def userinfo(self, ctx: commands.Context, member: str = None):
+        """Fetch user information. Usage: `?userinfo user`."""
         if member is None:
             member = ctx.author
         else:
@@ -51,6 +52,7 @@ class RoleInfo(commands.Cog):
 
     @commands.command(name="roleinfo")
     async def roleinfo(self, ctx: commands.Context, role: nextcord.Role):
+        """Fetch role information. Usage: `?roleinfo role`."""
         embed = nextcord.Embed(title=f"Role Info - {role.name}", color=role.color)
         embed.add_field(name="ID", value=role.id)
         embed.add_field(name="Name", value=role.name)
@@ -67,6 +69,7 @@ class ServerInfo(commands.Cog):
 
     @commands.command(name="serverinfo")
     async def serverinfo(self, ctx: commands.Context):
+        """Fetch server information."""
         guild = ctx.guild
         embed = nextcord.Embed(title=f"{guild.name}", color=nextcord.Color.blue())
 
