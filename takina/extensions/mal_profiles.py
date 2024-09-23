@@ -91,7 +91,7 @@ class MAL_Profiles(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command()
-    async def mal(self, ctx: nextcord.Interaction, *, username: str = nextcord.SlashOption(description="Username of the user to fetch")):
+    async def mal_slash(self, ctx: nextcord.Interaction, *, username: str = nextcord.SlashOption(description="Username of the user to fetch")):
         try:
             profile_url = f"https://api.jikan.moe/v4/users/{username}"
             profile_data = await request(profile_url)

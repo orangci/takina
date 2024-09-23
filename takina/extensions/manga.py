@@ -33,7 +33,7 @@ class MangaSearch(commands.Cog):
 
     @commands.command()
     async def manga(self, ctx: commands.Context, *, manga_name: str):
-        """Command for searching manga on MymangaList. Usage example: `?manga Shikanoko Nokonoko Koshitantan`."""
+        """Command for searching manga on MymangaList. Usage example: `?manga Shikanoko Nokonoko Koshitantan` or `?manga 135455`."""
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
         try:
             manga = await self.fetch_manga(manga_name)
