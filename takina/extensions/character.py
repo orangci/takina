@@ -2,17 +2,11 @@ import aiohttp
 import nextcord
 from nextcord.ext import commands
 from nextcord import Interaction, SlashOption
-import logging
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
 
 # Helper function for API requests
 async def request(url, *args, **kwargs):
     async with aiohttp.ClientSession() as session:
         async with session.request("GET", url, *args, **kwargs) as response:
-            if response.status != 200:
-                logging.error(f"Request to {url} failed with status: {response.status}")
             return await response.json()
 
 class CharacterSearch(commands.Cog):
@@ -33,7 +27,6 @@ class CharacterSearch(commands.Cog):
                 return data["data"] 
 
         except Exception as e:
-            logging.error(f"Error fetching character: {str(e)}")
             raise e
 
     @commands.command(aliases=["waifu", "chr"])

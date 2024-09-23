@@ -29,12 +29,11 @@ class MangaSearch(commands.Cog):
                 return data["data"] 
 
         except Exception as e:
-            logging.error(f"Error fetching manga: {str(e)}")
             raise e
 
     @commands.command()
     async def manga(self, ctx: commands.Context, *, manga_name: str):
-        """Command for searching manga on MymangaList. Usage example: `a?manga Shikanoko Nokonoko Koshitantan"""
+        """Command for searching manga on MymangaList. Usage example: `?manga Shikanoko Nokonoko Koshitantan"""
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
         try:
             manga = await self.fetch_manga(manga_name)

@@ -10,16 +10,29 @@ class OwnerUtils(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def disable(self, ctx: commands.Context, command: str):
+    async def disable(self, ctx: commands.Context, cmd: str):
         if cmd == "disable":
             await ctx.reply("You cannot disable the disable command.", mention_author=False)
         else:
-            command = self._bot.get_command(command)
+            command = self._bot.get_command(cmd)
             if command is None:
                 await ctx.reply("Command not found.", mention_author=False)
                 return
-            command.enabled = not command.enabled
-            await ctx.reply(f"Successfully disabled {command}.", mention_author=False)
+            command.enabled = False
+            await ctx.reply(f"Successfully disabled `{command}`.", mention_author=False)
+
+    @commands.command()
+    @commands.is_owner()
+    async def enable(self, ctx: commands.Context, cmd: str):
+        if cmd == "disable":
+            await ctx.reply("You cannot enable the enable command.", mention_author=False)
+        else:
+            command = self._bot.get_command(cmd)
+            if command is None:
+                await ctx.reply("Command not found.", mention_author=False)
+                return
+            command.enabled = True
+            await ctx.reply(f"Successfully enabled `{command}`.", mention_author=False)
 
     @commands.command(aliases=["perms", "owners", "maintainer", "maintainers"])
     async def owner(self, ctx: commands.Context):
@@ -74,7 +87,7 @@ class OwnerUtils(commands.Cog):
             except Exception as error:
                 await ctx.reply(f"Failed to reload `{extension}`: {error}", mention_author=False)
 
-    @commands.command(alises=["rsc"])
+    @commands.command(aliases=["rsc"])
     @commands.is_owner()
     async def reload_slash_command(self, ctx: commands.Context) -> None:
         await ctx.bot.sync_application_commands()

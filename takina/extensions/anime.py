@@ -29,12 +29,11 @@ class AnimeSearch(commands.Cog):
                 return data["data"] 
 
         except Exception as e:
-            logging.error(f"Error fetching anime: {str(e)}")
             raise e
 
     @commands.command()
     async def anime(self, ctx: commands.Context, *, anime_name: str):
-        """Command for searching anime on MyAnimeList. Usage example: `a?anime Lycoris Recoil"""
+        """Command for searching anime on MyAnimeList. Usage example: `?anime Lycoris Recoil"""
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)
