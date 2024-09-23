@@ -116,7 +116,7 @@ class Errors(commands.Cog):
             embed.add_field(name="Error Type:", value="Unknown Error", inline=False)
 
         embed.description = detailed_description
-        await context.reply(embed=embed, mention_author=False)
+        await context.send(embed=embed, ephemeral=True)
 
     @commands.Cog.listener()
     async def on_application_command_error(
