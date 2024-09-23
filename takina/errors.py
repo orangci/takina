@@ -1,6 +1,6 @@
 from nextcord.ext import commands, application_checks
 import nextcord
-from __main__ import Bot
+from __main__ import Takina
 import logging
 
 class Errors(commands.Cog):

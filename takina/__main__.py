@@ -1,10 +1,8 @@
 from __future__ import annotations
 import os
 import threading
-from os import environ
 import nextcord
 from nextcord.ext import commands, help_commands, tasks
-from nextcord.ext import application_checks as ac
 from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 import asyncio
@@ -17,7 +15,7 @@ def run_flask():
     app.run(host="0.0.0.0", port=5000)
 
 
-class Bot(commands.Bot):
+class Takina(commands.Bot):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
@@ -34,7 +32,7 @@ class Bot(commands.Bot):
         print(f"{self.user} is now online!")
         await self.setup_database()
 
-bot = Bot(
+bot = Takina(
     intents=nextcord.Intents.all(),
     command_prefix=os.getenv("PREFIX"),
     case_insensitive=True,
@@ -46,29 +44,34 @@ bot = Bot(
     activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="MyAnimeList"),
 )
 
-extensions = [
-    "errors",
-    "onami",
-    "extensions.antiphishing",
-    "extensions.owner-utils",
-    "extensions.utils",
-    "extensions.starboard",
-    "extensions.mal_profiles",
-    "extensions.anime",
-    "extensions.manga",
-    "extensions.mal_linking_system",
-    "extensions.info",
-    "extensions.moderation",
-    "extensions.moderation_slash",
-    "extensions.roles",
-    "extensions.seasonals",
-    "extensions.character",
-]
+
+def load_exts(directory):
+    blacklist_subfolders = []
+        
+    extensions = []
+    for root, dirs, files in os.walk(directory):
+        if any(blacklisted in root for blacklisted in blacklist_subfolders):
+            continue
+        
+        for file in files:
+            if file.endswith('.py'):
+                relative_path = os.path.relpath(os.path.join(root, file), directory)
+                extension_name = relative_path[:-3].replace(os.sep, '.')
+                extensions.append(extension_name)
+    return extensions
+
+extensions_blacklist = []
+extensions = load_exts('/home/orangc/code/takina/takina/extensions')
 
 for extension in extensions:
-    bot.load_extension(extension)
+    if extension not in extensions_blacklist:
+        try:
+            bot.load_extension("extensions." + extension)
+        except Exception as e:
+            print(f"Failed to load {extension}: {e}")
+
 
 if __name__ == "__main__":
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.start()
-    bot.run(environ["TOKEN"])
+    bot.run(os.getenv("TOKEN"))
