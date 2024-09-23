@@ -21,7 +21,7 @@ class Utils(commands.Cog):
         await ctx.reply(f"Success! Takina is awake. Ping: {latency}ms", mention_author=False)
 
     @commands.command()
-    @commands.has_permissions(moderate_members=True)
+    @commands.has_permissions(moderate_members=True,manage_messages=True)
     async def send(
         self,
         ctx: commands.Context,
@@ -107,7 +107,7 @@ class UtilsSlash(commands.Cog):
         await interaction.response.send_message(f"Success! Takina is awake. Ping: {latency}ms")
 
     @nextcord.slash_command(name="send", description="Send a message as Takina.")
-    @commands.has_role(MODERATOR_ROLE_ID)
+    @commands.has_permissions(moderate_members=True,manage_messages=True)
     async def send(
         self,
         interaction: nextcord.Interaction,
