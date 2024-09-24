@@ -7,12 +7,8 @@ from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 import asyncio
 from aiohttp import web
-from web import app
 
 load_dotenv()
-
-def run_flask():
-    app.run(host="0.0.0.0", port=5000)
 
 
 class Takina(commands.Bot):
@@ -41,7 +37,7 @@ bot = Takina(
     allowed_mentions=nextcord.AllowedMentions(
         everyone=False, roles=False, users=True, replied_user=True
     ),
-    activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="MyAnimeList"),
+    activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="guns"),
 )
 
 
@@ -61,7 +57,7 @@ def load_exts(directory):
     return extensions
 
 extensions_blacklist = []
-extensions = load_exts('/home/orangc/code/takina/takina/extensions')
+extensions = load_exts('takina/extensions')
 
 for extension in extensions:
     if extension not in extensions_blacklist:
@@ -72,6 +68,4 @@ for extension in extensions:
 
 
 if __name__ == "__main__":
-    flask_thread = threading.Thread(target=run_flask)
-    flask_thread.start()
     bot.run(os.getenv("TOKEN"))
