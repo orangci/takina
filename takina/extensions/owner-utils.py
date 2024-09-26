@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 import os
-from __main__ import extensions
+from __main__ import extensions, extensions_blacklist
 
 
 class OwnerUtils(commands.Cog):
@@ -34,7 +34,7 @@ class OwnerUtils(commands.Cog):
             command.enabled = True
             await ctx.reply(f"Successfully enabled `{command}`.", mention_author=False)
 
-    @commands.command(aliases=["perms", "owners", "maintainer", "maintainers"])
+    @commands.command(aliases=["maintainer","perms"])
     async def owner(self, ctx: commands.Context):
         owner_names = []
         for owner_id in self._bot.owner_ids:
@@ -48,7 +48,7 @@ class OwnerUtils(commands.Cog):
         owner_names_str = ", ".join(owner_names)
         if is_owner:
             await ctx.reply(
-                f"You have maintainer-level permissions when interacting with Takina. Current users who hold maintainer-level permissions: {owner_names_str}"
+                f"You have maintainer level permissions when interacting with Takina. Current users who hold maintainer level permissions: {owner_names_str}"
             , mention_author=False)
         else:
             await ctx.reply(
@@ -63,11 +63,12 @@ class OwnerUtils(commands.Cog):
             failed_extensions = []
 
             for ext in extensions:
-                try:
-                    self._bot.reload_extension(ext)
-                    reloaded_extensions.append(ext)
-                except Exception as e:
-                    failed_extensions.append(f"{ext}: {e}")
+                if ext in self._bot.extensions:
+                    try:
+                        bot.reload_extension("extensions." + ext)
+                        reloaded_extensions.append(ext)
+                    except Exception as e:
+                        failed_extensions.append(f"{ext}: {e}")
 
             success_message = f"Successfully reloaded all extensions."
             if failed_extensions:
@@ -80,12 +81,15 @@ class OwnerUtils(commands.Cog):
                 await ctx.reply(success_message, mention_author=False)
 
         else:
-            try:
-                extension = args[0]
-                self._bot.reload_extension("extensions." + extension)
-                await ctx.reply(f"Successfully reloaded `extensions.{extension}`.", mention_author=False)
-            except Exception as error:
-                await ctx.reply(f"Failed to reload `{extension}`: {error}", mention_author=False)
+            extension = args[0]
+            if "extensions." + extension in self._bot.extensions:
+                try:
+                    self._bot.reload_extension("extensions." + extension)
+                    await ctx.reply(f"Successfully reloaded `extensions.{extension}`.", mention_author=False)
+                except Exception as error:
+                    await ctx.reply(f"Failed to reload `{extension}`: {error}", mention_author=False)
+            else:
+                await ctx.reply(f"Extension `extensions.{extension}` is not loaded.", mention_author=False)
 
     @commands.command(aliases=["rsc"])
     @commands.is_owner()

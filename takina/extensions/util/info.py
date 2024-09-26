@@ -14,7 +14,7 @@ class UserInfo(commands.Cog):
 
     @commands.command(name="userinfo")
     async def userinfo(self, ctx: commands.Context, member: str = None):
-        """Fetch user information. Usage: `?userinfo user`."""
+        """Fetch user information. Usage: `?userinfo member`."""
         if member is None:
             member = ctx.author
         else:
@@ -45,6 +45,14 @@ class UserInfo(commands.Cog):
             embed.set_footer(text="This user is a bot account.")
 
         await ctx.reply(embed=embed, mention_author=False)
+    
+    # TODO: add the underneath code to every command in anna (i will literally never do this)
+    # to anyone reading this: watch lycoris recoil, it's peak fiction
+    # @userinfo.error
+    # async def userinfo_error(self, ctx: commands.Context, error):
+    #     if isinstance(error, commands.BadArgument) or isinstance(error, commands.UserInputError):
+    #         await ctx.send("Invalid argument. Use: `a?userinfo` or `a?userinfo member`.")
+
 
 class RoleInfo(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -52,7 +60,7 @@ class RoleInfo(commands.Cog):
 
     @commands.command(name="roleinfo")
     async def roleinfo(self, ctx: commands.Context, role: nextcord.Role):
-        """Fetch role information. Usage: `?roleinfo role`."""
+        """Fetch role information. `a?roleinfo role`."""
         embed = nextcord.Embed(title=f"Role Info - {role.name}", color=role.color)
         embed.add_field(name="ID", value=role.id)
         embed.add_field(name="Name", value=role.name)
@@ -69,7 +77,7 @@ class ServerInfo(commands.Cog):
 
     @commands.command(name="serverinfo")
     async def serverinfo(self, ctx: commands.Context):
-        """Fetch server information."""
+        """Fetch server information. `a?serverinfo`."""
         guild = ctx.guild
         embed = nextcord.Embed(title=f"{guild.name}", color=nextcord.Color.blue())
 

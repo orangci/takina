@@ -37,7 +37,7 @@ bot = Takina(
     allowed_mentions=nextcord.AllowedMentions(
         everyone=False, roles=False, users=True, replied_user=True
     ),
-    activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="guns"),
+    activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="the stars"),
 )
 
 
