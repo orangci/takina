@@ -4,7 +4,7 @@ from __main__ import Takina
 import logging
 
 class Errors(commands.Cog):
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Takina):
         self.bot = bot
         self.logger = logging.getLogger("bot.errors")
         
@@ -102,5 +102,5 @@ class Errors(commands.Cog):
         self.logger.exception("Full error traceback:")
 
 
-def setup(bot: Bot):
+def setup(bot: Takina):
     bot.add_cog(Errors(bot))

@@ -42,7 +42,7 @@ bot = Takina(
 
 
 def load_exts(directory):
-    blacklist_subfolders = []
+    blacklist_subfolders = ["libs"]
         
     extensions = []
     for root, dirs, files in os.walk(directory):
