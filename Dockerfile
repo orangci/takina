@@ -1,16 +1,26 @@
+# Use the latest official Python image as a base image
 FROM python:latest
 
-# Set the working directory for the container
+# Set the working directory in the container to /app
 WORKDIR /app
 
-# Install git to clone the repository
-RUN apt-get update && apt-get install -y git
+# Copy the requirements.txt file to the working directory
+COPY requirements.txt ./
 
-# Navigate to the repository folder
-WORKDIR /app
+# Install pip and the Python dependencies listed in requirements.txt
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
-# Install the dependencies from requirements.txt
-RUN pip install -r requirements.txt
+# Copy the rest of the application code to the working directory
+COPY . .
 
-# Set the default command to run the app
+# git owo
+RUN mkdir test && \
+    cd test && \
+    git clone https://github.com/is-a-dev/takina && \
+    cp -r takina/.git ../.git && \
+    cd .. && \
+    rm -rf test
+
+# Specify the command to run the application
 CMD ["python3", "takina"]
