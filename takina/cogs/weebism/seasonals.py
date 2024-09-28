@@ -43,7 +43,7 @@ class AnimeSeasonals(commands.Cog):
 
     @commands.command(aliases=["season"])
     async def seasonals(self, ctx: commands.Context, season: str = None, year: int = None):
-        """Command for displaying seasonal anime from MyAnimeList. Usage: `?season Fall 2024`, or `?season` to fetch the current season."""
+        """Command for displaying seasonal anime from MyAnimeList. Usage: `season Fall 2024`, or `season` to fetch the current season."""
         if season == None or year == None or season and year == None:
             url = "https://api.jikan.moe/v4/seasons/now"
             embed_title = "Current Season's Anime"

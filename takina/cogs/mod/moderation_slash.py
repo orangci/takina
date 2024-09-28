@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ext import commands
 import re
 from datetime import timedelta
+from __main__ import BOT_NAME
 
 class BanSlash(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -11,7 +12,7 @@ class BanSlash(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx: nextcord.Interaction, member: nextcord.Member = None, reason: str = "No reason provided"):
         if not member:
-            await ctx.response.send_message("Please mention a member to ban. Usage: `/ban @member [reason]`", ephemeral=True)
+            await ctx.response.send_message("Please mention a member to ban. Usage: `ban @member [reason]`.", ephemeral=True)
             return
 
         if member == ctx.user:
@@ -96,7 +97,7 @@ class UnmuteSlash(commands.Cog):
     @commands.has_permissions(moderate_members=True)
     async def unmute(self, ctx: nextcord.Interaction, member: nextcord.Member = None):
         if not member:
-            await ctx.response.send_message("Please mention a member to unmute. Usage: `/unmute @member`", ephemeral=True)
+            await ctx.response.send_message("Please mention a member to unmute. Usage: `unmute @member`.", ephemeral=True)
             return
 
         if member == ctx.guild.owner:
@@ -112,7 +113,7 @@ class UnmuteSlash(commands.Cog):
             return
 
         try:
-            await member.timeout(None, reason="Takina: Unmuted by moderator")
+            await member.timeout(None, reason=f"{BOT_NAME}: Unmuted by moderator")
             embed = nextcord.Embed(description=f"✅ Successfully unmuted **{member.name}**.", color=0x2F52A3)
             await ctx.response.send_message(embed=embed, ephemeral=False)
         except nextcord.Forbidden:
@@ -128,7 +129,7 @@ class KickSlash(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx: nextcord.Interaction, member: nextcord.Member = None, reason: str = "No reason provided"):
         if not member:
-            await ctx.response.send_message("Please mention a member to kick. Usage: `/kick @member [reason]`", ephemeral=True)
+            await ctx.response.send_message("Please mention a member to kick. Usage: `kick @member [reason]`.", ephemeral=True)
             return
 
         if member == ctx.user:

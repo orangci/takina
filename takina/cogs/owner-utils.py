@@ -1,8 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 import os
-from __main__ import cogs, cogs_blacklist
-
+from __main__ import cogs, cogs_blacklist, BOT_NAME
 
 class OwnerUtils(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -43,16 +42,19 @@ class OwnerUtils(commands.Cog):
                 owner_names.append("**" + owner.display_name + "**")
             else:
                 owner_names.append(f"Unknown User (ID: {owner_id})")
+        for owner_id in self._bot.owner_ids:
+            if ctx.author == owner_id:
+                is_owner = True
+                return
 
         owner_names_str = ", ".join(owner_names)
-        is_owner = await self.bot.is_owner(ctx.author)
         if is_owner:
             await ctx.reply(
-                f"You have maintainer level permissions when interacting with Takina. Current users who hold maintainer level permissions: {owner_names_str}"
+                f"You have maintainer level permissions when interacting with {BOT_NAME}. Current users who hold maintainer level permissions: {owner_names_str}"
             , mention_author=False)
         else:
             await ctx.reply(
-                f"You are not a maintainer of Takina. Current users who hold maintainer-level permissions: {owner_names_str}"
+                f"You are not a maintainer of {BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
             , mention_author=False)
 
     @commands.command(aliases=["rx"])
@@ -65,7 +67,7 @@ class OwnerUtils(commands.Cog):
             for ext in cogs:
                 if ext in self._bot.cogs:
                     try:
-                        bot.reload_cog("cogs." + ext)
+                        self._bot.reload_extension("cogs." + ext)
                         reloaded_cogs.append(ext)
                     except Exception as e:
                         failed_cogs.append(f"{ext}: {e}")
@@ -84,7 +86,7 @@ class OwnerUtils(commands.Cog):
             cog = args[0]
             if "cogs." + cog in self._bot.cogs:
                 try:
-                    self._bot.reload_cog("cogs." + cog)
+                    self._bot.reload_extension("cogs." + cog)
                     await ctx.reply(f"Successfully reloaded `cogs.{cog}`.", mention_author=False)
                 except Exception as error:
                     await ctx.reply(f"Failed to reload `{cog}`: {error}", mention_author=False)
@@ -102,7 +104,7 @@ class OwnerUtils(commands.Cog):
     async def unload(self, ctx: commands.Context, *args) -> None:
         cog = args[0]
         try:
-            self._bot.unload_cog("cogs." + cog)
+            self._bot.unload_extension("cogs." + cog)
             await ctx.reply(f"Successfully unloaded `cogs.{cog}`.", mention_author=False)
         except commands.cogNotLoaded:
             await ctx.reply(f"`cogs.{cog}` was already unloaded.", mention_author=False)
@@ -112,7 +114,7 @@ class OwnerUtils(commands.Cog):
     async def load(self, ctx: commands.Context, *args) -> None:
         cog = args[0]
         try:
-            self._bot.load_cog("cogs." + cog)
+            self._bot.load_extension("cogs." + cog)
         except commands.cogAlreadyLoaded:
             await ctx.reply(f"'cogs.{cog}' was already loaded.", mention_author=False)
         await ctx.reply(f"Successfully loaded `cogs.{cog}`.", mention_author=False)

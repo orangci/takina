@@ -2,6 +2,7 @@ import re
 from nextcord.ext import commands
 import nextcord
 from nextcord import SlashOption
+from __main__ import BOT_NAME
 
 def extract_user_id(mention: str) -> str:
     match = re.match(r'<@!?(\d+)>', mention)
@@ -18,7 +19,7 @@ class Utils(commands.Cog):
     async def ping(self, ctx: commands.Context):
         """Ping the bot."""
         latency = round(self._bot.latency * 1000)
-        await ctx.reply(f"Success! Takina is awake. Ping: {latency}ms", mention_author=False)
+        await ctx.reply(f"Success! {BOT_NAME} is awake. Ping: {latency}ms", mention_author=False)
 
     @commands.command()
     @commands.has_permissions(moderate_members=True,manage_messages=True)
@@ -29,7 +30,7 @@ class Utils(commands.Cog):
         *,
         message: str,
     ):
-        """Send a message as Takina. Usage: `?send channel message`."""
+        """Send a message as the bot. Usage: `send channel message`."""
         if channel and message:
             await channel.send(message)
         elif message:
@@ -40,7 +41,7 @@ class Utils(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx: commands.Context, amount: int):
-        """Purges a specified number of messages. Usage: `a?purge number`, where number is the number of messages you would like to purge."""
+        """Purges a specified number of messages. Usage: `purge number`, where number is the number of messages you would like to purge."""
 
         # Ensure the number is a positive integer
         if amount <= 0:
@@ -53,7 +54,7 @@ class Utils(commands.Cog):
     @commands.command(aliases=["setnick"])
     @commands.has_permissions(manage_nicknames=True)
     async def nick(self, ctx: commands.Context, member: str = None, *, nickname: str = None):
-        """Change a members nickname. Usage: `a?setnick member new_nickname`."""
+        """Change a members nickname. Usage: `setnick member new_nickname`."""
         if member is None:
             member = ctx.author
         else:
@@ -105,9 +106,9 @@ class UtilsSlash(commands.Cog):
     async def ping(self, interaction: nextcord.Interaction):
         """Ping the bot."""
         latency = round(self._bot.latency * 1000)
-        await interaction.send(f"Success! Takina is awake. Ping: {latency}ms", ephemeral=True)
+        await interaction.send(f"Success! {BOT_NAME} is awake. Ping: {latency}ms", ephemeral=True)
 
-    @nextcord.slash_command(name="send", description="Send a message as Takina.")
+    @nextcord.slash_command(name="send", description=f"Send a message as {BOT_NAME}.")
     @commands.has_permissions(moderate_members=True,manage_messages=True)
     async def send(
         self,
@@ -115,7 +116,7 @@ class UtilsSlash(commands.Cog):
         channel: nextcord.TextChannel = SlashOption(description="Channel to send the message", required=True),
         message: str = SlashOption(description="Message to send", required=True),
     ):
-        """Send a message as Takina."""
+        """Send a message as the bot."""
         if channel and message:
             await channel.send(message)
             await interaction.send("Message sent!", ephemeral=True)

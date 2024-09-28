@@ -31,7 +31,7 @@ class CharacterSearch(commands.Cog):
 
     @commands.command(aliases=["waifu", "chr"])
     async def character(self, ctx: commands.Context, *, character_name: str):
-        """Command for searching character on MyAnimeList. Usage: `?chr Takina Inoue` or `?chr 204620`."""
+        """Command for searching character on MyAnimeList. Usage: `chr Takina Inoue` or `?chr 204620`."""
         try:
             character = await self.fetch_character(character_name)
 

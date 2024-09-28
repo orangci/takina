@@ -10,10 +10,9 @@ from aiohttp import web
 
 load_dotenv()
 
-PREFIX = os.getenv("PREFIX")
 BOT_NAME = os.getenv("BOT_NAME")
 
-class Takina(commands.Bot):
+class Bot(commands.Bot):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
@@ -30,9 +29,9 @@ class Takina(commands.Bot):
         print(f"{self.user} is now online!")
         await self.setup_database()
 
-bot = Takina(
+bot = Bot(
     intents=nextcord.Intents.all(),
-    command_prefix=PREFIX,
+    command_prefix=os.getenv("PREFIX"),
     case_insensitive=True,
     help_command=help_commands.PaginatedHelpCommand(),
     owner_ids=[961063229168164864],
@@ -64,7 +63,7 @@ cogs = load_exts('takina/cogs')
 for cog in cogs:
     if cog not in cogs_blacklist:
         try:
-            bot.load_cog("cogs." + cog)
+            bot.load_extension("cogs." + cog)
         except Exception as e:
             print(f"Failed to load {cog}: {e}")
 

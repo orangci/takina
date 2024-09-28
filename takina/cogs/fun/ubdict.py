@@ -18,7 +18,7 @@ class UrbanDictionary(commands.Cog):
 
     @commands.command()
     async def ubdict(self, ctx: commands.Context, *, word: str):
-        """Query Urban Dictionary. Usage: `?ubdict word`."""
+        """Query Urban Dictionary. Usage: `ubdict word`."""
         params = {"term": word}
         async with aiohttp.ClientSession() as session:
             async with session.get(

@@ -20,7 +20,7 @@ class Roles(commands.Cog):
     @role.command(name="add")
     @commands.has_permissions(manage_roles=True)
     async def add(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
-        """Adds a role to a member. Usage: `?role add role member`."""
+        """Adds a role to a member. Usage: `role add role member`."""
         if member is None:
             member = ctx.author
         else:
@@ -45,7 +45,7 @@ class Roles(commands.Cog):
     @role.command(name="remove")
     @commands.has_permissions(manage_roles=True)
     async def remove(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
-        """Removes a role from a member. Usage: `?role remove role member`."""
+        """Removes a role from a member. Usage: `role remove role member`."""
         if member is None:
             member = ctx.author
         else:

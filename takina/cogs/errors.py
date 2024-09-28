@@ -1,10 +1,10 @@
 from nextcord.ext import commands, application_checks
 import nextcord
-from __main__ import Takina
+from __main__ import Bot, BOT_NAME
 import logging
 
 class Errors(commands.Cog):
-    def __init__(self, bot: Takina):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.logger = logging.getLogger("bot.errors")
         
@@ -21,7 +21,7 @@ class Errors(commands.Cog):
         error_type = "Unknown Error"
 
         if isinstance(error, commands.NotOwner):
-            description = "You do not have sufficient permissions to run this command; command is restricted to Takina's maintainers."
+            description = f"You do not have sufficient permissions to run this command; command is restricted to {BOT_NAME}'s maintainers."
             error_type = "Maintainer Only Command"
 
         elif isinstance(error, commands.UserInputError) or isinstance(error, commands.BadArgument):
@@ -33,11 +33,11 @@ class Errors(commands.Cog):
             error_type = "Command Not Found"
 
         elif isinstance(error, commands.errors.DisabledCommand):
-            description = "This command has been disabled by Takina's maintainers. If you believe this is an error, please contact a maintainer."
+            description = f"This command has been disabled by {BOT_NAME}'s maintainers. If you believe this is an error, please contact a maintainer."
             error_type = "Disabled Command"
 
         elif isinstance(error, nextcord.DiscordException):
-            description = "A Discord exception occurred. Please try again or report this issue to Takina's maintainers."
+            description = f"A Discord exception occurred. Please try again or report this issue to {BOT_NAME}'s maintainers."
             error_type = "Discord Exception"
 
         elif isinstance(error, nextcord.Forbidden):
@@ -79,7 +79,7 @@ class Errors(commands.Cog):
             error_type = "Missing Role"
 
         elif isinstance(error, application_checks.errors.ApplicationNotOwner):
-            description = "You do not have sufficient permissions to run this command; command is restricted to Takina's maintainers."
+            description = f"You do not have sufficient permissions to run this command; command is restricted to {BOT_NAME}'s maintainers."
             error_type = "Maintainer Only Command"
 
         elif isinstance(error, application_checks.errors.ApplicationMissingPermissions):
@@ -87,11 +87,11 @@ class Errors(commands.Cog):
             error_type = "Missing Permissions"
 
         elif isinstance(error, application_checks.errors.ApplicationBotMissingPermissions):
-            description = "Takina does not have sufficent permissions to perform this action. Please report this error to Takina's maintainers."
+            description = f"{BOT_NAME} does not have sufficent permissions to perform this action. Please report this error to {BOT_NAME}'s maintainers."
             error_type = "Bot Missing Permissions"
 
         else:
-            description = "An unexpected error occurred while processing your command. Please contact Takina's maintainers if the issue persists."
+            description = f"An unexpected error occurred while processing your command. Please contact {BOT_NAME}'s maintainers if the issue persists."
             error_type = "Unknown Error"
 
         embed = nextcord.Embed(title=error_type, color=nextcord.Color.red())
@@ -102,5 +102,5 @@ class Errors(commands.Cog):
         self.logger.exception("Full error traceback:")
 
 
-def setup(bot: Takina):
+def setup(bot: Bot):
     bot.add_cog(Errors(bot))

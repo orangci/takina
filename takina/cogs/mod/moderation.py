@@ -3,6 +3,7 @@ from nextcord.ext import commands
 import asyncio
 import re
 from datetime import timedelta
+from __main__ import BOT_NAME
 
 class Ban(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -12,7 +13,7 @@ class Ban(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx: commands.Context, member: nextcord.Member = None, *, reason: str = "No reason provided"):
         if not member:
-            await ctx.reply("Please mention a member to ban. Usage: `ban @member [reason]`", mention_author=False)
+            await ctx.reply("Please mention a member to ban. Usage: `ban @member [reason]`.", mention_author=False)
             return
 
         if member == ctx.author:
@@ -99,7 +100,7 @@ class Unmute(commands.Cog):
     @commands.has_permissions(moderate_members=True)
     async def unmute(self, ctx: commands.Context, member: nextcord.Member = None):
         if not member:
-            await ctx.reply("Please mention a member to unmute. Usage: `unmute @member`", mention_author=False)
+            await ctx.reply("Please mention a member to unmute. Usage: `unmute @member`.", mention_author=False)
             return
 
         if member == ctx.guild.owner:
@@ -115,7 +116,7 @@ class Unmute(commands.Cog):
             return
 
         try:
-            await member.timeout(None, reason="Takina: Unmuted by moderator")
+            await member.timeout(None, reason=f"{BOT_NAME}: Unmuted by moderator")
             embed = nextcord.Embed(description=f"✅ Successfully unmuted **{member.name}**.", color=0x2F52A3)
             await ctx.reply(embed=embed, mention_author=False)
         except nextcord.Forbidden:
@@ -131,7 +132,7 @@ class Kick(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx: commands.Context, member: nextcord.Member = None, *, reason: str = "No reason provided"):
         if not member:
-            await ctx.reply("Please mention a member to kick. Usage: `kick @member [reason]`", mention_author=False)
+            await ctx.reply("Please mention a member to kick. Usage: `kick @member [reason]`.", mention_author=False)
             return
 
         if member == ctx.author:

@@ -14,7 +14,7 @@ class UserInfo(commands.Cog):
 
     @commands.command(name="userinfo")
     async def userinfo(self, ctx: commands.Context, member: str = None):
-        """Fetch user information. Usage: `?userinfo member`."""
+        """Fetch user information. Usage: `userinfo member`."""
         if member is None:
             member = ctx.author
         else:
