@@ -42,11 +42,8 @@ class OwnerUtils(commands.Cog):
                 owner_names.append("**" + owner.display_name + "**")
             else:
                 owner_names.append(f"Unknown User (ID: {owner_id})")
-        for owner_id in self._bot.owner_ids:
-            if ctx.author == owner_id:
-                is_owner = True
-                return
 
+        is_owner = await self.bot.is_owner(ctx.author)
         owner_names_str = ", ".join(owner_names)
         if is_owner:
             await ctx.reply(

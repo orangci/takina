@@ -30,6 +30,16 @@ class Fun(commands.Cog):
         query = urllib.parse.quote_plus(query)
         url = f"https://www.google.com/search?q={query}"
         await ctx.reply(f"Here are the Google search results for: {query}\n{url}", mention_author=False)
+        
+    @commands.command(name="roll")
+    async def roll(self, ctx: commands.Context):
+        number = random.randint(1, 100)
+        embed = nextcord.Embed(
+            title="What number did you role?",
+            description=f"You rolled a {number}!",
+            color=nextcord.Color.blue()
+        )
+        await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(name="avatar")
     async def slash_avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = SlashOption(
@@ -47,6 +57,16 @@ class Fun(commands.Cog):
         query = urllib.parse.quote_plus(query)
         url = f"https://www.google.com/search?q={query}"
         await interaction.send(f"Here are the Google search results for: {query}\n{url}")
+    
+    @nextcord.slash_command(name="roll", description="Roll a number!")
+    async def slash_roll(self, interaction: nextcord.Interaction):
+        number = random.randint(1, 100)
+        embed = nextcord.Embed(
+            title="What number did you role?",
+            description=f"You rolled a {number}!",
+            color=nextcord.Color.blue()
+        )
+        await interaction.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Fun(bot))
