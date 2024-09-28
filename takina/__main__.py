@@ -46,7 +46,7 @@ bot = Takina(
 def load_exts(directory):
     blacklist_subfolders = ["libs"]
         
-    extensions = []
+    cogs = []
     for root, dirs, files in os.walk(directory):
         if any(blacklisted in root for blacklisted in blacklist_subfolders):
             continue
@@ -54,19 +54,19 @@ def load_exts(directory):
         for file in files:
             if file.endswith('.py'):
                 relative_path = os.path.relpath(os.path.join(root, file), directory)
-                extension_name = relative_path[:-3].replace(os.sep, '.')
-                extensions.append(extension_name)
-    return extensions
+                cog_name = relative_path[:-3].replace(os.sep, '.')
+                cogs.append(cog_name)
+    return cogs
 
-extensions_blacklist = []
-extensions = load_exts('takina/extensions')
+cogs_blacklist = []
+cogs = load_exts('takina/cogs')
 
-for extension in extensions:
-    if extension not in extensions_blacklist:
+for cog in cogs:
+    if cog not in cogs_blacklist:
         try:
-            bot.load_extension("extensions." + extension)
+            bot.load_cog("cogs." + cog)
         except Exception as e:
-            print(f"Failed to load {extension}: {e}")
+            print(f"Failed to load {cog}: {e}")
 
 
 if __name__ == "__main__":

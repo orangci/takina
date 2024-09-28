@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 import os
-from __main__ import extensions, extensions_blacklist
+from __main__ import cogs, cogs_blacklist
 
 
 class OwnerUtils(commands.Cog):
@@ -59,37 +59,37 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def reload_exts(self, ctx: commands.Context, *args):
         if not args:
-            reloaded_extensions = []
-            failed_extensions = []
+            reloaded_cogs = []
+            failed_cogs = []
 
-            for ext in extensions:
-                if ext in self._bot.extensions:
+            for ext in cogs:
+                if ext in self._bot.cogs:
                     try:
-                        bot.reload_extension("extensions." + ext)
-                        reloaded_extensions.append(ext)
+                        bot.reload_cog("cogs." + ext)
+                        reloaded_cogs.append(ext)
                     except Exception as e:
-                        failed_extensions.append(f"{ext}: {e}")
+                        failed_cogs.append(f"{ext}: {e}")
 
-            success_message = f"Successfully reloaded all extensions."
-            if failed_extensions:
+            success_message = f"Successfully reloaded all cogs."
+            if failed_cogs:
                 error_message = (
-                    f"\nFailed to reload the following extensions:\n"
-                    + "\n".join(failed_extensions)
+                    f"\nFailed to reload the following cogs:\n"
+                    + "\n".join(failed_cogs)
                 )
                 await ctx.reply(f"{success_message}{error_message}", mention_author=False)
             else:
                 await ctx.reply(success_message, mention_author=False)
 
         else:
-            extension = args[0]
-            if "extensions." + extension in self._bot.extensions:
+            cog = args[0]
+            if "cogs." + cog in self._bot.cogs:
                 try:
-                    self._bot.reload_extension("extensions." + extension)
-                    await ctx.reply(f"Successfully reloaded `extensions.{extension}`.", mention_author=False)
+                    self._bot.reload_cog("cogs." + cog)
+                    await ctx.reply(f"Successfully reloaded `cogs.{cog}`.", mention_author=False)
                 except Exception as error:
-                    await ctx.reply(f"Failed to reload `{extension}`: {error}", mention_author=False)
+                    await ctx.reply(f"Failed to reload `{cog}`: {error}", mention_author=False)
             else:
-                await ctx.reply(f"Extension `extensions.{extension}` is not loaded.", mention_author=False)
+                await ctx.reply(f"cog `cogs.{cog}` is not loaded.", mention_author=False)
 
     @commands.command(aliases=["rsc"])
     @commands.is_owner()
@@ -100,22 +100,22 @@ class OwnerUtils(commands.Cog):
     @commands.command(aliases=["ux"])
     @commands.is_owner()
     async def unload(self, ctx: commands.Context, *args) -> None:
-        extension = args[0]
+        cog = args[0]
         try:
-            self._bot.unload_extension("extensions." + extension)
-            await ctx.reply(f"Successfully unloaded `extensions.{extension}`.", mention_author=False)
-        except commands.ExtensionNotLoaded:
-            await ctx.reply(f"`extensions.{extension}` was already unloaded.", mention_author=False)
+            self._bot.unload_cog("cogs." + cog)
+            await ctx.reply(f"Successfully unloaded `cogs.{cog}`.", mention_author=False)
+        except commands.cogNotLoaded:
+            await ctx.reply(f"`cogs.{cog}` was already unloaded.", mention_author=False)
 
     @commands.command(aliases=["lx"])
     @commands.is_owner()
     async def load(self, ctx: commands.Context, *args) -> None:
-        extension = args[0]
+        cog = args[0]
         try:
-            self._bot.load_extension("extensions." + extension)
-        except commands.ExtensionAlreadyLoaded:
-            await ctx.reply(f"'extensions.{extension}' was already loaded.", mention_author=False)
-        await ctx.reply(f"Successfully loaded `extensions.{extension}`.", mention_author=False)
+            self._bot.load_cog("cogs." + cog)
+        except commands.cogAlreadyLoaded:
+            await ctx.reply(f"'cogs.{cog}' was already loaded.", mention_author=False)
+        await ctx.reply(f"Successfully loaded `cogs.{cog}`.", mention_author=False)
 
 
 def setup(bot: commands.Bot) -> None:
