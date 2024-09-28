@@ -10,6 +10,8 @@ from aiohttp import web
 
 load_dotenv()
 
+PREFIX = os.getenv("PREFIX")
+BOT_NAME = os.getenv("BOT_NAME")
 
 class Takina(commands.Bot):
     def __init__(self, *args, **kwargs) -> None:
@@ -30,7 +32,7 @@ class Takina(commands.Bot):
 
 bot = Takina(
     intents=nextcord.Intents.all(),
-    command_prefix=os.getenv("PREFIX"),
+    command_prefix=PREFIX,
     case_insensitive=True,
     help_command=help_commands.PaginatedHelpCommand(),
     owner_ids=[961063229168164864],
