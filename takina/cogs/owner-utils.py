@@ -65,7 +65,7 @@ class OwnerUtils(commands.Cog):
             failed_cogs = []
 
             for ext in cogs:
-                if ext in self._bot.cogs:
+                if ext in self._bot.extensions:
                     try:
                         self._bot.reload_extension("cogs." + ext)
                         reloaded_cogs.append(ext)
@@ -84,7 +84,7 @@ class OwnerUtils(commands.Cog):
 
         else:
             cog = args[0]
-            if "cogs." + cog in self._bot.cogs:
+            if "cogs." + cog in self._bot.extensions:
                 try:
                     self._bot.reload_extension("cogs." + cog)
                     await ctx.reply(f"Successfully reloaded `cogs.{cog}`.", mention_author=False)
