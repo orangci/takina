@@ -11,6 +11,7 @@ from aiohttp import web
 load_dotenv()
 
 BOT_NAME = os.getenv("BOT_NAME")
+DB_NAME = os.getenv("DB_NAME").lower()
 
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs) -> None:
@@ -21,7 +22,7 @@ class Bot(commands.Bot):
         if not os.getenv("HASDB"):
             raise Exception("No Mongo found. Set the HASDB variable in case you do have a Mongo instance runnin'.")
         self.db_client = AsyncIOMotorClient(os.getenv("MONGO"))
-        self.db = self.db_client.get_database("takina")
+        self.db = self.db_client.get_database(DB_NAME)
 
     @commands.Cog.listener()
     async def on_ready(self):

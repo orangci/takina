@@ -17,7 +17,7 @@ COPY . .
 # git owo
 RUN mkdir test && \
     cd test && \
-    git clone https://github.com/is-a-dev/takina && \
+    git clone https://github.com/orxngc/takina && \
     cp -r takina/.git ../.git && \
     cd .. && \
     rm -rf test

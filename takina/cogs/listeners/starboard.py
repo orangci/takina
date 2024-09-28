@@ -3,12 +3,12 @@ from nextcord.ext import commands
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 from nextcord import SlashOption
-
+from __main__ import DB_NAME
 
 class Starboard(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database("takina")
+        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: nextcord.RawReactionActionEvent):

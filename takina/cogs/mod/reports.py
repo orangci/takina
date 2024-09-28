@@ -3,11 +3,12 @@ import nextcord
 from nextcord.ext import commands
 from nextcord import Interaction, SlashOption
 from motor.motor_asyncio import AsyncIOMotorClient
+from __main__ import DB_NAME
 
 class Reports(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database("takina")
+        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
 
     async def get_server_config(self, guild_id: int):
         """Retrieve the report settings for a server from the database."""
