@@ -33,15 +33,19 @@ class MinecraftServerStatus(commands.Cog):
         try:
             server = await self.fetch_server_info(server_name)
             if server:
-                title = server.get("host")    
+                title = server.get("host")
+                if server.get("online") == True:
+                    title = title + " (Online)"
+                else:
+                    title = title + " (Offline)"
                 embed = nextcord.Embed(title=title, color=EMBED_COLOR)
 
                 if server.get("players"):
-                    embed.add_field(name="Players", value=f"{server['players']['online']}/{server['players']['max']}")
+                    embed.add_field(name="Players", value=f"{server['players']['online']}/{server['players']['max']}" , inline=True)
                 if server.get("version"):
-                    embed.add_field(name="Version", value=server["version"]["name_clean"])
+                    embed.add_field(name="Version", value=server["version"]["name_clean"], inline=True)
                 if server.get("motd"):
-                    embed.add_field(name="MOTD", value=server["motd"]["clean"], inline=False)
+                    embed.add_field(name="MOTD", value=server["motd"]["clean"], inline=True)
 
                 if server.get("icon"):
                     icon_data = server["icon"].split(",")[1]
