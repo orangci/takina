@@ -5,7 +5,7 @@ from __main__ import cogs, cogs_blacklist, BOT_NAME
 
 class OwnerUtils(commands.Cog):
     def __init__(self, bot: commands.Bot):
-        self._bot: commands.Bot = bot
+        self.bot = bot
 
     @commands.command()
     @commands.is_owner()
@@ -101,9 +101,9 @@ class OwnerUtils(commands.Cog):
     async def unload(self, ctx: commands.Context, *args) -> None:
         cog = args[0]
         try:
-            self._bot.unload_extension("cogs." + cog)
+            self.bot.unload_extension("cogs." + cog)
             await ctx.reply(f"Successfully unloaded `cogs.{cog}`.", mention_author=False)
-        except commands.cogNotLoaded:
+        except commands.ExtensionNotLoaded:
             await ctx.reply(f"`cogs.{cog}` was already unloaded.", mention_author=False)
 
     @commands.command(aliases=["lx"])
@@ -111,8 +111,8 @@ class OwnerUtils(commands.Cog):
     async def load(self, ctx: commands.Context, *args) -> None:
         cog = args[0]
         try:
-            self._bot.load_extension("cogs." + cog)
-        except commands.cogAlreadyLoaded:
+            self.bot.load_extension("cogs." + cog)
+        except commands.ExtensionNotLoaded:
             await ctx.reply(f"'cogs.{cog}' was already loaded.", mention_author=False)
         await ctx.reply(f"Successfully loaded `cogs.{cog}`.", mention_author=False)
 
