@@ -132,13 +132,17 @@ class Utils(commands.Cog):
     @commands.command(name='member-count', aliases=["mc"])
     async def member_count(self, ctx: commands.Context):
         guild = ctx.guild
-        total_members = guild.member_count
+        
+        total_members = len([member for member in guild.members if not member.bot])
+        total_bots = len([member for member in guild.members if member.bot])
+        total_count = guild.member_count
 
         embed = nextcord.Embed(
             title="👥 Members",
-            description=f"There are currently **{total_members}** members in this guild.",
+            description=f"There are currently **{total_members}** members and **{total_bots}** bots in this guild.",
             color=EMBED_COLOR
         )
+        embed.set_footer(text=f"Total (members and bots): {total_count}.")
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
 
         await ctx.send(embed=embed)
