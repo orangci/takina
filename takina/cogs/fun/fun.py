@@ -38,7 +38,7 @@ class Fun(commands.Cog):
     async def roll(self, ctx: commands.Context):
         number = random.randint(1, 100)
         embed = nextcord.Embed(
-            title="What number did you role?",
+            title="What number did you roll?",
             description=f"You rolled a {number}!",
             color=EMBED_COLOR
         )
