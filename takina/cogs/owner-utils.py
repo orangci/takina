@@ -58,37 +58,37 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def reload_exts(self, ctx: commands.Context, *args):
         if not args:
-            reloaded_cogs = []
             failed_cogs = []
 
-            for ext in cogs:
-                if ext in self._bot.extensions:
+            for cog in cogs:
+                if cog not in cogs_blacklist:
+                    if cog in self.bot.extensions:
+                        continue
                     try:
-                        self._bot.reload_extension("cogs." + ext)
-                        reloaded_cogs.append(ext)
+                        self.bot.reload_extension("cogs." + cog)
                     except Exception as e:
-                        failed_cogs.append(f"{ext}: {e}")
+                        failed_cogs.append(f"{cog}: {e}")
 
             success_message = f"Successfully reloaded all cogs."
             if failed_cogs:
                 error_message = (
-                    f"\nFailed to reload the following cogs:\n"
+                    f"\nReloaded all except the following cogs:\n"
                     + "\n".join(failed_cogs)
                 )
-                await ctx.reply(f"{success_message}{error_message}", mention_author=False)
+                await ctx.reply(error_message, mention_author=False)
             else:
-                await ctx.reply(success_message, mention_author=False)
+                await ctx.reply("Successfully reloaded all cogs.", mention_author=False)
 
         else:
             cog = args[0]
-            if "cogs." + cog in self._bot.extensions:
+            if "cogs." + cog in self.bot.extensions:
                 try:
-                    self._bot.reload_extension("cogs." + cog)
+                    self.bot.reload_extension("cogs." + cog)
                     await ctx.reply(f"Successfully reloaded `cogs.{cog}`.", mention_author=False)
                 except Exception as error:
                     await ctx.reply(f"Failed to reload `{cog}`: {error}", mention_author=False)
             else:
-                await ctx.reply(f"cog `cogs.{cog}` is not loaded.", mention_author=False)
+                await ctx.reply(f"Cog `cogs.{cog}` is not loaded.", mention_author=False)
 
     @commands.command(aliases=["rsc"])
     @commands.is_owner()
