@@ -2,12 +2,13 @@
 A simple multipurpose bot for Discord. Takina is under heavy development; so far, we have the following features:
 
 ## weeb utilities
+Takina utilizes the Jikan API for this module.
+
 - anime searching — `?anime Lycoris Recoil`
 - manga searching — `?manga Shikanoko`
 - character searching — `?chr Takina Inoue`
 - myanimelist user profiles — `?mal orangc`
 - seasonal anime — `?season Summer 2022`
-Takina utilizes the Jikan API for MyAnimeList searching.
 
 ## fun
 - user avatar fetching command
