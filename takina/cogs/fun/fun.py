@@ -6,6 +6,7 @@ from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 from __main__ import EMBED_COLOR
 import urllib
+import random 
 
 dotenv.load_dotenv()
 
