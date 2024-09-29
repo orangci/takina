@@ -107,8 +107,11 @@ class GitHub(commands.Cog):
 
         # Match short PR reference for specific repo
         short_pr_match = re.search(SHORT_PR_PATTERN, content)
-        if short_pr_match:
-            pr_list.append(GitHubPR(owner="is-a-dev", repo="register", pr_id=short_pr_match.group(1)))
+        if message.guild and message.guild.id == 830872854677422150:
+            short_pr_match = re.search(SHORT_PR_PATTERN, content)
+            if short_pr_match:
+                pr_list.append(GitHubPR(owner="is-a-dev", repo="register", pr_id=short_pr_match.group(1)))
+                pass
 
         # If a PR/Issue was detected, handle the embed
         if pr_list:
