@@ -1,7 +1,9 @@
 import aiohttp
 import nextcord
 from nextcord.ext import commands
+import nextcord
 from nextcord import Interaction, SlashOption
+from __main__ import EMBED_COLOR
 
 # Helper function for API requests
 async def request(url, *args, **kwargs):
@@ -44,7 +46,7 @@ class CharacterSearch(commands.Cog):
                 about = character.get("about")[:400] + "..."
                 name_kanji = character.get("name_kanji")
 
-                embed = nextcord.Embed(title=name, url=url, description=nicknames or name_kanji, color=0x2E51A2)
+                embed = nextcord.Embed(title=name, url=url, description=nicknames or name_kanji, color=EMBED_COLOR)
                 embed.add_field(name="About", value=about, inline=False)
                 embed.set_thumbnail(url=cover_image)
                 embed.set_footer(text=str(mal_id))
@@ -52,11 +54,11 @@ class CharacterSearch(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description="Character not found.",
-                    color=0x2E51A2,
+                    color=nextcord.Color.red(),
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0x2E51A2)
+            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
         
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -79,7 +81,7 @@ class CharacterSearch(commands.Cog):
                 about = character.get("about")[:400] + "..."
                 name_kanji = character.get("name_kanji")
 
-                embed = nextcord.Embed(title=name, url=url, description=nicknames or name_kanji, color=0x2E51A2)
+                embed = nextcord.Embed(title=name, url=url, description=nicknames or name_kanji, color=EMBED_COLOR)
                 embed.add_field(name="About", value=about, inline=False)
                 embed.set_thumbnail(url=cover_image)
                 embed.set_footer(text=str(mal_id))
@@ -87,11 +89,11 @@ class CharacterSearch(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description="Character not found.",
-                    color=0x2E51A2,
+                    color=nextcord.Color.red(),
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0x2E51A2)
+            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
         
         await interaction.response.send_message(embed=embed)
 

@@ -3,6 +3,7 @@ import nextcord
 from nextcord.ext import commands
 from nextcord import ButtonStyle, Interaction, SlashOption
 from nextcord.ui import Button, View
+from __main__ import EMBED_COLOR
 
 # Helper function for API requests
 async def request(url, *args, **kwargs):
@@ -67,14 +68,14 @@ class AnimeSeasonals(commands.Cog):
             seasonals = data.get('data', [])
             
             if not seasonals:
-                embed = nextcord.Embed(title="No Seasonals Found", description="No seasonal anime available.", color=0x2E51A2)
+                embed = nextcord.Embed(title="No Seasonals Found", description="No seasonal anime available.", color=nextcord.Color.red())
                 await ctx.reply(embed=embed, mention_author=False)
                 return
 
             # Create paginated embeds (5 seasonals per page)
             pages = []
             for i in range(0, len(seasonals), 5):
-                embed = nextcord.Embed(title=embed_title, color=0x2E51A2)
+                embed = nextcord.Embed(title=embed_title, color=EMBED_COLOR)
                 for anime in seasonals[i:i+5]:
                     title = anime['title']
                     url = anime['url']
@@ -95,7 +96,7 @@ class AnimeSeasonals(commands.Cog):
             await ctx.reply(embed=pages[0], view=view, mention_author=False)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0x2E51A2)
+            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
             await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(name="seasonals", description="Display seasonal anime.")
@@ -133,14 +134,14 @@ class AnimeSeasonals(commands.Cog):
             seasonals = data.get('data', [])
             
             if not seasonals:
-                embed = nextcord.Embed(title="No Seasonals Found", description="No seasonal anime available.", color=0x2E51A2)
+                embed = nextcord.Embed(title="No Seasonals Found", description="No seasonal anime available.", color=nextcord.Color.red())
                 await interaction.response.send_message(embed=embed)
                 return
 
             # Create paginated embeds (5 seasonals per page)
             pages = []
             for i in range(0, len(seasonals), 5):
-                embed = nextcord.Embed(title=embed_title, color=0x2E51A2)
+                embed = nextcord.Embed(title=embed_title, color=EMBED_COLOR)
                 for anime in seasonals[i:i+5]:
                     title = anime['title']
                     url = anime['url']
@@ -163,7 +164,7 @@ class AnimeSeasonals(commands.Cog):
             await interaction.response.send_message(embed=pages[0], view=view)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0x2E51A2)
+            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
             await interaction.response.send_message(embed=embed)
 
 def setup(bot):

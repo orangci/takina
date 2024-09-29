@@ -3,7 +3,8 @@ import nextcord
 from nextcord.ext import commands
 from datetime import datetime
 from nextcord import Interaction, SlashOption
-
+import nextcord
+from __main__ import EMBED_COLOR
 
 # Helper function for API requests
 async def request(url, *args, **kwargs):
@@ -47,7 +48,7 @@ class MangaSearch(commands.Cog):
                 mal_id = manga.get("mal_id")
                 genres = ", ".join([genre["name"] for genre in manga.get("genres", [])])
 
-                embed = nextcord.Embed(title=title, url=url, color=0x2E51A2)
+                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
                 if not status == "Publishing":
                     embed.add_field(name="Chapters", value=chapters, inline=True)
                 embed.add_field(name="Score", value=score, inline=True)
@@ -59,11 +60,11 @@ class MangaSearch(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description="Manga not found.",
-                    color=0x2E51A2,
+                    color=nextcord.Color.red(),
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0x2E51A2)
+            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(name="manga", description="Get information about a manga")
@@ -86,7 +87,7 @@ class MangaSearch(commands.Cog):
                 mal_id = manga.get("mal_id")
                 genres = ", ".join([genre["name"] for genre in manga.get("genres", [])])
 
-                embed = nextcord.Embed(title=title, url=url, color=0x2E51A2)
+                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
                 if not status == "Publishing":
                     embed.add_field(name="Chapters", value=chapters, inline=True)
                 embed.add_field(name="Score", value=score, inline=True)
@@ -98,11 +99,11 @@ class MangaSearch(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description="Manga not found.",
-                    color=0x2E51A2,
+                    color=nextcord.Color.red(),
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0x2E51A2)
+            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
         await interaction.response.send_message(embed=embed)
 
 def setup(bot):

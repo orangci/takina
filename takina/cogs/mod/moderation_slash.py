@@ -2,7 +2,7 @@ import nextcord
 from nextcord.ext import commands
 import re
 from datetime import timedelta
-from __main__ import BOT_NAME
+from __main__ import BOT_NAME, EMBED_COLOR
 
 class BanSlash(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -33,7 +33,7 @@ class BanSlash(commands.Cog):
 
         try:
             await member.ban(reason=reason)
-            embed = nextcord.Embed(description=f"✅ Successfully banned **{member.name}**.", color=0x2F52A3)
+            embed = nextcord.Embed(description=f"✅ Successfully banned **{member.name}**.", color=EMBED_COLOR)
             await ctx.response.send_message(embed=embed, ephemeral=False)
         except nextcord.Forbidden:
             await ctx.response.send_message("I don't have permission to ban this member.", ephemeral=True)
@@ -50,7 +50,7 @@ class UnbanSlash(commands.Cog):
         try:
             user = await self.bot.fetch_user(int(id))
             await ctx.guild.unban(user)
-            embed = nextcord.Embed(description="✅ Successfully unbanned **{user}**.", color=0x2F52A3)
+            embed = nextcord.Embed(description="✅ Successfully unbanned **{user}**.", color=EMBED_COLOR)
             await ctx.response.send_message(embed=embed, ephemeral=False)
         except nextcord.NotFound:
             await ctx.response.send_message("User not found. Please make sure the User ID is correct.", ephemeral=True)
@@ -82,7 +82,7 @@ class MuteSlash(commands.Cog):
 
         try:
             await member.timeout(timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration), reason=f"Muted by {ctx.user} for {duration}.")
-            embed = nextcord.Embed(description=f"✅ Successfully muted **{member.name}** for {duration}.", color=0x2F52A3)
+            embed = nextcord.Embed(description=f"✅ Successfully muted **{member.name}** for {duration}.", color=EMBED_COLOR)
             await ctx.response.send_message(embed=embed, ephemeral=False)
         except nextcord.Forbidden:
             await ctx.response.send_message("I do not have permission to mute this member.", ephemeral=True)
@@ -114,7 +114,7 @@ class UnmuteSlash(commands.Cog):
 
         try:
             await member.timeout(None, reason=f"{BOT_NAME}: Unmuted by moderator")
-            embed = nextcord.Embed(description=f"✅ Successfully unmuted **{member.name}**.", color=0x2F52A3)
+            embed = nextcord.Embed(description=f"✅ Successfully unmuted **{member.name}**.", color=EMBED_COLOR)
             await ctx.response.send_message(embed=embed, ephemeral=False)
         except nextcord.Forbidden:
             await ctx.response.send_message("I don't have permission to unmute this member.", ephemeral=True)
@@ -150,7 +150,7 @@ class KickSlash(commands.Cog):
 
         try:
             await member.kick(reason=reason)
-            embed = nextcord.Embed(description=f"✅ Successfully kicked **{member.name}**.", color=0x2F52A3)
+            embed = nextcord.Embed(description=f"✅ Successfully kicked **{member.name}**.", color=EMBED_COLOR)
             await ctx.response.send_message(embed=embed, ephemeral=False)
         except nextcord.Forbidden:
             await ctx.response.send_message("I don't have permission to kick this member.", ephemeral=True)

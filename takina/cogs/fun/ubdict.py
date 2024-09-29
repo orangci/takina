@@ -4,7 +4,7 @@ from __future__ import annotations
 import aiohttp
 import nextcord
 from nextcord.ext import commands
-
+from __main__ import EMBED_COLOR
 
 async def request(*args, **kwargs):
     async with aiohttp.ClientSession() as session:
@@ -31,7 +31,7 @@ class UrbanDictionary(commands.Cog):
             title=data["list"][0]["word"],
             description=data["list"][0]["definition"],
             url=data["list"][0]["permalink"],
-            color=nextcord.Color.green(),
+            color=EMBED_COLOR,
         )
         embed.set_footer(
             text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by: Urban Dictionary"
@@ -57,7 +57,7 @@ class UrbanDictionary(commands.Cog):
             title=data["list"][0]["word"],
             description=data["list"][0]["definition"],
             url=data["list"][0]["permalink"],
-            color=nextcord.Color.green(),
+            color=EMBED_COLOR,
         )
         embed.set_footer(
             text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by: Urban Dictionary"

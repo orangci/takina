@@ -7,13 +7,13 @@ from __future__ import annotations
 import nextcord
 from dns import resolver as _dnsresolver
 from nextcord.ext import commands
-
+from __main__ import EMBED_COLOR
 
 def construct_embed(url: str, full_answer: str):
     return nextcord.Embed(
         title=f"DNS Records for {url}",
         description=full_answer,
-        color=nextcord.Color.blue(),
+        color=EMBED_COLOR,
     )
 
 

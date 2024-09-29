@@ -3,7 +3,7 @@ from nextcord.ext import commands
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 from nextcord import SlashOption
-from __main__ import DB_NAME
+from __main__ import DB_NAME, EMBED_COLOR
 
 class Starboard(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -135,7 +135,7 @@ class Starboard(commands.Cog):
         embed = nextcord.Embed(
             title="Starred Message",
             description=message.content or "[No Content]",
-            color=0x2E51A2,
+            color=EMBED_COLOR,
         )
         embed.add_field(name="Author", value=message.author.mention, inline=True)
         embed.add_field(

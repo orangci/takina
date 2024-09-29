@@ -29,7 +29,7 @@ class UserInfo(commands.Cog):
             return
         
         roles = [role for role in member.roles if role != ctx.guild.default_role]
-        embed = nextcord.Embed(color=nextcord.Color.blue(), timestamp=ctx.message.created_at,
+        embed = nextcord.Embed(color=EMBED_COLOR, timestamp=ctx.message.created_at,
                                 title=f"User Info - {member}")
 
         embed.set_thumbnail(url=member.avatar.url if member.avatar else None)
@@ -79,7 +79,7 @@ class ServerInfo(commands.Cog):
     async def serverinfo(self, ctx: commands.Context):
         """Fetch server information. `a?serverinfo`."""
         guild = ctx.guild
-        embed = nextcord.Embed(title=f"{guild.name}", color=nextcord.Color.blue())
+        embed = nextcord.Embed(title=f"{guild.name}", color=EMBED_COLOR)
 
         embed.add_field(name="Server Name", value=guild.name, inline=True)
         embed.add_field(name="Server ID", value=guild.id, inline=True)

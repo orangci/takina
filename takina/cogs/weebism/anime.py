@@ -2,8 +2,9 @@ import aiohttp
 import nextcord
 from nextcord.ext import commands
 from datetime import datetime
+import nextcord
 from nextcord import Interaction, SlashOption
-
+from __main__ import EMBED_COLOR
 
 # Helper function for API requests
 async def request(url, *args, **kwargs):
@@ -56,7 +57,7 @@ class AnimeSearch(commands.Cog):
                     [studio["name"] for studio in anime.get("studios", [])]
                 )
 
-                embed = nextcord.Embed(title=title, url=url, color=0x2E51A2)
+                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
                 embed.add_field(name="Type", value=type, inline=True)
                 embed.add_field(name="Episodes", value=episodes, inline=True)
                 # embed.add_field(name="Score", value=score, inline=True)
@@ -70,11 +71,11 @@ class AnimeSearch(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description="Anime not found.",
-                    color=0x2E51A2,
+                    color=nextcord.Color.red(),
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0x2E51A2)
+            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(name="anime", description="Get information about an anime")
@@ -106,7 +107,7 @@ class AnimeSearch(commands.Cog):
                     [studio["name"] for studio in anime.get("studios", [])]
                 )
 
-                embed = nextcord.Embed(title=title, url=url, color=0x2E51A2)
+                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
                 embed.add_field(name="Type", value=type, inline=True)
                 embed.add_field(name="Episodes", value=episodes, inline=True)
                 # embed.add_field(name="Score", value=score, inline=True)
@@ -120,11 +121,11 @@ class AnimeSearch(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description="Anime not found.",
-                    color=0x2E51A2,
+                    color=nextcord.Color.red(),
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0x2E51A2)
+            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
         await interaction.response.send_message(embed=embed)
 
 def setup(bot):

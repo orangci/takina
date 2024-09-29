@@ -2,6 +2,7 @@ import aiohttp
 import nextcord
 from nextcord.ext import commands
 from datetime import datetime
+import nextcord
 
 # Helper function for API requests
 async def request(url, *args, **kwargs):
@@ -30,7 +31,7 @@ class MAL_Profiles(commands.Cog):
             profile_data = await request(profile_url)
 
             if not profile_data or not profile_data.get("data"):
-                embed = nextcord.Embed(title="User not found.", color=0x2E51A2)
+                embed = nextcord.Embed(title="User not found.", color=nextcord.Color.red())
                 await ctx.reply(embed=embed, mention_author=False)
                 return
 

@@ -4,6 +4,7 @@ import dotenv
 import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
+from __main__ import EMBED_COLOR
 
 dotenv.load_dotenv()
 
@@ -21,7 +22,7 @@ class Fun(commands.Cog):
     @commands.command(name="avatar")
     async def avatar(self, ctx: commands.Context, member: nextcord.Member = None):
         member = member or ctx.author
-        embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=nextcord.Color.blue())
+        embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
         embed.set_image(url=member.avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
         
@@ -37,7 +38,7 @@ class Fun(commands.Cog):
         embed = nextcord.Embed(
             title="What number did you role?",
             description=f"You rolled a {number}!",
-            color=nextcord.Color.blue()
+            color=EMBED_COLOR
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -46,7 +47,7 @@ class Fun(commands.Cog):
             description="The user whose avatar you would like to fetch", required=False
         )):
         member = member or ctx.author
-        embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=nextcord.Color.blue())
+        embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
         embed.set_image(url=member.avatar.url)
         await interaction.send(embed=embed, mention_author=False)
         
@@ -64,7 +65,7 @@ class Fun(commands.Cog):
         embed = nextcord.Embed(
             title="What number did you role?",
             description=f"You rolled a {number}!",
-            color=nextcord.Color.blue()
+            color=EMBED_COLOR
         )
         await interaction.send(embed=embed)
 

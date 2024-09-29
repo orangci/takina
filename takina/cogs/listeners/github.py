@@ -4,6 +4,7 @@ import aiohttp
 import nextcord
 from nextcord.ext import commands
 from nextcord.ui import Button, View
+from __main__ import EMBED_COLOR
 
 # GitHub API helper function
 async def fetch_github_data(url: str) -> Optional[dict]:
@@ -140,7 +141,7 @@ class GitHub(commands.Cog):
         embed = nextcord.Embed(
             title=f"Repository: {repo_name}",
             description=f"[Visit Repository]({repo_html_url})\n{description}",
-            color=nextcord.Color.blue(),
+            color=EMBED_COLOR,
         )
         embed.set_thumbnail(url=avatar_url)
         embed.add_field(name="Stars", value=str(stars), inline=True)

@@ -1,5 +1,6 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
+from __main__ import EMBED_COLOR
 
 class Snipe(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -26,9 +27,9 @@ class Snipe(commands.Cog):
             await ctx.reply("There's nothing to snipe!", mention_author=False)
             return
 
-        embed = discord.Embed(
+        embed = nextcord.Embed(
             description=sniped_message["content"],
-            color=discord.Color.red(),
+            color=EMBED_COLOR,
             timestamp=sniped_message["time"]
         )
         embed.set_author(name=f"{sniped_message['author'].display_name}", icon_url=sniped_message['author'].avatar.url)

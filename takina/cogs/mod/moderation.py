@@ -3,7 +3,7 @@ from nextcord.ext import commands
 import asyncio
 import re
 from datetime import timedelta
-from __main__ import BOT_NAME
+from __main__ import BOT_NAME, EMBED_COLOR
 
 class Ban(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -34,7 +34,7 @@ class Ban(commands.Cog):
 
         try:
             await member.ban(reason=reason)
-            embed = nextcord.Embed(description=f"✅ Successfully banned **{member.name}**.", color=0x2F52A3)
+            embed = nextcord.Embed(description=f"✅ Successfully banned **{member.name}**.", color=EMBED_COLOR)
             await ctx.reply(embed=embed, mention_author=False)
         except nextcord.Forbidden:
             await ctx.reply("I don't have permission to ban this member.", mention_author=False)
@@ -50,7 +50,7 @@ class Unban(commands.Cog):
     async def unban(self, ctx, id: str) :
         user = await self.bot.fetch_user(int(id)) or await self.bot.fetch_user(id)
         await ctx.guild.unban(user)
-        embed = nextcord.Embed(description="✅  "+f"Successfully unbanned **{user}**.", color=0x2F52A3)
+        embed = nextcord.Embed(description="✅  "+f"Successfully unbanned **{user}**.", color=EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
     
     @unban.error    
@@ -85,7 +85,7 @@ class Mute(commands.Cog):
 
         try:
             await member.timeout(timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration), reason=f"Muted by {ctx.author} for {duration}.")
-            embed = nextcord.Embed(description=f"✅ Successfully muted **{member.name}** for {duration}.", color=0x2F52A3)
+            embed = nextcord.Embed(description=f"✅ Successfully muted **{member.name}** for {duration}.", color=EMBED_COLOR)
             await ctx.reply(embed=embed, mention_author=False)
         except nextcord.Forbidden:
             await ctx.reply("I do not have permission to mute this member.", mention_author=False)
@@ -117,7 +117,7 @@ class Unmute(commands.Cog):
 
         try:
             await member.timeout(None, reason=f"{BOT_NAME}: Unmuted by moderator")
-            embed = nextcord.Embed(description=f"✅ Successfully unmuted **{member.name}**.", color=0x2F52A3)
+            embed = nextcord.Embed(description=f"✅ Successfully unmuted **{member.name}**.", color=EMBED_COLOR)
             await ctx.reply(embed=embed, mention_author=False)
         except nextcord.Forbidden:
             await ctx.reply("I don't have permission to unmute this member.", mention_author=False)
@@ -153,7 +153,7 @@ class Kick(commands.Cog):
 
         try:
             await member.kick(reason=reason)
-            embed = nextcord.Embed(description=f"✅ Successfully kicked **{member.name}**.", color=0x2F52A3)
+            embed = nextcord.Embed(description=f"✅ Successfully kicked **{member.name}**.", color=EMBED_COLOR)
             await ctx.reply(embed=embed, mention_author=False)
         except nextcord.Forbidden:
             await ctx.reply("I don't have permission to kick this member.", mention_author=False)
