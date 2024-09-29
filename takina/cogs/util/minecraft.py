@@ -27,7 +27,7 @@ class MinecraftServerStatus(commands.Cog):
         except Exception as e:
             raise e
 
-    @commands.command(aliases=["mc"])
+    @commands.command()
     async def mcstatus(self, ctx: commands.Context, *, server_name: str):
         """Command for displaying a Minecraft server's status. Usage: `mc mc.orangc.xyz`."""
         try:

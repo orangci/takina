@@ -35,6 +35,7 @@ Takina utilizes the Jikan API for this module.
 - role management commands; e.g. `role add weeb orangc`
 - info commands — `userinfo`, `serverinfo`, `roleinfo`
 - a snipe command
+- commands to fetch the guild member count and user join position
 
 ## minecraft things
 - `mcstatus play.mccisland.net` fetches the status of a minecraft server

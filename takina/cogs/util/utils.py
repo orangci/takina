@@ -2,13 +2,21 @@ import re
 from nextcord.ext import commands
 import nextcord
 from nextcord import SlashOption
-from __main__ import BOT_NAME
+from __main__ import BOT_NAME, EMBED_COLOR
 
 def extract_user_id(mention: str) -> str:
     match = re.match(r'<@!?(\d+)>', mention)
     if match:
         return match.group(1)
     return None
+
+def get_ordinal(n: int) -> str:
+    """Helper function to return the ordinal representation of a number."""
+    suffix = ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"]
+    if 10 <= n % 100 <= 20:
+        return f"{n}th"
+    else:
+        return f"{n}{suffix[n % 10]}"
 
 
 class Utils(commands.Cog):
@@ -97,6 +105,44 @@ class Utils(commands.Cog):
             await ctx.reply("I don't have permission to change this member's nickname.", mention_author=False)
         except nextcord.HTTPException:
             await ctx.reply("An error occurred while trying to change the nickname.", mention_author=False)
+
+    @commands.command(name='join-position', aliases=["jp", "japan"])
+    async def join_position(self, ctx: commands.Context):
+        guild = ctx.guild
+        member = ctx.author
+        
+        members = sorted(guild.members, key=lambda m: m.joined_at)
+        join_position = members.index(member) + 1
+        
+        ordinal_position = get_ordinal(join_position)
+
+        embed = nextcord.Embed(
+            description=f"You were the {ordinal_position} to join **{guild.name}**.",
+            color=EMBED_COLOR
+        )
+        embed.add_field(
+            name="Joined",
+            value=f"<t:{int(member.joined_at.timestamp())}:F> (<t:{int(member.joined_at.timestamp())}:R>)",
+            inline=False
+        )
+        embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
+
+        await ctx.send(embed=embed)
+
+    @commands.command(name='member-count', aliases=["mc"])
+    async def member_count(self, ctx: commands.Context):
+        guild = ctx.guild
+        total_members = guild.member_count
+
+        embed = nextcord.Embed(
+            title="👥 Members",
+            description=f"There are currently **{total_members}** members in this guild.",
+            color=EMBED_COLOR
+        )
+        embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
+
+        await ctx.send(embed=embed)
+
 
 class UtilsSlash(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
