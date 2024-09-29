@@ -134,7 +134,7 @@ class GitHub(commands.Cog):
             return
 
         # Build and send the repository embed
-        repo_name = repo_data.get("full_name", f"{owner}/{repo}")
+        repo_name = repo_data.get("full_name", f"[{owner}/{repo}]")
         description = repo_data.get("description", "No description available.")
         stars = repo_data.get("stargazers_count", 0)
         forks = repo_data.get("forks_count", 0)
@@ -142,8 +142,9 @@ class GitHub(commands.Cog):
         repo_html_url = repo_data.get("html_url", f"https://github.com/{owner}/{repo}")
 
         embed = nextcord.Embed(
-            title=f"Repository: {repo_name}",
-            description=f"[Visit Repository]({repo_html_url})\n{description}",
+            title=f"{repo_name}",
+            description=f"{description}",
+            url=repo_html_url,
             color=EMBED_COLOR,
         )
         embed.set_thumbnail(url=avatar_url)
