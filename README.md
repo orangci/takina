@@ -36,6 +36,8 @@ Takina utilizes the Jikan API for this module.
 - info commands — `userinfo`, `serverinfo`, `roleinfo`
 - a snipe command
 
+## minecraft things
+- `mcstatus play.mccisland.net` fetches the status of a minecraft server
 
 More information/documentation may be available later at orangc.xyz/takina.
 
