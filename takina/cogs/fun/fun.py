@@ -65,7 +65,7 @@ class Fun(commands.Cog):
     async def slash_roll(self, interaction: nextcord.Interaction):
         number = random.randint(1, 100)
         embed = nextcord.Embed(
-            title="What number did you role?",
+            title="What number did you roll?",
             description=f"You rolled a {number}!",
             color=EMBED_COLOR
         )
