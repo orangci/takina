@@ -16,6 +16,7 @@ Takina utilizes the Jikan API for this module.
 - roll command
 - topic command; the topic prompts were taken from yagpdb
 - urban dictionary searching command
+- 8ball command
 
 ## listeners
 - antiphishing module
