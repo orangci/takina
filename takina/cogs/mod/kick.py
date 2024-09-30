@@ -4,7 +4,7 @@ import asyncio
 import re
 from datetime import timedelta
 from __main__ import BOT_NAME, EMBED_COLOR
-from ..lib.oclib import *
+from ..libs.oclib import *
 
 class Kick(commands.Cog):
     def __init__(self, bot: commands.Bot):

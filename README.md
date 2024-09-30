@@ -38,7 +38,7 @@ Takina utilizes the Jikan API for this module.
 - commands to fetch the guild member count and user join position
 
 ## minecraft things
-- `mcstatus play.mccisland.net` fetches the status of a minecraft server
+- `mcstatus mc.orangc.xyz` fetches the status of a minecraft server
 
 More information/documentation may be available later at orangc.xyz/takina.
 
@@ -46,7 +46,4 @@ More information/documentation may be available later at orangc.xyz/takina.
 Using the Dockerfile or Nix.
 
 ## TODO
-- make google command pretty
 - improve starboard
-- move commonly used functions to libs.oclib
-- make all commands that take member as an arg to use extract id
