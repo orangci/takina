@@ -44,6 +44,11 @@ class Fun(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
+class FunSlash(commands.Cog):
+    def __init__(self, bot):
+        self._bot = bot
+        latency = bot.latency
+
     @nextcord.slash_command(name="avatar")
     async def slash_avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = SlashOption(
             description="The user whose avatar you would like to fetch", required=False
@@ -73,3 +78,4 @@ class Fun(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Fun(bot))
+    bot.add_cog(FunSlash(bot))
