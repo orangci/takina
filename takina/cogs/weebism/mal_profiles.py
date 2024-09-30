@@ -86,7 +86,7 @@ class MAL_Profiles(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command()
+    @nextcord.slash_command(name="mal")
     async def mal_slash(
         self,
         ctx: nextcord.Interaction,
