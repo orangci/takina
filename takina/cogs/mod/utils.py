@@ -91,16 +91,16 @@ class ModUtilsSlash(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
 
-    @commands.command()
+    @nextcord.slash_command(name="send")
     @commands.has_permissions(moderate_members=True,manage_messages=True)
-    async def send(
+    async def slash_send(
         self,
         interaction: nextcord.Interaction,
         channel: nextcord.TextChannel = SlashOption(description="The channel to send the message in", required=True),
         *,
         message: str = SlashOption(description="The message to send", required=True),
     ):
-        """Send a message as the bot. Usage: `send channel message`."""
+        """Send a message as the bot."""
         if channel and message:
             await channel.send(message)
             await interaction.send("Successfully sent message.", ephemeral=True)
@@ -111,7 +111,7 @@ class ModUtilsSlash(commands.Cog):
 
     @nextcord.slash_command(name="purge", description="Purges a specified number of messages.")
     @commands.has_permissions(manage_messages=True)
-    async def purge(self, interaction: nextcord.Interaction, amount: int = SlashOption(description="Number of messages to purge", required=True)):
+    async def slash_purge(self, interaction: nextcord.Interaction, amount: int = SlashOption(description="Number of messages to purge", required=True)):
         """Purges a specified number of messages."""
         if amount <= 0:
             await interaction.send("Please specify a positive number of messages to purge.", ephemeral=True)
@@ -122,7 +122,7 @@ class ModUtilsSlash(commands.Cog):
 
     @nextcord.slash_command(name="nick", description="Change a member's nickname.")
     @commands.has_permissions(manage_nicknames=True)
-    async def nick(
+    async def slash_nick(
         self,
         interaction: nextcord.Interaction,
         member: str = SlashOption(description="Member to change the nickname for", required=True),

@@ -1,5 +1,5 @@
 from __future__ import annotations
-import aiohttp
+from ..libs.oclib import *
 import dotenv
 import nextcord
 from nextcord import Interaction, SlashOption
@@ -9,11 +9,6 @@ import urllib
 import random 
 
 dotenv.load_dotenv()
-
-async def request(*args, **kwargs):
-    async with aiohttp.ClientSession() as session:
-        async with session.request(*args, **kwargs) as ans:
-            return await ans.json()
 
 
 class Fun(commands.Cog):

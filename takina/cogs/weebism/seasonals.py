@@ -1,15 +1,9 @@
-import aiohttp
+from ..libs.oclib import *
 import nextcord
 from nextcord.ext import commands
 from nextcord import ButtonStyle, Interaction, SlashOption
 from nextcord.ui import Button, View
 from __main__ import EMBED_COLOR
-
-# Helper function for API requests
-async def request(url, *args, **kwargs):
-    async with aiohttp.ClientSession() as session:
-        async with session.request("GET", url, *args, **kwargs) as response:
-            return await response.json()
 
 class PaginatedView(View):
     def __init__(self, pages, author_id = None):

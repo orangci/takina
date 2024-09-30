@@ -1,15 +1,11 @@
 # Copyright (c) 2024 - present, MaskDuck
 
 from __future__ import annotations
+from ..libs.oclib import *
 import aiohttp
 import nextcord
 from nextcord.ext import commands
 from __main__ import EMBED_COLOR
-
-async def request(*args, **kwargs):
-    async with aiohttp.ClientSession() as session:
-        async with session.request(*args, **kwargs) as ans:
-            return await ans.json()
 
 
 class UrbanDictionary(commands.Cog):

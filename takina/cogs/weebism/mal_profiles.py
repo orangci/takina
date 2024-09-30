@@ -1,15 +1,8 @@
-import aiohttp
+from ..libs.oclib import *
 import nextcord
 from nextcord.ext import commands
 from datetime import datetime
 import nextcord
-
-# Helper function for API requests
-async def request(url, *args, **kwargs):
-    async with aiohttp.ClientSession() as session:
-        async with session.request("GET", url, *args, **kwargs) as response:
-            return await response.json()
-
 
 def format_date(date_str):
     dt = datetime.fromisoformat(date_str)

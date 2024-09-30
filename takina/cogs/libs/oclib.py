@@ -1,6 +1,7 @@
 import re
 import nextcord
 from nextcord.ext import commands
+import aiohttp
 
 def extract_user_id(member_str: str, ctx: commands.Context) -> nextcord.Member:
     match = re.match(r'<@!?(\d+)>', member_str)
@@ -16,3 +17,8 @@ def extract_user_id(member_str: str, ctx: commands.Context) -> nextcord.Member:
              nextcord.utils.get(ctx.guild.members, display_name=member_str)
     
     return member
+
+async def request(url, *args, **kwargs):
+    async with aiohttp.ClientSession() as session:
+        async with session.request("GET", url, *args, **kwargs) as response:
+            return await response.json()

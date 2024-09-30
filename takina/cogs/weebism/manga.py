@@ -1,16 +1,10 @@
-import aiohttp
+from ..libs.oclib import *
 import nextcord
 from nextcord.ext import commands
 from datetime import datetime
 from nextcord import Interaction, SlashOption
 import nextcord
 from __main__ import EMBED_COLOR
-
-# Helper function for API requests
-async def request(url, *args, **kwargs):
-    async with aiohttp.ClientSession() as session:
-        async with session.request("GET", url, *args, **kwargs) as response:
-            return await response.json()
 
 class MangaSearch(commands.Cog):
     def __init__(self, bot):
