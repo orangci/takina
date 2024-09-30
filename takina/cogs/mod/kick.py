@@ -4,6 +4,7 @@ import asyncio
 import re
 from datetime import timedelta
 from __main__ import BOT_NAME, EMBED_COLOR
+from ..lib.oclib import *
 
 class Kick(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -11,7 +12,8 @@ class Kick(commands.Cog):
 
     @commands.command(name="kick")
     @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx: commands.Context, member: nextcord.Member = None, *, reason: str = "No reason provided"):
+    async def kick(self, ctx: commands.Context, member: str = None, *, reason: str = "No reason provided"):
+        member = extract_user_id(member, ctx)
         if not member:
             await ctx.reply("Please mention a member to kick. Usage: `kick @member [reason]`.", mention_author=False)
             return

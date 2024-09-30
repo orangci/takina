@@ -17,8 +17,15 @@ class Fun(commands.Cog):
         latency = bot.latency
     
     @commands.command(name="avatar")
-    async def avatar(self, ctx: commands.Context, member: nextcord.Member = None):
-        member = member or ctx.author
+    async def avatar(self, ctx: commands.Context, member: str = None):
+        if member is None:
+            member = ctx.author
+        else:
+            member = extract_user_id(member, ctx)
+        
+        if not isinstance(member, nextcord.Member):
+            await ctx.reply("Member not found. Please provide a valid username, display name, mention, or user ID.", mention_author=False)
+            return
         embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
         embed.set_image(url=member.avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
@@ -45,10 +52,17 @@ class FunSlash(commands.Cog):
         latency = bot.latency
 
     @nextcord.slash_command(name="avatar")
-    async def slash_avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = SlashOption(
+    async def slash_avatar(self, interaction: nextcord.Interaction, member: str = SlashOption(
             description="The user whose avatar you would like to fetch", required=False
         )):
-        member = member or ctx.author
+        if member is None:
+            member = ctx.author
+        else:
+            member = extract_user_id(member, ctx)
+        
+        if not isinstance(member, nextcord.Member):
+            await interaction.send("Member not found. Please provide a valid username, display name, mention, or user ID.", ephemeral=True)
+            return
         embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
         embed.set_image(url=member.avatar.url)
         await interaction.send(embed=embed, mention_author=False)

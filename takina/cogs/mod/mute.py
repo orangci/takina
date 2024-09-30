@@ -4,6 +4,7 @@ import asyncio
 import re
 from datetime import timedelta
 from __main__ import BOT_NAME, EMBED_COLOR
+from ..lib.oclib import *
 
 class Mute(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -11,10 +12,9 @@ class Mute(commands.Cog):
 
     @commands.command(name="mute")
     @commands.has_permissions(moderate_members=True)
-    async def mute(self, ctx, member: nextcord.Member, duration: str):
+    async def mute(self, ctx, member: str, duration: str):
         pattern = r'(\d+)([d|h|m])'
         match = re.fullmatch(pattern, duration)
-
         if not match:
             await ctx.reply("Invalid duration format. Use <number>[d|h|m].", mention_author=False)
             return
@@ -29,7 +29,12 @@ class Mute(commands.Cog):
             timeout_duration = time_value * 3600  # Hours to seconds
         elif time_unit == 'm':
             timeout_duration = time_value * 60  # Minutes to seconds
-
+        
+        member = extract_user_id(member, ctx)
+        if not isinstance(member, nextcord.Member):
+            await ctx.reply("Member not found. Please provide a valid username, display name, mention, or user ID.", mention_author=False)
+            return
+        
         try:
             await member.timeout(timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration), reason=f"Muted by {ctx.author} for {duration}.")
             embed = nextcord.Embed(description=f"✅ Successfully muted **{member.name}** for {duration}.", color=EMBED_COLOR)
@@ -45,7 +50,8 @@ class Unmute(commands.Cog):
 
     @commands.command(name="unmute")
     @commands.has_permissions(moderate_members=True)
-    async def unmute(self, ctx: commands.Context, member: nextcord.Member = None):
+    async def unmute(self, ctx: commands.Context, member: str):
+        member = extract_user_id(member, ctx)
         if not member:
             await ctx.reply("Please mention a member to unmute. Usage: `unmute @member`.", mention_author=False)
             return

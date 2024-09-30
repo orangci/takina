@@ -4,6 +4,7 @@ import asyncio
 import re
 from datetime import timedelta
 from __main__ import BOT_NAME, EMBED_COLOR
+from ..libs.oclib import *
 
 class Ban(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -11,7 +12,11 @@ class Ban(commands.Cog):
 
     @commands.command(name="ban")
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx: commands.Context, member: nextcord.Member = None, *, reason: str = "No reason provided"):
+    async def ban(self, ctx: commands.Context, member: str = None, *, reason: str = "No reason provided"):
+        member = extract_user_id(member, ctx)
+        if not isinstance(member, nextcord.Member):
+            await ctx.reply("Member not found. Please provide a valid username, display name, mention, or user ID.", mention_author=False)
+            return
         if not member:
             await ctx.reply("Please mention a member to ban. Usage: `ban @member [reason]`.", mention_author=False)
             return
