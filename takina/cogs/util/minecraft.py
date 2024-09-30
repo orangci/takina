@@ -6,10 +6,11 @@ from datetime import datetime
 from io import BytesIO
 from __main__ import EMBED_COLOR
 
+
 class MinecraftServerStatus(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     async def fetch_server_info(self, server_name: str):
         url = f"https://api.mcstatus.io/v2/status/java/{server_name}"
 
@@ -35,11 +36,21 @@ class MinecraftServerStatus(commands.Cog):
                 embed = nextcord.Embed(title=title, color=EMBED_COLOR)
 
                 if server.get("players"):
-                    embed.add_field(name="Players", value=f"{server['players']['online']}/{server['players']['max']}" , inline=True)
+                    embed.add_field(
+                        name="Players",
+                        value=f"{server['players']['online']}/{server['players']['max']}",
+                        inline=True,
+                    )
                 if server.get("version"):
-                    embed.add_field(name="Version", value=server["version"]["name_clean"], inline=True)
+                    embed.add_field(
+                        name="Version",
+                        value=server["version"]["name_clean"],
+                        inline=True,
+                    )
                 if server.get("motd"):
-                    embed.add_field(name="MOTD", value=server["motd"]["clean"], inline=True)
+                    embed.add_field(
+                        name="MOTD", value=server["motd"]["clean"], inline=True
+                    )
 
                 if server.get("icon"):
                     icon_data = server["icon"].split(",")[1]
@@ -58,8 +69,11 @@ class MinecraftServerStatus(commands.Cog):
                 await ctx.send(embed=embed)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
+            embed = nextcord.Embed(
+                title="Error", description=str(e), color=nextcord.Color.red()
+            )
             await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(MinecraftServerStatus(bot))

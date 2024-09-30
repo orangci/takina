@@ -3,6 +3,7 @@ from nextcord.ext import commands
 import os
 from __main__ import cogs, cogs_blacklist, BOT_NAME
 
+
 class OwnerUtils(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -11,7 +12,9 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def disable(self, ctx: commands.Context, cmd: str):
         if cmd == "disable":
-            await ctx.reply("You cannot disable the disable command.", mention_author=False)
+            await ctx.reply(
+                "You cannot disable the disable command.", mention_author=False
+            )
         else:
             command = self._bot.get_command(cmd)
             if command is None:
@@ -24,7 +27,9 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def enable(self, ctx: commands.Context, cmd: str):
         if cmd == "disable":
-            await ctx.reply("You cannot enable the enable command.", mention_author=False)
+            await ctx.reply(
+                "You cannot enable the enable command.", mention_author=False
+            )
         else:
             command = self._bot.get_command(cmd)
             if command is None:
@@ -33,7 +38,7 @@ class OwnerUtils(commands.Cog):
             command.enabled = True
             await ctx.reply(f"Successfully enabled `{command}`.", mention_author=False)
 
-    @commands.command(aliases=["maintainer","perms"])
+    @commands.command(aliases=["maintainer", "perms"])
     async def owner(self, ctx: commands.Context):
         owner_names = []
         for owner_id in self._bot.owner_ids:
@@ -47,12 +52,14 @@ class OwnerUtils(commands.Cog):
         owner_names_str = ", ".join(owner_names)
         if is_owner:
             await ctx.reply(
-                f"You have maintainer level permissions when interacting with {BOT_NAME}. Current users who hold maintainer level permissions: {owner_names_str}"
-            , mention_author=False)
+                f"You have maintainer level permissions when interacting with {BOT_NAME}. Current users who hold maintainer level permissions: {owner_names_str}",
+                mention_author=False,
+            )
         else:
             await ctx.reply(
-                f"You are not a maintainer of {BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
-            , mention_author=False)
+                f"You are not a maintainer of {BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}",
+                mention_author=False,
+            )
 
     @commands.command(aliases=["rx"])
     @commands.is_owner()
@@ -84,17 +91,25 @@ class OwnerUtils(commands.Cog):
             if "cogs." + cog in self.bot.extensions:
                 try:
                     self.bot.reload_extension("cogs." + cog)
-                    await ctx.reply(f"Successfully reloaded `cogs.{cog}`.", mention_author=False)
+                    await ctx.reply(
+                        f"Successfully reloaded `cogs.{cog}`.", mention_author=False
+                    )
                 except Exception as error:
-                    await ctx.reply(f"Failed to reload `{cog}`: {error}", mention_author=False)
+                    await ctx.reply(
+                        f"Failed to reload `{cog}`: {error}", mention_author=False
+                    )
             else:
-                await ctx.reply(f"Cog `cogs.{cog}` is not loaded.", mention_author=False)
+                await ctx.reply(
+                    f"Cog `cogs.{cog}` is not loaded.", mention_author=False
+                )
 
     @commands.command(aliases=["rsc"])
     @commands.is_owner()
     async def reload_slash_command(self, ctx: commands.Context) -> None:
         await ctx.bot.sync_application_commands()
-        await ctx.reply("Successfully synced bot application commands.", mention_author=False)
+        await ctx.reply(
+            "Successfully synced bot application commands.", mention_author=False
+        )
 
     @commands.command(aliases=["ux"])
     @commands.is_owner()
@@ -102,7 +117,9 @@ class OwnerUtils(commands.Cog):
         cog = args[0]
         try:
             self.bot.unload_extension("cogs." + cog)
-            await ctx.reply(f"Successfully unloaded `cogs.{cog}`.", mention_author=False)
+            await ctx.reply(
+                f"Successfully unloaded `cogs.{cog}`.", mention_author=False
+            )
         except commands.ExtensionNotLoaded:
             await ctx.reply(f"`cogs.{cog}` was already unloaded.", mention_author=False)
 

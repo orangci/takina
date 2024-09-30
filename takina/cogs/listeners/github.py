@@ -6,6 +6,7 @@ from nextcord.ext import commands
 from nextcord.ui import Button, View
 from __main__ import EMBED_COLOR
 
+
 # GitHub API helper function
 async def fetch_github_data(url: str) -> Optional[dict]:
     try:
@@ -18,12 +19,15 @@ async def fetch_github_data(url: str) -> Optional[dict]:
     except aiohttp.ClientError:
         return None
 
+
 # Regex patterns
 GITHUB_URL_PATTERN = r"https:\/\/github.com\/([A-Za-z0-9-]+)\/([A-Za-z0-9-]+)(\/pull|\/issues)?(#|\/)(?P<pr_id>\d+)"
 SHORT_PR_PATTERN = r"##(\d+)"
 
+
 class GitHubPR:
     """Stores information about a GitHub PR/Issue."""
+
     def __init__(self, owner: str, repo: str, pr_id: str) -> None:
         self.owner = owner
         self.repo = repo
@@ -31,14 +35,16 @@ class GitHubPR:
 
     async def fetch_status(self) -> Optional[nextcord.Embed]:
         """Fetches and returns the status of a PR or Issue as a Discord Embed."""
-        api_url = f"https://api.github.com/repos/{self.owner}/{self.repo}/issues/{self.pr_id}"
+        api_url = (
+            f"https://api.github.com/repos/{self.owner}/{self.repo}/issues/{self.pr_id}"
+        )
         data = await fetch_github_data(api_url)
 
         if not data:
             return nextcord.Embed(
                 title="Error",
                 description=f"Could not fetch information for PR/Issue #{self.pr_id}.",
-                color=nextcord.Color.red()
+                color=nextcord.Color.red(),
             )
 
         title = data.get("title", "No title available")
@@ -53,7 +59,7 @@ class GitHubPR:
         embed = nextcord.Embed(
             title=f"PR/Issue: {self.owner}/{self.repo}#{self.pr_id}",
             description=f"[{title}]({html_url})",
-            color=color
+            color=color,
         )
         embed.add_field(name="Status", value=state, inline=True)
         return embed
@@ -70,9 +76,11 @@ class GitHub(commands.Cog):
         embed = await pr.fetch_status()
         if not embed:
             return
-        
+
         # Add refresh button
-        refresh_button = Button(label="Refresh Status", style=nextcord.ButtonStyle.primary)
+        refresh_button = Button(
+            label="Refresh Status", style=nextcord.ButtonStyle.primary
+        )
 
         async def refresh_callback(interaction: nextcord.Interaction):
             new_embed = await pr.fetch_status()
@@ -101,7 +109,7 @@ class GitHub(commands.Cog):
                 GitHubPR(
                     owner=full_match.group(1),
                     repo=full_match.group(2),
-                    pr_id=full_match.group("pr_id")
+                    pr_id=full_match.group("pr_id"),
                 )
             )
 
@@ -110,7 +118,11 @@ class GitHub(commands.Cog):
         if message.guild and message.guild.id == 830872854677422150:
             short_pr_match = re.search(SHORT_PR_PATTERN, content)
             if short_pr_match:
-                pr_list.append(GitHubPR(owner="is-a-dev", repo="register", pr_id=short_pr_match.group(1)))
+                pr_list.append(
+                    GitHubPR(
+                        owner="is-a-dev", repo="register", pr_id=short_pr_match.group(1)
+                    )
+                )
                 pass
 
         # If a PR/Issue was detected, handle the embed
@@ -121,7 +133,9 @@ class GitHub(commands.Cog):
         # Match repository references 'repo:owner/repo'
         repo_match = re.search(r"repo:([A-Za-z1-9-]+)/([A-Za-z1-9-]+)", content)
         if repo_match:
-            await self.handle_repo_embed(message, repo_match.group(1), repo_match.group(2))
+            await self.handle_repo_embed(
+                message, repo_match.group(1), repo_match.group(2)
+            )
 
     async def handle_repo_embed(self, message: nextcord.Message, owner: str, repo: str):
         """Fetches and sends an embed with repository information."""

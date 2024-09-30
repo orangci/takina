@@ -5,6 +5,7 @@ import os
 from nextcord import SlashOption
 from __main__ import DB_NAME, EMBED_COLOR
 
+
 class Starboard(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot

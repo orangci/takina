@@ -6,6 +6,7 @@ from nextcord import Interaction, SlashOption
 import nextcord
 from __main__ import EMBED_COLOR
 
+
 class MangaSearch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -17,8 +18,8 @@ class MangaSearch(commands.Cog):
         try:
             data = await request(url2)
             if data and data.get("data"):
-                return data["data"] 
-            
+                return data["data"]
+
             data = await request(url1)
             if data and data.get("data"):
                 return data["data"][0]
@@ -58,7 +59,9 @@ class MangaSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
+            embed = nextcord.Embed(
+                title="Error", description=str(e), color=nextcord.Color.red()
+            )
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(name="manga", description="Get information about a manga")
@@ -97,8 +100,11 @@ class MangaSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
+            embed = nextcord.Embed(
+                title="Error", description=str(e), color=nextcord.Color.red()
+            )
         await interaction.response.send_message(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(MangaSearch(bot))

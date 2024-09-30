@@ -4,6 +4,7 @@ import re
 from ..libs.oclib import *
 from __main__ import EMBED_COLOR
 
+
 class UserInfo(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -15,26 +16,46 @@ class UserInfo(commands.Cog):
             member = ctx.author
         else:
             member = extract_user_id(member, ctx)
-        
+
         if not isinstance(member, nextcord.Member):
-            await ctx.reply("Member not found. Please provide a valid username, display name, mention, or user ID.", mention_author=False)
+            await ctx.reply(
+                "Member not found. Please provide a valid username, display name, mention, or user ID.",
+                mention_author=False,
+            )
             return
-        
+
         roles = [role for role in member.roles if role != ctx.guild.default_role]
 
-        embed = nextcord.Embed(color=EMBED_COLOR, timestamp=ctx.message.created_at, title=f"User Info - {member}")
+        embed = nextcord.Embed(
+            color=EMBED_COLOR,
+            timestamp=ctx.message.created_at,
+            title=f"User Info - {member}",
+        )
         embed.set_thumbnail(url=member.avatar.url if member.avatar else None)
         embed.add_field(name="ID:", value=member.id, inline=True)
         embed.add_field(name="Name:", value=member.display_name, inline=True)
-        embed.add_field(name="Created on:", value=member.created_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"), inline=True)
-        embed.add_field(name="Joined on:", value=member.joined_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"), inline=True)
-        embed.add_field(name=f"Roles ({len(roles)}):", value=" ".join([role.mention for role in roles]), inline=True)
+        embed.add_field(
+            name="Created on:",
+            value=member.created_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"),
+            inline=True,
+        )
+        embed.add_field(
+            name="Joined on:",
+            value=member.joined_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"),
+            inline=True,
+        )
+        embed.add_field(
+            name=f"Roles ({len(roles)}):",
+            value=" ".join([role.mention for role in roles]),
+            inline=True,
+        )
         embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
 
         if member.bot:
             embed.set_footer(text="This user is a bot account.")
-        
+
         await ctx.reply(embed=embed, mention_author=False)
+
 
 class RoleInfo(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -49,9 +70,13 @@ class RoleInfo(commands.Cog):
         embed.add_field(name="Color", value=str(role.color))
         embed.add_field(name="Position", value=role.position)
         embed.add_field(name="Mentionable", value=role.mentionable)
-        embed.add_field(name="Permissions", value=", ".join([perm[0] for perm in role.permissions if perm[1]]))
+        embed.add_field(
+            name="Permissions",
+            value=", ".join([perm[0] for perm in role.permissions if perm[1]]),
+        )
         embed.set_thumbnail(url=ctx.guild.icon.url)
         await ctx.reply(embed=embed, mention_author=False)
+
 
 class ServerInfo(commands.Cog):
     def __init__(self, bot: commands.Bot):

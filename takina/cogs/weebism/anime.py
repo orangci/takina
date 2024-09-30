@@ -6,10 +6,11 @@ from nextcord import Interaction, SlashOption
 from __main__ import EMBED_COLOR
 from ..libs.oclib import *
 
+
 class AnimeSearch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     async def fetch_anime(self, anime_name: str):
         url1 = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         url2 = f"https://api.jikan.moe/v4/anime/{anime_name}"
@@ -17,8 +18,8 @@ class AnimeSearch(commands.Cog):
         try:
             data = await request(url2)
             if data and data.get("data"):
-                return data["data"] 
-            
+                return data["data"]
+
             data = await request(url1)
             if data and data.get("data"):
                 return data["data"][0]
@@ -69,7 +70,9 @@ class AnimeSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
+            embed = nextcord.Embed(
+                title="Error", description=str(e), color=nextcord.Color.red()
+            )
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(name="anime", description="Get information about an anime")
@@ -119,8 +122,11 @@ class AnimeSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
+            embed = nextcord.Embed(
+                title="Error", description=str(e), color=nextcord.Color.red()
+            )
         await interaction.response.send_message(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(AnimeSearch(bot))

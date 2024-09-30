@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ext import commands
 from __main__ import EMBED_COLOR
 
+
 class Snipe(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -14,7 +15,7 @@ class Snipe(commands.Cog):
         self.sniped_messages[message.channel.id] = {
             "content": message.content,
             "author": message.author,
-            "time": message.created_at
+            "time": message.created_at,
         }
 
     @commands.command(name="snipe")
@@ -30,12 +31,16 @@ class Snipe(commands.Cog):
         embed = nextcord.Embed(
             description=sniped_message["content"],
             color=EMBED_COLOR,
-            timestamp=sniped_message["time"]
+            timestamp=sniped_message["time"],
         )
-        embed.set_author(name=f"{sniped_message['author'].display_name}", icon_url=sniped_message['author'].avatar.url)
+        embed.set_author(
+            name=f"{sniped_message['author'].display_name}",
+            icon_url=sniped_message["author"].avatar.url,
+        )
         embed.set_footer(text=f"Deleted in #{ctx.channel.name}")
 
         await ctx.reply(embed=embed, mention_author=False)
+
 
 def setup(bot):
     bot.add_cog(Snipe(bot))

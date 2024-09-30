@@ -9,6 +9,7 @@ from dns import resolver as _dnsresolver
 from nextcord.ext import commands
 from __main__ import EMBED_COLOR
 
+
 def construct_embed(url: str, full_answer: str):
     return nextcord.Embed(
         title=f"DNS Records for {url}",
@@ -40,7 +41,9 @@ class DNS(commands.Cog):
                 return
 
         if full_answer:
-            await ctx.reply(embed=construct_embed(url, full_answer), mention_author=False)
+            await ctx.reply(
+                embed=construct_embed(url, full_answer), mention_author=False
+            )
         else:
             await ctx.reply(f"No records found for {url}.", mention_author=False)
 
@@ -66,7 +69,9 @@ class DNS(commands.Cog):
             except _dnsresolver.NoAnswer:
                 continue
             except _dnsresolver.NXDOMAIN:
-                await interaction.send(f"Domain '{url}' does not exist.", ephemeral=True)
+                await interaction.send(
+                    f"Domain '{url}' does not exist.", ephemeral=True
+                )
                 return
 
         if full_answer:

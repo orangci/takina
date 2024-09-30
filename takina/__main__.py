@@ -29,7 +29,9 @@ class Bot(commands.Bot):
     async def setup_database(self) -> None:
         """Setup MongoDB connection and collections"""
         if not os.getenv("HASDB"):
-            raise Exception("No Mongo found. Set the HASDB variable in case you do have a Mongo instance runnin'.")
+            raise Exception(
+                "No Mongo found. Set the HASDB variable in case you do have a Mongo instance runnin'."
+            )
         self.db_client = AsyncIOMotorClient(os.getenv("MONGO"))
         self.db = self.db_client.get_database(DB_NAME)
 
@@ -38,6 +40,7 @@ class Bot(commands.Bot):
         """Event triggered when the bot is ready"""
         print(f"{self.user} is now online!")
         await self.setup_database()
+
 
 bot = Bot(
     intents=nextcord.Intents.all(),
@@ -54,21 +57,22 @@ bot = Bot(
 
 def load_exts(directory):
     blacklist_subfolders = ["libs"]
-        
+
     cogs = []
     for root, dirs, files in os.walk(directory):
         if any(blacklisted in root for blacklisted in blacklist_subfolders):
             continue
-        
+
         for file in files:
-            if file.endswith('.py'):
+            if file.endswith(".py"):
                 relative_path = os.path.relpath(os.path.join(root, file), directory)
-                cog_name = relative_path[:-3].replace(os.sep, '.')
+                cog_name = relative_path[:-3].replace(os.sep, ".")
                 cogs.append(cog_name)
     return cogs
 
+
 cogs_blacklist = []
-cogs = load_exts('takina/cogs')
+cogs = load_exts("takina/cogs")
 
 for cog in cogs:
     if cog not in cogs_blacklist:

@@ -38,7 +38,9 @@ class UrbanDictionary(commands.Cog):
     async def ubdict_slash(
         self,
         interaction: nextcord.Interaction,
-        word: str = nextcord.SlashOption(description="The word to search for", required=True),
+        word: str = nextcord.SlashOption(
+            description="The word to search for", required=True
+        ),
     ) -> None:
         params = {"term": word}
         async with aiohttp.ClientSession() as session:

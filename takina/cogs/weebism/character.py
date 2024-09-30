@@ -5,6 +5,7 @@ import nextcord
 from nextcord import Interaction, SlashOption
 from __main__ import EMBED_COLOR
 
+
 class CharacterSearch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -16,8 +17,8 @@ class CharacterSearch(commands.Cog):
         try:
             data = await request(url2)
             if data and data.get("data"):
-                return data["data"] 
-            
+                return data["data"]
+
             data = await request(url1)
             if data and data.get("data"):
                 return data["data"][0]
@@ -33,14 +34,21 @@ class CharacterSearch(commands.Cog):
 
             if character:
                 name = character.get("name")
-                cover_image = character.get("images", {}).get("jpg", {}).get("image_url")
+                cover_image = (
+                    character.get("images", {}).get("jpg", {}).get("image_url")
+                )
                 mal_id = character.get("mal_id")
                 url = character.get("url")
                 nicknames = ", ".join(character.get("nicknames", []))
                 about = character.get("about")[:400] + "..."
                 name_kanji = character.get("name_kanji")
 
-                embed = nextcord.Embed(title=name, url=url, description=nicknames or name_kanji, color=EMBED_COLOR)
+                embed = nextcord.Embed(
+                    title=name,
+                    url=url,
+                    description=nicknames or name_kanji,
+                    color=EMBED_COLOR,
+                )
                 embed.add_field(name="About", value=about, inline=False)
                 embed.set_thumbnail(url=cover_image)
                 embed.set_footer(text=str(mal_id))
@@ -52,15 +60,21 @@ class CharacterSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
-        
+            embed = nextcord.Embed(
+                title="Error", description=str(e), color=nextcord.Color.red()
+            )
+
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(name="character", description="Get information about a character")
+    @nextcord.slash_command(
+        name="character", description="Get information about a character"
+    )
     async def slash_character(
         self,
         interaction: Interaction,
-        character_name: str = SlashOption(description="Name or MAL ID of the character"),
+        character_name: str = SlashOption(
+            description="Name or MAL ID of the character"
+        ),
     ):
         """Slash command for searching characters on MyAnimeList."""
         try:
@@ -68,14 +82,21 @@ class CharacterSearch(commands.Cog):
 
             if character:
                 name = character.get("name")
-                cover_image = character.get("images", {}).get("jpg", {}).get("image_url")
+                cover_image = (
+                    character.get("images", {}).get("jpg", {}).get("image_url")
+                )
                 mal_id = character.get("mal_id")
                 url = character.get("url")
                 nicknames = ", ".join(character.get("nicknames", []))
                 about = character.get("about")[:400] + "..."
                 name_kanji = character.get("name_kanji")
 
-                embed = nextcord.Embed(title=name, url=url, description=nicknames or name_kanji, color=EMBED_COLOR)
+                embed = nextcord.Embed(
+                    title=name,
+                    url=url,
+                    description=nicknames or name_kanji,
+                    color=EMBED_COLOR,
+                )
                 embed.add_field(name="About", value=about, inline=False)
                 embed.set_thumbnail(url=cover_image)
                 embed.set_footer(text=str(mal_id))
@@ -87,9 +108,12 @@ class CharacterSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
-        
+            embed = nextcord.Embed(
+                title="Error", description=str(e), color=nextcord.Color.red()
+            )
+
         await interaction.response.send_message(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(CharacterSearch(bot))

@@ -4,6 +4,7 @@ from nextcord.ext import commands
 from datetime import datetime
 import nextcord
 
+
 def format_date(date_str):
     dt = datetime.fromisoformat(date_str)
     return dt.strftime("%B %d, %Y")
@@ -12,6 +13,7 @@ def format_date(date_str):
 def format_date_long(date_str):
     dt = datetime.fromisoformat(date_str)
     return dt.strftime("%b %d, %Y at %I:%M %p")
+
 
 class MAL_Profiles(commands.Cog):
     def __init__(self, bot):
@@ -24,7 +26,9 @@ class MAL_Profiles(commands.Cog):
             profile_data = await request(profile_url)
 
             if not profile_data or not profile_data.get("data"):
-                embed = nextcord.Embed(title="User not found.", color=nextcord.Color.red())
+                embed = nextcord.Embed(
+                    title="User not found.", color=nextcord.Color.red()
+                )
                 await ctx.reply(embed=embed, mention_author=False)
                 return
 
@@ -43,12 +47,8 @@ class MAL_Profiles(commands.Cog):
             stats_url = f"https://api.jikan.moe/v4/users/{username}/statistics"
             stats_data = await request(stats_url)
 
-            anime_mean = (
-                stats_data.get("data", {}).get("anime", {}).get("mean_score")
-            )
-            manga_mean = (
-                stats_data.get("data", {}).get("manga", {}).get("mean_score")
-            )
+            anime_mean = stats_data.get("data", {}).get("anime", {}).get("mean_score")
+            manga_mean = stats_data.get("data", {}).get("manga", {}).get("mean_score")
 
             embed = nextcord.Embed(
                 title=f"{username}'s Profile",
@@ -80,12 +80,21 @@ class MAL_Profiles(commands.Cog):
                 embed.set_thumbnail(url=profile_pic)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
+            embed = nextcord.Embed(
+                title="Error", description=str(e), color=nextcord.Color.red()
+            )
 
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command()
-    async def mal_slash(self, ctx: nextcord.Interaction, *, username: str = nextcord.SlashOption(description="Username of the user to fetch")):
+    async def mal_slash(
+        self,
+        ctx: nextcord.Interaction,
+        *,
+        username: str = nextcord.SlashOption(
+            description="Username of the user to fetch"
+        ),
+    ):
         try:
             profile_url = f"https://api.jikan.moe/v4/users/{username}"
             profile_data = await request(profile_url)
@@ -110,12 +119,8 @@ class MAL_Profiles(commands.Cog):
             stats_url = f"https://api.jikan.moe/v4/users/{username}/statistics"
             stats_data = await request(stats_url)
 
-            anime_mean = (
-                stats_data.get("data", {}).get("anime", {}).get("mean_score")
-            )
-            manga_mean = (
-                stats_data.get("data", {}).get("manga", {}).get("mean_score")
-            )
+            anime_mean = stats_data.get("data", {}).get("anime", {}).get("mean_score")
+            manga_mean = stats_data.get("data", {}).get("manga", {}).get("mean_score")
 
             embed = nextcord.Embed(
                 title=f"{username}'s Profile",
@@ -147,7 +152,9 @@ class MAL_Profiles(commands.Cog):
                 embed.set_thumbnail(url=profile_pic)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=nextcord.Color.red())
+            embed = nextcord.Embed(
+                title="Error", description=str(e), color=nextcord.Color.red()
+            )
 
         await ctx.response.send_message(embed=embed, ephemeral=True)
 

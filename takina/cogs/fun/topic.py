@@ -635,7 +635,7 @@ class Topic(commands.Cog):
         """Sends a random topic from the predefined list."""
         random_topic = random.choice(topics)
         await ctx.reply(random_topic, mention_author=False)
-        
+
     @nextcord.slash_command(name="topic")
     async def topic_slash(self, interaction: nextcord.Interaction):
         """Sends a random topic from the predefined list."""
