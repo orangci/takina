@@ -1,12 +1,8 @@
 import nextcord
 from nextcord.ext import commands
 import re
-
-def extract_user_id(mention: str) -> str:
-    match = re.match(r'<@!?(\d+)>', mention)
-    if match:
-        return match.group(1)
-    return None
+from ..libs.oclib import *
+from __main__ import EMBED_COLOR
 
 class UserInfo(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -18,41 +14,27 @@ class UserInfo(commands.Cog):
         if member is None:
             member = ctx.author
         else:
-            user_id = extract_user_id(member)
-            if user_id:
-                member = ctx.guild.get_member(int(user_id))
-            else:
-                member = nextcord.utils.get(ctx.guild.members, name=member) or nextcord.utils.get(ctx.guild.members, display_name=member)
-
-        if member is None:
-            await ctx.reply("Member not found. Please provide a valid username or display name.", mention_author=False)
+            member = extract_user_id(member, ctx)
+        
+        if not isinstance(member, nextcord.Member):
+            await ctx.reply("Member not found. Please provide a valid username, display name, mention, or user ID.", mention_author=False)
             return
         
         roles = [role for role in member.roles if role != ctx.guild.default_role]
-        embed = nextcord.Embed(color=EMBED_COLOR, timestamp=ctx.message.created_at,
-                                title=f"User Info - {member}")
 
+        embed = nextcord.Embed(color=EMBED_COLOR, timestamp=ctx.message.created_at, title=f"User Info - {member}")
         embed.set_thumbnail(url=member.avatar.url if member.avatar else None)
         embed.add_field(name="ID:", value=member.id, inline=True)
         embed.add_field(name="Name:", value=member.display_name, inline=True)
-
         embed.add_field(name="Created on:", value=member.created_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"), inline=True)
         embed.add_field(name="Joined on:", value=member.joined_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"), inline=True)
-
         embed.add_field(name=f"Roles ({len(roles)}):", value=" ".join([role.mention for role in roles]), inline=True)
         embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
+
         if member.bot:
             embed.set_footer(text="This user is a bot account.")
-
+        
         await ctx.reply(embed=embed, mention_author=False)
-    
-    # TODO: add the underneath code to every command in anna (i will literally never do this)
-    # to anyone reading this: watch lycoris recoil, it's peak fiction
-    # @userinfo.error
-    # async def userinfo_error(self, ctx: commands.Context, error):
-    #     if isinstance(error, commands.BadArgument) or isinstance(error, commands.UserInputError):
-    #         await ctx.send("Invalid argument. Use: `a?userinfo` or `a?userinfo member`.")
-
 
 class RoleInfo(commands.Cog):
     def __init__(self, bot: commands.Bot):

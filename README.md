@@ -44,3 +44,9 @@ More information/documentation may be available later at orangc.xyz/takina.
 
 ## installation
 Using the Dockerfile or Nix.
+
+## TODO
+- make google command pretty
+- improve starboard
+- move commonly used functions to libs.oclib
+- make all commands that take member as an arg to use extract id

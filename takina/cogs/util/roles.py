@@ -1,12 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 import re
-
-def extract_user_id(mention: str) -> str:
-    match = re.match(r'<@!?(\d+)>', mention)
-    if match:
-        return match.group(1)
-    return None
+from ..libs.oclib import *
 
 class Roles(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -24,14 +19,10 @@ class Roles(commands.Cog):
         if member is None:
             member = ctx.author
         else:
-            user_id = extract_user_id(member)
-            if user_id:
-                member = ctx.guild.get_member(int(user_id))
-            else:
-                member = nextcord.utils.get(ctx.guild.members, name=member) or nextcord.utils.get(ctx.guild.members, display_name=member)
-
-        if member is None:
-            await ctx.reply("Member not found. Please provide a valid username or display name.", mention_author=False)
+            member = extract_user_id(member, ctx)
+        
+        if not isinstance(member, nextcord.Member):
+            await ctx.reply("Member not found. Please provide a valid username, display name, mention, or user ID.", mention_author=False)
             return
 
         try:
@@ -49,14 +40,10 @@ class Roles(commands.Cog):
         if member is None:
             member = ctx.author
         else:
-            user_id = extract_user_id(member)
-            if user_id:
-                member = ctx.guild.get_member(int(user_id))
-            else:
-                member = nextcord.utils.get(ctx.guild.members, name=member) or nextcord.utils.get(ctx.guild.members, display_name=member)
-
-        if member is None:
-            await ctx.reply("Member not found. Please provide a valid username or display name.", mention_author=False)
+            member = extract_user_id(member, ctx)
+        
+        if not isinstance(member, nextcord.Member):
+            await ctx.reply("Member not found. Please provide a valid username, display name, mention, or user ID.", mention_author=False)
             return
 
         try:
