@@ -28,16 +28,24 @@ class Utils(commands.Cog):
         )
 
     @commands.command(name="join-position", aliases=["jp", "japan"])
-    async def join_position(self, ctx: commands.Context):
+    async def join_position(self, ctx: commands.Context, member: str = None):
         guild = ctx.guild
-        member = ctx.author
+        if member is None:
+            member = ctx.author
+        else:
+            member = extract_user_id(member, ctx)
 
         members = sorted(guild.members, key=lambda m: m.joined_at)
         join_position = members.index(member) + 1
 
         ordinal_position = get_ordinal(join_position)
 
-        embed = nextcord.Embed(
+        if not member == ctx.author: 
+            embed = nextcord.Embed(
+            description=f"**{member}** was the {ordinal_position} to join **{guild.name}**.",
+            color=EMBED_COLOR,)
+        else:
+            embed = nextcord.Embed(
             description=f"You were the {ordinal_position} to join **{guild.name}**.",
             color=EMBED_COLOR,
         )
@@ -46,7 +54,7 @@ class Utils(commands.Cog):
             value=f"<t:{int(member.joined_at.timestamp())}:F> (<t:{int(member.joined_at.timestamp())}:R>)",
             inline=False,
         )
-        embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
+        embed.set_thumbnail(url=member.avatar.url or None)
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -82,16 +90,24 @@ class UtilsSlash(commands.Cog):
         )
 
     @nextcord.slash_command(name="join-position")
-    async def slash_join_position(self, interaction: nextcord.Interaction):
+    async def slash_join_position(self, interaction: nextcord.Interaction, member: nextcord.Member = None):
         guild = interaction.guild
-        member = interaction.author
+        if member is None:
+            member = interaction.author
+        else:
+            member = extract_user_id(member, interaction)
 
         members = sorted(guild.members, key=lambda m: m.joined_at)
         join_position = members.index(member) + 1
 
         ordinal_position = get_ordinal(join_position)
 
-        embed = nextcord.Embed(
+        if not member == interaction.author:
+            embed = nextcord.Embed(
+            description=f"**{member}** was the {ordinal_position} to join **{guild.name}**.",
+            color=EMBED_COLOR,)
+        else:
+            embed = nextcord.Embed(
             description=f"You were the {ordinal_position} to join **{guild.name}**.",
             color=EMBED_COLOR,
         )
@@ -100,7 +116,7 @@ class UtilsSlash(commands.Cog):
             value=f"<t:{int(member.joined_at.timestamp())}:F> (<t:{int(member.joined_at.timestamp())}:R>)",
             inline=False,
         )
-        embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
+        embed.set_thumbnail(url=member.avatar.url or None)
 
         await interaction.send(embed=embed, ephemeral=True)
 

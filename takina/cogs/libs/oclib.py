@@ -4,7 +4,7 @@ from nextcord.ext import commands
 import aiohttp
 
 
-def extract_user_id(member_str: str, ctx: commands.Context) -> nextcord.Member:
+def extract_user_id(member_str: str, ctx: commands.Context or nextcord.Interaction) -> nextcord.Member:
     match = re.match(r"<@!?(\d+)>", member_str)
     if match:
         user_id = int(match.group(1))
