@@ -14,24 +14,10 @@ class Mute(commands.Cog):
     @commands.command(name="mute")
     @commands.has_permissions(moderate_members=True)
     async def mute(self, ctx, member: str, duration: str):
-        pattern = r"(\d+)([d|h|m])"
-        match = re.fullmatch(pattern, duration)
-        if not match:
-            await ctx.reply(
-                "Invalid duration format. Use <number>[d|h|m].", mention_author=False
-            )
+        timeout_duration = duration_calculator(duration)
+        if timeout_duration is None:
+            await ctx.reply("Invalid duration format. Use <number>[d|h|m].", mention_author=False)
             return
-
-        time_value, time_unit = match.groups()
-        time_value = int(time_value)
-
-        # Convert duration to seconds
-        if time_unit == "d":
-            timeout_duration = time_value * 86400  # Days to seconds
-        elif time_unit == "h":
-            timeout_duration = time_value * 3600  # Hours to seconds
-        elif time_unit == "m":
-            timeout_duration = time_value * 60  # Minutes to seconds
 
         member = extract_user_id(member, ctx)
         if not isinstance(member, nextcord.Member):
