@@ -40,15 +40,16 @@ class Utils(commands.Cog):
 
         ordinal_position = get_ordinal(join_position)
 
-        if not member == ctx.author: 
+        if not member == ctx.author:
             embed = nextcord.Embed(
-            description=f"**{member}** was the {ordinal_position} to join **{guild.name}**.",
-            color=EMBED_COLOR,)
+                description=f"**{member}** was the {ordinal_position} to join **{guild.name}**.",
+                color=EMBED_COLOR,
+            )
         else:
             embed = nextcord.Embed(
-            description=f"You were the {ordinal_position} to join **{guild.name}**.",
-            color=EMBED_COLOR,
-        )
+                description=f"You were the {ordinal_position} to join **{guild.name}**.",
+                color=EMBED_COLOR,
+            )
         embed.add_field(
             name="Joined",
             value=f"<t:{int(member.joined_at.timestamp())}:F> (<t:{int(member.joined_at.timestamp())}:R>)",
@@ -90,7 +91,9 @@ class UtilsSlash(commands.Cog):
         )
 
     @nextcord.slash_command(name="join-position")
-    async def slash_join_position(self, interaction: nextcord.Interaction, member: nextcord.Member = None):
+    async def slash_join_position(
+        self, interaction: nextcord.Interaction, member: nextcord.Member = None
+    ):
         guild = interaction.guild
         if member is None:
             member = interaction.author
@@ -104,13 +107,14 @@ class UtilsSlash(commands.Cog):
 
         if not member == interaction.author:
             embed = nextcord.Embed(
-            description=f"**{member}** was the {ordinal_position} to join **{guild.name}**.",
-            color=EMBED_COLOR,)
+                description=f"**{member}** was the {ordinal_position} to join **{guild.name}**.",
+                color=EMBED_COLOR,
+            )
         else:
             embed = nextcord.Embed(
-            description=f"You were the {ordinal_position} to join **{guild.name}**.",
-            color=EMBED_COLOR,
-        )
+                description=f"You were the {ordinal_position} to join **{guild.name}**.",
+                color=EMBED_COLOR,
+            )
         embed.add_field(
             name="Joined",
             value=f"<t:{int(member.joined_at.timestamp())}:F> (<t:{int(member.joined_at.timestamp())}:R>)",

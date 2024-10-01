@@ -4,7 +4,10 @@ from nextcord.ext import commands
 import aiohttp
 from datetime import timedelta
 
-def extract_user_id(member_str: str, ctx: commands.Context or nextcord.Interaction) -> nextcord.Member:
+
+def extract_user_id(
+    member_str: str, ctx: commands.Context or nextcord.Interaction
+) -> nextcord.Member:
     match = re.match(r"<@!?(\d+)>", member_str)
     if match:
         user_id = int(match.group(1))
@@ -25,6 +28,7 @@ async def request(url, *args, **kwargs):
     async with aiohttp.ClientSession() as session:
         async with session.request("GET", url, *args, **kwargs) as response:
             return await response.json()
+
 
 def duration_calculator(duration: str) -> int:
     pattern = r"(\d+)([d|h|m])"

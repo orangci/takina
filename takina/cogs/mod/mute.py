@@ -16,7 +16,9 @@ class Mute(commands.Cog):
     async def mute(self, ctx, member: str, duration: str):
         timeout_duration = duration_calculator(duration)
         if timeout_duration is None:
-            await ctx.reply("Invalid duration format. Use <number>[d|h|m].", mention_author=False)
+            await ctx.reply(
+                "Invalid duration format. Use <number>[d|h|m].", mention_author=False
+            )
             return
 
         member = extract_user_id(member, ctx)

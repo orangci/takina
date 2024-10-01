@@ -145,7 +145,7 @@ class OwnerUtils(commands.Cog):
                     cwd=directory,
                     capture_output=True,
                     text=True,
-                    check=True
+                    check=True,
                 )
                 return result.stdout
             except subprocess.CalledProcessError as e:
@@ -153,9 +153,12 @@ class OwnerUtils(commands.Cog):
 
         current_dir_result = run_git_pull(current_dir)
 
-        message = f"**Git Pull Results:**\n\n**Current Directory:**\n{current_dir_result}"
+        message = (
+            f"**Git Pull Results:**\n\n**Current Directory:**\n{current_dir_result}"
+        )
 
         await ctx.reply(message, mention_author=False)
+
 
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(OwnerUtils(bot))
