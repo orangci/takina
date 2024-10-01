@@ -22,6 +22,7 @@ class ModUtils(commands.Cog):
         """Send a message as the bot. Usage: `send channel message`."""
         if channel and message:
             await channel.send(message)
+            await ctx.reply("Successfully sent message.", mention_author=False)
         elif message:
             await ctx.reply(message, mention_author=False)
         else:
