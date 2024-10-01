@@ -146,7 +146,7 @@ class BanSlash(commands.Cog):
                 description=f"✅ Successfully banned **{member.name}**.",
                 color=EMBED_COLOR,
             )
-            await ctx.response.send_message(embed=embed, ephemeral=False)
+            await ctx.response.send_message(embed=embed)
         except nextcord.Forbidden:
             await ctx.response.send_message(
                 "I don't have permission to ban this member.", ephemeral=True
@@ -170,7 +170,7 @@ class UnbanSlash(commands.Cog):
             embed = nextcord.Embed(
                 description="✅ Successfully unbanned **{user}**.", color=EMBED_COLOR
             )
-            await ctx.response.send_message(embed=embed, ephemeral=False)
+            await ctx.response.send_message(embed=embed)
         except nextcord.NotFound:
             await ctx.response.send_message(
                 "User not found. Please make sure the User ID is correct.",

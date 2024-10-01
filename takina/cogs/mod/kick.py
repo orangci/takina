@@ -117,7 +117,7 @@ class KickSlash(commands.Cog):
                 description=f"✅ Successfully kicked **{member.name}**.",
                 color=EMBED_COLOR,
             )
-            await ctx.response.send_message(embed=embed, ephemeral=False)
+            await ctx.response.send_message(embed=embed)
         except nextcord.Forbidden:
             await ctx.response.send_message(
                 "I don't have permission to kick this member.", ephemeral=True

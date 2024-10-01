@@ -150,7 +150,7 @@ class MuteSlash(commands.Cog):
                 description=f"✅ Successfully muted **{member.name}** for {duration}.",
                 color=EMBED_COLOR,
             )
-            await ctx.response.send_message(embed=embed, ephemeral=False)
+            await ctx.response.send_message(embed=embed)
         except nextcord.Forbidden:
             await ctx.response.send_message(
                 "I do not have permission to mute this member.", ephemeral=True
@@ -201,7 +201,7 @@ class UnmuteSlash(commands.Cog):
                 description=f"✅ Successfully unmuted **{member.name}**.",
                 color=EMBED_COLOR,
             )
-            await ctx.response.send_message(embed=embed, ephemeral=False)
+            await ctx.response.send_message(embed=embed)
         except nextcord.Forbidden:
             await ctx.response.send_message(
                 "I don't have permission to unmute this member.", ephemeral=True
