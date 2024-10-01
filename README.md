@@ -48,3 +48,7 @@ Using the Dockerfile or Nix.
 
 ## TODO
 - improve starboard
+- improve moderation system and add a method of tracking cases using the DB
+- add channel manipulation commands
+- add autoroles / join roles
+- refactor github module
