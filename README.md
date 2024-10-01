@@ -34,6 +34,7 @@ Takina utilizes the Jikan API for this module.
 
 ## utilities
 - role management commands; e.g. `role add weeb orangc`
+- channel management commands; `slowmode`, `lock` and `unlock`
 - info commands — `userinfo`, `serverinfo`, `roleinfo`
 - a snipe command
 - commands to fetch the guild member count and user join position
@@ -49,6 +50,5 @@ Using the Dockerfile or Nix.
 ## TODO
 - improve starboard
 - improve moderation system and add a method of tracking cases using the DB
-- add channel manipulation commands
 - add autoroles / join roles
 - refactor github module
