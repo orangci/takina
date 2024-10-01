@@ -2,7 +2,7 @@ import nextcord
 from nextcord.ext import commands
 from nextcord import SlashOption
 from __main__ import EMBED_COLOR
-from ..lib.oclib import *
+from ..libs.oclib import *
 
 class ChannelManagement(commands.Cog):
     def __init__(self, bot):
