@@ -75,7 +75,7 @@ class DNS(commands.Cog):
                 return
 
         if full_answer:
-            await interaction.send(embed=construct_embed(url, full_answer))
+            await interaction.send(embed=construct_embed(url, full_answer), ephemeral=True)
         else:
             await interaction.send(f"No records found for {url}.", ephemeral=True)
 

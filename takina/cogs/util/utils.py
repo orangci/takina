@@ -96,7 +96,7 @@ class UtilsSlash(commands.Cog):
     ):
         guild = interaction.guild
         if member is None:
-            member = interaction.author
+            member = interaction.user
         else:
             member = extract_user_id(member, interaction)
 
@@ -105,7 +105,7 @@ class UtilsSlash(commands.Cog):
 
         ordinal_position = get_ordinal(join_position)
 
-        if not member == interaction.author:
+        if not member == interaction.user:
             embed = nextcord.Embed(
                 description=f"**{member}** was the {ordinal_position} to join **{guild.name}**.",
                 color=EMBED_COLOR,
