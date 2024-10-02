@@ -68,8 +68,15 @@ def perms_check(
     if not isinstance(member, nextcord.Member) or member is None:
         return False, "Member not found."
 
+    if isinstance(ctx, commands.Context):
+        author = ctx.author
+    elif isinstance(ctx, nextcord.Interaction):
+        author = ctx.user
+    else:
+        return False, "Invalid context."
+
     # Toggle for self-action check
-    if author_check and member == ctx.author:
+    if author_check and member == author:
         return False, "You cannot perform this action on yourself."
 
     # Toggle for server owner check
@@ -78,7 +85,7 @@ def perms_check(
 
     # Toggle for role hierarchy checks
     if role_check:
-        if member.top_role >= ctx.author.top_role:
+        if member.top_role >= author.top_role:
             return (
                 False,
                 "You cannot perform this action on someone with a higher or equal role than yours.",
