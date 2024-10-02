@@ -41,8 +41,6 @@ class Bot(commands.Bot):
         """Event triggered when the bot is ready"""
         print(f"{self.user} is now online!")
         await self.setup_database()
-        self.add_check(is_haxxor())
-
 
 bot = Bot(
     intents=nextcord.Intents.all(),

