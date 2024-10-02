@@ -56,22 +56,12 @@ class Ban(commands.Cog):
             )
             return
 
-        try:
-            await member.ban(reason=reason)
-            embed = nextcord.Embed(
-                description=f"✅ Successfully banned **{member.name}**.",
-                color=EMBED_COLOR,
-            )
-            await ctx.reply(embed=embed, mention_author=False)
-        except nextcord.Forbidden:
-            await ctx.reply(
-                "I don't have permission to ban this member.", mention_author=False
-            )
-        except nextcord.HTTPException:
-            await ctx.reply(
-                "An error occurred while trying to ban the member.",
-                mention_author=False,
-            )
+        await member.ban(reason=reason)
+        embed = nextcord.Embed(
+            description=f"✅ Successfully banned **{member.name}**.",
+            color=EMBED_COLOR,
+        )
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 class Unban(commands.Cog):
@@ -84,7 +74,7 @@ class Unban(commands.Cog):
         user = await self.bot.fetch_user(int(id)) or await self.bot.fetch_user(id)
         await ctx.guild.unban(user)
         embed = nextcord.Embed(
-            description="✅  " + f"Successfully unbanned **{user}**.", color=EMBED_COLOR
+            description=f"✅ Successfully unbanned **{user}**.", color=EMBED_COLOR
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -102,7 +92,7 @@ class BanSlash(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(name="ban", description="Ban a member from the server.")
-    @commands.has_permissions(ban_members=True)
+    @application_checks.has_permissions(ban_members=True)
     async def ban(
         self,
         ctx: nextcord.Interaction,
@@ -140,21 +130,12 @@ class BanSlash(commands.Cog):
             )
             return
 
-        try:
-            await member.ban(reason=reason)
-            embed = nextcord.Embed(
-                description=f"✅ Successfully banned **{member.name}**.",
-                color=EMBED_COLOR,
-            )
-            await ctx.response.send_message(embed=embed)
-        except nextcord.Forbidden:
-            await ctx.response.send_message(
-                "I don't have permission to ban this member.", ephemeral=True
-            )
-        except nextcord.HTTPException:
-            await ctx.response.send_message(
-                "An error occurred while trying to ban the member.", ephemeral=True
-            )
+        await member.ban(reason=reason)
+        embed = nextcord.Embed(
+            description=f"✅ Successfully banned **{member.name}**.",
+            color=EMBED_COLOR,
+        )
+        await ctx.response.send_message(embed=embed)
 
 
 class UnbanSlash(commands.Cog):
@@ -162,7 +143,7 @@ class UnbanSlash(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(name="unban", description="Unban a member from the server.")
-    @commands.has_permissions(ban_members=True)
+    @application_checks.has_permissions(ban_members=True)
     async def unban(self, ctx: nextcord.Interaction, id: str):
         try:
             user = await self.bot.fetch_user(int(id))

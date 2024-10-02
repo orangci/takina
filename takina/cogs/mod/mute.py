@@ -29,22 +29,15 @@ class Mute(commands.Cog):
             )
             return
 
-        try:
-            await member.timeout(
-                timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
-                reason=f"Muted by {ctx.author} for {duration}.",
-            )
-            embed = nextcord.Embed(
-                description=f"✅ Successfully muted **{member.name}** for {duration}.",
-                color=EMBED_COLOR,
-            )
-            await ctx.reply(embed=embed, mention_author=False)
-        except nextcord.Forbidden:
-            await ctx.reply(
-                "I do not have permission to mute this member.", mention_author=False
-            )
-        except Exception as e:
-            await ctx.reply(f"An error occurred: {str(e)}", mention_author=False)
+        await member.timeout(
+            timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
+            reason=f"Muted by {ctx.author} for {duration}.",
+        )
+        embed = nextcord.Embed(
+            description=f"✅ Successfully muted **{member.name}** for {duration}.",
+            color=EMBED_COLOR,
+        )
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 class Unmute(commands.Cog):
@@ -80,22 +73,13 @@ class Unmute(commands.Cog):
             )
             return
 
-        try:
-            await member.timeout(None, reason=f"{BOT_NAME}: Unmuted by moderator")
-            embed = nextcord.Embed(
-                description=f"✅ Successfully unmuted **{member.name}**.",
-                color=EMBED_COLOR,
-            )
-            await ctx.reply(embed=embed, mention_author=False)
-        except nextcord.Forbidden:
-            await ctx.reply(
-                "I don't have permission to unmute this member.", mention_author=False
-            )
-        except nextcord.HTTPException:
-            await ctx.reply(
-                "An error occurred while trying to unmute this member.",
-                mention_author=False,
-            )
+
+        await member.timeout(None, reason=f"{BOT_NAME}: Unmuted by moderator")
+        embed = nextcord.Embed(
+            description=f"✅ Successfully unmuted **{member.name}**.",
+            color=EMBED_COLOR,
+        )
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 class MuteSlash(commands.Cog):
@@ -105,15 +89,15 @@ class MuteSlash(commands.Cog):
     @nextcord.slash_command(
         name="mute", description="Mute a member for a specified duration."
     )
-    @commands.has_permissions(moderate_members=True)
+    @application_checks.has_permissions(moderate_members=True)
     async def mute(
-        self, ctx: nextcord.Interaction, member: nextcord.Member, duration: str
+        self, interaction: nextcord.Interaction, member: nextcord.Member, duration: str
     ):
         pattern = r"(\d+)([d|h|m])"
         match = re.fullmatch(pattern, duration)
 
         if not match:
-            await ctx.response.send_message(
+            await interaction.send(
                 "Invalid duration format. Use <number>[d|h|m].", ephemeral=True
             )
             return
@@ -129,24 +113,15 @@ class MuteSlash(commands.Cog):
         elif time_unit == "m":
             timeout_duration = time_value * 60  # Minutes to seconds
 
-        try:
-            await member.timeout(
-                timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
-                reason=f"Muted by {ctx.user} for {duration}.",
-            )
-            embed = nextcord.Embed(
-                description=f"✅ Successfully muted **{member.name}** for {duration}.",
-                color=EMBED_COLOR,
-            )
-            await ctx.response.send_message(embed=embed)
-        except nextcord.Forbidden:
-            await ctx.response.send_message(
-                "I do not have permission to mute this member.", ephemeral=True
-            )
-        except Exception as e:
-            await ctx.response.send_message(
-                f"An error occurred: {str(e)}", ephemeral=True
-            )
+        await member.timeout(
+            timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
+            reason=f"Muted by {ctx.user} for {duration}.",
+        )
+        embed = nextcord.Embed(
+            description=f"✅ Successfully muted **{member.name}** for {duration}.",
+            color=EMBED_COLOR,
+        )
+        await interaction.send(embed=embed)
 
 
 class UnmuteSlash(commands.Cog):
@@ -154,50 +129,41 @@ class UnmuteSlash(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(name="unmute", description="Unmute a member.")
-    @commands.has_permissions(moderate_members=True)
-    async def unmute(self, ctx: nextcord.Interaction, member: nextcord.Member = None):
+    @application_checks.has_permissions(moderate_members=True)
+    async def unmute(self, interaction: nextcord.Interaction, member: nextcord.Member = None):
         if not member:
-            await ctx.response.send_message(
+            await interaction.send(
                 "Please mention a member to unmute. Usage: `unmute @member`.",
                 ephemeral=True,
             )
             return
 
         if member == ctx.guild.owner:
-            await ctx.response.send_message(
+            await interaction.send(
                 "You can't unmute the server owner.", ephemeral=True
             )
             return
 
         if member.top_role >= ctx.user.top_role:
-            await ctx.response.send_message(
+            await interaction.send(
                 "You can't unmute members with a higher or equal role than yours.",
                 ephemeral=True,
             )
             return
 
         if member.top_role >= ctx.guild.me.top_role:
-            await ctx.response.send_message(
+            await interaction.send(
                 "I can't unmute members with a higher or equal role than mine.",
                 ephemeral=True,
             )
             return
 
-        try:
-            await member.timeout(None, reason=f"{BOT_NAME}: Unmuted by moderator")
-            embed = nextcord.Embed(
-                description=f"✅ Successfully unmuted **{member.name}**.",
-                color=EMBED_COLOR,
-            )
-            await ctx.response.send_message(embed=embed)
-        except nextcord.Forbidden:
-            await ctx.response.send_message(
-                "I don't have permission to unmute this member.", ephemeral=True
-            )
-        except nextcord.HTTPException:
-            await ctx.response.send_message(
-                "An error occurred while trying to unmute this member.", ephemeral=True
-            )
+        await member.timeout(None, reason=f"{BOT_NAME}: Unmuted by moderator")
+        embed = nextcord.Embed(
+            description=f"✅ Successfully unmuted **{member.name}**.",
+            color=EMBED_COLOR,
+        )
+        await interaction.send(embed=embed)
 
 
 def setup(bot):

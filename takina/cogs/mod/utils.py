@@ -62,72 +62,20 @@ class ModUtils(commands.Cog):
         else:
             member = extract_user_id(member, ctx)
 
-        if not isinstance(member, nextcord.Member):
-            await ctx.reply(
-                "Member not found. Please provide a valid username, display name, mention, or user ID.",
-                mention_author=False,
-            )
-            return
-
-        if member is None:
-            await ctx.reply(
-                "Member not found. Please provide a valid username or display name.",
-                mention_author=False,
-            )
-            return
-        if not member:
-            await ctx.reply(
-                "Please mention a member to change their nickname. Usage: `nick @member [nickname]`",
-                mention_author=False,
-            )
-            return
-
-        if member == ctx.author:
-            await ctx.reply(
-                "You can't change your own nickname using this command.",
-                mention_author=False,
-            )
-            return
-
-        if member == ctx.guild.owner:
-            await ctx.reply(
-                "You can't change the server owner's nickname.", mention_author=False
-            )
-            return
-
-        if member.top_role >= ctx.author.top_role:
-            await ctx.reply(
-                "You can't change the nickname of someone with a higher or equal role than yours.",
-                mention_author=False,
-            )
-            return
-
-        if member.top_role >= ctx.guild.me.top_role:
-            await ctx.reply(
-                "I can't change the nickname of someone with a higher or equal role than mine.",
-                mention_author=False,
-            )
+        # Check permissions
+        can_proceed, message = perms_check(member, ctx, author_check=False)
+        if not can_proceed:
+            await ctx.reply(message, mention_author=False)
             return
 
         if not nickname:
             nickname = member.name
 
-        try:
-            await member.edit(nick=nickname)
-            await ctx.reply(
-                f"**{member.name}**'s nickname has been changed to **{nickname}**.",
-                mention_author=False,
-            )
-        except nextcord.Forbidden:
-            await ctx.reply(
-                "I don't have permission to change this member's nickname.",
-                mention_author=False,
-            )
-        except nextcord.HTTPException:
-            await ctx.reply(
-                "An error occurred while trying to change the nickname.",
-                mention_author=False,
-            )
+        await member.edit(nick=nickname)
+        await ctx.reply(
+            f"**{member.name}**'s nickname has been changed to **{nickname}**.",
+            mention_author=False,
+        )
 
 
 class ModUtilsSlash(commands.Cog):
@@ -135,7 +83,7 @@ class ModUtilsSlash(commands.Cog):
         self.bot: commands.Bot = bot
 
     @nextcord.slash_command(name="send")
-    @commands.has_permissions(moderate_members=True, manage_messages=True)
+    @application_checks.has_permissions(moderate_members=True, manage_messages=True)
     async def slash_send(
         self,
         interaction: nextcord.Interaction,
@@ -160,7 +108,7 @@ class ModUtilsSlash(commands.Cog):
     @nextcord.slash_command(
         name="purge", description="Purges a specified number of messages."
     )
-    @commands.has_permissions(manage_messages=True)
+    @application_checks.has_permissions(manage_messages=True)
     async def slash_purge(
         self,
         interaction: nextcord.Interaction,
@@ -181,7 +129,7 @@ class ModUtilsSlash(commands.Cog):
         )
 
     @nextcord.slash_command(name="nick", description="Change a member's nickname.")
-    @commands.has_permissions(manage_nicknames=True)
+    @application_checks.has_permissions(manage_nicknames=True)
     async def slash_nick(
         self,
         interaction: nextcord.Interaction,
@@ -196,64 +144,20 @@ class ModUtilsSlash(commands.Cog):
         else:
             member = extract_user_id(member, ctx)
 
-        if not isinstance(member, nextcord.Member):
-            await ctx.reply(
-                "Member not found. Please provide a valid username, display name, mention, or user ID.",
-                mention_author=False,
-            )
-            return
-
-        if member is None:
-            await interaction.send(
-                "Member not found. Please provide a valid username or display name.",
-                ephemeral=True,
-            )
-            return
-
-        if member == interaction.user:
-            await interaction.send(
-                "You can't change your own nickname using this command.", ephemeral=True
-            )
-            return
-
-        if member == interaction.guild.owner:
-            await interaction.send(
-                "You can't change the server owner's nickname.", ephemeral=True
-            )
-            return
-
-        if member.top_role >= interaction.user.top_role:
-            await interaction.send(
-                "You can't change the nickname of someone with a higher or equal role than yours.",
-                ephemeral=True,
-            )
-            return
-
-        if member.top_role >= interaction.guild.me.top_role:
-            await interaction.send(
-                "I can't change the nickname of someone with a higher or equal role than mine.",
-                ephemeral=True,
-            )
+        # Check permissions
+        can_proceed, message = perms_check(member, ctx, author_check=False)
+        if not can_proceed:
+            await interaction.send(message, ephemeral=True)
             return
 
         if not nickname:
             nickname = member.name
 
-        try:
-            await member.edit(nick=nickname)
-            await interaction.send(
-                f"**{member.name}**'s nickname has been changed to **{nickname}**.",
-                ephemeral=True,
-            )
-        except nextcord.Forbidden:
-            await interaction.send(
-                "I don't have permission to change this member's nickname.",
-                ephemeral=True,
-            )
-        except nextcord.HTTPException:
-            await interaction.send(
-                "An error occurred while trying to change the nickname.", ephemeral=True
-            )
+        await member.edit(nick=nickname)
+        await interaction.send(
+            f"**{member.name}**'s nickname has been changed to **{nickname}**.",
+            ephemeral=True,
+        )
 
 
 def setup(bot: commands.Bot):

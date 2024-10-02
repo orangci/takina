@@ -73,7 +73,7 @@ class KickSlash(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(name="kick", description="Kick a member from the server.")
-    @commands.has_permissions(kick_members=True)
+    @application_checks.has_permissions(kick_members=True)
     async def kick(
         self,
         ctx: nextcord.Interaction,
