@@ -73,7 +73,6 @@ class Unmute(commands.Cog):
             )
             return
 
-
         await member.timeout(None, reason=f"{BOT_NAME}: Unmuted by moderator")
         embed = nextcord.Embed(
             description=f"✅ Successfully unmuted **{member.name}**.",
@@ -130,7 +129,9 @@ class UnmuteSlash(commands.Cog):
 
     @nextcord.slash_command(name="unmute", description="Unmute a member.")
     @application_checks.has_permissions(moderate_members=True)
-    async def unmute(self, interaction: nextcord.Interaction, member: nextcord.Member = None):
+    async def unmute(
+        self, interaction: nextcord.Interaction, member: nextcord.Member = None
+    ):
         if not member:
             await interaction.send(
                 "Please mention a member to unmute. Usage: `unmute @member`.",
@@ -139,9 +140,7 @@ class UnmuteSlash(commands.Cog):
             return
 
         if member == ctx.guild.owner:
-            await interaction.send(
-                "You can't unmute the server owner.", ephemeral=True
-            )
+            await interaction.send("You can't unmute the server owner.", ephemeral=True)
             return
 
         if member.top_role >= ctx.user.top_role:

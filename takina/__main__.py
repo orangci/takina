@@ -42,6 +42,7 @@ class Bot(commands.Bot):
         print(f"{self.user} is now online!")
         await self.setup_database()
 
+
 bot = Bot(
     intents=nextcord.Intents.all(),
     command_prefix=os.getenv("PREFIX"),

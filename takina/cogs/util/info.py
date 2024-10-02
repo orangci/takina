@@ -5,6 +5,7 @@ from ..libs.oclib import *
 from __main__ import EMBED_COLOR
 from nextcord.utils import utcnow
 
+
 class Info(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -88,17 +89,26 @@ class Info(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
+
 class SlashInfo(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @nextcord.slash_command(name="userinfo")
-    async def userinfo(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(description="The user to fetch information on", required=False)):
+    async def userinfo(
+        self,
+        interaction: nextcord.Interaction,
+        member: nextcord.Member = nextcord.SlashOption(
+            description="The user to fetch information on", required=False
+        ),
+    ):
         """Fetch user information. Usage: `userinfo member`."""
         if member is None:
             member = interaction.user
 
-        roles = [role for role in member.roles if role != interaction.guild.default_role]
+        roles = [
+            role for role in member.roles if role != interaction.guild.default_role
+        ]
 
         embed = nextcord.Embed(
             color=EMBED_COLOR,
@@ -131,7 +141,13 @@ class SlashInfo(commands.Cog):
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="roleinfo")
-    async def roleinfo(self, interaction: nextcord.Interaction, role: nextcord.Role = nextcord.SlashOption(description="The role to fetch information on", required=True)):
+    async def roleinfo(
+        self,
+        interaction: nextcord.Interaction,
+        role: nextcord.Role = nextcord.SlashOption(
+            description="The role to fetch information on", required=True
+        ),
+    ):
         """Fetch role information. `roleinfo role`."""
         embed = nextcord.Embed(title=f"Role Info - {role.name}", color=role.color)
         embed.add_field(name="ID", value=role.id)

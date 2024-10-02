@@ -4,6 +4,7 @@ from nextcord.ext import commands
 import aiohttp
 from datetime import timedelta
 
+
 # for those commands where you can mention a user either by mentioning them, using their ID, their username, or displayname
 def extract_user_id(
     member_str: str, ctx: commands.Context or nextcord.Interaction
@@ -23,11 +24,13 @@ def extract_user_id(
 
     return member
 
+
 # for requesting data from APIs
 async def request(url, *args, **kwargs):
     async with aiohttp.ClientSession() as session:
         async with session.request("GET", url, *args, **kwargs) as response:
             return await response.json()
+
 
 # for calculating durations, e.g. 1d, 2h, 5s, 34m
 def duration_calculator(duration: str) -> int:
@@ -49,6 +52,7 @@ def duration_calculator(duration: str) -> int:
         return time_value * 1
     else:
         return None
+
 
 # for checking perms of a command
 def perms_check(
@@ -74,9 +78,15 @@ def perms_check(
     # Toggle for role hierarchy checks
     if role_check:
         if member.top_role >= ctx.author.top_role:
-            return False, "You cannot perform this action on someone with a higher or equal role than yours."
+            return (
+                False,
+                "You cannot perform this action on someone with a higher or equal role than yours.",
+            )
 
         if member.top_role >= ctx.guild.me.top_role:
-            return False, "I can't perform this action on someone with a higher or equal role than mine."
+            return (
+                False,
+                "I can't perform this action on someone with a higher or equal role than mine.",
+            )
 
     return True, None

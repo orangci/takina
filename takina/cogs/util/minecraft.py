@@ -75,7 +75,14 @@ class MinecraftServerStatus(commands.Cog):
             await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command()
-    async def mcstatus(self, interaction: nextcord.Interaction, *, server_name: str = nextcord.SlashOption(description="The Minecraft server IP to fetch information on", required=True)):
+    async def mcstatus(
+        self,
+        interaction: nextcord.Interaction,
+        *,
+        server_name: str = nextcord.SlashOption(
+            description="The Minecraft server IP to fetch information on", required=True
+        ),
+    ):
         """Command for displaying a Minecraft server's status. Usage: `mcstatus mc.orangc.xyz`."""
         try:
             server = await self.fetch_server_info(server_name)
