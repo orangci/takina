@@ -1,5 +1,5 @@
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import application_checks, commands
 from ..libs.oclib import *
 from __main__ import EMBED_COLOR
 
@@ -77,7 +77,7 @@ class RolesSlash(commands.Cog):
         pass
 
     @role.subcommand(name="add")
-    @commands.has_permissions(manage_roles=True)
+    @application_checks.has_permissions(manage_roles=True)
     async def add(
         self,
         interaction: nextcord.Interaction,
@@ -98,7 +98,7 @@ class RolesSlash(commands.Cog):
         await interaction.send(embed=embed)
 
     @role.subcommand(name="remove")
-    @commands.has_permissions(manage_roles=True)
+    @application_checks.has_permissions(manage_roles=True)
     async def remove(
         self,
         interaction: nextcord.Interaction,

@@ -1,5 +1,5 @@
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import application_checks, commands
 from nextcord import SlashOption
 from __main__ import EMBED_COLOR
 from ..libs.oclib import *
@@ -73,7 +73,7 @@ class ChannelManagementSlash(commands.Cog):
         name="slowmode",
         description="Sets slowmode in the current or specified channel.",
     )
-    @commands.has_permissions(manage_channels=True)
+    @application_checks.has_permissions(manage_channels=True)
     async def slash_slowmode(
         self,
         interaction: nextcord.Interaction,
@@ -102,7 +102,7 @@ class ChannelManagementSlash(commands.Cog):
     @channel_group.subcommand(
         name="lock", description="Locks the current or specified channel."
     )
-    @commands.has_permissions(manage_channels=True)
+    @application_checks.has_permissions(manage_channels=True)
     async def slash_lock(
         self,
         interaction: nextcord.Interaction,
@@ -126,7 +126,7 @@ class ChannelManagementSlash(commands.Cog):
     @channel_group.subcommand(
         name="unlock", description="Unlocks the current or specified channel."
     )
-    @commands.has_permissions(manage_channels=True)
+    @application_checks.has_permissions(manage_channels=True)
     async def slash_unlock(
         self,
         interaction: nextcord.Interaction,
