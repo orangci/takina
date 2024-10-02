@@ -13,7 +13,7 @@ class Mute(commands.Cog):
 
     @commands.command(name="mute")
     @commands.has_permissions(moderate_members=True)
-    async def mute(self, ctx, member: str, duration: str):
+    async def mute(self, ctx, member: str, duration: str, reason: str = "No reason specified"):
         timeout_duration = duration_calculator(duration)
         if timeout_duration is None:
             await ctx.reply(
@@ -22,21 +22,27 @@ class Mute(commands.Cog):
             return
 
         member = extract_user_id(member, ctx)
-        if not isinstance(member, nextcord.Member):
-            await ctx.reply(
-                "Member not found. Please provide a valid username, display name, mention, or user ID.",
-                mention_author=False,
-            )
+        can_proceed, message = perms_check(member, ctx=ctx)
+        if not can_proceed:
+            await ctx.reply(message, mention_author=False)
             return
-
+        
         await member.timeout(
             timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
-            reason=f"Muted by {ctx.author} for {duration}.",
+            reason=f"Muted by {ctx.author} for: {reason}",
         )
         embed = nextcord.Embed(
             description=f"✅ Successfully muted **{member.name}** for {duration}.",
             color=EMBED_COLOR,
         )
+        dm_embed = nextcord.Embed(
+            description=f"You were muted in **{ctx.guild}** for {duration}.",
+            color=EMBED_COLOR,
+        )
+        try:
+            await member.send(embed=dm_embed)
+        except nextcord.Forbidden:
+            embed.set_footer(text="I was unable to DM this user.")
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -46,38 +52,26 @@ class Unmute(commands.Cog):
 
     @commands.command(name="unmute")
     @commands.has_permissions(moderate_members=True)
-    async def unmute(self, ctx: commands.Context, member: str):
+    async def unmute(self, ctx: commands.Context, member: str, reason: str = "No reason specified"):
         member = extract_user_id(member, ctx)
-        if not member:
-            await ctx.reply(
-                "Please mention a member to unmute. Usage: `unmute @member`.",
-                mention_author=False,
-            )
+        can_proceed, message = perms_check(member, ctx=ctx)
+        if not can_proceed:
+            await ctx.reply(message, mention_author=False)
             return
 
-        if member == ctx.guild.owner:
-            await ctx.reply("You can't unmute the server owner.", mention_author=False)
-            return
-
-        if member.top_role >= ctx.author.top_role:
-            await ctx.reply(
-                "You can't unmute members with a higher or equal role than yours.",
-                mention_author=False,
-            )
-            return
-
-        if member.top_role >= ctx.guild.me.top_role:
-            await ctx.reply(
-                "I can't unmute members with a higher or equal role than mine.",
-                mention_author=False,
-            )
-            return
-
-        await member.timeout(None, reason=f"{BOT_NAME}: Unmuted by moderator")
+        await member.timeout(None, reason=f"Unmuted by {ctx.author} for:")
         embed = nextcord.Embed(
             description=f"✅ Successfully unmuted **{member.name}**.",
             color=EMBED_COLOR,
         )
+        dm_embed = nextcord.Embed(
+            description=f"You were unmuted in **{ctx.guild}**.",
+            color=EMBED_COLOR,
+        )
+        try:
+            await member.send(embed=dm_embed)
+        except nextcord.Forbidden:
+            embed.set_footer(text="I was unable to DM this user.")
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -90,36 +84,30 @@ class MuteSlash(commands.Cog):
     )
     @application_checks.has_permissions(moderate_members=True)
     async def mute(
-        self, interaction: nextcord.Interaction, member: nextcord.Member, duration: str
+        self, interaction: nextcord.Interaction, member: nextcord.Member, duration: str, reason: str = "No reason specified"
     ):
-        pattern = r"(\d+)([d|h|m])"
-        match = re.fullmatch(pattern, duration)
-
-        if not match:
-            await interaction.send(
-                "Invalid duration format. Use <number>[d|h|m].", ephemeral=True
-            )
+        timeout_duration = duration_calculator(duration)
+        can_proceed, message = perms_check(member, ctx=interaction)
+        if not can_proceed:
+            await interaction.send(message, ephemeral=True)
             return
-
-        time_value, time_unit = match.groups()
-        time_value = int(time_value)
-
-        # Convert duration to seconds
-        if time_unit == "d":
-            timeout_duration = time_value * 86400  # Days to seconds
-        elif time_unit == "h":
-            timeout_duration = time_value * 3600  # Hours to seconds
-        elif time_unit == "m":
-            timeout_duration = time_value * 60  # Minutes to seconds
 
         await member.timeout(
             timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
-            reason=f"Muted by {ctx.user} for {duration}.",
+            reason=f"Muted by {interaction.user} for: {reason}",
         )
         embed = nextcord.Embed(
             description=f"✅ Successfully muted **{member.name}** for {duration}.",
             color=EMBED_COLOR,
         )
+        dm_embed = nextcord.Embed(
+            description=f"You were muted in **{interaction.guild}** for {duration}.",
+            color=EMBED_COLOR,
+        )
+        try:
+            await member.send(embed=dm_embed)
+        except nextcord.Forbidden:
+            embed.set_footer(text="I was unable to DM this user.")
         await interaction.send(embed=embed)
 
 
@@ -130,38 +118,26 @@ class UnmuteSlash(commands.Cog):
     @nextcord.slash_command(name="unmute", description="Unmute a member.")
     @application_checks.has_permissions(moderate_members=True)
     async def unmute(
-        self, interaction: nextcord.Interaction, member: nextcord.Member = None
+        self, interaction: nextcord.Interaction, member: nextcord.Member, reason: str = "No reason specified"
     ):
-        if not member:
-            await interaction.send(
-                "Please mention a member to unmute. Usage: `unmute @member`.",
-                ephemeral=True,
-            )
+        can_proceed, message = perms_check(member, ctx=interaction)
+        if not can_proceed:
+            await interaction.send(message, ephemeral=True)
             return
 
-        if member == ctx.guild.owner:
-            await interaction.send("You can't unmute the server owner.", ephemeral=True)
-            return
-
-        if member.top_role >= ctx.user.top_role:
-            await interaction.send(
-                "You can't unmute members with a higher or equal role than yours.",
-                ephemeral=True,
-            )
-            return
-
-        if member.top_role >= ctx.guild.me.top_role:
-            await interaction.send(
-                "I can't unmute members with a higher or equal role than mine.",
-                ephemeral=True,
-            )
-            return
-
-        await member.timeout(None, reason=f"{BOT_NAME}: Unmuted by moderator")
+        await member.timeout(None, reason=f"Unmuted by {interaction.user} for: {reason}")
         embed = nextcord.Embed(
             description=f"✅ Successfully unmuted **{member.name}**.",
             color=EMBED_COLOR,
         )
+        dm_embed = nextcord.Embed(
+            description=f"You were unmuted in **{interaction.guild}**.",
+            color=EMBED_COLOR,
+        )
+        try:
+            await member.send(embed=dm_embed)
+        except nextcord.Forbidden:
+            embed.set_footer(text="I was unable to DM this user.")
         await interaction.send(embed=embed)
 
 
