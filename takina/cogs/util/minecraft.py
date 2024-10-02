@@ -24,7 +24,7 @@ class MinecraftServerStatus(commands.Cog):
 
     @commands.command()
     async def mcstatus(self, ctx: commands.Context, *, server_name: str):
-        """Command for displaying a Minecraft server's status. Usage: `mc mc.orangc.xyz`."""
+        """Command for displaying a Minecraft server's status. Usage: `mcstatus mc.orangc.xyz`."""
         try:
             server = await self.fetch_server_info(server_name)
             if server:
@@ -58,21 +58,73 @@ class MinecraftServerStatus(commands.Cog):
                     image = BytesIO(image_data)
                     file = nextcord.File(image, filename="server_icon.png")
                     embed.set_thumbnail(url="attachment://server_icon.png")
-                    await ctx.send(file=file, embed=embed)
+                    await ctx.reply(file=file, embed=embed, mention_author=False)
                 else:
-                    await ctx.send(embed=embed)
+                    await ctx.reply(embed=embed, mention_author=False)
             else:
                 embed = nextcord.Embed(
                     description="Server not found.",
                     color=nextcord.Color.red(),
                 )
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
 
         except Exception as e:
             embed = nextcord.Embed(
                 title="Error", description=str(e), color=nextcord.Color.red()
             )
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
+
+    @nextcord.slash_command()
+    async def mcstatus(self, interaction: nextcord.Interaction, *, server_name: str = nextcord.SlashOption(description="The Minecraft server IP to fetch information on", required=True)):
+        """Command for displaying a Minecraft server's status. Usage: `mcstatus mc.orangc.xyz`."""
+        try:
+            server = await self.fetch_server_info(server_name)
+            if server:
+                title = server.get("host")
+                if server.get("online") == True:
+                    title = title + " (Online)"
+                else:
+                    title = title + " (Offline)"
+                embed = nextcord.Embed(title=title, color=EMBED_COLOR)
+
+                if server.get("players"):
+                    embed.add_field(
+                        name="Players",
+                        value=f"{server['players']['online']}/{server['players']['max']}",
+                        inline=True,
+                    )
+                if server.get("version"):
+                    embed.add_field(
+                        name="Version",
+                        value=server["version"]["name_clean"],
+                        inline=True,
+                    )
+                if server.get("motd"):
+                    embed.add_field(
+                        name="MOTD", value=server["motd"]["clean"], inline=True
+                    )
+
+                if server.get("icon"):
+                    icon_data = server["icon"].split(",")[1]
+                    image_data = base64.b64decode(icon_data)
+                    image = BytesIO(image_data)
+                    file = nextcord.File(image, filename="server_icon.png")
+                    embed.set_thumbnail(url="attachment://server_icon.png")
+                    await interaction.send(file=file, embed=embed, ephemeral=True)
+                else:
+                    await interaction.send(embed=embed, ephemeral=True)
+            else:
+                embed = nextcord.Embed(
+                    description="Server not found.",
+                    color=nextcord.Color.red(),
+                )
+                await interaction.send(embed=embed, ephemeral=True)
+
+        except Exception as e:
+            embed = nextcord.Embed(
+                title="Error", description=str(e), color=nextcord.Color.red()
+            )
+            await interaction.send(embed=embed, ephemeral=True)
 
 
 def setup(bot):
