@@ -2,8 +2,9 @@ import re
 import nextcord
 from nextcord.ext import commands
 import aiohttp
-from datetime import timedelta
+import datetime
 
+start_time = datetime.datetime.utcnow()
 
 # for those commands where you can mention a user either by mentioning them, using their ID, their username, or displayname
 def extract_user_id(
@@ -90,3 +91,19 @@ def perms_check(
             )
 
     return True, None
+
+# uptime checker
+async def uptime_fetcher():
+    global start_time
+    current_time = datetime.datetime.utcnow()
+    uptime_duration = current_time - start_time
+
+    # Format the uptime duration
+    days, seconds = uptime_duration.days, uptime_duration.seconds
+    hours = seconds // 3600
+    seconds %= 3600
+    minutes = seconds // 60
+    seconds %= 60
+
+    uptime_str = f"{days}d {hours}h {minutes}m {seconds}s"
+    return uptime_str
