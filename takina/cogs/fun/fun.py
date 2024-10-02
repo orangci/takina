@@ -142,7 +142,6 @@ class FunSlash(commands.Cog):
         )
         await interaction.send(embed=embed, ephemeral=True)
 
-    # New slash 8ball command
     @nextcord.slash_command(name="8ball", description="Ask the 8ball a question!")
     async def slash_eight_ball(
         self,

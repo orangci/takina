@@ -621,8 +621,8 @@ topics = [
     "What do you hate about discord?",
     "What do you love about discord?",
     "What feature do you wish discord had?",
-    "When do you think voice calls in the discord android app is no longer gonna break every 10 minutes?",
-    "jonas",
+    "When do you think voice calls in the discord android app are no longer gonna break every 10 minutes?",
+    "orangc",
 ]
 
 
@@ -640,7 +640,7 @@ class Topic(commands.Cog):
     async def topic_slash(self, interaction: nextcord.Interaction):
         """Sends a random topic from the predefined list."""
         random_topic = random.choice(topics)
-        await ctx.send(random_topic)
+        await interaction.send(random_topic)
 
 
 def setup(bot: commands.Bot):
