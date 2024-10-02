@@ -54,3 +54,4 @@ Using the Dockerfile or Nix.
  - make it DM users when an action is performed on them
 - add autoroles / join roles
 - refactor github module
+- improve help command

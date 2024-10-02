@@ -103,24 +103,16 @@ class FunSlash(commands.Cog):
     async def slash_avatar(
         self,
         interaction: nextcord.Interaction,
-        member: str = SlashOption(
+        member: nextcord.Member = SlashOption(
             description="The user whose avatar you would like to fetch", required=False
         ),
     ):
         if member is None:
             member = interaction.user
-        else:
-            member = extract_user_id(member, interaction)
 
-        if not isinstance(member, nextcord.Member):
-            await interaction.send(
-                "Member not found. Please provide a valid username, display name, mention, or user ID.",
-                ephemeral=True,
-            )
-            return
         embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
         embed.set_image(url=member.avatar.url)
-        await interaction.send(embed=embed, mention_author=False)
+        await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="google")
     async def slash_google(
