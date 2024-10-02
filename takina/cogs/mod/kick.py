@@ -21,51 +21,25 @@ class Kick(commands.Cog):
         reason: str = "No reason provided",
     ):
         member = extract_user_id(member, ctx)
-        if not member:
-            await ctx.reply(
-                "Please mention a member to kick. Usage: `kick @member [reason]`.",
-                mention_author=False,
-            )
+        can_proceed, message = perms_check(member, ctx=ctx)
+        if not can_proceed:
+            await ctx.reply(message, mention_author=False)
             return
 
-        if member == ctx.author:
-            await ctx.reply("You can't kick yourself.", mention_author=False)
-            return
-
-        if member == ctx.guild.owner:
-            await ctx.reply("You can't kick the server owner.", mention_author=False)
-            return
-
-        if member.top_role >= ctx.author.top_role:
-            await ctx.reply(
-                "You can't kick members with a higher or equal role than yours.",
-                mention_author=False,
-            )
-            return
-
-        if member.top_role >= ctx.guild.me.top_role:
-            await ctx.reply(
-                "I can't kick members with a higher or equal role than mine.",
-                mention_author=False,
-            )
-            return
-
+        embed = nextcord.Embed(
+            description=f"✅ Successfully kicked **{member.name}**. Reason: {reason}",
+            color=EMBED_COLOR,
+        )
+        dm_embed = nextcord.Embed(
+            description=f"You were banned in **{ctx.guild}**. Reason: {reason}",
+            color=EMBED_COLOR,
+        )
         try:
-            await member.kick(reason=reason)
-            embed = nextcord.Embed(
-                description=f"✅ Successfully kicked **{member.name}**.",
-                color=EMBED_COLOR,
-            )
-            await ctx.reply(embed=embed, mention_author=False)
+            await member.send(embed=dm_embed)
         except nextcord.Forbidden:
-            await ctx.reply(
-                "I don't have permission to kick this member.", mention_author=False
-            )
-        except nextcord.HTTPException:
-            await ctx.reply(
-                "An error occurred while trying to kick the member.",
-                mention_author=False,
-            )
+            embed.set_footer(text="I was unable to DM this user.")
+        await member.kick(reason=reason)
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 class KickSlash(commands.Cog):
@@ -76,56 +50,31 @@ class KickSlash(commands.Cog):
     @application_checks.has_permissions(kick_members=True)
     async def kick(
         self,
-        ctx: nextcord.Interaction,
-        member: nextcord.Member = None,
+        interaction: nextcord.Interaction,
+        member: nextcord.Member = nextcord.SlashOption(
+            description="The user to kick", required=True
+        ),
         reason: str = "No reason provided",
     ):
-        if not member:
-            await ctx.response.send_message(
-                "Please mention a member to kick. Usage: `kick @member [reason]`.",
-                ephemeral=True,
-            )
+        can_proceed, message = perms_check(member, ctx=interaction)
+        if not can_proceed:
+            await interaction.send(message, ephemeral=True)
             return
 
-        if member == ctx.user:
-            await ctx.response.send_message("You can't kick yourself.", ephemeral=True)
-            return
-
-        if member == ctx.guild.owner:
-            await ctx.response.send_message(
-                "You can't kick the server owner.", ephemeral=True
-            )
-            return
-
-        if member.top_role >= ctx.user.top_role:
-            await ctx.response.send_message(
-                "You can't kick members with a higher or equal role than yours.",
-                ephemeral=True,
-            )
-            return
-
-        if member.top_role >= ctx.guild.me.top_role:
-            await ctx.response.send_message(
-                "I can't kick members with a higher or equal role than mine.",
-                ephemeral=True,
-            )
-            return
-
+        embed = nextcord.Embed(
+            description=f"✅ Successfully kicked **{member.name}**. Reason: {reason}",
+            color=EMBED_COLOR,
+        )
+        dm_embed = nextcord.Embed(
+            description=f"You were banned in **{interaction.guild}**. Reason: {reason}",
+            color=EMBED_COLOR,
+        )
         try:
-            await member.kick(reason=reason)
-            embed = nextcord.Embed(
-                description=f"✅ Successfully kicked **{member.name}**.",
-                color=EMBED_COLOR,
-            )
-            await ctx.response.send_message(embed=embed)
+            await member.send(embed=dm_embed)
         except nextcord.Forbidden:
-            await ctx.response.send_message(
-                "I don't have permission to kick this member.", ephemeral=True
-            )
-        except nextcord.HTTPException:
-            await ctx.response.send_message(
-                "An error occurred while trying to kick the member.", ephemeral=True
-            )
+            embed.set_footer(text="I was unable to DM this user.")
+        await member.kick(reason=reason)
+        await interaction.send(embed=embed)
 
 
 def setup(bot):

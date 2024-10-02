@@ -90,7 +90,7 @@ class BanSlash(commands.Cog):
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were banned in **{ctx.guild}**. Reason: {reason}",
+            description=f"You were banned in **{interaction.guild}**. Reason: {reason}",
             color=EMBED_COLOR,
         )
         try:
