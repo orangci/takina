@@ -21,7 +21,7 @@ Takina utilizes the Jikan API for this module.
 ## listeners
 - antiphishing module
 - github module; this sends embeds when a user sends a repository / pull request / issue link from Github, inspired by Monty Python
-- starboard module — this will be improved
+- starboard module
 
 ## moderation
 - WIP reports system
@@ -48,8 +48,6 @@ More information/documentation may be available later at orangc.xyz/takina.
 Using the Dockerfile or Nix.
 
 ## TODO
-- improve starboard
-- improve moderation system: 
 <details>
 <summary> moderation TODO </summary>
 
@@ -58,7 +56,6 @@ Using the Dockerfile or Nix.
  - make mod commands ask for confirmation before performing an action
  - add a logging system
 </details>
-
 - add autoroles / join roles
 - refactor github module
 - improve help command
