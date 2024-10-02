@@ -617,6 +617,6 @@ topics = [
     "What do you hate about discord?",
     "What do you love about discord?",
     "What feature do you wish discord had?",
-    "When do you think voice calls in the discord android app is no longer gonna break every 10 minutes?",
-    "jonas",
+    "When do you think voice calls in the discord android app are no longer gonna break every 10 minutes?",
+    "orangc",
 ]

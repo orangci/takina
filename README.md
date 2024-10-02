@@ -50,8 +50,15 @@ Using the Dockerfile or Nix.
 ## TODO
 - improve starboard
 - improve moderation system: 
+
+<details>
+<summary> moderation TODO </summary>
  - add a method of tracking cases using the DB
  - make it DM users when an action is performed on them
+ - make mod commands ask for confirmation before performing an action
+ - add a logging system
+</details>
+
 - add autoroles / join roles
 - refactor github module
 - improve help command
