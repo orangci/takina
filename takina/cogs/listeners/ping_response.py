@@ -38,8 +38,13 @@ class PingResponse(commands.Cog):
                 embed.add_field(name="Prefix", value=PREFIX, inline=True)
                 embed.add_field(name="Stars", value=str(self.stars), inline=True)
                 embed.add_field(name="Uptime", value=uptime, inline=True)
-                embed.set_author(name="orangc", url="https://orangc.xyz", icon_url="https://cdn.discordapp.com/avatars/961063229168164864/4bfbf378514a9dcc7a619b5ce5e7e57c.webp")
+                embed.set_author(
+                    name="orangc",
+                    url="https://orangc.xyz",
+                    icon_url="https://cdn.discordapp.com/avatars/961063229168164864/4bfbf378514a9dcc7a619b5ce5e7e57c.webp",
+                )
                 await message.reply(embed=embed, mention_author=False)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(PingResponse(bot))

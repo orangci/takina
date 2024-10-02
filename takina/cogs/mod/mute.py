@@ -13,7 +13,9 @@ class Mute(commands.Cog):
 
     @commands.command(name="mute")
     @commands.has_permissions(moderate_members=True)
-    async def mute(self, ctx, member: str, duration: str, reason: str = "No reason provided"):
+    async def mute(
+        self, ctx, member: str, duration: str, reason: str = "No reason provided"
+    ):
         timeout_duration = duration_calculator(duration)
         if timeout_duration is None:
             await ctx.reply(
@@ -26,17 +28,17 @@ class Mute(commands.Cog):
         if not can_proceed:
             await ctx.reply(message, mention_author=False)
             return
-        
+
         await member.timeout(
             timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
             reason=f"Muted by {ctx.author} for: {reason}",
         )
         embed = nextcord.Embed(
-            description=f"✅ Successfully muted **{member.name}** for {duration}.\n Reason: {reason}",
+            description=f"✅ Successfully muted **{member.name}** for {duration}. Reason: {reason}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were muted in **{ctx.guild}** for {duration}.\n Reason: {reason}",
+            description=f"You were muted in **{ctx.guild}** for {duration}. Reason: {reason}",
             color=EMBED_COLOR,
         )
         try:
@@ -52,7 +54,9 @@ class Unmute(commands.Cog):
 
     @commands.command(name="unmute")
     @commands.has_permissions(moderate_members=True)
-    async def unmute(self, ctx: commands.Context, member: str, reason: str = "No reason provided"):
+    async def unmute(
+        self, ctx: commands.Context, member: str, reason: str = "No reason provided"
+    ):
         member = extract_user_id(member, ctx)
         can_proceed, message = perms_check(member, ctx=ctx)
         if not can_proceed:
@@ -61,11 +65,11 @@ class Unmute(commands.Cog):
 
         await member.timeout(None, reason=f"Unmuted by {ctx.author} for: {reason}")
         embed = nextcord.Embed(
-            description=f"✅ Successfully unmuted **{member.name}**.\n Reason: {reason}",
+            description=f"✅ Successfully unmuted **{member.name}**. Reason: {reason}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were unmuted in **{ctx.guild}**.\n Reason: {reason}",
+            description=f"You were unmuted in **{ctx.guild}**. Reason: {reason}",
             color=EMBED_COLOR,
         )
         try:
@@ -84,7 +88,15 @@ class MuteSlash(commands.Cog):
     )
     @application_checks.has_permissions(moderate_members=True)
     async def mute(
-        self, interaction: nextcord.Interaction, member: nextcord.Member =nextcord.SlashOption(description="The user to mute", required=True), duration: str = nextcord.SlashOption(description="The duration of time to mute the user for", required=True), reason: str = "No reason provided"
+        self,
+        interaction: nextcord.Interaction,
+        member: nextcord.Member = nextcord.SlashOption(
+            description="The user to mute", required=True
+        ),
+        duration: str = nextcord.SlashOption(
+            description="The duration of time to mute the user for", required=True
+        ),
+        reason: str = "No reason provided",
     ):
         timeout_duration = duration_calculator(duration)
         can_proceed, message = perms_check(member, ctx=interaction)
@@ -97,11 +109,11 @@ class MuteSlash(commands.Cog):
             reason=f"Muted by {interaction.user} for: {reason}",
         )
         embed = nextcord.Embed(
-            description=f"✅ Successfully muted **{member.name}** for {duration}.\n Reason: {reason}",
+            description=f"✅ Successfully muted **{member.name}** for {duration}. Reason: {reason}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were muted in **{interaction.guild}** for {duration}.\n Reason: {reason}",
+            description=f"You were muted in **{interaction.guild}** for {duration}. Reason: {reason}",
             color=EMBED_COLOR,
         )
         try:
@@ -118,20 +130,27 @@ class UnmuteSlash(commands.Cog):
     @nextcord.slash_command(name="unmute", description="Unmute a member.")
     @application_checks.has_permissions(moderate_members=True)
     async def unmute(
-        self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(description="The user to unmute", required=True), reason: str = "No reason provided"
+        self,
+        interaction: nextcord.Interaction,
+        member: nextcord.Member = nextcord.SlashOption(
+            description="The user to unmute", required=True
+        ),
+        reason: str = "No reason provided",
     ):
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
             await interaction.send(message, ephemeral=True)
             return
 
-        await member.timeout(None, reason=f"Unmuted by {interaction.user} for: {reason}")
+        await member.timeout(
+            None, reason=f"Unmuted by {interaction.user} for: {reason}"
+        )
         embed = nextcord.Embed(
-            description=f"✅ Successfully unmuted **{member.name}**.\n Reason: {reason}",
+            description=f"✅ Successfully unmuted **{member.name}**. Reason: {reason}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were unmuted in **{interaction.guild}**.\n Reason: {reason}",
+            description=f"You were unmuted in **{interaction.guild}**. Reason: {reason}",
             color=EMBED_COLOR,
         )
         try:

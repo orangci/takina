@@ -3,6 +3,7 @@ import nextcord
 from nextcord.ext import commands
 from ..libs.topics_list import topics
 
+
 class Topic(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot

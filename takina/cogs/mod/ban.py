@@ -21,46 +21,24 @@ class Ban(commands.Cog):
         reason: str = "No reason provided",
     ):
         member = extract_user_id(member, ctx)
-        if not isinstance(member, nextcord.Member):
-            await ctx.reply(
-                "Member not found. Please provide a valid username, display name, mention, or user ID.",
-                mention_author=False,
-            )
-            return
-        if not member:
-            await ctx.reply(
-                "Please mention a member to ban. Usage: `ban @member [reason]`.",
-                mention_author=False,
-            )
+        can_proceed, message = perms_check(member, ctx=ctx)
+        if not can_proceed:
+            await ctx.reply(message, mention_author=False)
             return
 
-        if member == ctx.author:
-            await ctx.reply("You can't ban yourself.", mention_author=False)
-            return
-
-        if member == ctx.guild.owner:
-            await ctx.reply("You can't ban the server owner.", mention_author=False)
-            return
-
-        if member.top_role >= ctx.author.top_role:
-            await ctx.reply(
-                "You can't ban members with a higher or equal role than yours.",
-                mention_author=False,
-            )
-            return
-
-        if member.top_role >= ctx.guild.me.top_role:
-            await ctx.reply(
-                "I can't ban members with a higher or equal role than mine.",
-                mention_author=False,
-            )
-            return
-
-        await member.ban(reason=reason)
         embed = nextcord.Embed(
-            description=f"✅ Successfully banned **{member.name}**.",
+            description=f"✅ Successfully banned **{member.name}**. Reason: {reason}",
             color=EMBED_COLOR,
         )
+        dm_embed = nextcord.Embed(
+            description=f"You were banned in **{ctx.guild}**. Reason: {reason}",
+            color=EMBED_COLOR,
+        )
+        try:
+            await member.send(embed=dm_embed)
+        except nextcord.Forbidden:
+            embed.set_footer(text="I was unable to DM this user.")
+        await member.ban(reason=reason)
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -70,11 +48,12 @@ class Unban(commands.Cog):
 
     @commands.command(name="unban", aliases=["pardon"])
     @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx, id: str):
+    async def unban(self, ctx, id: str, reason: str = "No reason provided"):
         user = await self.bot.fetch_user(int(id)) or await self.bot.fetch_user(id)
         await ctx.guild.unban(user)
         embed = nextcord.Embed(
-            description=f"✅ Successfully unbanned **{user}**.", color=EMBED_COLOR
+            description=f"✅ Successfully unbanned **{user}**. Reason: {reason}",
+            color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -95,47 +74,31 @@ class BanSlash(commands.Cog):
     @application_checks.has_permissions(ban_members=True)
     async def ban(
         self,
-        ctx: nextcord.Interaction,
-        member: nextcord.Member = None,
+        interaction: nextcord.Interaction,
+        member: nextcord.Member = nextcord.SlashOption(
+            description="The member to ban", required=True
+        ),
         reason: str = "No reason provided",
     ):
-        if not member:
-            await ctx.response.send_message(
-                "Please mention a member to ban. Usage: `ban @member [reason]`.",
-                ephemeral=True,
-            )
+        can_proceed, message = perms_check(member, ctx=interaction)
+        if not can_proceed:
+            await interaction.send(message, ephemeral=True)
             return
 
-        if member == ctx.user:
-            await ctx.response.send_message("You can't ban yourself.", ephemeral=True)
-            return
-
-        if member == ctx.guild.owner:
-            await ctx.response.send_message(
-                "You can't ban the server owner.", ephemeral=True
-            )
-            return
-
-        if member.top_role >= ctx.user.top_role:
-            await ctx.response.send_message(
-                "You can't ban members with a higher or equal role than yours.",
-                ephemeral=True,
-            )
-            return
-
-        if member.top_role >= ctx.guild.me.top_role:
-            await ctx.response.send_message(
-                "I can't ban members with a higher or equal role than mine.",
-                ephemeral=True,
-            )
-            return
-
-        await member.ban(reason=reason)
         embed = nextcord.Embed(
-            description=f"✅ Successfully banned **{member.name}**.",
+            description=f"✅ Successfully banned **{member.name}**. Reason: {reason}",
             color=EMBED_COLOR,
         )
-        await ctx.response.send_message(embed=embed)
+        dm_embed = nextcord.Embed(
+            description=f"You were banned in **{ctx.guild}**. Reason: {reason}",
+            color=EMBED_COLOR,
+        )
+        try:
+            await member.send(embed=dm_embed)
+        except nextcord.Forbidden:
+            embed.set_footer(text="I was unable to DM this user.")
+        await member.ban(reason=reason)
+        await interaction.send(embed=embed)
 
 
 class UnbanSlash(commands.Cog):
@@ -144,16 +107,24 @@ class UnbanSlash(commands.Cog):
 
     @nextcord.slash_command(name="unban", description="Unban a member from the server.")
     @application_checks.has_permissions(ban_members=True)
-    async def unban(self, ctx: nextcord.Interaction, id: str):
+    async def unban(
+        self,
+        interaction: nextcord.Interaction,
+        id: int = nextcord.SlashOption(
+            description="The user ID to unban", required=True
+        ),
+        reason: str = "No reason provided",
+    ):
         try:
-            user = await self.bot.fetch_user(int(id))
-            await ctx.guild.unban(user)
+            user = await self.bot.fetch_user(id)
+            await interaction.guild.unban(user)
             embed = nextcord.Embed(
-                description="✅ Successfully unbanned **{user}**.", color=EMBED_COLOR
+                description=f"✅ Successfully unbanned **{user}**. Reason: {reason}",
+                color=EMBED_COLOR,
             )
-            await ctx.response.send_message(embed=embed)
+            await interaction.send(embed=embed)
         except nextcord.NotFound:
-            await ctx.response.send_message(
+            await interaction.send(
                 "User not found. Please make sure the User ID is correct.",
                 ephemeral=True,
             )

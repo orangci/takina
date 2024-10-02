@@ -6,6 +6,7 @@ import datetime
 
 start_time = datetime.datetime.utcnow()
 
+
 # for those commands where you can mention a user either by mentioning them, using their ID, their username, or displayname
 def extract_user_id(
     member_str: str, ctx: commands.Context or nextcord.Interaction
@@ -62,7 +63,7 @@ def perms_check(
     ctx: commands.Context or nextcord.Interaction,
     author_check: bool = True,
     owner_check: bool = True,
-    role_check: bool = True
+    role_check: bool = True,
 ):
     # Check if member is valid
     if not isinstance(member, nextcord.Member) or member is None:
@@ -98,6 +99,7 @@ def perms_check(
             )
 
     return True, None
+
 
 # uptime checker
 async def uptime_fetcher():
