@@ -32,11 +32,11 @@ class Mute(commands.Cog):
             reason=f"Muted by {ctx.author} for: {reason}",
         )
         embed = nextcord.Embed(
-            description=f"✅ Successfully muted **{member.name}** for {duration}.",
+            description=f"✅ Successfully muted **{member.name}** for {duration}.\n Reason: {reason}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were muted in **{ctx.guild}** for {duration}.",
+            description=f"You were muted in **{ctx.guild}** for {duration}.\n Reason: {reason}",
             color=EMBED_COLOR,
         )
         try:
@@ -59,13 +59,13 @@ class Unmute(commands.Cog):
             await ctx.reply(message, mention_author=False)
             return
 
-        await member.timeout(None, reason=f"Unmuted by {ctx.author} for:")
+        await member.timeout(None, reason=f"Unmuted by {ctx.author} for: {reason}")
         embed = nextcord.Embed(
-            description=f"✅ Successfully unmuted **{member.name}**.",
+            description=f"✅ Successfully unmuted **{member.name}**.\n Reason: {reason}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were unmuted in **{ctx.guild}**.",
+            description=f"You were unmuted in **{ctx.guild}**.\n Reason: {reason}",
             color=EMBED_COLOR,
         )
         try:
@@ -97,11 +97,11 @@ class MuteSlash(commands.Cog):
             reason=f"Muted by {interaction.user} for: {reason}",
         )
         embed = nextcord.Embed(
-            description=f"✅ Successfully muted **{member.name}** for {duration}.",
+            description=f"✅ Successfully muted **{member.name}** for {duration}.\n Reason: {reason}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were muted in **{interaction.guild}** for {duration}.",
+            description=f"You were muted in **{interaction.guild}** for {duration}.\n Reason: {reason}",
             color=EMBED_COLOR,
         )
         try:
@@ -127,11 +127,11 @@ class UnmuteSlash(commands.Cog):
 
         await member.timeout(None, reason=f"Unmuted by {interaction.user} for: {reason}")
         embed = nextcord.Embed(
-            description=f"✅ Successfully unmuted **{member.name}**.",
+            description=f"✅ Successfully unmuted **{member.name}**.\n Reason: {reason}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were unmuted in **{interaction.guild}**.",
+            description=f"You were unmuted in **{interaction.guild}**.\n Reason: {reason}",
             color=EMBED_COLOR,
         )
         try:
