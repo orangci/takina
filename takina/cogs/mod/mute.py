@@ -13,7 +13,7 @@ class Mute(commands.Cog):
 
     @commands.command(name="mute")
     @commands.has_permissions(moderate_members=True)
-    async def mute(self, ctx, member: str, duration: str, reason: str = "No reason specified"):
+    async def mute(self, ctx, member: str, duration: str, reason: str = "No reason provided"):
         timeout_duration = duration_calculator(duration)
         if timeout_duration is None:
             await ctx.reply(
@@ -52,7 +52,7 @@ class Unmute(commands.Cog):
 
     @commands.command(name="unmute")
     @commands.has_permissions(moderate_members=True)
-    async def unmute(self, ctx: commands.Context, member: str, reason: str = "No reason specified"):
+    async def unmute(self, ctx: commands.Context, member: str, reason: str = "No reason provided"):
         member = extract_user_id(member, ctx)
         can_proceed, message = perms_check(member, ctx=ctx)
         if not can_proceed:
@@ -84,7 +84,7 @@ class MuteSlash(commands.Cog):
     )
     @application_checks.has_permissions(moderate_members=True)
     async def mute(
-        self, interaction: nextcord.Interaction, member: nextcord.Member, duration: str, reason: str = "No reason specified"
+        self, interaction: nextcord.Interaction, member: nextcord.Member =nextcord.SlashOption(description="The user to mute", required=True), duration: str = nextcord.SlashOption(description="The duration of time to mute the user for", required=True), reason: str = "No reason provided"
     ):
         timeout_duration = duration_calculator(duration)
         can_proceed, message = perms_check(member, ctx=interaction)
@@ -118,7 +118,7 @@ class UnmuteSlash(commands.Cog):
     @nextcord.slash_command(name="unmute", description="Unmute a member.")
     @application_checks.has_permissions(moderate_members=True)
     async def unmute(
-        self, interaction: nextcord.Interaction, member: nextcord.Member, reason: str = "No reason specified"
+        self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(description="The user to unmute", required=True), reason: str = "No reason provided"
     ):
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
