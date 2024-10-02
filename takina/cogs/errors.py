@@ -73,7 +73,7 @@ class Errors(commands.Cog):
 
         embed = nextcord.Embed(title=error_type, color=nextcord.Color.red())
         embed.description = description
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
         self.logger.error(f"Command error: {error_type} - {error}")
         self.logger.exception("Full error traceback:")
