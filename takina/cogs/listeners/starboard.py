@@ -54,12 +54,8 @@ class Starboard(commands.Cog):
             )
 
             if existing_star_message:
-                # Edit the existing starboard message
-                starboard_message = await starboard_channel.fetch_message(
-                    existing_star_message["starboard_message_id"]
-                )
-                embed = self._create_embed(message, emoji_reaction)
-                await starboard_message.edit(embed=embed)
+                # Do not send the message again if it already exists on the starboard
+                return
             else:
                 # Create a new starboard entry
                 embed = self._create_embed(message, emoji_reaction)
@@ -106,6 +102,55 @@ class Starboard(commands.Cog):
             await interaction.response.send_message(
                 f"Channel {channel.mention} is already whitelisted.", ephemeral=True
             )
+
+    @starboard.subcommand(description="Remove a channel from the starboard whitelist")
+    async def remove_whitelist(
+        self,
+        interaction: nextcord.Interaction,
+        channel: nextcord.TextChannel = SlashOption(
+            description="Select a channel to remove from the whitelist",
+            required=True,
+        ),
+    ):
+        guild_id = interaction.guild_id
+
+        # Get the current whitelist
+        guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
+        whitelisted_channels = guild_data.get("whitelisted_channels", [])
+
+        if channel.id not in whitelisted_channels:
+            await interaction.response.send_message(
+                f"Channel {channel.mention} is not in the whitelist.", ephemeral=True
+            )
+        else:
+            whitelisted_channels.remove(channel.id)
+            await self.db.starboard_settings.update_one(
+                {"guild_id": guild_id},
+                {"$set": {"whitelisted_channels": whitelisted_channels}},
+                upsert=True,
+            )
+            await interaction.response.send_message(
+                f"Channel {channel.mention} has been removed from the whitelist.",
+                ephemeral=True,
+            )
+
+    @remove_whitelist.on_autocomplete("channel")
+    async def autocomplete_whitelisted_channels(
+        self, interaction: nextcord.Interaction, current: str
+    ):
+        guild_id = interaction.guild_id
+        guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
+        whitelisted_channels = guild_data.get("whitelisted_channels", [])
+
+        # Fetch all channels in the guild that are whitelisted
+        channels = [
+            interaction.guild.get_channel(ch_id) for ch_id in whitelisted_channels
+        ]
+        return [
+            nextcord.SlashOptionChoice(channel.name, str(channel.id))
+            for channel in channels
+            if channel and current.lower() in channel.name.lower()
+        ]
 
     @starboard.subcommand(description="Set the starboard channel")
     async def channel(
