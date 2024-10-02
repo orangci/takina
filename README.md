@@ -49,6 +49,9 @@ Using the Dockerfile or Nix.
 
 ## TODO
 - improve starboard
-- improve moderation system and add a method of tracking cases using the DB
+- improve moderation system: 
+ - add a method of tracking cases using the DB
+ - make it DM users when an action is performed on them
 - add autoroles / join roles
 - refactor github module
+- make the bot react with its prefix when pinged
