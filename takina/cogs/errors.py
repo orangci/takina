@@ -42,7 +42,7 @@ class Errors(commands.Cog):
             error_type = "Disabled Command"
 
         elif isinstance(error, nextcord.DiscordException):
-            description = f"A Discord exception occurred. Please try again or report this issue to {BOT_NAME}'s maintainers."
+            description = f"{str(error)}"
             error_type = "Discord Exception"
 
         elif isinstance(error, nextcord.Forbidden):
