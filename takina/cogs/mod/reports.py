@@ -1,6 +1,6 @@
 import os
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import application_checks, commands
 from nextcord import Interaction, SlashOption
 from motor.motor_asyncio import AsyncIOMotorClient
 from __main__ import DB_NAME
@@ -90,7 +90,7 @@ class Reports(commands.Cog):
     @nextcord.slash_command(
         name="admin_report", description="Set up the report system for this server."
     )
-    @commands.has_permissions(administrator=True)
+    @application_checks.has_permissions(administrator=True)
     async def admin_report(
         self,
         interaction: Interaction,
