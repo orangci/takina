@@ -63,7 +63,7 @@ class ModUtils(commands.Cog):
             member = extract_user_id(member, ctx)
 
         # Check permissions
-        can_proceed, message = perms_check(member, ctx, author_check=False)
+        can_proceed, message = perms_check(member, ctx=ctx, author_check=False)
         if not can_proceed:
             await ctx.reply(message, mention_author=False)
             return
@@ -145,7 +145,7 @@ class ModUtilsSlash(commands.Cog):
             member = extract_user_id(member, ctx)
 
         # Check permissions
-        can_proceed, message = perms_check(member, ctx, author_check=False)
+        can_proceed, message = perms_check(member, ctx=interaction, author_check=False)
         if not can_proceed:
             await interaction.send(message, ephemeral=True)
             return
