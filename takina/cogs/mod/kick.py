@@ -1,5 +1,5 @@
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import application_checks, commands
 import asyncio
 import re
 from datetime import timedelta
