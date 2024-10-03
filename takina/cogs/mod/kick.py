@@ -27,7 +27,7 @@ class Kick(commands.Cog):
             return
 
         embed = nextcord.Embed(
-            description=f"✅ Successfully kicked **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
+            description=f"✅ Successfully kicked **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
@@ -64,7 +64,7 @@ class KickSlash(commands.Cog):
             return
 
         embed = nextcord.Embed(
-            description=f"✅ Successfully kicked **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
+            description=f"✅ Successfully kicked **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(

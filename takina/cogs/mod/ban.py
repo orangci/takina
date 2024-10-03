@@ -27,7 +27,7 @@ class Ban(commands.Cog):
             return
 
         embed = nextcord.Embed(
-            description=f"✅ Successfully banned **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
+            description=f"✅ Successfully banned **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
@@ -57,7 +57,7 @@ class Unban(commands.Cog):
             reason=f"Unbanned by {ctx.author} for: {reason}",
         )
         embed = nextcord.Embed(
-            description=f"✅ Successfully unbanned **{user}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
+            description=f"✅ Successfully unbanned **{user.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
@@ -91,7 +91,7 @@ class BanSlash(commands.Cog):
             return
 
         embed = nextcord.Embed(
-            description=f"✅ Successfully banned **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
+            description=f"✅ Successfully banned **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
@@ -117,19 +117,19 @@ class UnbanSlash(commands.Cog):
     async def unban(
         self,
         interaction: nextcord.Interaction,
-        id: int = nextcord.SlashOption(
+        id: str = nextcord.SlashOption(
             description="The user ID to unban", required=True
         ),
         reason: str = "No reason provided",
     ):
         try:
-            user = await self.bot.fetch_user(id)
+            user = await self.bot.fetch_user(str(id))
             await interaction.guild.unban(
                 user,
                 reason=f"Unbanned by {interaction.user} for: {reason}",
             )
             embed = nextcord.Embed(
-                description=f"✅ Successfully unbanned **{user}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
+                description=f"✅ Successfully unbanned **{user.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
                 color=EMBED_COLOR,
             )
             await interaction.send(embed=embed)

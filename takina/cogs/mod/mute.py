@@ -34,7 +34,7 @@ class Mute(commands.Cog):
             reason=f"Muted by {ctx.author} for: {reason}",
         )
         embed = nextcord.Embed(
-            description=f"✅ Successfully muted **{member.name}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
+            description=f"✅ Successfully muted **{member.mention}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
@@ -65,7 +65,7 @@ class Unmute(commands.Cog):
 
         await member.timeout(None, reason=f"Unmuted by {ctx.author} for: {reason}")
         embed = nextcord.Embed(
-            description=f"✅ Successfully unmuted **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
+            description=f"✅ Successfully unmuted **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
@@ -109,7 +109,7 @@ class MuteSlash(commands.Cog):
             reason=f"Muted by {interaction.user} for: {reason}",
         )
         embed = nextcord.Embed(
-            description=f"✅ Successfully muted **{member.name}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
+            description=f"✅ Successfully muted **{member.mention}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
@@ -146,7 +146,7 @@ class UnmuteSlash(commands.Cog):
             None, reason=f"Unmuted by {interaction.user} for: {reason}"
         )
         embed = nextcord.Embed(
-            description=f"✅ Successfully unmuted **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
+            description=f"✅ Successfully unmuted **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
