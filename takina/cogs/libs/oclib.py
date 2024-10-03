@@ -3,6 +3,10 @@ import nextcord
 from nextcord.ext import commands
 import aiohttp
 import datetime
+from nextcord.ui import Button, View
+import os
+
+EMBED_COLOR = os.getenv("EMBED_COLOR")
 
 start_time = datetime.datetime.utcnow()
 
@@ -116,3 +120,81 @@ async def uptime_fetcher():
 
     uptime_str = f"{days}d {hours}h {minutes}m {seconds}s"
     return uptime_str
+
+
+# confirmation embed for moderation things
+class ConfirmationView(View):
+    def __init__(
+        self,
+        ctx: commands.Context or nextcord.Interaction,
+        member: nextcord.Member,
+        action: str,
+        reason: str,
+        duration: str = None,
+    ):
+        super().__init__(timeout=30)
+        self.ctx = ctx
+        self.member = member
+        self.action = action
+        self.reason = reason
+        self.duration = duration
+        self.result = None
+        self.message = None
+
+    # Confirm
+    @nextcord.ui.button(label="Confirm", style=nextcord.ButtonStyle.green)
+    async def confirm(
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+    ):
+        self.result = True
+        await interaction.message.delete()
+        self.stop()
+
+    # Cancel
+    @nextcord.ui.button(label="Cancel", style=nextcord.ButtonStyle.red)
+    async def cancel(
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+    ):
+        self.result = False
+        await self.disable_buttons(interaction)
+        self.stop()
+
+    async def disable_buttons(self, interaction: nextcord.Interaction):
+        if self.result:
+            new_embed = nextcord.Embed(
+                description=f"{self.action.capitalize()} confirmed.", color=EMBED_COLOR
+            )
+        else:
+            new_embed = nextcord.Embed(
+                description=f"{self.action.capitalize()} cancelled.", color=EMBED_COLOR
+            )
+
+        await interaction.message.edit(embed=new_embed, view=None)
+
+    async def prompt(self):
+        embed = nextcord.Embed(
+            title=f"Confirm {self.action.capitalize()}",
+            description=f"Are you sure you want to {self.action} {self.member.mention}?",
+            color=EMBED_COLOR,
+        )
+        if isinstance(self.ctx, commands.Context):
+            self.message = await self.ctx.reply(
+                embed=embed, view=self, mention_author=False
+            )
+        elif isinstance(self.ctx, nextcord.Interaction):
+            self.message = await self.ctx.send(embed=embed, view=self)
+        else:
+            return False, "Invalid context."
+
+        await self.wait()
+
+        if self.result is None:
+            for child in self.children:
+                child.disabled = True
+            timeout_embed = nextcord.Embed(
+                description=f"{self.action.capitalize()} cancelled; timed out.",
+                color=EMBED_COLOR,
+            )
+            await self.message.edit(embed=timeout_embed, view=None)
+
+        return self.result

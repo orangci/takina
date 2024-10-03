@@ -29,6 +29,12 @@ class Mute(commands.Cog):
             await ctx.reply(message, mention_author=False)
             return
 
+        confirmation = ConfirmationView(
+            ctx=ctx, member=member, action="mute", reason=reason, duration=duration
+        )
+        confirmed = await confirmation.prompt()
+        if not confirmed:
+            return
         await member.timeout(
             timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
             reason=f"Muted by {ctx.author} for: {reason}",
@@ -102,6 +108,17 @@ class MuteSlash(commands.Cog):
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
             await interaction.send(message, ephemeral=True)
+            return
+
+        confirmation = ConfirmationView(
+            ctx=interaction,
+            member=member,
+            action="mute",
+            reason=reason,
+            duration=duration,
+        )
+        confirmed = await confirmation.prompt()
+        if not confirmed:
             return
 
         await member.timeout(

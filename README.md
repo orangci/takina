@@ -52,7 +52,6 @@ Using the Dockerfile or Nix.
 <summary> moderation TODO </summary>
 
  - add a method of tracking cases using the DB
- - make mod commands ask for confirmation before performing an action
  - add a logging system
 </details>
 
