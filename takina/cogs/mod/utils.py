@@ -44,7 +44,7 @@ class ModUtils(commands.Cog):
             )
             return
 
-        deleted = await ctx.channel.purge(limit=amount)
+        deleted = await ctx.channel.purge(limit=amount + 1)
         await ctx.reply(
             f"Successfully purged {len(deleted)} messages.",
             delete_after=3,
@@ -123,7 +123,7 @@ class ModUtilsSlash(commands.Cog):
             )
             return
 
-        deleted = await interaction.channel.purge(limit=amount)
+        deleted = await interaction.channel.purge(limit=amount + 1)
         await interaction.send(
             f"Successfully purged {len(deleted)} messages.", ephemeral=True
         )
