@@ -55,6 +55,7 @@ Using the Dockerfile or Nix.
  - make mod commands ask for confirmation before performing an action
  - add a logging system
 </details>
+
 - add autoroles / join roles
 - refactor github module
 - improve help command

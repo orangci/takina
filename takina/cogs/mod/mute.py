@@ -34,11 +34,11 @@ class Mute(commands.Cog):
             reason=f"Muted by {ctx.author} for: {reason}",
         )
         embed = nextcord.Embed(
-            description=f"✅ Successfully muted **{member.name}** for {duration}. Reason: {reason}",
+            description=f"✅ Successfully muted **{member.name}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were muted in **{ctx.guild}** for {duration}. Reason: {reason}",
+            description=f"You were muted in **{ctx.guild}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}",
             color=EMBED_COLOR,
         )
         try:
@@ -65,11 +65,11 @@ class Unmute(commands.Cog):
 
         await member.timeout(None, reason=f"Unmuted by {ctx.author} for: {reason}")
         embed = nextcord.Embed(
-            description=f"✅ Successfully unmuted **{member.name}**. Reason: {reason}",
+            description=f"✅ Successfully unmuted **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were unmuted in **{ctx.guild}**. Reason: {reason}",
+            description=f"You were unmuted in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
             color=EMBED_COLOR,
         )
         try:
@@ -109,11 +109,11 @@ class MuteSlash(commands.Cog):
             reason=f"Muted by {interaction.user} for: {reason}",
         )
         embed = nextcord.Embed(
-            description=f"✅ Successfully muted **{member.name}** for {duration}. Reason: {reason}",
+            description=f"✅ Successfully muted **{member.name}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were muted in **{interaction.guild}** for {duration}. Reason: {reason}",
+            description=f"You were muted in **{interaction.guild}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}",
             color=EMBED_COLOR,
         )
         try:
@@ -146,11 +146,11 @@ class UnmuteSlash(commands.Cog):
             None, reason=f"Unmuted by {interaction.user} for: {reason}"
         )
         embed = nextcord.Embed(
-            description=f"✅ Successfully unmuted **{member.name}**. Reason: {reason}",
+            description=f"✅ Successfully unmuted **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were unmuted in **{interaction.guild}**. Reason: {reason}",
+            description=f"You were unmuted in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
             color=EMBED_COLOR,
         )
         try:

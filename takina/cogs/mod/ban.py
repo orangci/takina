@@ -11,7 +11,7 @@ class Ban(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="ban")
+    @commands.command(name="ban", aliases=["b"])
     @commands.has_permissions(ban_members=True)
     async def ban(
         self,
@@ -27,18 +27,20 @@ class Ban(commands.Cog):
             return
 
         embed = nextcord.Embed(
-            description=f"✅ Successfully banned **{member.name}**. Reason: {reason}",
+            description=f"✅ Successfully banned **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were banned in **{ctx.guild}**. Reason: {reason}",
+            description=f"You were banned in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
             color=EMBED_COLOR,
         )
         try:
             await member.send(embed=dm_embed)
         except nextcord.Forbidden:
             embed.set_footer(text="I was unable to DM this user.")
-        await member.ban(reason=reason)
+        await member.ban(
+            reason=f"Banned by {ctx.author} for: {reason}",
+        )
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -50,9 +52,12 @@ class Unban(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, id: str, reason: str = "No reason provided"):
         user = await self.bot.fetch_user(int(id)) or await self.bot.fetch_user(id)
-        await ctx.guild.unban(user)
+        await ctx.guild.unban(
+            user,
+            reason=f"Unbanned by {ctx.author} for: {reason}",
+        )
         embed = nextcord.Embed(
-            description=f"✅ Successfully unbanned **{user}**. Reason: {reason}",
+            description=f"✅ Successfully unbanned **{user}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
@@ -86,18 +91,20 @@ class BanSlash(commands.Cog):
             return
 
         embed = nextcord.Embed(
-            description=f"✅ Successfully banned **{member.name}**. Reason: {reason}",
+            description=f"✅ Successfully banned **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were banned in **{interaction.guild}**. Reason: {reason}",
+            description=f"You were banned in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
             color=EMBED_COLOR,
         )
         try:
             await member.send(embed=dm_embed)
         except nextcord.Forbidden:
             embed.set_footer(text="I was unable to DM this user.")
-        await member.ban(reason=reason)
+        await member.ban(
+            reason=f"Banned by {interaction.user} for: {reason}",
+        )
         await interaction.send(embed=embed)
 
 
@@ -117,9 +124,12 @@ class UnbanSlash(commands.Cog):
     ):
         try:
             user = await self.bot.fetch_user(id)
-            await interaction.guild.unban(user)
+            await interaction.guild.unban(
+                user,
+                reason=f"Unbanned by {interaction.user} for: {reason}",
+            )
             embed = nextcord.Embed(
-                description=f"✅ Successfully unbanned **{user}**. Reason: {reason}",
+                description=f"✅ Successfully unbanned **{user}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
                 color=EMBED_COLOR,
             )
             await interaction.send(embed=embed)

@@ -27,18 +27,20 @@ class Kick(commands.Cog):
             return
 
         embed = nextcord.Embed(
-            description=f"✅ Successfully kicked **{member.name}**. Reason: {reason}",
+            description=f"✅ Successfully kicked **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were banned in **{ctx.guild}**. Reason: {reason}",
+            description=f"You were banned in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
             color=EMBED_COLOR,
         )
         try:
             await member.send(embed=dm_embed)
         except nextcord.Forbidden:
             embed.set_footer(text="I was unable to DM this user.")
-        await member.kick(reason=reason)
+        await member.kick(
+            reason=f"Kicked by {ctx.author} for: {reason}",
+        )
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -62,18 +64,20 @@ class KickSlash(commands.Cog):
             return
 
         embed = nextcord.Embed(
-            description=f"✅ Successfully kicked **{member.name}**. Reason: {reason}",
+            description=f"✅ Successfully kicked **{member.name}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
             color=EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were banned in **{interaction.guild}**. Reason: {reason}",
+            description=f"You were banned in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
             color=EMBED_COLOR,
         )
         try:
             await member.send(embed=dm_embed)
         except nextcord.Forbidden:
             embed.set_footer(text="I was unable to DM this user.")
-        await member.kick(reason=reason)
+        await member.kick(
+            reason=f"Kicked by {interaction.user} for: {reason}",
+        )
         await interaction.send(embed=embed)
 
 
