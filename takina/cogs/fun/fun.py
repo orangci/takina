@@ -35,11 +35,12 @@ class Fun(commands.Cog):
 
     @commands.command(name="google")
     async def google(self, ctx: commands.Context, *, query: str):
+        query_before_conversion = query
         query = urllib.parse.quote_plus(query)
         lmgtfy_url = f"https://letmegooglethat.com/?q={query}"
         embed = nextcord.Embed(
             title="Let Me Google That For You!",
-            description=f"Here is your search result for: **{query}**",
+            description=f"Here is your search result for: **{query_before_conversion}**",
             url=lmgtfy_url,
             color=EMBED_COLOR,
         )
@@ -121,11 +122,12 @@ class FunSlash(commands.Cog):
         *,
         query: str = SlashOption(description="Your search query", required=True),
     ):
+        query_before_conversion = query
         query = urllib.parse.quote_plus(query)
         lmgtfy_url = f"https://letmegooglethat.com/?q={query}"
         embed = nextcord.Embed(
             title="Let Me Google That For You!",
-            description=f"Here is your search result for: **{query}**",
+            description=f"Here is your search result for: **{query_before_conversion}**",
             url=lmgtfy_url,
             color=EMBED_COLOR,
         )
