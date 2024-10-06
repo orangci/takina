@@ -76,7 +76,6 @@ class OwnerUtils(commands.Cog):
                     except Exception as e:
                         failed_cogs.append(f"{cog}: {e}")
 
-            success_message = f"Successfully reloaded all cogs."
             if failed_cogs:
                 error_message = (
                     f"\nReloaded all except the following cogs:\n"
