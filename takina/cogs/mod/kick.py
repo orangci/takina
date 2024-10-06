@@ -42,7 +42,7 @@ class Kick(commands.Cog):
             return
         try:
             await member.send(embed=dm_embed)
-        except nextcord.Forbidden:
+        except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
         await member.kick(
             reason=f"Kicked by {ctx.author} for: {reason}",
@@ -86,7 +86,7 @@ class KickSlash(commands.Cog):
             return
         try:
             await member.send(embed=dm_embed)
-        except nextcord.Forbidden:
+        except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
         await member.kick(
             reason=f"Kicked by {interaction.user} for: {reason}",

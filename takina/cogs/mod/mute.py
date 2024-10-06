@@ -49,7 +49,7 @@ class Mute(commands.Cog):
         )
         try:
             await member.send(embed=dm_embed)
-        except nextcord.Forbidden:
+        except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -80,7 +80,7 @@ class Unmute(commands.Cog):
         )
         try:
             await member.send(embed=dm_embed)
-        except nextcord.Forbidden:
+        except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -135,7 +135,7 @@ class MuteSlash(commands.Cog):
         )
         try:
             await member.send(embed=dm_embed)
-        except nextcord.Forbidden:
+        except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
         await interaction.send(embed=embed)
 
@@ -172,7 +172,7 @@ class UnmuteSlash(commands.Cog):
         )
         try:
             await member.send(embed=dm_embed)
-        except nextcord.Forbidden:
+        except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
         await interaction.send(embed=embed)
 

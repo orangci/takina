@@ -42,7 +42,7 @@ class Ban(commands.Cog):
             return
         try:
             await member.send(embed=dm_embed)
-        except nextcord.Forbidden:
+        except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
         await member.ban(
             reason=f"Banned by {ctx.author} for: {reason}",
@@ -112,7 +112,7 @@ class BanSlash(commands.Cog):
             return
         try:
             await member.send(embed=dm_embed)
-        except nextcord.Forbidden:
+        except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
         await member.ban(
             reason=f"Banned by {interaction.user} for: {reason}",
