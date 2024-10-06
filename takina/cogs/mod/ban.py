@@ -34,16 +34,16 @@ class Ban(commands.Cog):
             description=f"You were banned in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
             color=EMBED_COLOR,
         )
-        try:
-            await member.send(embed=dm_embed)
-        except nextcord.Forbidden:
-            embed.set_footer(text="I was unable to DM this user.")
         confirmation = ConfirmationView(
             ctx=ctx, member=member, action="ban", reason=reason
         )
         confirmed = await confirmation.prompt()
         if not confirmed:
             return
+        try:
+            await member.send(embed=dm_embed)
+        except nextcord.Forbidden:
+            embed.set_footer(text="I was unable to DM this user.")
         await member.ban(
             reason=f"Banned by {ctx.author} for: {reason}",
         )
@@ -104,16 +104,16 @@ class BanSlash(commands.Cog):
             description=f"You were banned in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
             color=EMBED_COLOR,
         )
-        try:
-            await member.send(embed=dm_embed)
-        except nextcord.Forbidden:
-            embed.set_footer(text="I was unable to DM this user.")
         confirmation = ConfirmationView(
             ctx=interaction, member=member, action="ban", reason=reason
         )
         confirmed = await confirmation.prompt()
         if not confirmed:
             return
+        try:
+            await member.send(embed=dm_embed)
+        except nextcord.Forbidden:
+            embed.set_footer(text="I was unable to DM this user.")
         await member.ban(
             reason=f"Banned by {interaction.user} for: {reason}",
         )
