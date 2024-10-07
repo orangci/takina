@@ -49,6 +49,10 @@ class Kick(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
+        modlog_cog = self.bot.get_cog("ModLog")
+        if modlog_cog:
+            await modlog_cog.log_action("kick", member, reason, ctx.author, duration)
+
 
 class KickSlash(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -77,7 +81,7 @@ class KickSlash(commands.Cog):
             description=f"You were banned in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
             color=EMBED_COLOR,
         )
-        
+
         confirmation = ConfirmationView(
             ctx=interaction, member=member, action="kick", reason=reason
         )
@@ -92,6 +96,12 @@ class KickSlash(commands.Cog):
             reason=f"Kicked by {interaction.user} for: {reason}",
         )
         await interaction.send(embed=embed)
+
+        modlog_cog = self.bot.get_cog("ModLog")
+        if modlog_cog:
+            await modlog_cog.log_action(
+                "kick", member, reason, interaction.user, duration
+            )
 
 
 def setup(bot):

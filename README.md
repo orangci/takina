@@ -58,3 +58,4 @@ Using the Dockerfile or Nix.
 - add autoroles / join roles
 - refactor github module
 - improve help command
+- style all commands and embeds and make them look pretty, especially with cute emojis

@@ -1,9 +1,7 @@
 import nextcord
 from nextcord.ext import application_checks, commands
-import asyncio
-import re
 from datetime import timedelta
-from __main__ import BOT_NAME, EMBED_COLOR
+from __main__ import EMBED_COLOR
 from ..libs.oclib import *
 
 
@@ -29,29 +27,38 @@ class Mute(commands.Cog):
             await ctx.reply(message, mention_author=False)
             return
 
+        # Confirmation prompt (assuming you have a ConfirmationView)
         confirmation = ConfirmationView(
             ctx=ctx, member=member, action="mute", reason=reason, duration=duration
         )
         confirmed = await confirmation.prompt()
         if not confirmed:
             return
+
+        # Apply the mute (timeout)
         await member.timeout(
             timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
             reason=f"Muted by {ctx.author} for: {reason}",
         )
+
+        # Send success embed
         embed = nextcord.Embed(
             description=f"✅ Successfully muted **{member.mention}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
         )
-        dm_embed = nextcord.Embed(
-            description=f"You were muted in **{ctx.guild}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-            color=EMBED_COLOR,
-        )
         try:
+            dm_embed = nextcord.Embed(
+                description=f"You were muted in **{ctx.guild}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}",
+                color=EMBED_COLOR,
+            )
             await member.send(embed=dm_embed)
-        except Exception as e:
+        except nextcord.Forbidden:
             embed.set_footer(text="I was unable to DM this user.")
         await ctx.reply(embed=embed, mention_author=False)
+
+        modlog_cog = self.bot.get_cog("ModLog")
+        if modlog_cog:
+            await modlog_cog.log_action("mute", member, reason, ctx.author, duration)
 
 
 class Unmute(commands.Cog):
@@ -83,6 +90,10 @@ class Unmute(commands.Cog):
         except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
         await ctx.reply(embed=embed, mention_author=False)
+
+        modlog_cog = self.bot.get_cog("ModLog")
+        if modlog_cog:
+            await modlog_cog.log_action("unmute", member, reason, ctx.author, duration)
 
 
 class MuteSlash(commands.Cog):
@@ -139,6 +150,12 @@ class MuteSlash(commands.Cog):
             embed.set_footer(text="I was unable to DM this user.")
         await interaction.send(embed=embed)
 
+        modlog_cog = self.bot.get_cog("ModLog")
+        if modlog_cog:
+            await modlog_cog.log_action(
+                "mute", member, reason, interaction.user, duration
+            )
+
 
 class UnmuteSlash(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -175,6 +192,12 @@ class UnmuteSlash(commands.Cog):
         except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
         await interaction.send(embed=embed)
+
+        modlog_cog = self.bot.get_cog("ModLog")
+        if modlog_cog:
+            await modlog_cog.log_action(
+                "unmute", member, reason, interaction.user, duration
+            )
 
 
 def setup(bot):

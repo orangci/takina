@@ -49,6 +49,10 @@ class Ban(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
+        modlog_cog = self.bot.get_cog("ModLog")
+        if modlog_cog:
+            await modlog_cog.log_action("ban", member, reason, ctx.author, duration)
+
 
 class Unban(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -67,6 +71,9 @@ class Unban(commands.Cog):
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
+        modlog_cog = self.bot.get_cog("ModLog")
+        if modlog_cog:
+            await modlog_cog.log_action("unban", member, reason, ctx.author, duration)
 
     @unban.error
     async def unban_error(self, ctx, error):
@@ -119,6 +126,12 @@ class BanSlash(commands.Cog):
         )
         await interaction.send(embed=embed)
 
+        modlog_cog = self.bot.get_cog("ModLog")
+        if modlog_cog:
+            await modlog_cog.log_action(
+                "ban", member, reason, interaction.user, duration
+            )
+
 
 class UnbanSlash(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -145,6 +158,13 @@ class UnbanSlash(commands.Cog):
                 color=EMBED_COLOR,
             )
             await interaction.send(embed=embed)
+
+            modlog_cog = self.bot.get_cog("ModLog")
+            if modlog_cog:
+                await modlog_cog.log_action(
+                    "unban", member, reason, interaction.user, duration
+                )
+
         except nextcord.NotFound:
             await interaction.send(
                 "User not found. Please make sure the User ID is correct.",
