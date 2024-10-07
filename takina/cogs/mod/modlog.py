@@ -1,6 +1,6 @@
 import os
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import commands, application_checks
 from nextcord import ui
 from motor.motor_asyncio import AsyncIOMotorClient
 import datetime
@@ -65,6 +65,7 @@ class ModLog(commands.Cog):
         pass
 
     @modlog.subcommand(description="Set the modlog channel")
+    @application_checks.has_permissions(manage_guild=True)
     async def channel(self, interaction: nextcord.Interaction, channel: nextcord.TextChannel):
         guild_id = interaction.guild_id
 
