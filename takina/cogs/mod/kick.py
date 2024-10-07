@@ -51,7 +51,7 @@ class Kick(commands.Cog):
 
         modlog_cog = self.bot.get_cog("ModLog")
         if modlog_cog:
-            await modlog_cog.log_action("kick", member, reason, ctx.author, duration)
+            await modlog_cog.log_action("kick", member, reason, ctx.author)
 
 
 class KickSlash(commands.Cog):
@@ -100,7 +100,10 @@ class KickSlash(commands.Cog):
         modlog_cog = self.bot.get_cog("ModLog")
         if modlog_cog:
             await modlog_cog.log_action(
-                "kick", member, reason, interaction.user, duration
+                "kick",
+                member,
+                reason,
+                interaction.user,
             )
 
 
