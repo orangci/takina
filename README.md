@@ -53,6 +53,7 @@ Using the Dockerfile or Nix.
 
  - add a method of tracking cases using the DB
  - add a logging system
+ - make reasons passable without quotes
 </details>
 
 - add autoroles / join roles
