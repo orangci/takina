@@ -48,15 +48,6 @@ More information/documentation may be available later at orangc.xyz/takina.
 Using the Dockerfile or Nix.
 
 ## TODO
-<details>
-<summary> moderation TODO </summary>
-
- - add a method of tracking cases using the DB
- - add a logging system
- - make reasons passable without quotes
-</details>
-
+- style all commands and embeds and make them look pretty, especially with cute emojis
 - add autoroles / join roles
 - refactor github module
-- improve help command
-- style all commands and embeds and make them look pretty, especially with cute emojis

@@ -1,18 +1,59 @@
 import os
 import nextcord
-from nextcord.ext import commands, menus
+from nextcord.ext import commands
+from nextcord import ui
 from motor.motor_asyncio import AsyncIOMotorClient
 import datetime
 from __main__ import DB_NAME, EMBED_COLOR
 
-class CaseListMenu(menus.ListPageSource):
-    def __init__(self, data):
-        super().__init__(data, per_page=10)
+class CaseListButtonView(ui.View):
+    def __init__(self, cases, per_page=10):
+        super().__init__(timeout=30)
+        self.cases = cases
+        self.per_page = per_page
+        self.current_page = 0
+        self.max_pages = len(self.cases) // per_page + (1 if len(self.cases) % per_page > 0 else 0)
 
-    async def format_page(self, menu, cases):
-        embed = nextcord.Embed(title="Cases", color=EMBED_COLOR)
-        embed.description = "\n".join([f"<:note:1289880498541297685> `{case['case_id']}`: **{case['action'].capitalize()}** <t:{int(case['timestamp'].timestamp())}:R>" for case in cases])
+    def get_page_embed(self):
+        embed = nextcord.Embed(title=f"Cases - Page {self.current_page + 1}/{self.max_pages}", color=EMBED_COLOR)
+        start = self.current_page * self.per_page
+        end = start + self.per_page
+        page_cases = self.cases[start:end]
+        embed.description = "\n".join(
+            [f"<:note:1289880498541297685> `{case['case_id']}`: **{case['action'].capitalize()}** <t:{int(case['timestamp'].timestamp())}:R>" for case in page_cases]
+        )
         return embed
+
+    @ui.button(label="«", style=nextcord.ButtonStyle.grey)
+    async def first_button(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.current_page = 0
+        self.next_button.disabled = False
+        self.previous_button.disabled = True
+        await interaction.response.edit_message(embed=self.get_page_embed(), view=self)
+
+    @ui.button(label="<", style=nextcord.ButtonStyle.grey, disabled=True)
+    async def previous_button(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.current_page -= 1
+        if self.current_page == 0:
+            button.disabled = True
+        self.next_button.disabled = False
+        await interaction.response.edit_message(embed=self.get_page_embed(), view=self)
+
+    @ui.button(label=">", style=nextcord.ButtonStyle.grey)
+    async def next_button(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.current_page += 1
+        if self.current_page == self.max_pages - 1:
+            button.disabled = True
+        self.previous_button.disabled = False
+        await interaction.response.edit_message(embed=self.get_page_embed(), view=self)
+
+    @ui.button(label="»", style=nextcord.ButtonStyle.grey)
+    async def last_button(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.current_page = self.max_pages - 1
+        self.next_button.disabled = True 
+        self.previous_button.disabled = False
+        await interaction.response.edit_message(embed=self.get_page_embed(), view=self)
+
 
 class ModLog(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -95,6 +136,17 @@ class ModLog(commands.Cog):
         embed.add_field(name="Reason", value=case["reason"], inline=False)
         await ctx.reply(embed=embed, mention_author=False)
 
+    @commands.command(name="case_edit", aliases=["caseedit", "editc"])
+    async def edit_case(self, ctx, case_id: int, *, new_reason: str):
+        result = await self.db.modlog_cases.update_one(
+            {"guild_id": ctx.guild.id, "case_id": case_id},
+            {"$set": {"reason": new_reason}}
+        )
+        if result.modified_count == 0:
+            await ctx.reply("Case not found or could not be updated.", mention_author=False)
+        else:
+            await ctx.reply(f"Case #{case_id} reason has been updated.", mention_author=False)
+
     @commands.command(name="cases")
     async def get_cases(self, ctx, user: nextcord.Member = None):
         query = {"guild_id": ctx.guild.id}
@@ -106,13 +158,8 @@ class ModLog(commands.Cog):
             await ctx.reply("No cases found.", mention_author=False)
             return
 
-        if user:
-            embed = nextcord.Embed(title=str(user) + "'s Cases", color=EMBED_COLOR)
-            embed.description = "\n".join([f"<:note:1289880498541297685> `{case['case_id']}`: **{case['action'].capitalize()}** <t:{int(case['timestamp'].timestamp())}:R>" for case in cases])
-            await ctx.reply(embed=embed, mention_author=False)
-        else:
-            pages = menus.MenuPages(source=CaseListMenu(cases), clear_reactions_after=True)
-            await pages.start(ctx)
+        view = CaseListButtonView(cases)
+        await ctx.send(embed=view.get_page_embed(), view=view)
 
     @commands.command(name="modstats", aliases=["ms"])
     async def get_mod_stats(self, ctx, user: nextcord.Member = None):
@@ -123,9 +170,8 @@ class ModLog(commands.Cog):
             await ctx.reply(f"{user} has no moderation actions.")
             return
 
-        embed = nextcord.Embed(title=f"Moderator Stats: {user}", color=EMBED_COLOR)
-        embed.description = "\n".join([f"<:note:1289880498541297685> `{case['case_id']}`: **{case['action'].capitalize()}** <t:{int(case['timestamp'].timestamp())}:R>" for case in cases])
-        await ctx.reply(embed=embed, mention_author=False)
+        view = CaseListButtonView(cases)
+        await ctx.send(embed=view.get_page_embed(), view=view)
 
 
 def setup(bot: commands.Bot):
