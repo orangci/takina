@@ -31,6 +31,7 @@ Takina utilizes the Jikan API for this module.
 - a nickname changing command
 - a message purging command
 - a send command, which sends a message as Takina in the specified channel
+- a proper logging and casing system
 
 ## utilities
 - role management commands; e.g. `role add weeb orangc`
