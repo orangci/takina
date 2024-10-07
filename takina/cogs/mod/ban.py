@@ -60,7 +60,7 @@ class Unban(commands.Cog):
 
     @commands.command(name="unban", aliases=["pardon"])
     @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx, id: str, reason: str = "No reason provided"):
+    async def unban(self, ctx, id: str, *, reason: str = "No reason provided"):
         user = await self.bot.fetch_user(int(id)) or await self.bot.fetch_user(id)
         await ctx.guild.unban(
             user,

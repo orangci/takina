@@ -12,7 +12,7 @@ class Mute(commands.Cog):
     @commands.command(name="mute")
     @commands.has_permissions(moderate_members=True)
     async def mute(
-        self, ctx, member: str, duration: str, reason: str = "No reason provided"
+        self, ctx, member: str, duration: str, *, reason: str = "No reason provided"
     ):
         timeout_duration = duration_calculator(duration)
         if timeout_duration is None:
@@ -68,7 +68,7 @@ class Unmute(commands.Cog):
     @commands.command(name="unmute")
     @commands.has_permissions(moderate_members=True)
     async def unmute(
-        self, ctx: commands.Context, member: str, reason: str = "No reason provided"
+        self, ctx: commands.Context, member: str, *, reason: str = "No reason provided"
     ):
         member = extract_user_id(member, ctx)
         can_proceed, message = perms_check(member, ctx=ctx)
