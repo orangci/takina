@@ -5,6 +5,7 @@ import aiohttp
 import datetime
 from nextcord.ui import Button, View
 import os
+import random
 
 EMBED_COLOR = os.getenv("EMBED_COLOR")
 
@@ -198,3 +199,21 @@ class ConfirmationView(View):
             await self.message.edit(embed=timeout_embed, view=None)
 
         return self.result
+
+
+# random cute emoji fetcher
+async def fetch_random_emoji(bot: nextcord.Client) -> str:
+    guild_id = 1281898369236602903
+    guild = bot.get_guild(guild_id)
+
+    if not guild:
+        return
+
+    emojis = guild.emojis
+
+    if not emojis:
+        return
+
+    random_emoji = random.choice(emojis)
+    
+    return str(random_emoji)
