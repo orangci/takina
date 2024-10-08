@@ -43,12 +43,13 @@ class AnimeSeasonals(commands.Cog):
         self, ctx: commands.Context, season: str = None, year: int = None
     ):
         """Command for displaying seasonal anime from MyAnimeList. Usage: `season Fall 2024`, or `season` to fetch the current season."""
+        emoji = await fetch_random_emoji()
         if season == None or year == None or season and year == None:
             url = "https://api.jikan.moe/v4/seasons/now"
-            embed_title = "Current Season's Anime"
+            embed_title = f" {emoji} Current Season's Anime"
         else:
             url = f"https://api.jikan.moe/v4/seasons/{year}/{season}"
-            embed_title = f"{season} {year} Anime"
+            embed_title = f"{emoji} {season} {year} Anime"
 
         def trim_rating(rating):
             ratings_map = {

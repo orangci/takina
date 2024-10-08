@@ -1,5 +1,5 @@
 # Takina Code Standards
-Takina does not currently follow all these, but hopefully will soon. These standards exist because I have a terrible memory and want everything to be uniform.
+Takina does not currently follow *all* these, but as of now does follow the vast majority most of the time. These standards exist because I have a terrible memory and want everything to be uniform.
 
 ### Embeds
 - all embeds must use the EMBED_COLOR env var as it's color, with the exception of it being an error embed; in which case it should be red

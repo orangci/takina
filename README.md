@@ -49,6 +49,5 @@ More information/documentation may be available later at orangc.xyz/takina.
 Using the Dockerfile or Nix.
 
 ## TODO
-- style all commands and embeds and make them look pretty, especially with cute emojis
 - add autoroles / join roles
 - refactor github module
