@@ -592,5 +592,7 @@ emoji_dict = {
 
 async def fetch_random_emoji() -> str:
     random_emoji = random.choice(list(emoji_dict.values()))
-
-    return str(random_emoji)
+    if not os.getenv("NO_EMOJIS"):
+        return str(random_emoji)
+    else:
+        return ""
