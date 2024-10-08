@@ -214,5 +214,5 @@ async def fetch_random_emoji(bot: nextcord.Client) -> str:
         return
 
     random_emoji = random.choice(emojis)
-    
+
     return str(random_emoji)

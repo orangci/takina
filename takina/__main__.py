@@ -70,6 +70,7 @@ def load_exts(directory):
                 cogs.append(cog_name)
     return cogs
 
+
 bot.load_extension("onami")
 
 cogs_blacklist = []
