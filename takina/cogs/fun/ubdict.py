@@ -1,5 +1,3 @@
-# Copyright (c) 2024 - present, MaskDuck
-
 from __future__ import annotations
 from ..libs.oclib import *
 import aiohttp
