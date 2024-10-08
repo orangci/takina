@@ -23,7 +23,7 @@ class Kick(commands.Cog):
         member = extract_user_id(member, ctx)
         can_proceed, message = perms_check(member, ctx=ctx)
         if not can_proceed:
-            await ctx.reply(message, mention_author=False)
+            await ctx.reply(embed=message, mention_author=False)
             return
 
         embed = nextcord.Embed(
@@ -70,7 +70,7 @@ class KickSlash(commands.Cog):
     ):
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
-            await interaction.send(message, ephemeral=True)
+            await interaction.send(embed=message, ephemeral=True)
             return
 
         embed = nextcord.Embed(

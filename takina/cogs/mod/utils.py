@@ -74,7 +74,7 @@ class ModUtils(commands.Cog):
         # Check permissions
         can_proceed, message = perms_check(member, ctx=ctx, author_check=False)
         if not can_proceed:
-            await ctx.reply(message, mention_author=False)
+            await ctx.reply(embed=message, mention_author=False)
             return
 
         if not nickname:
@@ -169,7 +169,7 @@ class ModUtilsSlash(commands.Cog):
         # Check permissions
         can_proceed, message = perms_check(member, ctx=interaction, author_check=False)
         if not can_proceed:
-            await interaction.send(message, ephemeral=True)
+            await interaction.send(embed=message, ephemeral=True)
             return
 
         if not nickname:

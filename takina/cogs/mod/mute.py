@@ -24,7 +24,7 @@ class Mute(commands.Cog):
         member = extract_user_id(member, ctx)
         can_proceed, message = perms_check(member, ctx=ctx)
         if not can_proceed:
-            await ctx.reply(message, mention_author=False)
+            await ctx.reply(embed=message, mention_author=False)
             return
 
         # Confirmation prompt (assuming you have a ConfirmationView)
@@ -73,7 +73,7 @@ class Unmute(commands.Cog):
         member = extract_user_id(member, ctx)
         can_proceed, message = perms_check(member, ctx=ctx)
         if not can_proceed:
-            await ctx.reply(message, mention_author=False)
+            await ctx.reply(embed=message, mention_author=False)
             return
 
         await member.timeout(None, reason=f"Unmuted by {ctx.author} for: {reason}")
@@ -118,7 +118,7 @@ class MuteSlash(commands.Cog):
         timeout_duration = duration_calculator(duration)
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
-            await interaction.send(message, ephemeral=True)
+            await interaction.send(embed=message, ephemeral=True)
             return
 
         confirmation = ConfirmationView(
@@ -173,7 +173,7 @@ class UnmuteSlash(commands.Cog):
     ):
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
-            await interaction.send(message, ephemeral=True)
+            await interaction.send(embed=message, ephemeral=True)
             return
 
         await member.timeout(
