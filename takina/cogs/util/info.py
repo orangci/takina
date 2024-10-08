@@ -27,10 +27,11 @@ class Info(commands.Cog):
 
         roles = [role for role in member.roles if role != ctx.guild.default_role]
 
+        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             color=EMBED_COLOR,
             timestamp=ctx.message.created_at,
-            title=f"User Info - {member}",
+            title=f"{emoji} {member}",
         )
         embed.set_thumbnail(url=member.avatar.url if member.avatar else None)
         embed.add_field(name="ID:", value=member.id, inline=True)
@@ -60,7 +61,10 @@ class Info(commands.Cog):
     @commands.command(name="roleinfo")
     async def roleinfo(self, ctx: commands.Context, role: nextcord.Role):
         """Fetch role information. `roleinfo role`."""
-        embed = nextcord.Embed(title=f"Role Info - {role.name}", color=role.color)
+        emoji = await fetch_random_emoji()
+        embed = nextcord.Embed(
+            title=f"{emoji} Role Info - {role.name}", color=role.color
+        )
         embed.add_field(name="ID", value=role.id)
         embed.add_field(name="Name", value=role.name)
         embed.add_field(name="Color", value=str(role.color))
@@ -77,10 +81,11 @@ class Info(commands.Cog):
     async def serverinfo(self, ctx: commands.Context):
         """Fetch server information. `serverinfo`."""
         guild = ctx.guild
-        embed = nextcord.Embed(title=f"{guild.name}", color=EMBED_COLOR)
+        emoji = await fetch_random_emoji()
+        embed = nextcord.Embed(title=f"{emoji} {guild.name}", color=EMBED_COLOR)
 
-        embed.add_field(name="Server Name", value=guild.name, inline=True)
         embed.add_field(name="Server ID", value=guild.id, inline=True)
+        embed.add_field(name="Server Name", value=guild.name, inline=True)
         embed.add_field(name="Owner", value=guild.owner, inline=True)
         embed.add_field(name="Members", value=guild.member_count, inline=True)
         embed.add_field(name="Roles", value=len(guild.roles), inline=True)
@@ -110,10 +115,11 @@ class SlashInfo(commands.Cog):
             role for role in member.roles if role != interaction.guild.default_role
         ]
 
+        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             color=EMBED_COLOR,
             timestamp=utcnow(),
-            title=f"User Info - {member}",
+            title=f"{emoji} {member}",
         )
         embed.set_thumbnail(url=member.avatar.url if member.avatar else None)
         embed.add_field(name="ID:", value=member.id, inline=True)
@@ -149,7 +155,10 @@ class SlashInfo(commands.Cog):
         ),
     ):
         """Fetch role information. `roleinfo role`."""
-        embed = nextcord.Embed(title=f"Role Info - {role.name}", color=role.color)
+        emoji = await fetch_random_emoji()
+        embed = nextcord.Embed(
+            title=f"{emoji} Role Info - {role.name}", color=role.color
+        )
         embed.add_field(name="ID", value=role.id)
         embed.add_field(name="Name", value=role.name)
         embed.add_field(name="Color", value=str(role.color))
@@ -166,10 +175,11 @@ class SlashInfo(commands.Cog):
     async def serverinfo(self, interaction: nextcord.Interaction):
         """Fetch server information. `serverinfo`."""
         guild = interaction.guild
-        embed = nextcord.Embed(title=f"{guild.name}", color=EMBED_COLOR)
+        emoji = await fetch_random_emoji()
+        embed = nextcord.Embed(title=f"{emoji} {guild.name}", color=EMBED_COLOR)
 
-        embed.add_field(name="Server Name", value=guild.name, inline=True)
         embed.add_field(name="Server ID", value=guild.id, inline=True)
+        embed.add_field(name="Server Name", value=guild.name, inline=True)
         embed.add_field(name="Owner", value=guild.owner, inline=True)
         embed.add_field(name="Members", value=guild.member_count, inline=True)
         embed.add_field(name="Roles", value=len(guild.roles), inline=True)

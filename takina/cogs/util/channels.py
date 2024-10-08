@@ -18,14 +18,17 @@ class ChannelManagement(commands.Cog):
         channel = channel or ctx.channel
         duration = duration_calculator(duration)
         if duration is None:
-            await ctx.reply(
-                "Invalid duration format. Use <number>[d|h|m].", mention_author=False
+            emoji = await fetch_random_emoji()
+            embed = nextcord.Embed(
+                description=f"{emoji} Invalid duration format. Use `<number>[d|h|m].`",
+                color=EMBED_COLOR,
             )
+            await ctx.reply(embed=embed, mention_author=False)
             return
 
         await channel.edit(slowmode_delay=duration)
         embed = nextcord.Embed(
-            description=f"Slowmode set to {duration} seconds in {channel.mention}.",
+            description=f" :timer: Slowmode set to {duration} seconds in {channel.mention}.",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
@@ -87,14 +90,17 @@ class ChannelManagementSlash(commands.Cog):
         channel = channel or interaction.channel
         duration = duration_calculator(duration)
         if duration is None:
-            await interaction.send(
-                "Invalid duration format. Use <number>[d|h|m].", ephemeral=True
+            emoji = await fetch_random_emoji()
+            embed = nextcord.Embed(
+                description=f"{emoji} Invalid duration format. Use `<number>[d|h|m].`",
+                color=EMBED_COLOR,
             )
+            await interaction.send(embed=embed, ephemeral=True)
             return
 
         await channel.edit(slowmode_delay=duration)
         embed = nextcord.Embed(
-            description=f"Slowmode set to {duration} seconds in {channel.mention}.",
+            description=f":timer: Slowmode set to {duration} seconds in {channel.mention}.",
             color=EMBED_COLOR,
         )
         await interaction.send(embed=embed)

@@ -6,6 +6,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from __main__ import DB_NAME
 from ..libs.oclib import *
 
+
 class Reports(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -70,7 +71,6 @@ class Reports(commands.Cog):
             color=nextcord.Color.red(),
         )
         embed.add_field(name="Reason", value=reason, inline=False)
-
 
         embed.add_field(name="Reported User", value=user.mention, inline=False)
         embed.set_thumbnail(url=user.avatar.url)

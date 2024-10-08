@@ -43,7 +43,8 @@ class PingResponse(commands.Cog):
                 embed.set_author(
                     name="orangc",
                     url="https://orangc.xyz",
-                    icon_url=orangc.avatar.url or "https://cdn.discordapp.com/avatars/961063229168164864/4bfbf378514a9dcc7a619b5ce5e7e57c.webp",
+                    icon_url=orangc.avatar.url
+                    or "https://cdn.discordapp.com/avatars/961063229168164864/4bfbf378514a9dcc7a619b5ce5e7e57c.webp",
                 )
                 await message.reply(embed=embed, mention_author=False)
 

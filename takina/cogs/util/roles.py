@@ -26,17 +26,9 @@ class Roles(commands.Cog):
         else:
             member = extract_user_id(member, ctx)
 
-        if not isinstance(member, nextcord.Member):
-            embed = nextcord.Embed(
-                description="Member not found. Please provide a valid username, display name, mention, or user ID.",
-                color=nextcord.Color.red(),
-            )
-            await ctx.reply(embed=embed, mention_author=False)
-            return
-
         await member.add_roles(role)
         embed = nextcord.Embed(
-            description=f"✅ Added role `{role.name}` to **{member.display_name}**.",
+            description=f"✅ Added role {role.mention} to {member.mention}.",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
@@ -52,17 +44,9 @@ class Roles(commands.Cog):
         else:
             member = extract_user_id(member, ctx)
 
-        if not isinstance(member, nextcord.Member):
-            embed = nextcord.Embed(
-                description="Member not found. Please provide a valid username, display name, mention, or user ID.",
-                color=nextcord.Color.red(),
-            )
-            await ctx.reply(embed=embed, mention_author=False)
-            return
-
         await member.remove_roles(role)
         embed = nextcord.Embed(
-            description=f"✅ Removed role `{role.name}` from **{member.display_name}**.",
+            description=f"✅ Removed role {role.mention} from {member.mention}.",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
@@ -113,7 +97,7 @@ class RolesSlash(commands.Cog):
 
         await member.remove_roles(role)
         embed = nextcord.Embed(
-            description=f"✅ Removed role {role.mention} from {member.mention}z.",
+            description=f"✅ Removed role {role.mention} from {member.mention}.",
             color=EMBED_COLOR,
         )
         await interaction.send(embed=embed)

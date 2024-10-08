@@ -7,6 +7,7 @@ import datetime
 from __main__ import DB_NAME, EMBED_COLOR
 from ..libs.oclib import *
 
+
 class CaseListButtonView(ui.View):
     def __init__(self, cases, per_page=10):
         super().__init__(timeout=30)
@@ -174,7 +175,7 @@ class ModLog(commands.Cog):
             name="Moderator", value=f"<@{case['moderator_id']}>", inline=True
         )
         embed.add_field(name="Target", value=f"<@{case['member_id']}>", inline=False)
-        target = await self.bot.fetch_user(case['member_id'])
+        target = await self.bot.fetch_user(case["member_id"])
         embed.set_thumbnail(url=target.avatar.url)
         embed.add_field(name="Reason", value=case["reason"], inline=False)
         await ctx.reply(embed=embed, mention_author=False)

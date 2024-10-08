@@ -8,6 +8,7 @@ import nextcord
 from dns import resolver as _dnsresolver
 from nextcord.ext import commands
 from __main__ import EMBED_COLOR
+from ..libs.oclib import *
 
 
 def construct_embed(url: str, full_answer: str):
@@ -33,7 +34,10 @@ class DNS(commands.Cog):
                 answers = _dnsresolver.resolve(url, record_type)
                 records = "\n".join([str(ans) for ans in answers])
                 if records:
-                    full_answer += f"**{record_type} Records**\n```{records}```\n"
+                    emoji = await fetch_random_emoji()
+                    full_answer += (
+                        f"{emoji} **{record_type} Records**\n```{records}```\n"
+                    )
             except _dnsresolver.NoAnswer:
                 continue
             except _dnsresolver.NXDOMAIN:
@@ -65,7 +69,10 @@ class DNS(commands.Cog):
                 answers = _dnsresolver.resolve(url, record_type)
                 records = "\n".join([str(ans) for ans in answers])
                 if records:
-                    full_answer += f"**{record_type} Records**\n```{records}```\n"
+                    emoji = await fetch_random_emoji()
+                    full_answer += (
+                        f"{emoji} **{record_type} Records**\n```{records}```\n"
+                    )
             except _dnsresolver.NoAnswer:
                 continue
             except _dnsresolver.NXDOMAIN:

@@ -23,9 +23,12 @@ class Utils(commands.Cog):
     async def ping(self, ctx: commands.Context):
         """Ping the bot."""
         latency = round(self.bot.latency * 1000)
-        await ctx.reply(
-            f"Success! {BOT_NAME} is awake. Ping: {latency}ms", mention_author=False
+        emoji = await fetch_random_emoji()
+        embed = nextcord.Embed(
+            description=f"{emoji} Success! {BOT_NAME} is awake. Ping: {latency}ms",
+            color=EMBED_COLOR,
         )
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="join-position", aliases=["jp", "japan"])
     async def join_position(self, ctx: commands.Context, member: str = None):
@@ -86,9 +89,11 @@ class UtilsSlash(commands.Cog):
     async def slash_ping(self, interaction: nextcord.Interaction):
         """Ping the bot."""
         latency = round(self.bot.latency * 1000)
-        await interaction.send(
-            f"Success! {BOT_NAME} is awake. Ping: {latency}ms", ephemeral=True
+        embed = nextcord.Embed(
+            description=f"{emoji} Success! {BOT_NAME} is awake. Ping: {latency}ms",
+            color=EMBED_COLOR,
         )
+        await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="join-position")
     async def slash_join_position(

@@ -30,7 +30,8 @@ class MinecraftServerStatus(commands.Cog):
             if server:
                 title = server.get("host")
                 if server.get("online") == True:
-                    title = title + " (Online)"
+                    emoji = await fetch_random_emoji()
+                    title = f"{emoji} {title} (Online)"
                 else:
                     title = title + " (Offline)"
                 embed = nextcord.Embed(title=title, color=EMBED_COLOR)
@@ -74,8 +75,8 @@ class MinecraftServerStatus(commands.Cog):
             )
             await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command()
-    async def mcstatus(
+    @nextcord.slash_command(name="mcstatus")
+    async def slash_mcstatus(
         self,
         interaction: nextcord.Interaction,
         *,
@@ -89,7 +90,8 @@ class MinecraftServerStatus(commands.Cog):
             if server:
                 title = server.get("host")
                 if server.get("online") == True:
-                    title = title + " (Online)"
+                    emoji = await fetch_random_emoji()
+                    title = f"{emoji} {title} (Online)"
                 else:
                     title = title + " (Offline)"
                 embed = nextcord.Embed(title=title, color=EMBED_COLOR)

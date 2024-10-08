@@ -13,7 +13,7 @@ start_time = datetime.datetime.utcnow()
 
 # for those commands where you can mention a user either by mentioning them, using their ID, their username, or displayname
 def extract_user_id(
-    member_str: str, ctx: commands.Context or nextcord.Interaction
+    member_str: str, ctx: commands.Context | nextcord.Interaction
 ) -> nextcord.Member:
     match = re.match(r"<@!?(\d+)>", member_str)
     if match:
@@ -64,7 +64,7 @@ def duration_calculator(duration: str) -> int:
 def perms_check(
     member: nextcord.Member = None,
     *,
-    ctx: commands.Context or nextcord.Interaction,
+    ctx: commands.Context | nextcord.Interaction,
     author_check: bool = True,
     owner_check: bool = True,
     role_check: bool = True,
@@ -126,7 +126,7 @@ async def uptime_fetcher():
 class ConfirmationView(View):
     def __init__(
         self,
-        ctx: commands.Context or nextcord.Interaction,
+        ctx: commands.Context | nextcord.Interaction,
         member: nextcord.Member,
         action: str,
         reason: str,

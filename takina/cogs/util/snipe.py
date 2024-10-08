@@ -25,7 +25,11 @@ class Snipe(commands.Cog):
         sniped_message = self.sniped_messages.get(ctx.channel.id)
 
         if not sniped_message:
-            await ctx.reply("There's nothing to snipe!", mention_author=False)
+            embed = nextcord.Embed(
+                description="There's nothing to snipe!",
+                color=EMBED_COLOR,
+            )
+            await ctx.reply(embed=embed, mention_author=False)
             return
 
         embed = nextcord.Embed(
