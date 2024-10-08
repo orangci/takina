@@ -8,6 +8,7 @@ Takina does not currently follow all these, but hopefully will soon. These stand
 
 ### Formatting
 `black **/*.py` should be run in the takina folder before every commit.
+- Each commit should follow the Conventional Commits standard, for example: `fix(mod): mute command did not check for perms`. The scope should be the subfolder affected in the cogs dir, and if there is none, use (core) as a scope.
 
 ### Categorization
 - the `fun` folder is for fun related commands and cogs

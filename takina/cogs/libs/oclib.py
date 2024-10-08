@@ -6,8 +6,7 @@ import datetime
 from nextcord.ui import Button, View
 import os
 import random
-
-EMBED_COLOR = os.getenv("EMBED_COLOR")
+from __main__ import EMBED_COLOR
 
 start_time = datetime.datetime.utcnow()
 

@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 import asyncio
 from aiohttp import web
-from cogs.libs.oclib import *
 
 load_dotenv()
 
