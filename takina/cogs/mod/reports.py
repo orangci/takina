@@ -4,7 +4,7 @@ from nextcord.ext import application_checks, commands
 from nextcord import Interaction, SlashOption
 from motor.motor_asyncio import AsyncIOMotorClient
 from __main__ import DB_NAME
-
+from ..libs.oclib import *
 
 class Reports(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -37,12 +37,12 @@ class Reports(commands.Cog):
     async def report(
         self,
         interaction: Interaction,
-        channel: nextcord.TextChannel = SlashOption(
-            description="The channel where the issue happened."
+        user: nextcord.Member = SlashOption(
+            description="User being reported.", required=True
         ),
         reason: str = SlashOption(description="Reason for the report."),
-        user: nextcord.Member = SlashOption(
-            description="User being reported.", required=False
+        channel: nextcord.TextChannel = SlashOption(
+            description="The channel where the issue happened.", required=False
         ),
     ):
         guild_id = interaction.guild.id
@@ -66,13 +66,14 @@ class Reports(commands.Cog):
 
         embed = nextcord.Embed(
             title="New Report",
-            description=f"Issue reported in {channel.mention}",
+            description=f"Issue reported in {interaction.channel.mention}",
             color=nextcord.Color.red(),
         )
         embed.add_field(name="Reason", value=reason, inline=False)
 
-        if user:
-            embed.add_field(name="Reported User", value=user.mention, inline=False)
+
+        embed.add_field(name="Reported User", value=user.mention, inline=False)
+        embed.set_thumbnail(url=user.avatar.url)
 
         embed.set_footer(
             text=f"Reported by {interaction.user}",
@@ -81,8 +82,9 @@ class Reports(commands.Cog):
 
         # Send the embed to the reports channel, pinging the moderator role
         await reports_channel.send(content=f"<@&{moderator_role_id}>", embed=embed)
+        emoji = await fetch_random_emoji()
         submitted_embed = nextcord.Embed(
-            description="✅ Report successfully submitted. Thank you for helping to keep our server safe!",
+            description=f"{emoji} Report successfully submitted. Thank you for helping to keep our server safe!",
             color=nextcord.Color.green(),
         )
         await interaction.response.send_message(embed=submitted_embed, ephemeral=True)
