@@ -1,5 +1,5 @@
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import commands, application_checks
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 from nextcord import SlashOption
@@ -74,6 +74,7 @@ class Starboard(commands.Cog):
         pass
 
     @starboard.subcommand(description="Whitelist a channel for starboard tracking")
+    @application_checks.has_permissions(manage_guild=True)
     async def whitelist(
         self, interaction: nextcord.Interaction, channel: nextcord.TextChannel
     ):
