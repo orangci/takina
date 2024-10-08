@@ -41,8 +41,8 @@ class OwnerUtils(commands.Cog):
     @commands.command(aliases=["maintainer", "perms"])
     async def owner(self, ctx: commands.Context):
         owner_names = []
-        for owner_id in self._bot.owner_ids:
-            owner = self._bot.get_user(owner_id) or await self._bot.fetch_user(owner_id)
+        for owner_id in self.bot.owner_ids:
+            owner = self.bot.get_user(owner_id) or await self.bot.fetch_user(owner_id)
             if owner:
                 owner_names.append("**" + owner.display_name + "**")
             else:

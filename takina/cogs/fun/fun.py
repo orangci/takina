@@ -35,6 +35,7 @@ class Fun(commands.Cog):
 
     @commands.command(name="google")
     async def google(self, ctx: commands.Context, *, query: str):
+        """Google a query. Usage: `google query`."""
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
         emoji = await fetch_random_emoji()

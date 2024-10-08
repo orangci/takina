@@ -30,11 +30,11 @@ class Errors(commands.Cog):
         elif isinstance(error, commands.UserInputError) or isinstance(
             error, commands.BadArgument
         ):
-            description = "It seems that you've made a mistake while entering the command. Please check your command syntax and ensure all required parameters are provided correctly. **Run `?help command` for information on how to correctly use a command.**"
+            description = "It seems that you've made a mistake while entering the command. Please check your command syntax and ensure all required parameters are provided correctly. **Run `help command` for information on how to correctly use a command.**"
             error_type = "User Input Error"
 
         elif isinstance(error, commands.CommandNotFound):
-            description = "The command you entered does not exist. Please ensure you typed it correctly. Type `?help` for a full list of commands."
+            description = "The command you entered does not exist. Please ensure you typed it correctly. Type `help` for a full list of commands."
             error_type = "Command Not Found"
 
         elif isinstance(error, commands.errors.DisabledCommand):
