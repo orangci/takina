@@ -32,6 +32,7 @@ class UrbanDictionary(commands.Cog):
         embed.set_footer(
             text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by: Urban Dictionary"
         )
+        embed.set_thumbnail(url="https://www.urbandictionary.com/favicon-32x32.png")
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(name="ubdict")
@@ -60,6 +61,7 @@ class UrbanDictionary(commands.Cog):
         embed.set_footer(
             text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by: Urban Dictionary"
         )
+        embed.set_thumbnail(url="https://www.urbandictionary.com/favicon-32x32.png")
         await interaction.send(embed=embed)
 
 

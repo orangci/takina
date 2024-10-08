@@ -2,6 +2,8 @@ import random
 import nextcord
 from nextcord.ext import commands
 from ..libs.topics_list import topics
+from __main__ import EMBED_COLOR
+from ..libs.oclib import *
 
 
 class Topic(commands.Cog):
@@ -10,15 +12,19 @@ class Topic(commands.Cog):
 
     @commands.command()
     async def topic(self, ctx: commands.Context):
-        """Sends a random topic from the predefined list."""
+        """Sends a random topic."""
         random_topic = random.choice(topics)
-        await ctx.reply(random_topic, mention_author=False)
+        emoji = await fetch_random_emoji()
+        embed = nextcord.Embed(description=f"{random_topic} {emoji}", color=EMBED_COLOR)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(name="topic")
     async def topic_slash(self, interaction: nextcord.Interaction):
-        """Sends a random topic from the predefined list."""
+        """Sends a random topic."""
         random_topic = random.choice(topics)
-        await interaction.send(random_topic)
+        emoji = await fetch_random_emoji()
+        embed = nextcord.Embed(description=f"{random_topic} {emoji}", color=EMBED_COLOR)
+        await interaction.send(embed=embed)
 
 
 def setup(bot: commands.Bot):

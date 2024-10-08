@@ -37,9 +37,10 @@ class Fun(commands.Cog):
     async def google(self, ctx: commands.Context, *, query: str):
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
+        emoji = await fetch_random_emoji()
         lmgtfy_url = f"https://letmegooglethat.com/?q={query}"
         embed = nextcord.Embed(
-            title="Let Me Google That For You!",
+            title=f"{emoji} Let Me Google That For You!",
             description=f"Here is your search result for: **{query_before_conversion}**",
             url=lmgtfy_url,
             color=EMBED_COLOR,
@@ -50,9 +51,10 @@ class Fun(commands.Cog):
     @commands.command(name="roll")
     async def roll(self, ctx: commands.Context):
         number = random.randint(1, 100)
+        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title="What number did you roll?",
-            description=f"You rolled a {number}!",
+            title=f"What number did you roll? {emoji}",
+            description=f"You rolled {number}!",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
@@ -125,8 +127,9 @@ class FunSlash(commands.Cog):
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
         lmgtfy_url = f"https://letmegooglethat.com/?q={query}"
+        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title="Let Me Google That For You!",
+            title=f"{emoji} Let Me Google That For You!",
             description=f"Here is your search result for: **{query_before_conversion}**",
             url=lmgtfy_url,
             color=EMBED_COLOR,
@@ -137,9 +140,10 @@ class FunSlash(commands.Cog):
     @nextcord.slash_command(name="roll", description="Roll a number!")
     async def slash_roll(self, interaction: nextcord.Interaction):
         number = random.randint(1, 100)
+        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title="What number did you roll?",
-            description=f"You rolled a {number}!",
+            title=f"What number did you roll? {emoji}",
+            description=f"You rolled {number}!",
             color=EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
