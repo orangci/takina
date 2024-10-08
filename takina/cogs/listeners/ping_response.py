@@ -28,20 +28,22 @@ class PingResponse(commands.Cog):
     async def on_message(self, message: nextcord.Message):
         if self.bot.user.mentioned_in(message) and not message.author.bot:
             if message.content.strip() == message.guild.me.mention:
+                emoji = await fetch_random_emoji()
                 embed = nextcord.Embed(
-                    title="Takina",
+                    title=f"{emoji} Takina",
                     url="https://github.com/orxngc/takina",
                     description="Takina is a multipurpose opensource bot written in Python. More information is available in the [Github repository](https://github.com/orxngc/takina).",
                     color=EMBED_COLOR,
                 )
                 uptime = await uptime_fetcher()
-                embed.add_field(name="Prefix", value=PREFIX, inline=True)
-                embed.add_field(name="Stars", value=str(self.stars), inline=True)
-                embed.add_field(name="Uptime", value=uptime, inline=True)
+                embed.add_field(name=":sparkles: Prefix", value=PREFIX, inline=True)
+                embed.add_field(name=":star: Stars", value=str(self.stars), inline=True)
+                embed.add_field(name=":alarm_clock: Uptime", value=uptime, inline=True)
+                orangc = await self.bot.fetch_user(961063229168164864)
                 embed.set_author(
                     name="orangc",
                     url="https://orangc.xyz",
-                    icon_url="https://cdn.discordapp.com/avatars/961063229168164864/4bfbf378514a9dcc7a619b5ce5e7e57c.webp",
+                    icon_url=orangc.avatar.url,
                 )
                 await message.reply(embed=embed, mention_author=False)
 

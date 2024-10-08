@@ -180,18 +180,18 @@ class Starboard(commands.Cog):
         """Helper function to create the starboard embed."""
         embed = nextcord.Embed(
             title="Starred Message",
-            description=message.content or "[No Content]",
+            description=f"[Jump to Message]({message.jump_url})\n\n" + message.content
+            or f"[Jump to Message]({message.jump_url})\n\n"
+            + "Image / Other Media / No Content",
             color=EMBED_COLOR,
         )
-        embed.add_field(name="Author", value=message.author.mention, inline=True)
+        embed.add_field(name="👤 Author", value=message.author.mention, inline=True)
         embed.add_field(
-            name="Link to Message",
-            value=f"[Jump to Message]({message.jump_url})",
+            name=":hash: Channel",
+            value=message.channel.name,
             inline=True,
         )
-        embed.set_footer(
-            text=f"Channel: {message.channel.name} | Emoji: {reaction.emoji} | Reactions: {reaction.count}"
-        )
+        embed.set_footer(text=f"{reaction.count} {reaction.emoji} reactions")
         return embed
 
 
