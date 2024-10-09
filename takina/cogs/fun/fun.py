@@ -72,7 +72,7 @@ class Fun(commands.Cog):
             color=EMBED_COLOR,
         )
 
-    await ctx.reply(embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="avatar")
     async def avatar(self, ctx: commands.Context, member: str = None):
@@ -205,7 +205,7 @@ class FunSlash(commands.Cog):
         )
         await interaction.send(embed=embed)
 
-    @commands.command(name="commit")
+    @nextcord.slash_command(name="commit")
     async def commit(self, interaction: nextcord.Interaction):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://whatthecommit.com/index.txt") as response:
