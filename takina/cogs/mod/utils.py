@@ -22,9 +22,8 @@ class ModUtils(commands.Cog):
         """Send a message as the bot. Usage: `send channel message`."""
         if channel and message:
             await channel.send(message)
-            emoji = await fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f"{emoji} Successfully sent message.", color=EMBED_COLOR
+                description="✅ Successfully sent message.", color=EMBED_COLOR
             )
             await ctx.reply(embed=embed, mention_author=False, delete_after=2)
         elif message:
@@ -49,9 +48,8 @@ class ModUtils(commands.Cog):
             return
 
         deleted = await ctx.channel.purge(limit=amount + 1)
-        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            description=f"{emoji} Successfully purged {amount} messages.",
+            description=f"✅ Successfully purged {amount} messages.",
             color=EMBED_COLOR,
         )
         await ctx.send(
@@ -81,9 +79,8 @@ class ModUtils(commands.Cog):
             nickname = member.name
 
         await member.edit(nick=nickname)
-        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            description=f"{emoji} **{member.mention}**'s nickname has been changed to **{nickname}**."
+            description=f"✅ **{member.mention}**'s nickname has been changed to **{nickname}**."
         )
         await ctx.reply(
             embed=embed,
@@ -109,9 +106,8 @@ class ModUtilsSlash(commands.Cog):
         """Send a message as the bot."""
         if channel and message:
             await channel.send(message)
-            emoji = await fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f"{emoji} Successfully sent message.", color=EMBED_COLOR
+                description="✅ Successfully sent message.", color=EMBED_COLOR
             )
             await interaction.send(embed=embed, ephemeral=True)
         elif message:
@@ -142,7 +138,7 @@ class ModUtilsSlash(commands.Cog):
 
         deleted = await interaction.channel.purge(limit=amount + 1)
         embed = nextcord.Embed(
-            description=f"{emoji} Successfully purged {len(deleted)} messages.",
+            description=f"✅ Successfully purged {len(deleted)} messages.",
             color=EMBED_COLOR,
         )
         await ctx.reply(
@@ -176,9 +172,8 @@ class ModUtilsSlash(commands.Cog):
             nickname = member.name
 
         await member.edit(nick=nickname)
-        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            description=f"{emoji} **{member.mention}**'s nickname has been changed to **{nickname}**."
+            description=f"✅ **{member.mention}**'s nickname has been changed to **{nickname}**."
         )
         await interaction.send(
             embed=embed,
