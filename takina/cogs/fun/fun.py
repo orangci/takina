@@ -26,6 +26,27 @@ class Fun(commands.Cog):
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
+    
+    @commands.command(name="joke")
+    async def joke(self, ctx: commands.Context):
+        data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+        while data.get("category") == "Christmas":
+            data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+        emoji = await fetch_random_emoji()
+        joke = data.get("joke")
+        if joke:
+            embed = nextcord.Embed(
+                description=f"{joke} {emoji}",
+                color=EMBED_COLOR,
+            )
+        else:
+            setup = data.get("setup")
+            delivery = data.get("delivery")
+            embed = nextcord.Embed(
+                description=f"{setup}\n {delivery} {emoji}",
+                color=EMBED_COLOR,
+            )
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="avatar")
     async def avatar(self, ctx: commands.Context, member: str = None):
@@ -115,7 +136,7 @@ class FunSlash(commands.Cog):
         latency = bot.latency
 
     @nextcord.slash_command(name="fact")
-    async def fact(self, ctx: nextcord.Interaction):
+    async def slash_fact(self, interaction: nextcord.Interaction):
         data = await request("https://uselessfacts.jsph.pl/api/v2/facts/random")
         fact = data.get("text")
         emoji = await fetch_random_emoji()
@@ -123,6 +144,27 @@ class FunSlash(commands.Cog):
             description=f"{fact} {emoji}",
             color=EMBED_COLOR,
         )
+        await interaction.send(embed=embed)
+
+    @nextcord.slash_command(name="joke")
+    async def slash_joke(self, interaction: nextcord.Interaction):
+        data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+        while data.get("category") == "Christmas":
+            data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+        emoji = await fetch_random_emoji()
+        joke = data.get("joke")
+        if joke:
+            embed = nextcord.Embed(
+                description=f"{joke} {emoji}",
+                color=EMBED_COLOR,
+            )
+        else:
+            setup = data.get("setup")
+            delivery = data.get("delivery")
+            embed = nextcord.Embed(
+                description=f"{setup}\n {delivery} {emoji}",
+                color=EMBED_COLOR,
+            )
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="avatar")

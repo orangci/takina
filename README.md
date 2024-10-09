@@ -12,6 +12,7 @@ Takina utilizes the Jikan API for this module.
 
 ## fun
 - random fact fetching command
+- random joke command
 - user avatar fetching command
 - google command
 - roll command
