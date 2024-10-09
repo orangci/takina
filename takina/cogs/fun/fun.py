@@ -16,6 +16,17 @@ class Fun(commands.Cog):
         self._bot = bot
         latency = bot.latency
 
+    @commands.command(name="fact")
+    async def fact(self, ctx: commands.Context):
+        data = await request("https://uselessfacts.jsph.pl/api/v2/facts/random")
+        fact = data.get("text")
+        emoji = await fetch_random_emoji()
+        embed = nextcord.Embed(
+            description=f"{fact} {emoji}",
+            color=EMBED_COLOR,
+        )
+        await ctx.reply(embed=embed, mention_author=False)
+
     @commands.command(name="avatar")
     async def avatar(self, ctx: commands.Context, member: str = None):
         if member is None:
@@ -102,6 +113,17 @@ class FunSlash(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
         latency = bot.latency
+
+    @nextcord.slash_command(name="fact")
+    async def fact(self, ctx: nextcord.Interaction):
+        data = await request("https://uselessfacts.jsph.pl/api/v2/facts/random")
+        fact = data.get("text")
+        emoji = await fetch_random_emoji()
+        embed = nextcord.Embed(
+            description=f"{fact} {emoji}",
+            color=EMBED_COLOR,
+        )
+        await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="avatar")
     async def slash_avatar(

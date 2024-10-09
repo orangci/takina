@@ -11,6 +11,7 @@ Takina utilizes the Jikan API for this module.
 - seasonal anime — `?season Summer 2022`
 
 ## fun
+- random fact fetching command
 - user avatar fetching command
 - google command
 - roll command
@@ -19,7 +20,6 @@ Takina utilizes the Jikan API for this module.
 - 8ball command
 
 ## listeners
-- antiphishing module
 - github module; this sends embeds when a user sends a repository / pull request / issue link from Github, inspired by Monty Python
 - starboard module
 
