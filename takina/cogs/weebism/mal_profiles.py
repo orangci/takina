@@ -20,6 +20,7 @@ class MAL_Profiles(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def mal(self, ctx: commands.Context, *, username: str):
         try:
             profile_url = f"https://api.jikan.moe/v4/users/{username}"

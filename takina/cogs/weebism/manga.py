@@ -28,6 +28,7 @@ class MangaSearch(commands.Cog):
             raise e
 
     @commands.command()
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def manga(self, ctx: commands.Context, *, manga_name: str):
         """Command for searching manga on MymangaList. Usage example: `?manga Lycoris Recoil` or `?manga 135455`."""
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"

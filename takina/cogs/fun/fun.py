@@ -17,6 +17,7 @@ class Fun(commands.Cog):
         latency = bot.latency
 
     @commands.command(name="fact")
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def fact(self, ctx: commands.Context):
         data = await request("https://uselessfacts.jsph.pl/api/v2/facts/random")
         fact = data.get("text")
@@ -28,6 +29,7 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="joke", aliases=["dadjoke"])
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def joke(self, ctx: commands.Context):
         joke_type = random.choice(["dadjoke", "regular"])
 
@@ -61,6 +63,7 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="commit")
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def commit(self, ctx: commands.Context):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://whatthecommit.com/index.txt") as response:
@@ -75,6 +78,7 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="avatar")
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def avatar(self, ctx: commands.Context, member: str = None):
         if member is None:
             member = ctx.author
@@ -92,6 +96,7 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="google")
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def google(self, ctx: commands.Context, *, query: str):
         """Google a query. Usage: `google query`."""
         query_before_conversion = query
@@ -108,6 +113,7 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="roll")
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def roll(self, ctx: commands.Context):
         number = random.randint(1, 100)
         emoji = await fetch_random_emoji()
@@ -119,6 +125,7 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="8ball")
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def eight_ball(self, ctx: commands.Context, *, question: str = None):
         responses = [
             "It is certain.",

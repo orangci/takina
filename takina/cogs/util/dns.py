@@ -53,6 +53,7 @@ class DNS(commands.Cog):
         self._bot: commands.Bot = bot
 
     @commands.command(aliases=["dns"])
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def dig(self, ctx: commands.Context, url: str):
         """Prints DNS records for a domain. Usage: `a?dig URL`."""
         record_types = ["A", "CNAME", "AAAA", "MX", "TXT", "SRV", "PTR"]

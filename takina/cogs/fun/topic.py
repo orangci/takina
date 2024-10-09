@@ -11,6 +11,7 @@ class Topic(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def topic(self, ctx: commands.Context):
         """Sends a random topic."""
         random_topic = random.choice(topics)

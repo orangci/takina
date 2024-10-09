@@ -20,6 +20,7 @@ class Utils(commands.Cog):
         self.bot: commands.Bot = bot
 
     @commands.command()
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def ping(self, ctx: commands.Context):
         """Ping the bot."""
         latency = round(self.bot.latency * 1000)
@@ -31,6 +32,7 @@ class Utils(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="join-position", aliases=["jp", "japan"])
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def join_position(self, ctx: commands.Context, member: str = None):
         guild = ctx.guild
         if member is None:
@@ -63,6 +65,7 @@ class Utils(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="member-count", aliases=["mc"])
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def member_count(self, ctx: commands.Context):
         guild = ctx.guild
 

@@ -27,6 +27,7 @@ class CharacterSearch(commands.Cog):
             raise e
 
     @commands.command(aliases=["waifu", "chr"])
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def character(self, ctx: commands.Context, *, character_name: str):
         """Command for searching character on MyAnimeList. Usage: `chr Takina Inoue` or `?chr 204620`."""
         try:

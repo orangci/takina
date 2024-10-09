@@ -39,6 +39,7 @@ class AnimeSeasonals(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=["season"])
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def seasonals(
         self, ctx: commands.Context, season: str = None, year: int = None
     ):

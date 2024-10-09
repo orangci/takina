@@ -23,6 +23,7 @@ class MinecraftServerStatus(commands.Cog):
             raise e
 
     @commands.command()
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def mcstatus(self, ctx: commands.Context, *, server_name: str):
         """Command for displaying a Minecraft server's status. Usage: `mcstatus mc.orangc.xyz`."""
         try:

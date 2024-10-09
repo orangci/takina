@@ -11,6 +11,7 @@ class Info(commands.Cog):
         self.bot = bot
 
     @commands.command(name="userinfo")
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def userinfo(self, ctx: commands.Context, member: str = None):
         """Fetch user information. Usage: `userinfo member`."""
         if member is None:
@@ -59,6 +60,7 @@ class Info(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="roleinfo")
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def roleinfo(self, ctx: commands.Context, role: nextcord.Role):
         """Fetch role information. `roleinfo role`."""
         emoji = await fetch_random_emoji()
@@ -78,6 +80,7 @@ class Info(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="serverinfo")
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def serverinfo(self, ctx: commands.Context):
         """Fetch server information. `serverinfo`."""
         guild = ctx.guild
