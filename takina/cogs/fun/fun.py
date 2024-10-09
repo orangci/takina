@@ -29,23 +29,33 @@ class Fun(commands.Cog):
     
     @commands.command(name="joke")
     async def joke(self, ctx: commands.Context):
-        data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
-        while data.get("category") == "Christmas":
-            data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
-        emoji = await fetch_random_emoji()
-        joke = data.get("joke")
-        if joke:
-            embed = nextcord.Embed(
-                description=f"{joke} {emoji}",
-                color=EMBED_COLOR,
-            )
+        joke_type = random.choice(["dadjoke", "regular"])
+        print(joke_type)
+
+        if joke_type == "dadjoke":
+            async with aiohttp.ClientSession() as session:
+                async with session.get("https://icanhazdadjoke.com/", headers={"Accept": "application/json"}) as response:
+                    data = await response.json()
+
+            joke = data.get("joke")
+
         else:
-            setup = data.get("setup")
-            delivery = data.get("delivery")
-            embed = nextcord.Embed(
-                description=f"{setup}\n {delivery} {emoji}",
-                color=EMBED_COLOR,
-            )
+            data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+            while data.get("category") == "Christmas":
+                data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+
+            joke = data.get("joke")
+            if not joke:
+                setup = data.get("setup")
+                delivery = data.get("delivery")
+                joke = f"{setup}\n{delivery}"
+
+        emoji = await fetch_random_emoji()
+
+        embed = nextcord.Embed(
+            description=f"{joke} {emoji}",
+            color=EMBED_COLOR,
+        )
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="avatar")
@@ -148,23 +158,33 @@ class FunSlash(commands.Cog):
 
     @nextcord.slash_command(name="joke")
     async def slash_joke(self, interaction: nextcord.Interaction):
-        data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
-        while data.get("category") == "Christmas":
-            data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
-        emoji = await fetch_random_emoji()
-        joke = data.get("joke")
-        if joke:
-            embed = nextcord.Embed(
-                description=f"{joke} {emoji}",
-                color=EMBED_COLOR,
-            )
+        joke_type = random.choice(["dadjoke", "regular"])
+        print(joke_type)
+
+        if joke_type == "dadjoke":
+            async with aiohttp.ClientSession() as session:
+                async with session.get("https://icanhazdadjoke.com/", headers={"Accept": "application/json"}) as response:
+                    data = await response.json()
+
+            joke = data.get("joke")
+
         else:
-            setup = data.get("setup")
-            delivery = data.get("delivery")
-            embed = nextcord.Embed(
-                description=f"{setup}\n {delivery} {emoji}",
-                color=EMBED_COLOR,
-            )
+            data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+            while data.get("category") == "Christmas":
+                data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+
+            joke = data.get("joke")
+            if not joke:
+                setup = data.get("setup")
+                delivery = data.get("delivery")
+                joke = f"{setup}\n{delivery}"
+
+        emoji = await fetch_random_emoji()
+
+        embed = nextcord.Embed(
+            description=f"{joke} {emoji}",
+            color=EMBED_COLOR,
+        )
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="avatar")
