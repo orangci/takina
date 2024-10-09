@@ -51,10 +51,10 @@ class ModUtils(commands.Cog):
         deleted = await ctx.channel.purge(limit=amount + 1)
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            description=f"{emoji} Successfully purged {len(deleted)} messages.",
+            description=f"{emoji} Successfully purged {amount} messages.",
             color=EMBED_COLOR,
         )
-        await ctx.reply(
+        await ctx.send(
             embed=embed,
             delete_after=2,
             mention_author=False,

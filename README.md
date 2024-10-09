@@ -54,5 +54,3 @@ Using the Dockerfile or Nix.
 - add autoroles / join roles
 - refactor github module
 - replace aiohttp with requests where i can
-- add command cooldowns
-- fix purge command
