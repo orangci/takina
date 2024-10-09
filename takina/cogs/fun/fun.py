@@ -26,14 +26,17 @@ class Fun(commands.Cog):
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
-    
+
     @commands.command(name="joke", aliases=["dadjoke"])
     async def joke(self, ctx: commands.Context):
         joke_type = random.choice(["dadjoke", "regular"])
 
         if joke_type == "dadjoke":
             async with aiohttp.ClientSession() as session:
-                async with session.get("https://icanhazdadjoke.com/", headers={"Accept": "application/json"}) as response:
+                async with session.get(
+                    "https://icanhazdadjoke.com/",
+                    headers={"Accept": "application/json"},
+                ) as response:
                     data = await response.json()
 
             joke = data.get("joke")
@@ -56,6 +59,20 @@ class Fun(commands.Cog):
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.command(name="commit")
+    async def commit(self, ctx: commands.Context):
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://whatthecommit.com/index.txt") as response:
+                commit_message = await response.text()
+
+        embed = nextcord.Embed(
+            title=f"Most normal commit message {await fetch_random_emoji()}",
+            description=commit_message,
+            color=EMBED_COLOR,
+        )
+
+    await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="avatar")
     async def avatar(self, ctx: commands.Context, member: str = None):
@@ -161,7 +178,10 @@ class FunSlash(commands.Cog):
 
         if joke_type == "dadjoke":
             async with aiohttp.ClientSession() as session:
-                async with session.get("https://icanhazdadjoke.com/", headers={"Accept": "application/json"}) as response:
+                async with session.get(
+                    "https://icanhazdadjoke.com/",
+                    headers={"Accept": "application/json"},
+                ) as response:
                     data = await response.json()
 
             joke = data.get("joke")
@@ -183,6 +203,20 @@ class FunSlash(commands.Cog):
             description=f"{joke} {emoji}",
             color=EMBED_COLOR,
         )
+        await interaction.send(embed=embed)
+
+    @commands.command(name="commit")
+    async def commit(self, interaction: nextcord.Interaction):
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://whatthecommit.com/index.txt") as response:
+                commit_message = await response.text()
+
+        embed = nextcord.Embed(
+            title=f"Most normal commit message {await fetch_random_emoji()}",
+            description=commit_message,
+            color=EMBED_COLOR,
+        )
+
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="avatar")
