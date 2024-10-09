@@ -66,13 +66,13 @@ class MinecraftServerStatus(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description="Server not found.",
-                    color=nextcord.Color.red(),
+                    color=0xFF0037,
                 )
                 await ctx.reply(embed=embed, mention_author=False)
 
         except Exception as e:
             embed = nextcord.Embed(
-                title="Error", description=str(e), color=nextcord.Color.red()
+                title="Error", description=str(e), color=0xFF0037
             )
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -126,13 +126,13 @@ class MinecraftServerStatus(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description="Server not found.",
-                    color=nextcord.Color.red(),
+                    color=0xFF0037,
                 )
                 await interaction.send(embed=embed, ephemeral=True)
 
         except Exception as e:
             embed = nextcord.Embed(
-                title="Error", description=str(e), color=nextcord.Color.red()
+                title="Error", description=str(e), color=0xFF0037
             )
             await interaction.send(embed=embed, ephemeral=True)
 

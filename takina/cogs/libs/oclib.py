@@ -72,7 +72,7 @@ def perms_check(
     # Check if member is valid
     if not isinstance(member, nextcord.Member) or member is None:
         return False, nextcord.Embed(
-            description="Member not found.", color=nextcord.Color.red()
+            description="Member not found.", color=0xFF0037
         )
 
     if isinstance(ctx, commands.Context):
@@ -81,21 +81,21 @@ def perms_check(
         author = ctx.user
     else:
         return False, nextcord.Embed(
-            description="Invalid context.", color=nextcord.Color.red()
+            description="Invalid context.", color=0xFF0037
         )
 
     # Toggle for self-action check
     if author_check and member == author:
         return False, nextcord.Embed(
             description="You cannot perform this action on yourself.",
-            color=nextcord.Color.red(),
+            color=0xFF0037,
         )
 
     # Toggle for server owner check
     if owner_check and member == ctx.guild.owner:
         return False, nextcord.Embed(
             description="You cannot perform this action on the server owner.",
-            color=nextcord.Color.red(),
+            color=0xFF0037,
         )
 
     # Toggle for role hierarchy checks
@@ -105,7 +105,7 @@ def perms_check(
                 False,
                 nextcord.Embed(
                     description="You cannot perform this action on someone with a higher or equal role than yours.",
-                    color=nextcord.Color.red(),
+                    color=0xFF0037,
                 ),
             )
 
@@ -114,7 +114,7 @@ def perms_check(
                 False,
                 nextcord.Embed(
                     description="I can't perform this action on someone with a higher or equal role than mine.",
-                    color=nextcord.Color.red(),
+                    color=0xFF0037,
                 ),
             )
 

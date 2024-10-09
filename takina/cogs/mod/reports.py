@@ -68,7 +68,7 @@ class Reports(commands.Cog):
         embed = nextcord.Embed(
             title="New Report",
             description=f"Issue reported in {interaction.channel.mention}",
-            color=nextcord.Color.red(),
+            color=0xFF0037,
         )
         embed.add_field(name="Reason", value=reason, inline=False)
 

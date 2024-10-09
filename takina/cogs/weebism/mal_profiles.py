@@ -28,7 +28,7 @@ class MAL_Profiles(commands.Cog):
 
             if not profile_data or not profile_data.get("data"):
                 embed = nextcord.Embed(
-                    title="User not found.", color=nextcord.Color.red()
+                    title="User not found.", color=0xFF0037
                 )
                 await ctx.reply(embed=embed, mention_author=False)
                 return
@@ -82,7 +82,7 @@ class MAL_Profiles(commands.Cog):
 
         except Exception as e:
             embed = nextcord.Embed(
-                title="Error", description=str(e), color=nextcord.Color.red()
+                title="Error", description=str(e), color=0xFF0037
             )
 
         await ctx.reply(embed=embed, mention_author=False)
@@ -154,7 +154,7 @@ class MAL_Profiles(commands.Cog):
 
         except Exception as e:
             embed = nextcord.Embed(
-                title="Error", description=str(e), color=nextcord.Color.red()
+                title="Error", description=str(e), color=0xFF0037
             )
 
         await ctx.response.send_message(embed=embed, ephemeral=True)

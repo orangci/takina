@@ -72,7 +72,7 @@ class AnimeSeasonals(commands.Cog):
                 embed = nextcord.Embed(
                     title="No Seasonals Found",
                     description="No seasonal anime available.",
-                    color=nextcord.Color.red(),
+                    color=0xFF0037,
                 )
                 await ctx.reply(embed=embed, mention_author=False)
                 return
@@ -106,7 +106,7 @@ class AnimeSeasonals(commands.Cog):
 
         except Exception as e:
             embed = nextcord.Embed(
-                title="Error", description=str(e), color=nextcord.Color.red()
+                title="Error", description=str(e), color=0xFF0037
             )
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -151,7 +151,7 @@ class AnimeSeasonals(commands.Cog):
                 embed = nextcord.Embed(
                     title="No Seasonals Found",
                     description="No seasonal anime available.",
-                    color=nextcord.Color.red(),
+                    color=0xFF0037,
                 )
                 await interaction.response.send_message(embed=embed)
                 return
@@ -185,7 +185,7 @@ class AnimeSeasonals(commands.Cog):
 
         except Exception as e:
             embed = nextcord.Embed(
-                title="Error", description=str(e), color=nextcord.Color.red()
+                title="Error", description=str(e), color=0xFF0037
             )
             await interaction.response.send_message(embed=embed)
 

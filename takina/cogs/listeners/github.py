@@ -44,13 +44,13 @@ class GitHubPR:
             return nextcord.Embed(
                 title="Error",
                 description=f"Could not fetch information for PR/Issue #{self.pr_id}.",
-                color=nextcord.Color.red(),
+                color=0xFF0037,
             )
 
         title = data.get("title", "No title available")
         html_url = data.get("html_url", "")
         state = data.get("state", "Unknown").capitalize()
-        color = nextcord.Color.green() if state == "Open" else nextcord.Color.red()
+        color = nextcord.Color.green() if state == "Open" else 0xFF0037
 
         if data.get("pull_request", {}).get("merged_at"):
             state = "Merged"
