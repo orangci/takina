@@ -27,10 +27,9 @@ class Fun(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
     
-    @commands.command(name="joke")
+    @commands.command(name="joke", aliases=["dadjoke"])
     async def joke(self, ctx: commands.Context):
         joke_type = random.choice(["dadjoke", "regular"])
-        print(joke_type)
 
         if joke_type == "dadjoke":
             async with aiohttp.ClientSession() as session:
@@ -159,7 +158,6 @@ class FunSlash(commands.Cog):
     @nextcord.slash_command(name="joke")
     async def slash_joke(self, interaction: nextcord.Interaction):
         joke_type = random.choice(["dadjoke", "regular"])
-        print(joke_type)
 
         if joke_type == "dadjoke":
             async with aiohttp.ClientSession() as session:
