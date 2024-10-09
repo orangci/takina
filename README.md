@@ -14,6 +14,7 @@ Takina utilizes the Jikan API for this module.
 - random fact fetching command
 - random joke command
 - user avatar fetching command
+- neko cog ... adds `hug`, `shrug`, `bonk`, `yeet`, `neko`, `stare` and many many more similar commands
 - google command
 - roll command
 - topic command; the topic prompts were taken from yagpdb
@@ -52,3 +53,4 @@ Using the Dockerfile or Nix.
 ## TODO
 - add autoroles / join roles
 - refactor github module
+- replace aiohttp with requests where i can
