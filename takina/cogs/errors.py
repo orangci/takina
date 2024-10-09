@@ -71,8 +71,8 @@ class Errors(commands.Cog):
             description = "An unexpected error occurred. Please report this issue to a maintainer if it persists."
             error_type = "Unknown Error"
 
-        embed = nextcord.Embed(title=error_type, color=nextcord.Color.red())
-        embed.description = description
+        embed = nextcord.Embed(color=0xFF0037)
+        embed.description = f"{error_type}: {description}"
         await ctx.send(embed=embed)
 
         self.logger.error(f"Command error: {error_type} - {error}")
@@ -111,8 +111,8 @@ class Errors(commands.Cog):
             description = f"An unexpected error occurred while processing your command. Please contact {BOT_NAME}'s maintainers if the issue persists."
             error_type = "Unknown Error"
 
-        embed = nextcord.Embed(title=error_type, color=nextcord.Color.red())
-        embed.description = description
+        embed = nextcord.Embed(color=0xFF0037)
+        embed.description = f"{error_type}: {description}"
         await interaction.send(embed=embed, ephemeral=True)
 
         self.logger.error(f"Application command error: {error_type} - {error}")
