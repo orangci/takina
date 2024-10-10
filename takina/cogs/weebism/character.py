@@ -61,9 +61,7 @@ class CharacterSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(
-                title="Error", description=str(e), color=0xFF0037
-            )
+            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -109,9 +107,7 @@ class CharacterSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(
-                title="Error", description=str(e), color=0xFF0037
-            )
+            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
 
         await interaction.response.send_message(embed=embed)
 

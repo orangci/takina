@@ -71,18 +71,14 @@ def perms_check(
 ):
     # Check if member is valid
     if not isinstance(member, nextcord.Member) or member is None:
-        return False, nextcord.Embed(
-            description="Member not found.", color=0xFF0037
-        )
+        return False, nextcord.Embed(description="Member not found.", color=0xFF0037)
 
     if isinstance(ctx, commands.Context):
         author = ctx.author
     elif isinstance(ctx, nextcord.Interaction):
         author = ctx.user
     else:
-        return False, nextcord.Embed(
-            description="Invalid context.", color=0xFF0037
-        )
+        return False, nextcord.Embed(description="Invalid context.", color=0xFF0037)
 
     # Toggle for self-action check
     if author_check and member == author:

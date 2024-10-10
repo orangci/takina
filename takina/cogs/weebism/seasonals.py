@@ -105,9 +105,7 @@ class AnimeSeasonals(commands.Cog):
             await ctx.reply(embed=pages[0], view=view, mention_author=False)
 
         except Exception as e:
-            embed = nextcord.Embed(
-                title="Error", description=str(e), color=0xFF0037
-            )
+            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
             await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(name="seasonals", description="Display seasonal anime.")
@@ -184,9 +182,7 @@ class AnimeSeasonals(commands.Cog):
             await interaction.response.send_message(embed=pages[0], view=view)
 
         except Exception as e:
-            embed = nextcord.Embed(
-                title="Error", description=str(e), color=0xFF0037
-            )
+            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
             await interaction.response.send_message(embed=embed)
 
 

@@ -71,9 +71,7 @@ class MinecraftServerStatus(commands.Cog):
                 await ctx.reply(embed=embed, mention_author=False)
 
         except Exception as e:
-            embed = nextcord.Embed(
-                title="Error", description=str(e), color=0xFF0037
-            )
+            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
             await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(name="mcstatus")
@@ -131,9 +129,7 @@ class MinecraftServerStatus(commands.Cog):
                 await interaction.send(embed=embed, ephemeral=True)
 
         except Exception as e:
-            embed = nextcord.Embed(
-                title="Error", description=str(e), color=0xFF0037
-            )
+            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
             await interaction.send(embed=embed, ephemeral=True)
 
 
