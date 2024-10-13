@@ -62,7 +62,7 @@ class RemindMe(commands.Cog):
 
         if remind_time is None:
             embed = nextcord.Embed(
-                description="Invalid time format. Use <number>[s|m|h|d].)",
+                description="Invalid time format. Use <number>[m|h|d|y].)",
                 color=0xFF0037,
             )
             await interaction.send(embed=embed, ephemeral=True)
@@ -85,7 +85,7 @@ class RemindMe(commands.Cog):
 
     def parse_time(self, time_str: str) -> timedelta:
         """Parses time string like '10m', '1h' to timedelta"""
-        units = {"s": "seconds", "m": "minutes", "h": "hours", "d": "days"}
+        units = {"m": "minutes", "h": "hours", "d": "days", "y": "years"}
         if time_str[-1] not in units:
             return None
 
