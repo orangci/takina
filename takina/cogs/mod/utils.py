@@ -39,10 +39,13 @@ class ModUtils(commands.Cog):
     async def purge(self, ctx: commands.Context, amount: int):
         """Purges a specified number of messages. Usage: `purge number`, where number is the number of messages you would like to purge."""
 
-        # Ensure the number is a positive integer
-        if amount <= 0:
+        if amount <= 0 or amount > 100:
+            embed = nextcord.Embed(
+            description="Please specify a number between 1 and 100 for messages to purge.",
+            color=0xFF0037,
+        )
             await ctx.reply(
-                "Please specify a positive number of messages to purge.",
+                embed=embed,
                 mention_author=False,
             )
             return
@@ -130,18 +133,23 @@ class ModUtilsSlash(commands.Cog):
         ),
     ):
         """Purges a specified number of messages."""
-        if amount <= 0:
+        if amount <= 0 or amount > 100:
+            embed = nextcord.Embed(
+            description="Please specify a number between 1 and 100 for messages to purge.",
+            color=0xFF0037,
+        )
             await interaction.send(
-                "Please specify a positive number of messages to purge.", ephemeral=True
+                embed=embed,
+                ephemeral=True,
             )
             return
 
-        deleted = await interaction.channel.purge(limit=amount + 1)
+        deleted = await interaction.channel.purge(limit=amount)
         embed = nextcord.Embed(
             description=f"✅ Successfully purged {len(deleted)} messages.",
             color=EMBED_COLOR,
         )
-        await ctx.reply(
+        await interaction.send(
             embed=embed,
             ephemeral=True,
         )
