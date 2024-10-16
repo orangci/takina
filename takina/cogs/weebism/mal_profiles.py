@@ -22,6 +22,7 @@ class MAL_Profiles(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def mal(self, ctx: commands.Context, *, username: str):
+        """Fetch information about a MyAnimeList user. Usage: `mal orangc`."""
         try:
             profile_url = f"https://api.jikan.moe/v4/users/{username}"
             profile_data = await request(profile_url)

@@ -115,6 +115,7 @@ class Fun(commands.Cog):
     @commands.command(name="roll")
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def roll(self, ctx: commands.Context):
+        """Roll a random number from 1 to 100."""
         number = random.randint(1, 100)
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
