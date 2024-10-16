@@ -150,9 +150,11 @@ class Fun(commands.Cog):
             "Very doubtful.",
         ]
         if not question:
-            await ctx.reply(
-                "You need to ask a question for the 8ball!", mention_author=False
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = (
+                "You need to ask a question to the 8ball for this command to work!"
             )
+            await ctx.reply(embed=embed, mention_author=False)
             return
         response = random.choice(responses)
         embed = nextcord.Embed(
