@@ -41,9 +41,9 @@ class ModUtils(commands.Cog):
 
         if amount <= 0 or amount > 100:
             embed = nextcord.Embed(
-            description="Please specify a number between 1 and 100 for messages to purge.",
-            color=0xFF0037,
-        )
+                description="Please specify a number between 1 and 100 for messages to purge.",
+                color=0xFF0037,
+            )
             await ctx.reply(
                 embed=embed,
                 mention_author=False,
@@ -135,9 +135,9 @@ class ModUtilsSlash(commands.Cog):
         """Purges a specified number of messages."""
         if amount <= 0 or amount > 100:
             embed = nextcord.Embed(
-            description="Please specify a number between 1 and 100 for messages to purge.",
-            color=0xFF0037,
-        )
+                description="Please specify a number between 1 and 100 for messages to purge.",
+                color=0xFF0037,
+            )
             await interaction.send(
                 embed=embed,
                 ephemeral=True,

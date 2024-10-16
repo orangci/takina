@@ -11,3 +11,4 @@ setuptools
 distlib
 filelock
 platformdirs
+audioop-lts
