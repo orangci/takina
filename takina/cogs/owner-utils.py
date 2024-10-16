@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ext import commands
 import os
 from __main__ import cogs, cogs_blacklist, BOT_NAME
+import subprocess
 
 
 class OwnerUtils(commands.Cog):
