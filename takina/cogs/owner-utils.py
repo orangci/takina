@@ -46,7 +46,7 @@ class OwnerUtils(commands.Cog):
             # Paginated view if guild count is greater than 10
             menu = GuildListMenu(guilds=guilds)
             view = GuildListView(source=menu)
-            await ctx.send(embed=await menu.get_page(0), view=view)
+            await ctx.reply(embed=await menu.get_page(0), view=view, mention_author=False)
         else:
             # Single page for fewer than 10 guilds
             description = "\n".join(
@@ -56,9 +56,9 @@ class OwnerUtils(commands.Cog):
             embed = nextcord.Embed(
                 title="Guilds the bot is in",
                 description=description,
-                color=nextcord.Color.blue()
+                color=EMBED_COLOR
             )
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command()
     @commands.is_owner()
