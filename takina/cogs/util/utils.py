@@ -104,7 +104,12 @@ class UtilsSlash(commands.Cog):
 
     @nextcord.slash_command(name="join-position")
     async def slash_join_position(
-        self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(description="The member whose join position you want to check", required=False)
+        self,
+        interaction: nextcord.Interaction,
+        member: nextcord.Member = nextcord.SlashOption(
+            description="The member whose join position you want to check",
+            required=False,
+        ),
     ):
         guild = interaction.guild
         if member is None:

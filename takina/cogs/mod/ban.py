@@ -22,9 +22,9 @@ class Ban(commands.Cog):
     ):
         member = extract_user_id(member, ctx)
         if isinstance(member, str):
-                embed = nextcord.Embed(description=member, color=0xFF0037)
-                await ctx.reply(embed=embed, mention_author=False)
-                return
+            embed = nextcord.Embed(description=member, color=0xFF0037)
+            await ctx.reply(embed=embed, mention_author=False)
+            return
 
         can_proceed, message = perms_check(member, ctx=ctx)
         if not can_proceed:

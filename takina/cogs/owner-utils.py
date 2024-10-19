@@ -5,6 +5,7 @@ from __main__ import cogs, cogs_blacklist, BOT_NAME
 import subprocess
 from __main__ import EMBED_COLOR
 
+
 class GuildListMenu(menus.ListPageSource):
     def __init__(self, guilds):
         super().__init__(guilds, per_page=10)
@@ -13,25 +14,37 @@ class GuildListMenu(menus.ListPageSource):
         embed = nextcord.Embed(
             title="Bot Guilds",
             description="\n".join(
-                [f"`{i + 1}.` **{guild.name}** - {guild.member_count} members"
-                 for i, guild in enumerate(guilds)]
+                [
+                    f"`{i + 1}.` **{guild.name}** - {guild.member_count} members"
+                    for i, guild in enumerate(guilds)
+                ]
             ),
-            color=EMBED_COLOR
+            color=EMBED_COLOR,
         )
         return embed
+
 
 class GuildListView(nextcord.ui.View):
     def __init__(self, source):
         super().__init__()
         self.menu = menus.MenuPages(source=source, clear_items_after=True)
-    
+
     @nextcord.ui.button(label="Previous", style=nextcord.ButtonStyle.grey)
-    async def previous_page(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        await self.menu.show_checked_page(self.menu.current_page - 1, interaction=interaction)
-    
+    async def previous_page(
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+    ):
+        await self.menu.show_checked_page(
+            self.menu.current_page - 1, interaction=interaction
+        )
+
     @nextcord.ui.button(label="Next", style=nextcord.ButtonStyle.grey)
-    async def next_page(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        await self.menu.show_checked_page(self.menu.current_page + 1, interaction=interaction)
+    async def next_page(
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+    ):
+        await self.menu.show_checked_page(
+            self.menu.current_page + 1, interaction=interaction
+        )
+
 
 class OwnerUtils(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -46,17 +59,19 @@ class OwnerUtils(commands.Cog):
             # Paginated view if guild count is greater than 10
             menu = GuildListMenu(guilds=guilds)
             view = GuildListView(source=menu)
-            await ctx.reply(embed=await menu.get_page(0), view=view, mention_author=False)
+            await ctx.reply(
+                embed=await menu.get_page(0), view=view, mention_author=False
+            )
         else:
             # Single page for fewer than 10 guilds
             description = "\n".join(
-                [f"`{i + 1}.` **{guild.name}** - {guild.member_count} members"
-                 for i, guild in enumerate(guilds)]
+                [
+                    f"`{i + 1}.` **{guild.name}** - {guild.member_count} members"
+                    for i, guild in enumerate(guilds)
+                ]
             )
             embed = nextcord.Embed(
-                title="Guilds the bot is in",
-                description=description,
-                color=EMBED_COLOR
+                title="Guilds the bot is in", description=description, color=EMBED_COLOR
             )
             await ctx.reply(embed=embed, mention_author=False)
 
