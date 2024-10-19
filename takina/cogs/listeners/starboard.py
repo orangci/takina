@@ -129,19 +129,21 @@ class Starboard(commands.Cog):
     ):
         guild_id = interaction.guild_id
 
-        # Get the current settings or create a new entry
+        await interaction.response.defer(ephemeral=True)
+
         guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
         if not guild_data:
             guild_data = {"guild_id": guild_id, "starboard_channel_id": None}
 
-        # Set the starboard channel
         guild_data["starboard_channel_id"] = channel.id
         await self.db.starboard_settings.update_one(
             {"guild_id": guild_id}, {"$set": guild_data}, upsert=True
         )
-        await interaction.response.send_message(
-            f"Starboard channel has been set to {channel.mention}.", ephemeral=True
-        )
+
+    await interaction.followup.send(
+        f"Starboard channel has been set to {channel.mention}.", ephemeral=True
+    )
+
 
     def _create_embed(self, message: nextcord.Message, reaction: nextcord.Reaction):
         """Helper function to create the starboard embed."""
