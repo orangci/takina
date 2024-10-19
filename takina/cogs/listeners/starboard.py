@@ -43,7 +43,7 @@ class Starboard(commands.Cog):
                 break
 
         # Ensure the emoji reaction has at least 4 reactions
-        if emoji_reaction and emoji_reaction.count >= 1:
+        if emoji_reaction and emoji_reaction.count >= 4:
             # Check if this message is already on the starboard
             existing_star_message = await self.db.starboard.find_one(
                 {"message_id": message.id}
