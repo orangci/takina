@@ -139,10 +139,9 @@ class Starboard(commands.Cog):
         await self.db.starboard_settings.update_one(
             {"guild_id": guild_id}, {"$set": guild_data}, upsert=True
         )
-
-    await interaction.followup.send(
-        f"Starboard channel has been set to {channel.mention}.", ephemeral=True
-    )
+        await interaction.followup.send(
+            f"Starboard channel has been set to {channel.mention}.", ephemeral=True
+        )
 
 
     def _create_embed(self, message: nextcord.Message, reaction: nextcord.Reaction):
