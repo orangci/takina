@@ -84,13 +84,11 @@ class Fun(commands.Cog):
             member = ctx.author
         else:
             member = extract_user_id(member, ctx)
+            if isinstance(member, str):
+                embed = nextcord.Embed(description=member, color=0xFF0037)
+                await ctx.reply(embed=embed, mention_author=False)
+                return
 
-        if not isinstance(member, nextcord.Member):
-            await ctx.reply(
-                "Member not found. Please provide a valid username, display name, mention, or user ID.",
-                mention_author=False,
-            )
-            return
         embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
         embed.set_image(url=member.avatar.url)
         await ctx.reply(embed=embed, mention_author=False)

@@ -18,13 +18,10 @@ class Info(commands.Cog):
             member = ctx.author
         else:
             member = extract_user_id(member, ctx)
-
-        if not isinstance(member, nextcord.Member):
-            await ctx.reply(
-                "Member not found. Please provide a valid username, display name, mention, or user ID.",
-                mention_author=False,
-            )
-            return
+            if isinstance(member, str):
+                embed = nextcord.Embed(description=member, color=0xFF0037)
+                await ctx.reply(embed=embed, mention_author=False)
+                return
 
         roles = [role for role in member.roles if role != ctx.guild.default_role]
 

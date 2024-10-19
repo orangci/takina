@@ -39,6 +39,10 @@ class Utils(commands.Cog):
             member = ctx.author
         else:
             member = extract_user_id(member, ctx)
+            if isinstance(member, str):
+                embed = nextcord.Embed(description=member, color=0xFF0037)
+                await ctx.reply(embed=embed, mention_author=False)
+                return
 
         members = sorted(guild.members, key=lambda m: m.joined_at)
         join_position = members.index(member) + 1
@@ -100,13 +104,11 @@ class UtilsSlash(commands.Cog):
 
     @nextcord.slash_command(name="join-position")
     async def slash_join_position(
-        self, interaction: nextcord.Interaction, member: nextcord.Member = None
+        self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(description="The member whose join position you want to check", required=False)
     ):
         guild = interaction.guild
         if member is None:
             member = interaction.user
-        else:
-            member = extract_user_id(member, interaction)
 
         members = sorted(guild.members, key=lambda m: m.joined_at)
         join_position = members.index(member) + 1

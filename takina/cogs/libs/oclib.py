@@ -28,6 +28,8 @@ def extract_user_id(
         ctx.guild.members, name=member_str
     ) or nextcord.utils.get(ctx.guild.members, display_name=member_str)
 
+    if not member:
+        member = ":x: Member not found. Please provide a valid username, display name, mention, or user ID."
     return member
 
 
