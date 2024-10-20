@@ -46,7 +46,7 @@ class Info(commands.Cog):
         )
         embed.add_field(
             name=f"Roles ({len(roles)}):",
-            value=" ".join([role.mention for role in reversed(roles)]),
+            value="\n".join([role.mention for role in reversed(roles)]),
             inline=True,
         )
         embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
@@ -136,7 +136,7 @@ class SlashInfo(commands.Cog):
         )
         embed.add_field(
             name=f"Roles ({len(roles)}):",
-            value=" ".join([role.mention for role in reversed(roles)]),
+            value="\n".join([role.mention for role in reversed(roles)]),
             inline=True,
         )
         embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
