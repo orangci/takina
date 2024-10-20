@@ -58,7 +58,7 @@ class Info(commands.Cog):
 
     @commands.command(name="roleinfo")
     @commands.cooldown(1, 1, commands.BucketType.user)
-    async def roleinfo(self, ctx: commands.Context, role: nextcord.Role):
+    async def roleinfo(self, ctx: commands.Context, *, role: nextcord.Role):
         """Fetch role information. `roleinfo role`."""
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
