@@ -34,8 +34,9 @@ class Errors(commands.Cog):
             error_type = "User Input Error"
 
         elif isinstance(error, commands.CommandNotFound):
-            description = "The command you entered does not exist. Please ensure you typed it correctly. Type `help` for a full list of commands."
-            error_type = "Command Not Found"
+            pass
+            # description = "The command you entered does not exist. Please ensure you typed it correctly. Type `help` for a full list of commands."
+            # error_type = "Command Not Found"
 
         elif isinstance(error, commands.errors.DisabledCommand):
             description = f"This command has been disabled by {BOT_NAME}'s maintainers. If you believe this is an error, please contact a maintainer."
