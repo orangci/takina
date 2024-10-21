@@ -58,7 +58,7 @@ class Info(commands.Cog):
                 f"> **Color:** {str(role.color)}\n"
                 f"> **Position:** {role.position}\n"
                 f"> **Mentionable:** {role.mentionable}\n"
-                f"> **Permissions:** {', '.join([perm[0] for perm in role.permissions if perm[1]])}"
+                f"> **Permissions:** {', '.join([perm[0].replace('_', ' ').title() for perm in role.permissions if perm[1]])}"
             ),
         )
         embed.set_thumbnail(url=role.icon.url if role.icon else None)
@@ -145,7 +145,7 @@ class SlashInfo(commands.Cog):
                 f"> **Color:** {str(role.color)}\n"
                 f"> **Position:** {role.position}\n"
                 f"> **Mentionable:** {role.mentionable}\n"
-                f"> **Permissions:** {', '.join([perm[0] for perm in role.permissions if perm[1]])}"
+                f"> **Permissions:** {', '.join([perm[0].replace('_', ' ').title() for perm in role.permissions if perm[1]])}"
             ),
         )
         embed.set_thumbnail(url=role.icon.url if role.icon else None)
