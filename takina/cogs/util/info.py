@@ -28,32 +28,20 @@ class Info(commands.Cog):
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             color=EMBED_COLOR,
-            timestamp=ctx.message.created_at,
             title=f"{emoji} {member}",
+            description=(
+                f"> **Username:** {member.name}\n"
+                f"> **Display Name:** {member.display_name}\n"
+                f"> **ID:** {member.id}\n"
+                f"> **Created on:** <t:{int(member.created_at.timestamp())}:D> (<t:{int(member.created_at.timestamp())}:R>)\n"
+                f"> **Joined on:** <t:{int(member.joined_at.timestamp())}:D> (<t:{int(member.joined_at.timestamp())}:R>)\n"
+                f"> **Roles ({len(roles)}):** {' '.join([role.mention for role in reversed(roles)])}"
+            ),
         )
         embed.set_thumbnail(url=member.avatar.url if member.avatar else None)
-        embed.add_field(name="ID:", value=member.id, inline=True)
-        embed.add_field(name="Name:", value=member.display_name, inline=True)
-        embed.add_field(
-            name="Created on:",
-            value=member.created_at.strftime("%a, %#d %B %Y"),
-            inline=True,
-        )
-        embed.add_field(
-            name="Joined on:",
-            value=member.joined_at.strftime("%a, %#d %B %Y"),
-            inline=True,
-        )
-        embed.add_field(
-            name=f"Roles ({len(roles)}):",
-            value="\n".join([role.mention for role in reversed(roles)]),
-            inline=True,
-        )
-        embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
 
         if member.bot:
             embed.set_footer(text="This user is a bot account.")
-
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="roleinfo")
@@ -62,18 +50,18 @@ class Info(commands.Cog):
         """Fetch role information. `roleinfo role`."""
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title=f"{emoji} Role Info - {role.name}", color=role.color
+            title=f"{emoji} Role Info - {role.name}",
+            color=role.color,
+            description=(
+                f"> **ID:** {role.id}\n"
+                f"> **Name:** {role.name}\n"
+                f"> **Color:** {str(role.color)}\n"
+                f"> **Position:** {role.position}\n"
+                f"> **Mentionable:** {role.mentionable}\n"
+                f"> **Permissions:** {', '.join([perm[0] for perm in role.permissions if perm[1]])}"
+            ),
         )
-        embed.add_field(name="ID", value=role.id)
-        embed.add_field(name="Name", value=role.name)
-        embed.add_field(name="Color", value=str(role.color))
-        embed.add_field(name="Position", value=role.position)
-        embed.add_field(name="Mentionable", value=role.mentionable)
-        embed.add_field(
-            name="Permissions",
-            value=", ".join([perm[0] for perm in role.permissions if perm[1]]),
-        )
-        embed.set_thumbnail(url=ctx.guild.icon.url)
+        embed.set_thumbnail(url=role.icon.url if role.icon else None)
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="serverinfo")
@@ -82,16 +70,20 @@ class Info(commands.Cog):
         """Fetch server information. `serverinfo`."""
         guild = ctx.guild
         emoji = await fetch_random_emoji()
-        embed = nextcord.Embed(title=f"{emoji} {guild.name}", color=EMBED_COLOR)
-
-        embed.add_field(name="Server ID", value=guild.id, inline=True)
-        embed.add_field(name="Server Name", value=guild.name, inline=True)
-        embed.add_field(name="Owner", value=guild.owner, inline=True)
-        embed.add_field(name="Members", value=guild.member_count, inline=True)
-        embed.add_field(name="Roles", value=len(guild.roles), inline=True)
-        embed.add_field(name="Channels", value=len(guild.channels), inline=True)
+        embed = nextcord.Embed(
+            title=f"{emoji} {guild.name}",
+            color=EMBED_COLOR,
+            description=(
+                f"> **Server ID:** {guild.id}\n"
+                f"> **Server Name:** {guild.name}\n"
+                f"> **Owner:** {guild.owner}\n"
+                f"> **Created:** <t:{int(guild.created_at.timestamp())}:D> (<t:{int(guild.created_at.timestamp())}:R>)\n"
+                f"> **Members:** {guild.member_count}\n"
+                f"> **Roles:** {len(guild.roles)}\n"
+                f"> **Channels:** {len(guild.channels)}"
+            ),
+        )
         embed.set_thumbnail(url=guild.icon.url)
-
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -118,29 +110,17 @@ class SlashInfo(commands.Cog):
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             color=EMBED_COLOR,
-            timestamp=utcnow(),
             title=f"{emoji} {member}",
+            description=(
+                f"> **ID:** {member.id}\n"
+                f"> **Name:** {member.display_name}\n"
+                f"> **Created:** <t:{int(member.created_at.timestamp())}:D> (<t:{int(member.created_at.timestamp())}:R>)\n"
+                f"> **Joined:** <t:{int(member.joined_at.timestamp())}:D> (<t:{int(member.joined_at.timestamp())}:R>)\n"
+                f"> **Roles ({len(roles)}):** {' '.join([role.mention for role in reversed(roles)])}\n"
+                f"> **Top Role:** {member.top_role.mention}"
+            ),
         )
         embed.set_thumbnail(url=member.avatar.url if member.avatar else None)
-        embed.add_field(name="ID:", value=member.id, inline=True)
-        embed.add_field(name="Name:", value=member.display_name, inline=True)
-        embed.add_field(
-            name="Created on:",
-            value=member.created_at.strftime("%a, %#d %B %Y"),
-            inline=True,
-        )
-        embed.add_field(
-            name="Joined on:",
-            value=member.joined_at.strftime("%a, %#d %B %Y"),
-            inline=True,
-        )
-        embed.add_field(
-            name=f"Roles ({len(roles)}):",
-            value="\n".join([role.mention for role in reversed(roles)]),
-            inline=True,
-        )
-        embed.add_field(name="Top Role:", value=member.top_role.mention, inline=True)
-
         if member.bot:
             embed.set_footer(text="This user is a bot account.")
 
@@ -157,18 +137,18 @@ class SlashInfo(commands.Cog):
         """Fetch role information. `roleinfo role`."""
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title=f"{emoji} Role Info - {role.name}", color=role.color
+            title=f"{emoji} Role Info - {role.name}",
+            color=role.color,
+            description=(
+                f"> **ID:** {role.id}\n"
+                f"> **Name:** {role.name}\n"
+                f"> **Color:** {str(role.color)}\n"
+                f"> **Position:** {role.position}\n"
+                f"> **Mentionable:** {role.mentionable}\n"
+                f"> **Permissions:** {', '.join([perm[0] for perm in role.permissions if perm[1]])}"
+            ),
         )
-        embed.add_field(name="ID", value=role.id)
-        embed.add_field(name="Name", value=role.name)
-        embed.add_field(name="Color", value=str(role.color))
-        embed.add_field(name="Position", value=role.position)
-        embed.add_field(name="Mentionable", value=role.mentionable)
-        embed.add_field(
-            name="Permissions",
-            value=", ".join([perm[0] for perm in role.permissions if perm[1]]),
-        )
-        embed.set_thumbnail(url=interaction.guild.icon.url)
+        embed.set_thumbnail(url=role.icon.url if role.icon else None)
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="serverinfo")
@@ -176,14 +156,19 @@ class SlashInfo(commands.Cog):
         """Fetch server information. `serverinfo`."""
         guild = interaction.guild
         emoji = await fetch_random_emoji()
-        embed = nextcord.Embed(title=f"{emoji} {guild.name}", color=EMBED_COLOR)
-
-        embed.add_field(name="Server ID", value=guild.id, inline=True)
-        embed.add_field(name="Server Name", value=guild.name, inline=True)
-        embed.add_field(name="Owner", value=guild.owner, inline=True)
-        embed.add_field(name="Members", value=guild.member_count, inline=True)
-        embed.add_field(name="Roles", value=len(guild.roles), inline=True)
-        embed.add_field(name="Channels", value=len(guild.channels), inline=True)
+        embed = nextcord.Embed(
+            title=f"{emoji} {guild.name}",
+            color=EMBED_COLOR,
+            description=(
+                f"> **Server ID:** {guild.id}\n"
+                f"> **Server Name:** {guild.name}\n"
+                f"> **Owner:** {guild.owner}\n"
+                f"> **Created:** <t:{int(guild.created_at.timestamp())}:D> (<t:{int(guild.created_at.timestamp())}:R>)\n"
+                f"> **Members:** {guild.member_count}\n"
+                f"> **Roles:** {len(guild.roles)}\n"
+                f"> **Channels:** {len(guild.channels)}"
+            ),
+        )
         embed.set_thumbnail(url=guild.icon.url)
 
         await interaction.send(embed=embed, ephemeral=True)
