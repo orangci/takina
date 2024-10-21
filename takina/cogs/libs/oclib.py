@@ -209,6 +209,7 @@ class ConfirmationView(View):
                 description=f"{self.action.capitalize()} cancelled; timed out.",
                 color=EMBED_COLOR,
             )
+            self.result = False
             await self.message.edit(embed=timeout_embed, view=None)
 
         return self.result
