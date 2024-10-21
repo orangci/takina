@@ -52,8 +52,12 @@ class Starboard(commands.Cog):
             if existing_star_message:
                 # Update the starboard message if reactions reach 5 stars or more
                 if emoji_reaction.count >= 5:
-                    starboard_message_id = existing_star_message.get("starboard_message_id")
-                    starboard_message = await starboard_channel.fetch_message(starboard_message_id)
+                    starboard_message_id = existing_star_message.get(
+                        "starboard_message_id"
+                    )
+                    starboard_message = await starboard_channel.fetch_message(
+                        starboard_message_id
+                    )
                     if starboard_message:
                         updated_embed = self._create_embed(message, emoji_reaction)
                         await starboard_message.edit(embed=updated_embed)
@@ -114,7 +118,9 @@ class Starboard(commands.Cog):
         if emoji_reaction and emoji_reaction.count >= 5:
             # Fetch the starboard message and update it
             starboard_message_id = existing_star_message.get("starboard_message_id")
-            starboard_message = await starboard_channel.fetch_message(starboard_message_id)
+            starboard_message = await starboard_channel.fetch_message(
+                starboard_message_id
+            )
             if starboard_message:
                 updated_embed = self._create_embed(message, emoji_reaction)
                 await starboard_message.edit(embed=updated_embed)
@@ -143,7 +149,6 @@ class Starboard(commands.Cog):
             f"Starboard channel has been set to {channel.mention}.", ephemeral=True
         )
 
-
     def _create_embed(self, message: nextcord.Message, reaction: nextcord.Reaction):
         """Helper function to create the starboard embed."""
         embed = nextcord.Embed(
@@ -159,7 +164,11 @@ class Starboard(commands.Cog):
             value=message.channel.mention,
             inline=True,
         )
-        embed.add_field(name="Reaction", value=f"{reaction.count} {reaction.emoji} reactions", inline=True)
+        embed.add_field(
+            name="Reaction",
+            value=f"{reaction.count} {reaction.emoji} reactions",
+            inline=True,
+        )
         return embed
 
 
