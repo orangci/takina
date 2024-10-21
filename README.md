@@ -36,6 +36,7 @@ Takina utilizes the Jikan API for this module.
 - a proper logging and casing system
 
 ## utilities
+- an embed builder command
 - remindme module; `remindme 10m watch lycoris recoil`
 - role management commands; e.g. `role add weeb orangc`
 - channel management commands; `slowmode`, `lock` and `unlock`

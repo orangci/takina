@@ -4,7 +4,8 @@ import os
 from __main__ import cogs, cogs_blacklist, BOT_NAME
 import subprocess
 from __main__ import EMBED_COLOR
-
+import importlib
+from .libs import oclib
 
 class GuildListMenu(menus.ListPageSource):
     def __init__(self, guilds):
@@ -51,6 +52,7 @@ class OwnerUtils(commands.Cog):
         self.bot = bot
 
     @commands.command(name="guilds")
+    @commands.is_owner()
     async def guilds(self, ctx: commands.Context):
         """Lists all guilds the bot is in, ranked from most members to least, paginated if necessary."""
         guilds = sorted(self.bot.guilds, key=lambda g: g.member_count, reverse=True)
@@ -131,6 +133,7 @@ class OwnerUtils(commands.Cog):
     @commands.command(aliases=["rx"])
     @commands.is_owner()
     async def reload_exts(self, ctx: commands.Context, *args):
+        importlib.reload(oclib)
         if not args:
             failed_cogs = []
 
