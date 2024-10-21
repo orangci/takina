@@ -31,8 +31,8 @@ class PingResponse(commands.Cog):
                 emoji = await fetch_random_emoji()
                 embed = nextcord.Embed(
                     title=f"{emoji} Takina",
-                    url="https://github.com/orxngc/takina",
-                    description="Takina is a multipurpose opensource bot written in Python. More information is available in the [Github repository](https://github.com/orxngc/takina).",
+                    url="https://orangc.xyz/takina",
+                    description="Takina is a multipurpose [opensource](https://github.com/orxngc/takina) bot written in Python. More information is available in the [website](https://orangc.xyz/takina).",
                     color=EMBED_COLOR,
                 )
                 uptime = await uptime_fetcher()

@@ -47,7 +47,7 @@ bot = Bot(
     command_prefix=os.getenv("PREFIX"),
     case_insensitive=True,
     help_command=help_commands.PaginatedHelpCommand(),
-    owner_ids=[961063229168164864, 716306888492318790],
+    owner_ids=[961063229168164864],
     allowed_mentions=nextcord.AllowedMentions(
         everyone=False, roles=False, users=True, replied_user=True
     ),
