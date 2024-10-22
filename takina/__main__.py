@@ -13,6 +13,7 @@ load_dotenv()
 BOT_NAME = os.getenv("BOT_NAME")
 DB_NAME = os.getenv("DB_NAME").lower()
 EMBED_COLOR_STR = os.getenv("EMBED_COLOR", "#000000")
+DEFAULT_PREFIX = "."
 
 if EMBED_COLOR_STR.startswith("#"):
     EMBED_COLOR = int(EMBED_COLOR_STR[1:], 16)  # Remove "#" and convert hex to int
@@ -25,6 +26,7 @@ else:
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
 
     async def setup_database(self) -> None:
         """Setup MongoDB connection and collections"""
@@ -34,6 +36,14 @@ class Bot(commands.Bot):
             )
         self.db_client = AsyncIOMotorClient(os.getenv("MONGO"))
         self.db = self.db_client.get_database(DB_NAME)
+    
+    async def get_prefix(self, message):
+        if message.guild:
+            guild_id = message.guild.id
+            guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
+            if guild_data and 'prefix' in guild_data:
+                return guild_data['prefix']
+        return DEFAULT_PREFIX
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -44,7 +54,7 @@ class Bot(commands.Bot):
 
 bot = Bot(
     intents=nextcord.Intents.all(),
-    command_prefix=os.getenv("PREFIX"),
+    command_prefix=bot.get_prefix,
     case_insensitive=True,
     help_command=help_commands.PaginatedHelpCommand(),
     owner_ids=[961063229168164864],
