@@ -13,7 +13,6 @@ load_dotenv()
 BOT_NAME = os.getenv("BOT_NAME")
 DB_NAME = os.getenv("DB_NAME").lower()
 EMBED_COLOR_STR = os.getenv("EMBED_COLOR", "#000000")
-DEFAULT_PREFIX = "."
 
 if EMBED_COLOR_STR.startswith("#"):
     EMBED_COLOR = int(EMBED_COLOR_STR[1:], 16)  # Remove "#" and convert hex to int
@@ -43,7 +42,7 @@ class Bot(commands.Bot):
             guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
             if guild_data and 'prefix' in guild_data:
                 return guild_data['prefix']
-        return DEFAULT_PREFIX
+            return "."
 
     @commands.Cog.listener()
     async def on_ready(self):

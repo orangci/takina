@@ -2,7 +2,6 @@ import nextcord
 from nextcord.ext import commands, application_checks
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
-from nextcord import SlashOption
 from __main__ import DB_NAME, EMBED_COLOR
 
 
@@ -10,7 +9,6 @@ class Starboard(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
-        self.starboard_messages = {}
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: nextcord.RawReactionActionEvent):
@@ -18,6 +16,11 @@ class Starboard(commands.Cog):
         guild_id = payload.guild_id
         guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
         if not guild_data:
+            return
+
+        # Ensure the channel is whitelisted
+        whitelisted_channels = guild_data.get("whitelisted_channels", [])
+        if payload.channel_id not in whitelisted_channels:
             return
 
         # Fetch the starboard channel ID and ensure it exists
@@ -85,6 +88,11 @@ class Starboard(commands.Cog):
         if not guild_data:
             return
 
+        # Ensure the channel is whitelisted
+        whitelisted_channels = guild_data.get("whitelisted_channels", [])
+        if payload.channel_id not in whitelisted_channels:
+            return
+
         # Fetch the starboard channel ID and ensure it exists
         starboard_channel_id = guild_data.get("starboard_channel_id")
         if not starboard_channel_id:
@@ -126,11 +134,8 @@ class Starboard(commands.Cog):
                 await starboard_message.edit(embed=updated_embed)
 
     @nextcord.slash_command(description="Manage the starboard settings")
-    async def starboard(self, interaction: nextcord.Interaction):
-        pass
-
-    @starboard.subcommand(description="Set the starboard channel")
-    async def channel(
+    @application_checks.has_permissions(manage_channels=True)
+    async def starboard_channel(
         self, interaction: nextcord.Interaction, channel: nextcord.TextChannel
     ):
         guild_id = interaction.guild_id
@@ -148,6 +153,78 @@ class Starboard(commands.Cog):
         await interaction.followup.send(
             f"Starboard channel has been set to {channel.mention}.", ephemeral=True
         )
+
+    @commands.group(name="starboard", invoke_without_command=True)
+    @commands.has_permissions(manage_channels=True)
+    async def starboard(self, ctx: commands.Context):
+        """Starboard command group. Use subcommands: `whitelist`, `list`, `add`, `remove`."""
+        await ctx.reply("Please specify a subcommand: `whitelist add`, `whitelist remove`, or `whitelist list`.", mention_author=False)
+
+    @starboard.group(name="whitelist", invoke_without_command=True)
+    async def whitelist(self, ctx: commands.Context):
+        await ctx.reply("Please specify `add`, `remove`, or `list`.", mention_author=False)
+
+    @whitelist.command(name="add")
+    async def whitelist_add(self, ctx: commands.Context, *channels: nextcord.TextChannel):
+        """Add channels to the starboard whitelist."""
+        guild_id = ctx.guild.id
+        guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
+
+        if not guild_data:
+            guild_data = {"guild_id": guild_id, "whitelisted_channels": []}
+
+        whitelisted_channels = guild_data.get("whitelisted_channels", [])
+
+        added_channels = []
+        for channel in channels:
+            if channel.id not in whitelisted_channels:
+                whitelisted_channels.append(channel.id)
+                added_channels.append(channel.mention)
+
+        await self.db.starboard_settings.update_one(
+            {"guild_id": guild_id}, {"$set": {"whitelisted_channels": whitelisted_channels}}, upsert=True
+        )
+        await ctx.reply(f"Added to the whitelist: {', '.join(added_channels)}.", mention_author=False)
+
+    @whitelist.command(name="remove")
+    async def whitelist_remove(self, ctx: commands.Context, *channels: nextcord.TextChannel):
+        """Remove channels from the starboard whitelist."""
+        guild_id = ctx.guild.id
+        guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
+
+        if not guild_data:
+            await ctx.reply("No channels are whitelisted.", mention_author=False)
+            return
+
+        whitelisted_channels = guild_data.get("whitelisted_channels", [])
+
+        removed_channels = []
+        for channel in channels:
+            if channel.id in whitelisted_channels:
+                whitelisted_channels.remove(channel.id)
+                removed_channels.append(channel.mention)
+
+        await self.db.starboard_settings.update_one(
+            {"guild_id": guild_id}, {"$set": {"whitelisted_channels": whitelisted_channels}}, upsert=True
+        )
+        await ctx.reply(f"Removed from the whitelist: {', '.join(removed_channels)}.", mention_author=False)
+
+    @whitelist.command(name="list")
+    async def whitelist_list(self, ctx: commands.Context):
+        """List all channels in the starboard whitelist."""
+        guild_id = ctx.guild.id
+        guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
+
+        if not guild_data or not guild_data.get("whitelisted_channels"):
+            await ctx.reply("No channels are whitelisted.", mention_author=False)
+            return
+
+        whitelisted_channels = guild_data.get("whitelisted_channels", [])
+        channels_list = [
+            ctx.guild.get_channel(ch_id).mention for ch_id in whitelisted_channels if ctx.guild.get_channel(ch_id)
+        ]
+
+        await ctx.reply(f"Whitelisted channels: {', '.join(channels_list)}.", mention_author=False)
 
     def _create_embed(self, message: nextcord.Message, reaction: nextcord.Reaction):
         """Helper function to create the starboard embed."""
