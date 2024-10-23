@@ -169,7 +169,9 @@ class Starboard(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @whitelist.command(name="add")
-    async def whitelist_add(self, ctx: commands.Context, *channels: nextcord.TextChannel):
+    async def whitelist_add(
+        self, ctx: commands.Context, *channels: nextcord.TextChannel
+    ):
         """Add channels to the starboard whitelist."""
         guild_id = ctx.guild.id
         guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
@@ -186,7 +188,9 @@ class Starboard(commands.Cog):
                 added_channels.append(channel.mention)
 
         await self.db.starboard_settings.update_one(
-            {"guild_id": guild_id}, {"$set": {"whitelisted_channels": whitelisted_channels}}, upsert=True
+            {"guild_id": guild_id},
+            {"$set": {"whitelisted_channels": whitelisted_channels}},
+            upsert=True,
         )
         embed = nextcord.Embed(color=EMBED_COLOR)
         if channels:
@@ -196,7 +200,9 @@ class Starboard(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @whitelist.command(name="remove")
-    async def whitelist_remove(self, ctx: commands.Context, *channels: nextcord.TextChannel):
+    async def whitelist_remove(
+        self, ctx: commands.Context, *channels: nextcord.TextChannel
+    ):
         """Remove channels from the starboard whitelist."""
         guild_id = ctx.guild.id
         guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
@@ -214,10 +220,14 @@ class Starboard(commands.Cog):
                 removed_channels.append(channel.mention)
 
         await self.db.starboard_settings.update_one(
-            {"guild_id": guild_id}, {"$set": {"whitelisted_channels": whitelisted_channels}}, upsert=True
+            {"guild_id": guild_id},
+            {"$set": {"whitelisted_channels": whitelisted_channels}},
+            upsert=True,
         )
         if channels:
-            embed.description = f"Removed from the whitelist: {', '.join(removed_channels)}."
+            embed.description = (
+                f"Removed from the whitelist: {', '.join(removed_channels)}."
+            )
         else:
             embed.description = f"You must specify at least one text channel to use this command. Example usage: `starboard whitelist remove #{ctx.channel.name}`."
         await ctx.reply(embed=embed, mention_author=False)
@@ -234,7 +244,9 @@ class Starboard(commands.Cog):
 
         whitelisted_channels = guild_data.get("whitelisted_channels", [])
         channels_list = [
-            ctx.guild.get_channel(ch_id).mention for ch_id in whitelisted_channels if ctx.guild.get_channel(ch_id)
+            ctx.guild.get_channel(ch_id).mention
+            for ch_id in whitelisted_channels
+            if ctx.guild.get_channel(ch_id)
         ]
 
         embed = nextcord.Embed(color=EMBED_COLOR)

@@ -35,13 +35,13 @@ class Bot(commands.Bot):
             )
         self.db_client = AsyncIOMotorClient(os.getenv("MONGO"))
         self.db = self.db_client.get_database(DB_NAME)
-    
+
     async def get_prefix(self, message):
         if message.guild:
             guild_id = message.guild.id
             guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
-            if guild_data and 'prefix' in guild_data:
-                return guild_data['prefix']
+            if guild_data and "prefix" in guild_data:
+                return guild_data["prefix"]
             return "."
 
     @commands.Cog.listener()
