@@ -96,6 +96,7 @@ class UtilsSlash(commands.Cog):
     async def slash_ping(self, interaction: nextcord.Interaction):
         """Ping the bot."""
         latency = round(self.bot.latency * 1000)
+        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             description=f"{emoji} Success! {BOT_NAME} is awake. Ping: {latency}ms",
             color=EMBED_COLOR,
