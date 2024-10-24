@@ -12,3 +12,4 @@ distlib
 filelock
 platformdirs
 audioop-lts
+emoji
