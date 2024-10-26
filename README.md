@@ -9,6 +9,7 @@ Using the Dockerfile or Nix.
 - add autoroles / join roles
 - refactor github module
 - replace aiohttp with requests where i can
+- (long term) add a web dashboard for managing settings 
 
 ## License
 [Here.](./LICENSE)
