@@ -9,18 +9,23 @@ class GhostPing(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: nextcord.Message):
-        # Ignore bot messages and messages without mentions
+        # Ignore messages from bots or messages without mentions
         if message.author.bot or not message.mentions:
             return
 
-        # Consider only the first mentioned user
-        first_mentioned_user = message.mentions[0]
+        # Filter mentions to exclude the author and any bots
+        ghost_pinged_users = [
+            user for user in message.mentions if user != message.author and not user.bot
+        ]
 
-        # Ignore if the author mentioned themselves or if the mentioned user is a bot
-        if first_mentioned_user == message.author or first_mentioned_user.bot:
+        # If there are no valid ghost-pinged users, return
+        if not ghost_pinged_users:
             return
 
-        # Create an embed for the ghost ping alert
+        # Format the mentions into a single message
+        mention_list = ", ".join(user.mention for user in ghost_pinged_users)
+
+        # Create an embed to display the ghost-pinged message
         embed = nextcord.Embed(
             description=message.content or "*No text content*",
             color=EMBED_COLOR,
@@ -32,9 +37,9 @@ class GhostPing(commands.Cog):
         )
         embed.set_footer(text=f"Deleted in #{message.channel.name}")
 
-        # Send the ghost ping alert message
+        # Send a message notifying each ghost-pinged user
         await message.channel.send(
-            content=f"{first_mentioned_user.mention}, you were ghost pinged by {message.author.mention}!",
+            content=f"{mention_list}, you were ghost pinged by {message.author.mention}!",
             embed=embed,
         )
 
