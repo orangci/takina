@@ -36,6 +36,7 @@ class ModUtils(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def purge(self, ctx: commands.Context, amount: int):
         """Purges a specified number of messages. Usage: `purge number`, where number is the number of messages you would like to purge."""
 
