@@ -51,7 +51,7 @@ class Utils(commands.Cog):
 
         if not member == ctx.author:
             embed = nextcord.Embed(
-                description=f"**{member}** was the {ordinal_position} to join **{guild.name}**.",
+                description=f"**{member.mention}** was the {ordinal_position} to join **{guild.name}**.",
                 color=EMBED_COLOR,
             )
         else:
@@ -123,7 +123,7 @@ class UtilsSlash(commands.Cog):
 
         if not member == interaction.user:
             embed = nextcord.Embed(
-                description=f"**{member}** was the {ordinal_position} to join **{guild.name}**.",
+                description=f"**{member.mention}** was the {ordinal_position} to join **{guild.name}**.",
                 color=EMBED_COLOR,
             )
         else:
