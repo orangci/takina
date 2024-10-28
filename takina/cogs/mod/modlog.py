@@ -99,7 +99,7 @@ class ModLog(commands.Cog):
             {"guild_id": guild_id}, {"$set": guild_data}, upsert=True
         )
 
-        await interaction.response.send_message(
+        await interaction.send(
             f"Modlog channel has been set to {channel.mention}.", ephemeral=True
         )
 
@@ -155,6 +155,7 @@ class ModLog(commands.Cog):
         await modlog_channel.send(embed=embed)
 
     @commands.command(name="case")
+    @commands.has_permissions(moderate_members=True)
     async def get_case(self, ctx, case_id: int):
         case = await self.db.modlog_cases.find_one(
             {"guild_id": ctx.guild.id, "case_id": case_id}
@@ -183,6 +184,7 @@ class ModLog(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="case_edit", aliases=["caseedit", "editc"])
+    @commands.has_permissions(moderate_members=True)
     async def edit_case(self, ctx, case_id: int, *, new_reason: str):
         result = await self.db.modlog_cases.update_one(
             {"guild_id": ctx.guild.id, "case_id": case_id},
@@ -200,6 +202,7 @@ class ModLog(commands.Cog):
             await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="cases")
+    @commands.has_permissions(moderate_members=True)
     async def get_cases(self, ctx, user: nextcord.Member = None):
         query = {"guild_id": ctx.guild.id}
         if user:
@@ -216,6 +219,7 @@ class ModLog(commands.Cog):
         await ctx.send(embed=view.get_page_embed(), view=view)
 
     @commands.command(name="modstats", aliases=["ms"])
+    @commands.has_permissions(moderate_members=True)
     async def get_mod_stats(self, ctx, user: nextcord.Member = None):
         if not user:
             user = ctx.author
@@ -231,6 +235,93 @@ class ModLog(commands.Cog):
         view = CaseListButtonView(cases)
         await ctx.send(embed=view.get_page_embed(), view=view)
 
+class SlashModLog(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+
+    @nextcord.slash_command(description="Manage the modlog settings")
+    @application_checks.has_permissions(moderate_members=True)
+    async def case(self, interaction: nextcord.Interaction):
+        pass
+
+    @case.subcommand(name="fetch", description="Get case details by case ID.")
+    @application_checks.has_permissions(moderate_members=True)
+    async def case_fetch(self, interaction: nextcord.Interaction, case_id: int):
+        case = await self.db.modlog_cases.find_one(
+            {"guild_id": interaction.guild.id, "case_id": case_id}
+        )
+        if not case:
+            embed = nextcord.Embed(color=0xFF0037, description="❌ Case not found.")
+            await interaction.send(embed=embed, ephemeral=True)
+            return
+
+        embed = nextcord.Embed(color=EMBED_COLOR, timestamp=case["timestamp"])
+        action = (
+            f"{case['action'].capitalize()} ({case['duration']})"
+            if case["duration"]
+            else case["action"].capitalize()
+        )
+        embed.add_field(name="Action", value=action, inline=True)
+        embed.add_field(name="Case", value=f"#{case['case_id']}", inline=True)
+        embed.add_field(
+            name="Moderator", value=f"<@{case['moderator_id']}>", inline=True
+        )
+        embed.add_field(name="Target", value=f"<@{case['member_id']}>", inline=False)
+        target = await self.bot.fetch_user(case["member_id"])
+        embed.set_thumbnail(url=target.avatar.url)
+        embed.add_field(name="Reason", value=case["reason"], inline=False)
+        await interaction.send(embed=embed)
+
+    @case.subcommand(name="edit", description="Edit the reason for a case.")
+    @application_checks.has_permissions(moderate_members=True)
+    async def slash_case_edit(
+        self, interaction: nextcord.Interaction, case_id: int, new_reason: str
+    ):
+        result = await self.db.modlog_cases.update_one(
+            {"guild_id": interaction.guild.id, "case_id": case_id},
+            {"$set": {"reason": new_reason}},
+        )
+        if result.modified_count == 0:
+            embed = nextcord.Embed(color=0xFF0037, description="❌ Case not found or could not be updated.")
+            await interaction.send(embed=embed, ephemeral=True)
+        else:
+            embed = nextcord.Embed(color=0x00FF37, description=f"✅ Case `{case_id}` reason has been updated.")
+            await interaction.send(embed=embed)
+
+    @nextcord.slash_command(name="cases", description="View all cases or cases for a user.")
+    @application_checks.has_permissions(moderate_members=True)
+    async def slash_cases(self, interaction: nextcord.Interaction, user: nextcord.Member = None):
+        query = {"guild_id": interaction.guild.id}
+        if user:
+            query["member_id"] = user.id
+
+        cases = await self.db.modlog_cases.find(query).to_list(length=None)
+        if not cases:
+            embed = nextcord.Embed(color=0xFF0037, description="❌ No cases found.")
+            await interaction.send(embed=embed, ephemeral=True)
+            return
+
+        view = CaseListButtonView(cases)
+        await interaction.send(embed=view.get_page_embed(), view=view)
+
+    @nextcord.slash_command(name="modstats", description="View moderation stats for a user.")
+    @application_checks.has_permissions(moderate_members=True)
+    async def slash_modstats(self, interaction: nextcord.Interaction, user: nextcord.Member = None):
+        if not user:
+            user = interaction.user
+        cases = await self.db.modlog_cases.find(
+            {"guild_id": interaction.guild.id, "moderator_id": user.id}
+        ).to_list(length=None)
+        if not cases:
+            embed = nextcord.Embed(color=0xFF0037, description=f"❌ {user.mention} has not performed any moderation actions.")
+            await interaction.send(embed=embed, ephemeral=True)
+            return
+
+        view = CaseListButtonView(cases)
+        await interaction.send(embed=view.get_page_embed(), view=view)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(ModLog(bot))
+    bot.add_cog(SlashModLog(bot))
