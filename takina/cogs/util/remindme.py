@@ -85,7 +85,7 @@ class RemindMe(commands.Cog):
 
     def parse_time(self, time_str: str) -> timedelta:
         """Parses time string like '10m', '1h' to timedelta"""
-        units = {"m": "minutes", "h": "hours", "d": "days", "y": "years"}
+        units = {"m": "minutes", "h": "hours", "d": "days"}
         if time_str[-1] not in units:
             return None
 
