@@ -36,7 +36,7 @@ class Info(commands.Cog):
                 f"> **Roles ({len(roles)}):** {' '.join([role.mention for role in reversed(roles)])}"
             ),
         )
-        if member.avatar.url:
+        if member.avatar:
             embed.set_thumbnail(url=member.avatar.url)
 
         if member.bot:
@@ -119,7 +119,7 @@ class SlashInfo(commands.Cog):
                 f"> **Top Role:** {member.top_role.mention}"
             ),
         )
-        if member.avatar.url:
+        if member.avatar:
             embed.set_thumbnail(url=member.avatar.url)
         if member.bot:
             embed.set_footer(text="This user is a bot account.")

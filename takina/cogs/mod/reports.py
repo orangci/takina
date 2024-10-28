@@ -73,7 +73,7 @@ class Reports(commands.Cog):
         embed.add_field(name="Reason", value=reason, inline=False)
 
         embed.add_field(name="Reported User", value=user.mention, inline=False)
-        if user.avatar.url:
+        if user.avatar:
             embed.set_thumbnail(url=user.avatar.url)
 
         embed.set_footer(

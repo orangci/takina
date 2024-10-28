@@ -151,7 +151,7 @@ class ModLog(commands.Cog):
         embed.add_field(name="Moderator", value=moderator.mention, inline=True)
         embed.add_field(name="Target", value=member.mention, inline=False)
         embed.add_field(name="Reason", value=reason, inline=False)
-        if member.avatar.url:
+        if member.avatar:
             embed.set_thumbnail(url=member.avatar.url)
         await modlog_channel.send(embed=embed)
 
@@ -180,7 +180,7 @@ class ModLog(commands.Cog):
         )
         embed.add_field(name="Target", value=f"<@{case['member_id']}>", inline=False)
         target = await self.bot.fetch_user(case["member_id"])
-        if target.avatar.url:
+        if target.avatar:
             embed.set_thumbnail(url=target.avatar.url)
         embed.add_field(name="Reason", value=case["reason"], inline=False)
         await ctx.reply(embed=embed, mention_author=False)
@@ -271,7 +271,7 @@ class SlashModLog(commands.Cog):
         )
         embed.add_field(name="Target", value=f"<@{case['member_id']}>", inline=False)
         target = await self.bot.fetch_user(case["member_id"])
-        if target.avatar.url:
+        if target.avatar:
             embed.set_thumbnail(url=target.avatar.url)
         embed.add_field(name="Reason", value=case["reason"], inline=False)
         await interaction.send(embed=embed)
