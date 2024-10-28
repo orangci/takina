@@ -95,6 +95,7 @@ class Fun(commands.Cog):
             error_embed = nextcord.Embed(color=0xFF0037)
             error_embed.description = "❌ This user does not have an avatar set."
             await ctx.reply(embed=error_embed, mention_author=False)
+            return
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="google")
@@ -248,6 +249,7 @@ class FunSlash(commands.Cog):
             error_embed = nextcord.Embed(color=0xFF0037)
             error_embed.description = "❌ This user does not have an avatar set."
             await interaction.send(embed=error_embed, ephemeral=True)
+            return
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="google")
