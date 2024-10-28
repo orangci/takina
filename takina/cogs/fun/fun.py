@@ -76,7 +76,7 @@ class Fun(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="avatar")
+    @commands.command(name="avatar", aliases=["av"])
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def avatar(self, ctx: commands.Context, member: str = None):
         if member is None:
