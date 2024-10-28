@@ -91,6 +91,10 @@ class Fun(commands.Cog):
         embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
         if member.avatar:
             embed.set_image(url=member.avatar.url)
+        else:
+            error_embed = nextcord.Embed(color=0xFF0037)
+            error_embed.description = "❌ This user does not have an avatar set."
+            await interaction.send(embed=error_embed)
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="google")
@@ -240,6 +244,10 @@ class FunSlash(commands.Cog):
         embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
         if member.avatar:
             embed.set_image(url=member.avatar.url)
+        else:
+            error_embed = nextcord.Embed(color=0xFF0037)
+            error_embed.description = "❌ This user does not have an avatar set."
+            await interaction.send(embed=error_embed)
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="google")
