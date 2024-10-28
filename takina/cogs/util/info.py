@@ -36,7 +36,8 @@ class Info(commands.Cog):
                 f"> **Roles ({len(roles)}):** {' '.join([role.mention for role in reversed(roles)])}"
             ),
         )
-        embed.set_thumbnail(url=member.avatar.url if member.avatar else None)
+        if member.avatar.url:
+            embed.set_thumbnail(url=member.avatar.url)
 
         if member.bot:
             embed.set_footer(text="This user is a bot account.")
@@ -118,7 +119,8 @@ class SlashInfo(commands.Cog):
                 f"> **Top Role:** {member.top_role.mention}"
             ),
         )
-        embed.set_thumbnail(url=member.avatar.url if member.avatar else None)
+        if member.avatar.url:
+            embed.set_thumbnail(url=member.avatar.url)
         if member.bot:
             embed.set_footer(text="This user is a bot account.")
 

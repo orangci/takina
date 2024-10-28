@@ -89,7 +89,8 @@ class Fun(commands.Cog):
                 return
 
         embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
-        embed.set_image(url=member.avatar.url)
+        if member.avatar.url:
+            embed.set_image(url=member.avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="google")
@@ -237,7 +238,8 @@ class FunSlash(commands.Cog):
             member = interaction.user
 
         embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
-        embed.set_image(url=member.avatar.url)
+        if member.avatar.url:
+            embed.set_image(url=member.avatar.url)
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="google")

@@ -151,7 +151,8 @@ class ModLog(commands.Cog):
         embed.add_field(name="Moderator", value=moderator.mention, inline=True)
         embed.add_field(name="Target", value=member.mention, inline=False)
         embed.add_field(name="Reason", value=reason, inline=False)
-        embed.set_thumbnail(url=member.avatar.url)
+        if member.avatar.url:
+            embed.set_thumbnail(url=member.avatar.url)
         await modlog_channel.send(embed=embed)
 
     @commands.command(name="case")
@@ -179,7 +180,8 @@ class ModLog(commands.Cog):
         )
         embed.add_field(name="Target", value=f"<@{case['member_id']}>", inline=False)
         target = await self.bot.fetch_user(case["member_id"])
-        embed.set_thumbnail(url=target.avatar.url)
+        if target.avatar.url:
+            embed.set_thumbnail(url=target.avatar.url)
         embed.add_field(name="Reason", value=case["reason"], inline=False)
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -269,7 +271,8 @@ class SlashModLog(commands.Cog):
         )
         embed.add_field(name="Target", value=f"<@{case['member_id']}>", inline=False)
         target = await self.bot.fetch_user(case["member_id"])
-        embed.set_thumbnail(url=target.avatar.url)
+        if target.avatar.url:
+            embed.set_thumbnail(url=target.avatar.url)
         embed.add_field(name="Reason", value=case["reason"], inline=False)
         await interaction.send(embed=embed)
 

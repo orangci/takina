@@ -62,7 +62,8 @@ class Utils(commands.Cog):
             value=f"<t:{int(member.joined_at.timestamp())}:F> (<t:{int(member.joined_at.timestamp())}:R>)",
             inline=False,
         )
-        embed.set_thumbnail(url=member.avatar.url or None)
+        if member.avatar.url:
+            embed.set_thumbnail(url=member.avatar.url)
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -134,7 +135,8 @@ class UtilsSlash(commands.Cog):
             value=f"<t:{int(member.joined_at.timestamp())}:F> (<t:{int(member.joined_at.timestamp())}:R>)",
             inline=False,
         )
-        embed.set_thumbnail(url=member.avatar.url or None)
+        if member.avatar.url:
+            embed.set_thumbnail(url=member.avatar.url)
 
         await interaction.send(embed=embed, ephemeral=True)
 
