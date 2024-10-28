@@ -11,7 +11,7 @@ class ModUtils(commands.Cog):
         self.bot: commands.Bot = bot
 
     @commands.command()
-    @commands.has_permissions(moderate_members=True, manage_messages=True)
+    @commands.is_owner()
     async def send(
         self,
         ctx: commands.Context,
