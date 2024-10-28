@@ -11,7 +11,6 @@ Using the Dockerfile or Nix.
 - replace aiohttp with requests where i can
 - (long term) add a web dashboard for managing settings 
 - levelling module
-- patch purge command
 - make starboard reaction count minimum configurable
 
 ## License

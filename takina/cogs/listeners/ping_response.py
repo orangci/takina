@@ -16,7 +16,7 @@ class PingResponse(commands.Cog):
 
     async def fetch_repo_data(self):
         try:
-            repo_data = await request("https://api.github.com/repos/orxngc/takina")
+            repo_data = await request("https://api.github.com/repos/orangci/takina")
             if not repo_data:
                 return
             self.stars = repo_data.get("stargazers_count", 0)
@@ -32,7 +32,7 @@ class PingResponse(commands.Cog):
                 embed = nextcord.Embed(
                     title=f"{emoji} Takina",
                     url="https://orangc.xyz/takina",
-                    description="Takina is a multipurpose [opensource](https://github.com/orxngc/takina) bot written in Python. More information is available in the [website](https://orangc.xyz/takina).",
+                    description="Takina is a multipurpose [opensource](https://github.com/orangci/takina) bot written in Python. More information is available in the [website](https://orangc.xyz/takina).",
                     color=EMBED_COLOR,
                 )
                 uptime = await uptime_fetcher()
