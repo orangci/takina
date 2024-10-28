@@ -160,7 +160,9 @@ class ModLog(commands.Cog):
             {"guild_id": ctx.guild.id, "case_id": case_id}
         )
         if not case:
-            await ctx.reply("Case not found.", mention_author=False)
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = "❌ Case not found."
+            await ctx.reply(embed=embed, mention_author=False)
             return
 
         embed = nextcord.Embed(color=EMBED_COLOR, timestamp=case["timestamp"])
@@ -187,13 +189,15 @@ class ModLog(commands.Cog):
             {"$set": {"reason": new_reason}},
         )
         if result.modified_count == 0:
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = "❌ Case not found or could not be updated."
             await ctx.reply(
-                "Case not found or could not be updated.", mention_author=False
+                embed=embed, mention_author=False
             )
         else:
-            await ctx.reply(
-                f"Case #{case_id} reason has been updated.", mention_author=False
-            )
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = f"✅ Case `{case_id}` reason has been updated."
+            await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="cases")
     async def get_cases(self, ctx, user: nextcord.Member = None):
@@ -203,7 +207,9 @@ class ModLog(commands.Cog):
 
         cases = await self.db.modlog_cases.find(query).to_list(length=None)
         if not cases:
-            await ctx.reply("No cases found.", mention_author=False)
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = "❌ No cases found."
+            await ctx.reply(embed=embed, mention_author=False)
             return
 
         view = CaseListButtonView(cases)
@@ -217,7 +223,9 @@ class ModLog(commands.Cog):
             {"guild_id": ctx.guild.id, "moderator_id": user.id}
         ).to_list(length=None)
         if not cases:
-            await ctx.reply(f"{user} has no moderation actions.")
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = f"❌ {user.mention} has not performed any moderation actions."
+            await ctx.reply(embed=embed, mention_author=False)
             return
 
         view = CaseListButtonView(cases)
