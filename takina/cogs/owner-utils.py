@@ -88,10 +88,14 @@ class OwnerUtils(commands.Cog):
         else:
             command = self._bot.get_command(cmd)
             if command is None:
-                await ctx.reply("Command not found.", mention_author=False)
+                embed = nextcord.Embed(color=0xFF0037)
+                embed.description = "❌ Command not found."
+                await ctx.reply(embed=embed, mention_author=False)
                 return
             command.enabled = False
-            await ctx.reply(f"Successfully disabled `{command}`.", mention_author=False)
+            embed = nextcord.Embed(color=EMBED_COLOR)
+            embed.description = f"✅ Successfully disabled `{command}`."
+            await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command()
     @commands.is_owner()
@@ -103,10 +107,14 @@ class OwnerUtils(commands.Cog):
         else:
             command = self._bot.get_command(cmd)
             if command is None:
-                await ctx.reply("Command not found.", mention_author=False)
+                embed = nextcord.Embed(color=0xFF0037)
+                embed.description = "❌ Command not found."
+                await ctx.reply(embed=embed, mention_author=False)
                 return
             command.enabled = True
-            await ctx.reply(f"Successfully enabled `{command}`.", mention_author=False)
+            embed = nextcord.Embed(color=EMBED_COLOR)
+            embed.description = f"✅ Successfully enabled `{command}`."
+            await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(aliases=["maintainer", "perms"])
     async def owner(self, ctx: commands.Context):
@@ -121,15 +129,13 @@ class OwnerUtils(commands.Cog):
         is_owner = await self.bot.is_owner(ctx.author)
         owner_names_str = ", ".join(owner_names)
         if is_owner:
-            await ctx.reply(
-                f"You have maintainer level permissions when interacting with {BOT_NAME}. Current users who hold maintainer level permissions: {owner_names_str}",
-                mention_author=False,
-            )
+            embed = nextcord.Embed(color=EMBED_COLOR)
+            embed.description = f"You have maintainer level permissions when interacting with {BOT_NAME}. Current users who hold maintainer level permissions: {owner_names_str}"
+            await ctx.reply(embed=embed, mention_author=False)
         else:
-            await ctx.reply(
-                f"You are not a maintainer of {BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}",
-                mention_author=False,
-            )
+            embed = nextcord.Embed(color=EMBED_COLOR)
+            embed.description = f"You are not a maintainer of {BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
+            await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(aliases=["rx"])
     @commands.is_owner()
@@ -152,34 +158,38 @@ class OwnerUtils(commands.Cog):
                     f"\nReloaded all except the following cogs:\n"
                     + "\n".join(failed_cogs)
                 )
+                embed = nextcord.Embed(color=0xFF0037)
+                embed.description = error_message
                 await ctx.reply(error_message, mention_author=False)
             else:
-                await ctx.reply("Successfully reloaded all cogs.", mention_author=False)
+                embed = nextcord.Embed(color=EMBED_COLOR)
+                embed.description = "✅ Successfully reloaded all cogs."
+                await ctx.reply(embed=embed, mention_author=False)
 
         else:
             cog = args[0]
             if "cogs." + cog in self.bot.extensions:
                 try:
                     self.bot.reload_extension("cogs." + cog)
-                    await ctx.reply(
-                        f"Successfully reloaded `cogs.{cog}`.", mention_author=False
-                    )
+                    embed = nextcord.Embed(color=EMBED_COLOR)
+                    embed.description = f"✅ Successfully reloaded `cogs.{cog}`."
+                    await ctx.reply(embed=embed, mention_author=False)
                 except Exception as error:
-                    await ctx.reply(
-                        f"Failed to reload `{cog}`: {error}", mention_author=False
-                    )
+                    embed = nextcord.Embed(color=0xFF0037)
+                    embed.description = f"❌ Failed to reload `{cog}`: {error}"
+                    await ctx.reply(embed=embed, mention_author=False)
             else:
-                await ctx.reply(
-                    f"Cog `cogs.{cog}` is not loaded.", mention_author=False
-                )
+                embed = nextcord.Embed(color=0xFF0037)
+                embed.description = f"❌ Cog `cogs.{cog}` is not loaded."
+                await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(aliases=["rsc"])
     @commands.is_owner()
     async def reload_slash_command(self, ctx: commands.Context) -> None:
         await ctx.bot.sync_application_commands()
-        await ctx.reply(
-            "Successfully synced bot application commands.", mention_author=False
-        )
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed.description = "✅ Successfully synced bot application commands."
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(aliases=["ux"])
     @commands.is_owner()
@@ -187,11 +197,13 @@ class OwnerUtils(commands.Cog):
         cog = args[0]
         try:
             self.bot.unload_extension("cogs." + cog)
-            await ctx.reply(
-                f"Successfully unloaded `cogs.{cog}`.", mention_author=False
-            )
+            embed = nextcord.Embed(color=EMBED_COLOR)
+            embed.description = f"✅ Successfully unloaded `cogs.{cog}`."
+            await ctx.reply(embed=embed, mention_author=False)
         except commands.ExtensionNotLoaded:
-            await ctx.reply(f"`cogs.{cog}` was already unloaded.", mention_author=False)
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = f"❌ `cogs.{cog}` was already unloaded."
+            await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(aliases=["lx"])
     @commands.is_owner()
@@ -200,8 +212,12 @@ class OwnerUtils(commands.Cog):
         try:
             self.bot.load_extension("cogs." + cog)
         except commands.ExtensionNotLoaded:
-            await ctx.reply(f"'cogs.{cog}' was already loaded.", mention_author=False)
-        await ctx.reply(f"Successfully loaded `cogs.{cog}`.", mention_author=False)
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = f"❌ `cogs.{cog}` was already loaded."
+            await ctx.reply(embed=embed, mention_author=False)
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed.description = f"✅ Successfully loaded `cogs.{cog}`."
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command()
     @commands.is_owner()

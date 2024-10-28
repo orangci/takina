@@ -20,7 +20,9 @@ class UrbanDictionary(commands.Cog):
             ) as response:
                 data = await response.json()
         if not data["list"]:
-            return await ctx.reply("No results found.", mention_author=False)
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = "❌ No results found."
+            await ctx.reply(embed=embed, mention_author=False)
         embed = nextcord.Embed(
             title=data["list"][0]["word"],
             description=data["list"][0]["definition"],
@@ -48,7 +50,9 @@ class UrbanDictionary(commands.Cog):
             ) as response:
                 data = await response.json()
         if not data["list"]:
-            await interaction.send("No results found.")
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = "❌ No results found."
+            await interaction.send(embed=embed, ephemeral=True)
             return
         embed = nextcord.Embed(
             title=data["list"][0]["word"],

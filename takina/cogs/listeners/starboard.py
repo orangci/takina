@@ -208,7 +208,9 @@ class Starboard(commands.Cog):
         guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
 
         if not guild_data:
-            await ctx.reply("No channels are whitelisted.", mention_author=False)
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = "❌ No channels are whitelisted."
+            await ctx.reply(embed=embed, mention_author=False)
             return
 
         whitelisted_channels = guild_data.get("whitelisted_channels", [])
@@ -239,7 +241,9 @@ class Starboard(commands.Cog):
         guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
 
         if not guild_data or not guild_data.get("whitelisted_channels"):
-            await ctx.reply("No channels are whitelisted.", mention_author=False)
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = "❌ No channels are whitelisted."
+            await ctx.reply(embed=embed, mention_author=False)
             return
 
         whitelisted_channels = guild_data.get("whitelisted_channels", [])
