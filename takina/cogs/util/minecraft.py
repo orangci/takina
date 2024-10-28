@@ -2,7 +2,6 @@ from ..libs.oclib import *
 import nextcord
 import base64
 from nextcord.ext import commands
-from datetime import datetime
 from io import BytesIO
 from __main__ import EMBED_COLOR
 

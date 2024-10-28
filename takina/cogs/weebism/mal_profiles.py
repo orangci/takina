@@ -39,7 +39,6 @@ class MAL_Profiles(commands.Cog):
             last_online = format_date_long(user.get("last_online"))
             joined = format_date(user.get("joined"))
             location = user.get("location") or "Not Specified"
-            birthday = user.get("birthday") or "Not Specified"
             mal_id = user.get("mal_id")
             anime_list_url = f"https://myanimelist.net/animelist/{username}"
             manga_list_url = f"https://myanimelist.net/mangalist/{username}"
@@ -109,7 +108,6 @@ class MAL_Profiles(commands.Cog):
             last_online = format_date_long(user.get("last_online"))
             joined = format_date(user.get("joined"))
             location = user.get("location") or "Not Specified"
-            birthday = user.get("birthday") or "Not Specified"
             mal_id = user.get("mal_id")
             anime_list_url = f"https://myanimelist.net/animelist/{username}"
             manga_list_url = f"https://myanimelist.net/mangalist/{username}"

@@ -1,9 +1,6 @@
 import nextcord
 from nextcord.ext import application_checks, commands
-import asyncio
-import re
-from datetime import timedelta
-from __main__ import BOT_NAME, EMBED_COLOR
+from __main__ import EMBED_COLOR
 from ..libs.oclib import *
 
 

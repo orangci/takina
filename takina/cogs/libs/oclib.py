@@ -3,7 +3,7 @@ import nextcord
 from nextcord.ext import commands
 import aiohttp
 import datetime
-from nextcord.ui import Button, View
+from nextcord.ui import View
 import os
 import random
 from __main__ import EMBED_COLOR

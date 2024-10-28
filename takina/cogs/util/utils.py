@@ -1,7 +1,5 @@
-import re
 from nextcord.ext import commands
 import nextcord
-from nextcord import SlashOption
 from __main__ import BOT_NAME, EMBED_COLOR
 from ..libs.oclib import *
 

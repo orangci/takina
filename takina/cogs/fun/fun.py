@@ -2,7 +2,7 @@ from __future__ import annotations
 from ..libs.oclib import *
 import dotenv
 import nextcord
-from nextcord import Interaction, SlashOption
+from nextcord import SlashOption
 from nextcord.ext import commands
 from __main__ import EMBED_COLOR
 import urllib
@@ -14,7 +14,6 @@ dotenv.load_dotenv()
 class Fun(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
-        latency = bot.latency
 
     @commands.command(name="fact")
     @commands.cooldown(1, 1, commands.BucketType.user)
@@ -167,7 +166,6 @@ class Fun(commands.Cog):
 class FunSlash(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
-        latency = bot.latency
 
     @nextcord.slash_command(name="fact")
     async def slash_fact(self, interaction: nextcord.Interaction):

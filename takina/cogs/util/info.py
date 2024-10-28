@@ -1,9 +1,7 @@
 import nextcord
 from nextcord.ext import commands
-import re
 from ..libs.oclib import *
 from __main__ import EMBED_COLOR
-from nextcord.utils import utcnow
 
 
 class Info(commands.Cog):

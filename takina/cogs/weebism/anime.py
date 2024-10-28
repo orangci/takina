@@ -1,6 +1,5 @@
 import nextcord
 from nextcord.ext import commands
-from datetime import datetime
 import nextcord
 from nextcord import Interaction, SlashOption
 from __main__ import EMBED_COLOR
@@ -44,7 +43,6 @@ class AnimeSearch(commands.Cog):
                 source = anime.get("source")
                 aired = anime.get("aired", {}).get("string")
                 type = anime.get("type")
-                rating = anime.get("rating")
                 cover_image = anime["images"]["jpg"]["image_url"]
                 url = anime.get("url")
                 mal_id = anime.get("mal_id")
@@ -94,7 +92,6 @@ class AnimeSearch(commands.Cog):
                 source = anime.get("source")
                 aired = anime.get("aired", {}).get("string")
                 type = anime.get("type")
-                rating = anime.get("rating")
                 cover_image = anime["images"]["jpg"]["image_url"]
                 url = anime.get("url")
                 mal_id = anime.get("mal_id")

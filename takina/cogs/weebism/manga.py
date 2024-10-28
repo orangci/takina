@@ -1,7 +1,6 @@
 from ..libs.oclib import *
 import nextcord
 from nextcord.ext import commands
-from datetime import datetime
 from nextcord import Interaction, SlashOption
 import nextcord
 from __main__ import EMBED_COLOR

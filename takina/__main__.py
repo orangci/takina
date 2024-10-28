@@ -1,12 +1,9 @@
 from __future__ import annotations
 import os
-import threading
 import nextcord
-from nextcord.ext import commands, help_commands, tasks
 from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
-import asyncio
-from aiohttp import web
+from nextcord.ext import commands, help_commands
 
 load_dotenv()
 

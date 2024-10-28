@@ -31,7 +31,6 @@ async def request_neko(format: str, type: str) -> nextcord.Embed:
 class Neko(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
-        latency = bot.latency
 
     @commands.command(name="neko")
     @commands.has_permissions(embed_links=True)

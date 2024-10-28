@@ -1,8 +1,8 @@
 {pkgs ? import <nixpkgs> {}}:
 pkgs.mkShell {
   buildInputs = with pkgs; [
-    python312
-    python312Packages.virtualenv
+    python313
+    python313Packages.virtualenv
   ];
 
   shellHook = ''
