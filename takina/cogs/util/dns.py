@@ -71,7 +71,9 @@ class DNS(commands.Cog):
             except _dnsresolver.NoAnswer:
                 continue
             except _dnsresolver.NXDOMAIN:
-                await ctx.reply(f"Domain '{url}' does not exist.", mention_author=False)
+                error_embed = nextcord.Embed(color=0xFF0037)
+                error_embed.description = f"❌ Domain '{url}' does not exist."
+                await ctx.reply(embed=error_embed, mention_author=False)
                 return
 
         if full_answer:
@@ -79,7 +81,9 @@ class DNS(commands.Cog):
                 embed=construct_embed(url, full_answer), mention_author=False
             )
         else:
-            await ctx.reply(f"No records found for {url}.", mention_author=False)
+            error_embed = nextcord.Embed(color=0xFF0037)
+            error_embed.description = f"❌ No records found for {url}."
+            await ctx.reply(embed=error_embed, mention_author=False)
 
     @nextcord.slash_command(name="dig")
     async def dig_slash(
@@ -106,9 +110,10 @@ class DNS(commands.Cog):
             except _dnsresolver.NoAnswer:
                 continue
             except _dnsresolver.NXDOMAIN:
-                await interaction.send(
-                    f"Domain '{url}' does not exist.", ephemeral=True
-                )
+                error_embed = nextcord.Embed(color=0xFF0037)
+                error_embed.description = f"❌ Domain '{url}' does not exist."
+                await ctx.reply(embed=error_embed, mention_author=False)
+                await interaction.send(embed=embed, ephemeral=True)
                 return
 
         if full_answer:

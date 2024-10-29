@@ -195,9 +195,7 @@ class ModLog(commands.Cog):
         if result.modified_count == 0:
             embed = nextcord.Embed(color=0xFF0037)
             embed.description = "❌ Case not found or could not be updated."
-            await ctx.reply(
-                embed=embed, mention_author=False
-            )
+            await ctx.reply(embed=embed, mention_author=False)
         else:
             embed = nextcord.Embed(color=0xFF0037)
             embed.description = f"✅ Case `{case_id}` reason has been updated."
@@ -230,12 +228,15 @@ class ModLog(commands.Cog):
         ).to_list(length=None)
         if not cases:
             embed = nextcord.Embed(color=0xFF0037)
-            embed.description = f"❌ {user.mention} has not performed any moderation actions."
+            embed.description = (
+                f"❌ {user.mention} has not performed any moderation actions."
+            )
             await ctx.reply(embed=embed, mention_author=False)
             return
 
         view = CaseListButtonView(cases)
         await ctx.send(embed=view.get_page_embed(), view=view)
+
 
 class SlashModLog(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -286,15 +287,24 @@ class SlashModLog(commands.Cog):
             {"$set": {"reason": new_reason}},
         )
         if result.modified_count == 0:
-            embed = nextcord.Embed(color=0xFF0037, description="❌ Case not found or could not be updated.")
+            embed = nextcord.Embed(
+                color=0xFF0037, description="❌ Case not found or could not be updated."
+            )
             await interaction.send(embed=embed, ephemeral=True)
         else:
-            embed = nextcord.Embed(color=0x00FF37, description=f"✅ Case `{case_id}` reason has been updated.")
+            embed = nextcord.Embed(
+                color=0x00FF37,
+                description=f"✅ Case `{case_id}` reason has been updated.",
+            )
             await interaction.send(embed=embed)
 
-    @nextcord.slash_command(name="cases", description="View all cases or cases for a user.")
+    @nextcord.slash_command(
+        name="cases", description="View all cases or cases for a user."
+    )
     @application_checks.has_permissions(moderate_members=True)
-    async def slash_cases(self, interaction: nextcord.Interaction, user: nextcord.Member = None):
+    async def slash_cases(
+        self, interaction: nextcord.Interaction, user: nextcord.Member = None
+    ):
         query = {"guild_id": interaction.guild.id}
         if user:
             query["member_id"] = user.id
@@ -308,16 +318,23 @@ class SlashModLog(commands.Cog):
         view = CaseListButtonView(cases)
         await interaction.send(embed=view.get_page_embed(), view=view)
 
-    @nextcord.slash_command(name="modstats", description="View moderation stats for a user.")
+    @nextcord.slash_command(
+        name="modstats", description="View moderation stats for a user."
+    )
     @application_checks.has_permissions(moderate_members=True)
-    async def slash_modstats(self, interaction: nextcord.Interaction, user: nextcord.Member = None):
+    async def slash_modstats(
+        self, interaction: nextcord.Interaction, user: nextcord.Member = None
+    ):
         if not user:
             user = interaction.user
         cases = await self.db.modlog_cases.find(
             {"guild_id": interaction.guild.id, "moderator_id": user.id}
         ).to_list(length=None)
         if not cases:
-            embed = nextcord.Embed(color=0xFF0037, description=f"❌ {user.mention} has not performed any moderation actions.")
+            embed = nextcord.Embed(
+                color=0xFF0037,
+                description=f"❌ {user.mention} has not performed any moderation actions.",
+            )
             await interaction.send(embed=embed, ephemeral=True)
             return
 
