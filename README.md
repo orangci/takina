@@ -12,6 +12,7 @@ Using the Dockerfile or Nix.
 - (long term) add a web dashboard for managing settings 
 - levelling module
 - make starboard reaction count minimum configurable
+- patch ghostping sending embeds when the purge command is used
 
 ## License
 [Here.](./LICENSE)
