@@ -155,7 +155,12 @@ class ModLog(commands.Cog):
             embed.set_thumbnail(url=member.avatar.url)
         await modlog_channel.send(embed=embed)
 
-    @commands.command(name="case")
+    @commands.command(
+        name="case",
+        description="Fetch information on a moderation case.",
+        help="Usage: `case <case id>`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
     async def get_case(self, ctx, case_id: int):
         case = await self.db.modlog_cases.find_one(
@@ -185,7 +190,13 @@ class ModLog(commands.Cog):
         embed.add_field(name="Reason", value=case["reason"], inline=False)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="case_edit", aliases=["caseedit", "editc"])
+    @commands.command(
+        name="case_edit",
+        aliases=["caseedit", "editc"],
+        description="Edit a moderation case.",
+        help="Usage: `editc <case id> <new reason>`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
     async def edit_case(self, ctx, case_id: int, *, new_reason: str):
         result = await self.db.modlog_cases.update_one(
@@ -201,7 +212,12 @@ class ModLog(commands.Cog):
             embed.description = f"✅ Case `{case_id}` reason has been updated."
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="cases")
+    @commands.command(
+        name="cases",
+        description="List all the moderation cases in the server.",
+        help="Usage: `cases`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
     async def get_cases(self, ctx, user: nextcord.Member = None):
         query = {"guild_id": ctx.guild.id}
@@ -218,7 +234,13 @@ class ModLog(commands.Cog):
         view = CaseListButtonView(cases)
         await ctx.send(embed=view.get_page_embed(), view=view)
 
-    @commands.command(name="modstats", aliases=["ms"])
+    @commands.command(
+        name="modstats",
+        aliases=["ms"],
+        description="Lists all moderation cases in which the user was the moderator.",
+        help="Usage: `ms <user>`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
     async def get_mod_stats(self, ctx, user: nextcord.Member = None):
         if not user:
@@ -279,7 +301,7 @@ class SlashModLog(commands.Cog):
 
     @case.subcommand(name="edit", description="Edit the reason for a case.")
     @application_checks.has_permissions(moderate_members=True)
-    async def slash_case_edit(
+    async def case_edit(
         self, interaction: nextcord.Interaction, case_id: int, new_reason: str
     ):
         result = await self.db.modlog_cases.update_one(
@@ -302,7 +324,7 @@ class SlashModLog(commands.Cog):
         name="cases", description="View all cases or cases for a user."
     )
     @application_checks.has_permissions(moderate_members=True)
-    async def slash_cases(
+    async def cases(
         self, interaction: nextcord.Interaction, user: nextcord.Member = None
     ):
         query = {"guild_id": interaction.guild.id}
@@ -322,8 +344,13 @@ class SlashModLog(commands.Cog):
         name="modstats", description="View moderation stats for a user."
     )
     @application_checks.has_permissions(moderate_members=True)
-    async def slash_modstats(
-        self, interaction: nextcord.Interaction, user: nextcord.Member = None
+    async def modstats(
+        self,
+        interaction: nextcord.Interaction,
+        user: nextcord.Member = nextcord.SlashOption(
+            description="The user whose moderation cases you want to fetch.",
+            required=False,
+        ),
     ):
         if not user:
             user = interaction.user

@@ -8,7 +8,13 @@ class Ban(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="ban", aliases=["b"])
+    @commands.command(
+        name="ban",
+        aliases=["b"],
+        description="Ban a member from the server.",
+        help="Usage: `ban @member`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
     async def ban(
         self,
@@ -60,7 +66,13 @@ class Unban(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="unban", aliases=["pardon"])
+    @commands.command(
+        name="unban",
+        aliases=["pardon", "ub"],
+        description="Unban a member from the server.",
+        help="Usage: `pardon <Discord user id>.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, id: str, *, reason: str = "No reason provided"):
         user = await self.bot.fetch_user(int(id)) or await self.bot.fetch_user(id)

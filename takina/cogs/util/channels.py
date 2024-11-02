@@ -20,7 +20,7 @@ class ChannelManagement(commands.Cog):
         if duration is None:
             emoji = await fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f"{emoji} Invalid duration format. Use `<number>[d|h|m].`",
+                description=f"{emoji} Invalid duration format. Use `<number>[d|h|m|w|y].`",
                 color=EMBED_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
@@ -92,7 +92,7 @@ class ChannelManagementSlash(commands.Cog):
         if duration is None:
             emoji = await fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f"{emoji} Invalid duration format. Use `<number>[d|h|m].`",
+                description=f"{emoji} Invalid duration format. Use `<number>[d|h|m|w|y].`",
                 color=EMBED_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)

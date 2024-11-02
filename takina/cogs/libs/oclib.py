@@ -218,6 +218,7 @@ class ConfirmationView(View):
 
         return self.result
 
+
 emoji_dict = {
     "love": "<:love:1293115234382512200>",
     "yes": "<:yes:1293115235896524833>",

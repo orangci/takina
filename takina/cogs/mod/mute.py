@@ -9,7 +9,7 @@ class Mute(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="mute")
+    @commands.command(name="mute", description="Timeout a member.", help="Usage: `mute <member> <duration> <reason>`.", aliases=["timeout"])
     @commands.has_permissions(moderate_members=True)
     async def mute(
         self, ctx, member: str, duration: str, *, reason: str = "No reason provided"
@@ -17,7 +17,7 @@ class Mute(commands.Cog):
         timeout_duration = duration_calculator(duration)
         if timeout_duration is None:
             await ctx.reply(
-                "Invalid duration format. Use <number>[d|h|m].", mention_author=False
+                "Invalid duration format. Use <number>[d|h|m|w|y].", mention_author=False
             )
             return
 
@@ -32,7 +32,6 @@ class Mute(commands.Cog):
             await ctx.reply(embed=message, mention_author=False)
             return
 
-        # Confirmation prompt (assuming you have a ConfirmationView)
         confirmation = ConfirmationView(
             ctx=ctx, member=member, action="mute", reason=reason, duration=duration
         )
@@ -40,7 +39,7 @@ class Mute(commands.Cog):
         if not confirmed:
             return
 
-        # Apply the mute (timeout)
+        # Apply the timeout
         await member.timeout(
             timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
             reason=f"Muted by {ctx.author} for: {reason}",
@@ -70,7 +69,7 @@ class Unmute(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="unmute")
+    @commands.command(name="unmute", description="Unmute a member.", help="Usage: `unmute <member> <reason>`.")
     @commands.has_permissions(moderate_members=True)
     async def unmute(
         self, ctx: commands.Context, member: str, *, reason: str = "No reason provided"
@@ -111,7 +110,7 @@ class MuteSlash(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(
-        name="mute", description="Mute a member for a specified duration."
+        name="mute", description="Timeout a member for a specified duration."
     )
     @application_checks.has_permissions(moderate_members=True)
     async def mute(

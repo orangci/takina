@@ -24,7 +24,7 @@ class RemindMe(commands.Cog):
 
         if remind_time is None:
             embed = nextcord.Embed(
-                description="Invalid time format. Use <number>[s|m|h|d].)",
+                description="Invalid time format. Use <number>[m|h|d].)",
                 color=0xFF0037,
             )
             await ctx.reply(embed=embed, mention_author=False)
@@ -62,7 +62,7 @@ class RemindMe(commands.Cog):
 
         if remind_time is None:
             embed = nextcord.Embed(
-                description="Invalid time format. Use <number>[m|h|d|y].)",
+                description="Invalid time format. Use <number>[m|h|d].)",
                 color=0xFF0037,
             )
             await interaction.send(embed=embed, ephemeral=True)

@@ -148,8 +148,14 @@ class Starboard(commands.Cog):
     async def starboard_configure(
         self,
         interaction: nextcord.Interaction,
-        channel: nextcord.TextChannel = nextcord.SlashOption(description="The channel in which you want the bot to send starboard messages in.", required=True),
-        reaction_count: int = nextcord.SlashOption(description="The minimum required amount of reactions a message needs to be sent to the starboard in your server.", required=True),
+        channel: nextcord.TextChannel = nextcord.SlashOption(
+            description="The channel in which you want the bot to send starboard messages in.",
+            required=True,
+        ),
+        reaction_count: int = nextcord.SlashOption(
+            description="The minimum required amount of reactions a message needs to be sent to the starboard in your server.",
+            required=True,
+        ),
     ):
         await interaction.response.defer(ephemeral=True)
 

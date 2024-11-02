@@ -33,7 +33,7 @@ class Reports(commands.Cog):
 
     @nextcord.slash_command(
         name="report",
-        description="Report something to the moderators. Please only report incidents, not bugs or other issues.",
+        description="Report something to server's moderation team.",
     )
     async def report(
         self,
@@ -43,7 +43,7 @@ class Reports(commands.Cog):
         ),
         reason: str = SlashOption(description="Reason for the report."),
         channel: nextcord.TextChannel = SlashOption(
-            description="The channel where the issue happened.", required=False
+            description="The channel where the incident occured.", required=False
         ),
     ):
         guild_id = interaction.guild.id

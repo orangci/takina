@@ -8,7 +8,12 @@ class Kick(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="kick")
+    @commands.command(
+        name="kick",
+        description="Kick a member from the server.",
+        help="Usage: `kick @member`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(kick_members=True)
     async def kick(
         self,
