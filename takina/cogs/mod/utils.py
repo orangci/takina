@@ -18,7 +18,6 @@ class ModUtils(commands.Cog):
         *,
         message: str,
     ):
-        """Send a message as the bot. Usage: `send channel message`."""
         if channel and message:
             await channel.send(message)
             embed = nextcord.Embed(
@@ -134,7 +133,6 @@ class SlashModUtils(commands.Cog):
             description="Number of messages to purge", required=True
         ),
     ):
-        """Purges a specified number of messages."""
         if amount <= 0 or amount > 100:
             embed = nextcord.Embed(
                 description="Please specify a number between 1 and 100 for messages to purge.",
@@ -166,7 +164,6 @@ class SlashModUtils(commands.Cog):
         ),
         nickname: str = SlashOption(description="New nickname"),
     ):
-        """Change a member's nickname."""
         if member is None:
             member = ctx.author
         else:
