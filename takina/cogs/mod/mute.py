@@ -9,7 +9,12 @@ class Mute(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="mute", description="Timeout a member.", help="Usage: `mute <member> <duration> <reason>`.", aliases=["timeout"])
+    @commands.command(
+        name="mute",
+        description="Timeout a member.",
+        help="Usage: `mute <member> <duration> <reason>`.",
+        aliases=["timeout"],
+    )
     @commands.has_permissions(moderate_members=True)
     async def mute(
         self, ctx, member: str, duration: str, *, reason: str = "No reason provided"
@@ -17,7 +22,8 @@ class Mute(commands.Cog):
         timeout_duration = duration_calculator(duration)
         if timeout_duration is None:
             await ctx.reply(
-                "Invalid duration format. Use <number>[d|h|m|w|y].", mention_author=False
+                "Invalid duration format. Use <number>[d|h|m|w|y].",
+                mention_author=False,
             )
             return
 
@@ -69,7 +75,11 @@ class Unmute(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="unmute", description="Unmute a member.", help="Usage: `unmute <member> <reason>`.")
+    @commands.command(
+        name="unmute",
+        description="Unmute a member.",
+        help="Usage: `unmute <member> <reason>`.",
+    )
     @commands.has_permissions(moderate_members=True)
     async def unmute(
         self, ctx: commands.Context, member: str, *, reason: str = "No reason provided"

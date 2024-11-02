@@ -26,10 +26,12 @@ class MangaSearch(commands.Cog):
         except Exception as e:
             raise e
 
-    @commands.command()
+    @commands.command(
+        description="Fetch anime information from MyAnimeList.",
+        help="Usage example: `manga Lycoris Recoil` or `anime 135455`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def manga(self, ctx: commands.Context, *, manga_name: str):
-        """Command for searching manga on MymangaList. Usage example: `?manga Lycoris Recoil` or `?manga 135455`."""
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
         try:
             manga = await self.fetch_manga(manga_name)
@@ -62,7 +64,9 @@ class MangaSearch(commands.Cog):
             embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(name="manga", description="Get information about a manga")
+    @nextcord.slash_command(
+        name="manga", description="Fetch manga information from MyAnimeList."
+    )
     async def slash_manga(
         self,
         interaction: Interaction,

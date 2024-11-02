@@ -21,10 +21,12 @@ class MinecraftServerStatus(commands.Cog):
         except Exception as e:
             raise e
 
-    @commands.command()
+    @commands.command(
+        description="Display a Minecraft server's status.",
+        help="Usage: `mcstatus play.mccisland.net`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def mcstatus(self, ctx: commands.Context, *, server_name: str):
-        """Command for displaying a Minecraft server's status. Usage: `mcstatus mc.orangc.xyz`."""
         try:
             server = await self.fetch_server_info(server_name)
             if server:

@@ -26,10 +26,13 @@ class AnimeSearch(commands.Cog):
         except Exception as e:
             raise e
 
-    @commands.command(aliases=["ani"])
+    @commands.command(
+        aliases=["ani"],
+        description="Fetch anime information from MyAnimeList.",
+        help="Usage example: `anime Lycoris Recoil` or `anime 50709`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def anime(self, ctx: commands.Context, *, anime_name: str):
-        """Command for searching anime on MyAnimeList. Usage example: `?anime Lycoris Recoil` or `?anime 50709`."""
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)
@@ -72,13 +75,14 @@ class AnimeSearch(commands.Cog):
             embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(name="anime", description="Get information about an anime")
+    @nextcord.slash_command(
+        name="anime", description="Fetch anime information from MyAnimeList."
+    )
     async def slash_anime(
         self,
         interaction: Interaction,
         anime_name: str = SlashOption(description="Name of the anime"),
     ):
-        """Slash command for searching anime on MyAnimeList. Usage example: `/anime anime_name:Lycoris Recoil`."""
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)

@@ -62,6 +62,7 @@ class ModUtils(commands.Cog):
         )
 
     @commands.command(aliases=["setnick"])
+    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_nicknames=True)
     async def nick(
         self, ctx: commands.Context, member: str = None, *, nickname: str = None

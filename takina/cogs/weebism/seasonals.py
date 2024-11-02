@@ -38,7 +38,11 @@ class AnimeSeasonals(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=["season"])
+    @commands.command(
+        aliases=["season"],
+        description="Fetch a season's airing anime.",
+        help="Usage: `season <season> <year>`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def seasonals(
         self, ctx: commands.Context, season: str = None, year: int = None
@@ -108,7 +112,9 @@ class AnimeSeasonals(commands.Cog):
             embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
             await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(name="seasonals", description="Display seasonal anime.")
+    @nextcord.slash_command(
+        name="seasonals", description="Fetch a season's airing anime."
+    )
     async def seasonals_slash(
         self,
         interaction: Interaction,

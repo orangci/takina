@@ -8,16 +8,23 @@ class Roles(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.group(name="role", invoke_without_command=True)
+    @commands.group(
+        name="role",
+        description="Base role command, if no subcommand is passed.",
+        invoke_without_command=True,
+    )
     async def role(self, ctx: commands.Context):
-        """Base role command, if no subcommand is passed."""
         embed = nextcord.Embed(
             description="Please specify a subcommand: `add` or `remove`",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @role.command(name="add")
+    @role.command(
+        name="add",
+        description="Add a role to a member.",
+        help="Usage: `role add <role> <member>`.",
+    )
     @commands.has_permissions(manage_roles=True)
     async def add(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
         """Adds a role to a member. Usage: `role add role member`."""
@@ -37,7 +44,11 @@ class Roles(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @role.command(name="remove")
+    @role.command(
+        name="remove",
+        description="Remove a role from member.",
+        help="Usage: `role remove <role> <member>`.",
+    )
     @commands.has_permissions(manage_roles=True)
     async def remove(
         self, ctx: commands.Context, role: nextcord.Role, member: str = None
@@ -68,7 +79,7 @@ class RolesSlash(commands.Cog):
     async def role(self, interaction: nextcord.Interaction):
         pass
 
-    @role.subcommand(name="add")
+    @role.subcommand(name="add", description="Add a role to a member.")
     @application_checks.has_permissions(manage_roles=True)
     async def add(
         self,
@@ -89,7 +100,7 @@ class RolesSlash(commands.Cog):
         )
         await interaction.send(embed=embed)
 
-    @role.subcommand(name="remove")
+    @role.subcommand(name="remove", description="Remove a role from member.")
     @application_checks.has_permissions(manage_roles=True)
     async def remove(
         self,

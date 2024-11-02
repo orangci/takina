@@ -17,7 +17,9 @@ class Utils(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
 
-    @commands.command()
+    @commands.command(
+        description="Ping the bot and check its latency.", help="Usage: `ping`."
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def ping(self, ctx: commands.Context):
         """Ping the bot."""
@@ -29,7 +31,12 @@ class Utils(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="join-position", aliases=["jp", "japan"])
+    @commands.command(
+        name="join-position",
+        aliases=["jp", "japan"],
+        description="Check a user's join position in the server.",
+        help="Usage: `jp <member>`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def join_position(self, ctx: commands.Context, member: str = None):
         guild = ctx.guild
@@ -67,7 +74,12 @@ class Utils(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="member-count", aliases=["mc"])
+    @commands.command(
+        name="member-count",
+        aliases=["mc"],
+        description="Fetch the server's current member count.",
+        help="Usage: `mc`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def member_count(self, ctx: commands.Context):
         guild = ctx.guild
@@ -102,7 +114,9 @@ class UtilsSlash(commands.Cog):
         )
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(name="join-position")
+    @nextcord.slash_command(
+        name="join-position", description="Fetch a user's join position in the server."
+    )
     async def slash_join_position(
         self,
         interaction: nextcord.Interaction,
@@ -140,7 +154,9 @@ class UtilsSlash(commands.Cog):
 
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(name="member-count")
+    @nextcord.slash_command(
+        name="member-count", description="Fetch the server's current member count."
+    )
     async def slash_member_count(self, interaction: nextcord.Interaction):
         guild = interaction.guild
 

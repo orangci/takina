@@ -8,10 +8,13 @@ class Info(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="userinfo")
+    @commands.command(
+        name="userinfo",
+        description="Fetch information about a user.",
+        help="Usage: `userinfo <user>`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def userinfo(self, ctx: commands.Context, member: str = None):
-        """Fetch user information. Usage: `userinfo member`."""
         if member is None:
             member = ctx.author
         else:
@@ -43,10 +46,13 @@ class Info(commands.Cog):
             embed.set_footer(text="This user is a bot account.")
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="roleinfo")
+    @commands.command(
+        name="roleinfo",
+        description="Fetch information about a role.",
+        help="Usage: `Usage: roleinfo <role>`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def roleinfo(self, ctx: commands.Context, *, role: nextcord.Role):
-        """Fetch role information. `roleinfo role`."""
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             title=f"{emoji} Role Info - {role.name}",
@@ -63,7 +69,11 @@ class Info(commands.Cog):
         embed.set_thumbnail(url=role.icon.url if role.icon else None)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="serverinfo")
+    @commands.command(
+        name="serverinfo",
+        description="Fetch information about the server.",
+        help="Usage: `serverinfo`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def serverinfo(self, ctx: commands.Context):
         """Fetch server information. `serverinfo`."""
@@ -90,7 +100,9 @@ class SlashInfo(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @nextcord.slash_command(name="userinfo")
+    @nextcord.slash_command(
+        name="userinfo", description="Fetch information about a user."
+    )
     async def userinfo(
         self,
         interaction: nextcord.Interaction,
@@ -98,7 +110,6 @@ class SlashInfo(commands.Cog):
             description="The user to fetch information on", required=False
         ),
     ):
-        """Fetch user information. Usage: `userinfo member`."""
         if member is None:
             member = interaction.user
 
@@ -126,7 +137,9 @@ class SlashInfo(commands.Cog):
 
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(name="roleinfo")
+    @nextcord.slash_command(
+        name="roleinfo", description="Fetch information about a role."
+    )
     async def roleinfo(
         self,
         interaction: nextcord.Interaction,
@@ -134,7 +147,6 @@ class SlashInfo(commands.Cog):
             description="The role to fetch information on", required=True
         ),
     ):
-        """Fetch role information. `roleinfo role`."""
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             title=f"{emoji} Role Info - {role.name}",
@@ -151,9 +163,10 @@ class SlashInfo(commands.Cog):
         embed.set_thumbnail(url=role.icon.url if role.icon else None)
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(name="serverinfo")
+    @nextcord.slash_command(
+        name="serverinfo", description="Fetch information about the server."
+    )
     async def serverinfo(self, interaction: nextcord.Interaction):
-        """Fetch server information. `serverinfo`."""
         guild = interaction.guild
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(

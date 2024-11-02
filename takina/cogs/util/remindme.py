@@ -15,7 +15,11 @@ class RemindMe(commands.Cog):
         self.reminders = self.db.reminders
         self.check_reminders.start()
 
-    @commands.command(name="remindme")
+    @commands.command(
+        name="remindme",
+        description="Set a reminder.",
+        help="Usage: `remindme <time> <reminder>`.",
+    )
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def remindme(self, ctx: commands.Context, time: str, *, reminder: str):
         """Set a reminder. Usage: `remindme 10m eat lunch`"""
@@ -44,7 +48,7 @@ class RemindMe(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(name="remindme")
+    @nextcord.slash_command(name="remindme", description="Set a reminder.")
     async def slash_remindme(
         self,
         interaction: nextcord.Interaction,

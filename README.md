@@ -12,6 +12,8 @@ Using the Dockerfile or Nix.
 - (long term) add a web dashboard for managing settings 
 - levelling module
 - patch ghostping sending embeds when the purge command is used
+- make every command have full documentation (in help commands)
+- make every command have it's own error embed responses, instead of using the global error handling
 
 ## License
 [Here.](./LICENSE)

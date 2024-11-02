@@ -20,7 +20,11 @@ class Snipe(commands.Cog):
             "attachments": message.attachments,
         }
 
-    @commands.command(name="snipe")
+    @commands.command(
+        name="snipe",
+        description="Snipe the last deleted message in a channel.",
+        help="Usage: `snipe`.",
+    )
     @commands.has_permissions(manage_messages=True)
     async def snipe(self, ctx: commands.Context):
         """Snipes and displays the last deleted message with attachments."""

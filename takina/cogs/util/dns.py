@@ -52,11 +52,14 @@ class DNS(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot: commands.Bot = bot
 
-    @commands.command(aliases=["dns"])
+    @commands.command(
+        aliases=["dns"],
+        description="Prints DNS records for a domain.",
+        help="Usage: `dig <URL>`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def dig(self, ctx: commands.Context, url: str):
-        """Prints DNS records for a domain. Usage: `a?dig URL`."""
-        record_types = ["A", "CNAME", "AAAA", "MX", "TXT", "SRV", "PTR"]
+        record_types = ["A", "CNAME", "AAAA", "MX", "TXT", "SRV", "NS"]
         full_answer = ""
 
         for record_type in record_types:
@@ -85,7 +88,7 @@ class DNS(commands.Cog):
             error_embed.description = f"❌ No records found for {url}."
             await ctx.reply(embed=error_embed, mention_author=False)
 
-    @nextcord.slash_command(name="dig")
+    @nextcord.slash_command(name="dig", description="Dig an URL for its DNS records.")
     async def dig_slash(
         self,
         interaction: nextcord.Interaction,
@@ -94,8 +97,7 @@ class DNS(commands.Cog):
             required=True,
         ),
     ) -> None:
-        """Dig an URL for its DNS records."""
-        record_types = ["A", "CNAME", "AAAA", "MX", "TXT", "SRV", "PTR"]
+        record_types = ["A", "CNAME", "AAAA", "MX", "TXT", "SRV", "NS"]
         full_answer = ""
 
         for record_type in record_types:

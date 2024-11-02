@@ -9,18 +9,21 @@ class ChannelManagement(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="slowmode")
+    @commands.command(
+        name="slowmode",
+        description="Sets slowmode in the current or specified channel.",
+        help="Usage: `slowmode #channel <duration>`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
     async def slowmode(
         self, ctx: commands.Context, duration: str, channel: nextcord.TextChannel = None
     ):
-        """Sets slowmode in the current or specified channel."""
         channel = channel or ctx.channel
         duration = duration_calculator(duration)
         if duration is None:
-            emoji = await fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f"{emoji} Invalid duration format. Use `<number>[d|h|m|w|y].`",
+                description="❌ Invalid duration format. Use `<number>[d|h|m|w|y].`",
                 color=EMBED_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
@@ -33,10 +36,14 @@ class ChannelManagement(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="lock")
+    @commands.command(
+        name="lock",
+        description="Locks the current or specified channel.",
+        help="Usage: `lock #channel`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
     async def lock(self, ctx: commands.Context, channel: nextcord.TextChannel = None):
-        """Locks the current or specified channel."""
         channel = channel or ctx.channel
         overwrite = channel.overwrites_for(ctx.guild.default_role)
         overwrite.send_messages = False
@@ -48,10 +55,14 @@ class ChannelManagement(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="unlock")
+    @commands.command(
+        name="unlock",
+        description="Unlocks the current or specified channel.",
+        help="Usage: `unlock #channel`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
     async def unlock(self, ctx: commands.Context, channel: nextcord.TextChannel = None):
-        """Unlocks the current or specified channel."""
         channel = channel or ctx.channel
         overwrite = channel.overwrites_for(ctx.guild.default_role)
         overwrite.send_messages = True
@@ -64,7 +75,7 @@ class ChannelManagement(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
 
-class ChannelManagementSlash(commands.Cog):
+class SlashChannelManagement(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -77,7 +88,7 @@ class ChannelManagementSlash(commands.Cog):
         description="Sets slowmode in the current or specified channel.",
     )
     @application_checks.has_permissions(manage_channels=True)
-    async def slash_slowmode(
+    async def slowmode(
         self,
         interaction: nextcord.Interaction,
         duration: str = SlashOption(
@@ -90,9 +101,8 @@ class ChannelManagementSlash(commands.Cog):
         channel = channel or interaction.channel
         duration = duration_calculator(duration)
         if duration is None:
-            emoji = await fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f"{emoji} Invalid duration format. Use `<number>[d|h|m|w|y].`",
+                description="❌ Invalid duration format. Use `<number>[d|h|m|w|y].`",
                 color=EMBED_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
@@ -109,7 +119,7 @@ class ChannelManagementSlash(commands.Cog):
         name="lock", description="Locks the current or specified channel."
     )
     @application_checks.has_permissions(manage_channels=True)
-    async def slash_lock(
+    async def lock(
         self,
         interaction: nextcord.Interaction,
         channel: nextcord.TextChannel = SlashOption(
@@ -133,7 +143,7 @@ class ChannelManagementSlash(commands.Cog):
         name="unlock", description="Unlocks the current or specified channel."
     )
     @application_checks.has_permissions(manage_channels=True)
-    async def slash_unlock(
+    async def unlock(
         self,
         interaction: nextcord.Interaction,
         channel: nextcord.TextChannel = SlashOption(
@@ -156,4 +166,4 @@ class ChannelManagementSlash(commands.Cog):
 
 def setup(bot):
     bot.add_cog(ChannelManagement(bot))
-    bot.add_cog(ChannelManagementSlash(bot))
+    bot.add_cog(SlashChannelManagement(bot))

@@ -19,10 +19,12 @@ class MAL_Profiles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(
+        description="Fetch information about a MyAnimeList user.",
+        help="Usage: `mal orangc`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def mal(self, ctx: commands.Context, *, username: str):
-        """Fetch information about a MyAnimeList user. Usage: `mal orangc`."""
         try:
             profile_url = f"https://api.jikan.moe/v4/users/{username}"
             profile_data = await request(profile_url)
@@ -83,7 +85,9 @@ class MAL_Profiles(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(name="mal")
+    @nextcord.slash_command(
+        name="mal", description="Fetch information about a MyAnimeList user."
+    )
     async def mal_slash(
         self,
         ctx: nextcord.Interaction,

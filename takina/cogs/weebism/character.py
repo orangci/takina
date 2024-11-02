@@ -26,10 +26,13 @@ class CharacterSearch(commands.Cog):
         except Exception as e:
             raise e
 
-    @commands.command(aliases=["waifu", "chr"])
+    @commands.command(
+        aliases=["waifu", "chr"],
+        description="Fetch character information from MyAnimeList.",
+        help="Usage: `chr Takina Inoue` or `chr 204620`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def character(self, ctx: commands.Context, *, character_name: str):
-        """Command for searching character on MyAnimeList. Usage: `chr Takina Inoue` or `?chr 204620`."""
         try:
             character = await self.fetch_character(character_name)
 
@@ -66,7 +69,7 @@ class CharacterSearch(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
-        name="character", description="Get information about a character"
+        name="character", description="Fetch character information from MyAnimeList."
     )
     async def slash_character(
         self,

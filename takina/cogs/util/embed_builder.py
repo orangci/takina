@@ -7,7 +7,7 @@ class EmbedBuilder(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @nextcord.slash_command(name="embed", description="Create an embed")
+    @nextcord.slash_command(name="embed", description="Create an embed.")
     @application_checks.has_permissions(manage_channels=True)
     async def embed_command(self, interaction: nextcord.Interaction):
         modal = EmbedModal()
