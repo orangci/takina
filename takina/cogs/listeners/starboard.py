@@ -44,9 +44,11 @@ class Starboard(commands.Cog):
             if str(reaction.emoji) == str(payload.emoji):
                 emoji_reaction = reaction
                 break
-
-        # Ensure the emoji reaction has at least 4 reactions
-        if emoji_reaction and emoji_reaction.count >= 4:
+        
+        # fetch the configured minimum reaction count
+        minimum_reaction_count = guild_data.get("starboard_minimum_reaction_count")
+        # Ensure the emoji reaction has at least the configured number of reactions
+        if emoji_reaction and emoji_reaction.count >= minimum_reaction_count:
             # Check if this message is already on the starboard
             existing_star_message = await self.db.starboard.find_one(
                 {"message_id": message.id}
@@ -133,27 +135,6 @@ class Starboard(commands.Cog):
                 updated_embed = self._create_embed(message, emoji_reaction)
                 await starboard_message.edit(embed=updated_embed)
 
-    @nextcord.slash_command(description="Manage the starboard settings")
-    @application_checks.has_permissions(manage_channels=True)
-    async def starboard_channel(
-        self, interaction: nextcord.Interaction, channel: nextcord.TextChannel
-    ):
-        guild_id = interaction.guild_id
-
-        await interaction.response.defer(ephemeral=True)
-
-        guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
-        if not guild_data:
-            guild_data = {"guild_id": guild_id, "starboard_channel_id": None}
-
-        guild_data["starboard_channel_id"] = channel.id
-        await self.db.starboard_settings.update_one(
-            {"guild_id": guild_id}, {"$set": guild_data}, upsert=True
-        )
-        await interaction.followup.send(
-            f"Starboard channel has been set to {channel.mention}.", ephemeral=True
-        )
-
     @commands.group(name="starboard", invoke_without_command=True)
     @commands.has_permissions(manage_channels=True)
     async def starboard(self, ctx: commands.Context):
@@ -161,6 +142,26 @@ class Starboard(commands.Cog):
         embed = nextcord.Embed(color=EMBED_COLOR)
         embed.description = "Please specify a subcommand: `whitelist add`, `whitelist remove`, or `whitelist list`."
         await ctx.reply(embed=embed, mention_author=False)
+    
+    @starboard.command(name="configure", description="Manage the starboard settings")
+    @application_checks.has_permissions(manage_channels=True)
+    async def starboard_configure(
+        self, interaction: nextcord.Interaction, channel: nextcord.TextChannel, reaction_count: int
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        guild_data = await self.db.starboard_settings.find_one({"guild_id": interaction.guild_id})
+        if not guild_data:
+            guild_data = {"guild_id": interaction.guild_id, "starboard_channel_id": None, "starboard_minimum_reaction_count": 4,}
+
+        guild_data["starboard_channel_id"] = channel.id
+        guild_data["starboard_minimum_reaction_count"] = reaction_count
+        await self.db.starboard_settings.update_one(
+            {"guild_id": interaction.guild_id}, {"$set": guild_data}, upsert=True
+        )
+        await interaction.followup.send(
+            f"Starboard channel has been set to {channel.mention}.", ephemeral=True
+        )
 
     @starboard.group(name="whitelist", invoke_without_command=True)
     async def whitelist(self, ctx: commands.Context):
