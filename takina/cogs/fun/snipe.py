@@ -27,7 +27,6 @@ class Snipe(commands.Cog):
     )
     @commands.has_permissions(manage_messages=True)
     async def snipe(self, ctx: commands.Context):
-        """Snipes and displays the last deleted message with attachments."""
         sniped_message = self.sniped_messages.get(ctx.channel.id)
 
         # Handle if there's neither text nor attachments

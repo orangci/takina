@@ -27,7 +27,6 @@ class Roles(commands.Cog):
     )
     @commands.has_permissions(manage_roles=True)
     async def add(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
-        """Adds a role to a member. Usage: `role add role member`."""
         if member is None:
             member = ctx.author
         else:
@@ -53,7 +52,6 @@ class Roles(commands.Cog):
     async def remove(
         self, ctx: commands.Context, role: nextcord.Role, member: str = None
     ):
-        """Removes a role from a member. Usage: `role remove role member`."""
         if member is None:
             member = ctx.author
         else:
@@ -91,7 +89,6 @@ class RolesSlash(commands.Cog):
             description="The member to add the role to", required=True
         ),
     ):
-        """Adds a role to a member. Usage: `role add role member`."""
 
         await member.add_roles(role)
         embed = nextcord.Embed(
@@ -112,7 +109,6 @@ class RolesSlash(commands.Cog):
             description="The member to remove the role from", required=True
         ),
     ):
-        """Removes a role from a member. Usage: `role remove role member`."""
 
         await member.remove_roles(role)
         embed = nextcord.Embed(

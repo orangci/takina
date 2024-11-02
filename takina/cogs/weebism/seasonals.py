@@ -41,13 +41,12 @@ class AnimeSeasonals(commands.Cog):
     @commands.command(
         aliases=["season"],
         description="Fetch a season's airing anime.",
-        help="Usage: `season <season> <year>`.",
+        help="Usage: `season <season> <year>` or `season` to fetch the current season.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def seasonals(
         self, ctx: commands.Context, season: str = None, year: int = None
     ):
-        """Command for displaying seasonal anime from MyAnimeList. Usage: `season Fall 2024`, or `season` to fetch the current season."""
         emoji = await fetch_random_emoji()
         if season == None or year == None or season and year == None:
             url = "https://api.jikan.moe/v4/seasons/now"
@@ -127,8 +126,6 @@ class AnimeSeasonals(commands.Cog):
             name="year", description="The anime year", required=False
         ),
     ):
-        """Slash command for displaying seasonal anime from MyAnimeList."""
-
         if season is None or year is None:
             url = "https://api.jikan.moe/v4/seasons/now"
             embed_title = "Current Season's Anime"

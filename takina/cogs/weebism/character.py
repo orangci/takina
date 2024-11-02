@@ -78,7 +78,6 @@ class CharacterSearch(commands.Cog):
             description="Name or MAL ID of the character"
         ),
     ):
-        """Slash command for searching characters on MyAnimeList."""
         try:
             character = await self.fetch_character(character_name)
 

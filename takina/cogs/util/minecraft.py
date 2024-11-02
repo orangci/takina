@@ -75,7 +75,7 @@ class MinecraftServerStatus(commands.Cog):
             embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
             await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(name="mcstatus")
+    @nextcord.slash_command(name="mcstatus", description="Display a Minecraft server's status.")
     async def slash_mcstatus(
         self,
         interaction: nextcord.Interaction,
@@ -84,7 +84,6 @@ class MinecraftServerStatus(commands.Cog):
             description="The Minecraft server IP to fetch information on", required=True
         ),
     ):
-        """Command for displaying a Minecraft server's status. Usage: `mcstatus mc.orangc.xyz`."""
         try:
             server = await self.fetch_server_info(server_name)
             if server:

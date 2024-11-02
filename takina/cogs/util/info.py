@@ -11,7 +11,7 @@ class Info(commands.Cog):
     @commands.command(
         name="userinfo",
         description="Fetch information about a user.",
-        help="Usage: `userinfo <user>`.",
+        help="Usage: `userinfo <user>` or just `userinfo` if you want to fetch information about yourself.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def userinfo(self, ctx: commands.Context, member: str = None):
@@ -76,7 +76,6 @@ class Info(commands.Cog):
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def serverinfo(self, ctx: commands.Context):
-        """Fetch server information. `serverinfo`."""
         guild = ctx.guild
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(

@@ -118,11 +118,10 @@ class Fun(commands.Cog):
     @commands.command(
         name="google",
         description="Google anything!",
-        help="Usage: `google shawarma restaurants near me",
+        help="Usage: `google shawarma restaurants near me`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def google(self, ctx: commands.Context, *, query: str):
-        """Google a query. Usage: `google query`."""
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
         emoji = await fetch_random_emoji()
@@ -143,7 +142,6 @@ class Fun(commands.Cog):
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def roll(self, ctx: commands.Context):
-        """Roll a random number from 1 to 100."""
         embed = nextcord.Embed(
             title=f"What number did you roll? {await fetch_random_emoji()}",
             description=f"You rolled {random.randint(1, 100)}!",

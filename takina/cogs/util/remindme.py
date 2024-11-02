@@ -22,7 +22,6 @@ class RemindMe(commands.Cog):
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def remindme(self, ctx: commands.Context, time: str, *, reminder: str):
-        """Set a reminder. Usage: `remindme 10m eat lunch`"""
         user_id = ctx.author.id
         remind_time = self.parse_time(time)
 
@@ -60,7 +59,6 @@ class RemindMe(commands.Cog):
             description="What you want to be reminded about", required=True
         ),
     ):
-        """Set a reminder. Usage: `remindme 10m eat lunch`"""
         user_id = interaction.user.id
         remind_time = self.parse_time(time)
 

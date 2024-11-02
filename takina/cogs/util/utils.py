@@ -22,7 +22,6 @@ class Utils(commands.Cog):
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def ping(self, ctx: commands.Context):
-        """Ping the bot."""
         latency = round(self.bot.latency * 1000)
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
@@ -105,7 +104,6 @@ class UtilsSlash(commands.Cog):
 
     @nextcord.slash_command(name="ping", description="Ping the bot.")
     async def slash_ping(self, interaction: nextcord.Interaction):
-        """Ping the bot."""
         latency = round(self.bot.latency * 1000)
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(

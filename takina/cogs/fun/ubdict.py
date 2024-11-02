@@ -16,7 +16,6 @@ class UrbanDictionary(commands.Cog):
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def ubdict(self, ctx: commands.Context, *, word: str):
-        """Query Urban Dictionary. Usage: `ubdict word`."""
         params = {"term": word}
         async with aiohttp.ClientSession() as session:
             async with session.get(
