@@ -42,7 +42,7 @@ async def request(url, *args, **kwargs):
 
 # for calculating durations, e.g. 1d, 2h, 5s, 34m
 def duration_calculator(duration: str) -> int:
-    pattern = r"(\d+)([d|h|m|s])"
+    pattern = r"(\d+)([s|m|h|d|w|y])"
     match = re.fullmatch(pattern, duration)
     if not match:
         return None
@@ -58,6 +58,10 @@ def duration_calculator(duration: str) -> int:
         return time_value * 60
     elif time_unit == "s":
         return time_value * 1
+    elif time_unit == "w":
+        return time_value * 604800
+    elif time_unit == "y":
+        return time_value * 31536000
     else:
         return None
 
@@ -213,25 +217,6 @@ class ConfirmationView(View):
             await self.message.edit(embed=timeout_embed, view=None)
 
         return self.result
-
-
-# random cute emoji fetcher
-# async def fetch_random_emoji(bot: nextcord.Client) -> str:
-#     guild_id = 1281898369236602903
-#     guild = bot.get_guild(guild_id)
-
-#     if not guild:
-#         return
-
-#     emojis = guild.emojis
-
-#     if not emojis:
-#         return
-
-#     random_emoji = random.choice(emojis)
-
-#     return str(random_emoji)
-
 
 emoji_dict = {
     "love": "<:love:1293115234382512200>",
