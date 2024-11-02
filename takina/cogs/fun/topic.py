@@ -10,21 +10,25 @@ class Topic(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(
+        description="Fetch a random conversational topic.", help="Usage: `topic`."
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def topic(self, ctx: commands.Context):
-        """Sends a random topic."""
-        random_topic = random.choice(topics)
-        emoji = await fetch_random_emoji()
-        embed = nextcord.Embed(description=f"{random_topic} {emoji}", color=EMBED_COLOR)
+        embed = nextcord.Embed(
+            description=f"{random.choice(topics)} {await fetch_random_emoji()}",
+            color=EMBED_COLOR,
+        )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(name="topic")
-    async def topic_slash(self, interaction: nextcord.Interaction):
-        """Sends a random topic."""
-        random_topic = random.choice(topics)
-        emoji = await fetch_random_emoji()
-        embed = nextcord.Embed(description=f"{random_topic} {emoji}", color=EMBED_COLOR)
+    @nextcord.slash_command(
+        name="topic", description="Fetch a random conversational topic."
+    )
+    async def slash_topic(self, interaction: nextcord.Interaction):
+        embed = nextcord.Embed(
+            description=f"{random.choice(topics)} {await fetch_random_emoji()}",
+            color=EMBED_COLOR,
+        )
         await interaction.send(embed=embed)
 
 

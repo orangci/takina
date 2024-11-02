@@ -10,7 +10,11 @@ class UrbanDictionary(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @commands.command()
+    @commands.command(
+        description="Query Urban Dictionary for a definition.",
+        help="Usage: `ubdict anime`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def ubdict(self, ctx: commands.Context, *, word: str):
         """Query Urban Dictionary. Usage: `ubdict word`."""
         params = {"term": word}
@@ -35,8 +39,11 @@ class UrbanDictionary(commands.Cog):
         embed.set_thumbnail(url="https://www.urbandictionary.com/favicon-32x32.png")
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(name="ubdict")
-    async def ubdict_slash(
+    @nextcord.slash_command(
+        name="ubdict",
+        description="Query Urban Dictionary for a definition.",
+    )
+    async def slash_ubdict(
         self,
         interaction: nextcord.Interaction,
         word: str = nextcord.SlashOption(

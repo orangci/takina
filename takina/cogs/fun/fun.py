@@ -2,7 +2,6 @@ from __future__ import annotations
 from ..libs.oclib import *
 import dotenv
 import nextcord
-from nextcord import SlashOption
 from nextcord.ext import commands
 from __main__ import EMBED_COLOR
 import urllib
@@ -15,7 +14,11 @@ class Fun(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @commands.command(name="fact")
+    @commands.command(
+        name="fact",
+        description="Fetch a random fact.",
+        help="Usage: `fact`. This command utilizes the [uselessfacts](https://uselessfacts.jsph.pl) API.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def fact(self, ctx: commands.Context):
         data = await request("https://uselessfacts.jsph.pl/api/v2/facts/random")
@@ -27,7 +30,12 @@ class Fun(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="joke", aliases=["dadjoke"])
+    @commands.command(
+        name="joke",
+        aliases=["dadjoke"],
+        description="Fetch a random joke.",
+        help="Usage: `joke`. This command utlizes both the [Joke API](https://jokeapi.dev) and the [icanhazdadjoke](https://icanhazdadjoke.com) API.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def joke(self, ctx: commands.Context):
         joke_type = random.choice(["dadjoke", "regular"])
@@ -61,7 +69,11 @@ class Fun(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="commit")
+    @commands.command(
+        name="commit",
+        description="Fetch a random typical git commit message.",
+        help="Usage: `commit`. This command utilizes the [whatthecommit](https://whatthecommit.com) API.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def commit(self, ctx: commands.Context):
         async with aiohttp.ClientSession() as session:
@@ -76,7 +88,12 @@ class Fun(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="avatar", aliases=["av"])
+    @commands.command(
+        name="avatar",
+        aliases=["av"],
+        description="Fetch the Discord user avatar of any member including yourself.",
+        help="Usage: `avatar username` or just `avatar`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def avatar(self, ctx: commands.Context, member: str = None):
         if member is None:
@@ -98,7 +115,11 @@ class Fun(commands.Cog):
             return
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="google")
+    @commands.command(
+        name="google",
+        description="Google anything!",
+        help="Usage: `google shawarma restaurants near me",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def google(self, ctx: commands.Context, *, query: str):
         """Google a query. Usage: `google query`."""
@@ -115,20 +136,26 @@ class Fun(commands.Cog):
         embed.add_field(name="Click here:", value=lmgtfy_url, inline=False)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="roll")
+    @commands.command(
+        name="roll",
+        description="Roll a random number from 1-100.",
+        help="Usage: `roll`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def roll(self, ctx: commands.Context):
         """Roll a random number from 1 to 100."""
-        number = random.randint(1, 100)
-        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title=f"What number did you roll? {emoji}",
-            description=f"You rolled {number}!",
+            title=f"What number did you roll? {await fetch_random_emoji()}",
+            description=f"You rolled {random.randint(1, 100)}!",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="8ball")
+    @commands.command(
+        name="8ball",
+        description="Ask the 8ball anything.",
+        help="Usage: `8ball are you sentient`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def eight_ball(self, ctx: commands.Context, *, question: str = None):
         responses = [
@@ -169,12 +196,12 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
 
-class FunSlash(commands.Cog):
+class SlashFun(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @nextcord.slash_command(name="fact")
-    async def slash_fact(self, interaction: nextcord.Interaction):
+    @nextcord.slash_command(name="fact", description="Fetch a random fact.")
+    async def fact(self, interaction: nextcord.Interaction):
         data = await request("https://uselessfacts.jsph.pl/api/v2/facts/random")
         fact = data.get("text")
         emoji = await fetch_random_emoji()
@@ -184,8 +211,8 @@ class FunSlash(commands.Cog):
         )
         await interaction.send(embed=embed)
 
-    @nextcord.slash_command(name="joke")
-    async def slash_joke(self, interaction: nextcord.Interaction):
+    @nextcord.slash_command(name="joke", description="Fetch a random joke.")
+    async def joke(self, interaction: nextcord.Interaction):
         joke_type = random.choice(["dadjoke", "regular"])
 
         if joke_type == "dadjoke":
@@ -217,7 +244,9 @@ class FunSlash(commands.Cog):
         )
         await interaction.send(embed=embed)
 
-    @nextcord.slash_command(name="commit")
+    @nextcord.slash_command(
+        name="commit", description="Fetch a random typical git commit message."
+    )
     async def commit(self, interaction: nextcord.Interaction):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://whatthecommit.com/index.txt") as response:
@@ -231,11 +260,14 @@ class FunSlash(commands.Cog):
 
         await interaction.send(embed=embed)
 
-    @nextcord.slash_command(name="avatar")
-    async def slash_avatar(
+    @nextcord.slash_command(
+        name="avatar",
+        description="Fetch the Discord user avatar of any member including yourself.",
+    )
+    async def avatar(
         self,
         interaction: nextcord.Interaction,
-        member: nextcord.Member = SlashOption(
+        member: nextcord.Member = nextcord.SlashOption(
             description="The user whose avatar you would like to fetch", required=False
         ),
     ):
@@ -252,12 +284,14 @@ class FunSlash(commands.Cog):
             return
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(name="google")
-    async def slash_google(
+    @nextcord.slash_command(name="google", description="Google anything!")
+    async def google(
         self,
         interaction: nextcord.Interaction,
         *,
-        query: str = SlashOption(description="Your search query", required=True),
+        query: str = nextcord.SlashOption(
+            description="Your search query", required=True
+        ),
     ):
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
@@ -272,23 +306,29 @@ class FunSlash(commands.Cog):
         embed.add_field(name="Click here:", value=lmgtfy_url, inline=False)
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(name="roll", description="Roll a number!")
-    async def slash_roll(self, interaction: nextcord.Interaction):
-        number = random.randint(1, 100)
-        emoji = await fetch_random_emoji()
+    @nextcord.slash_command(
+        name="roll",
+        description="Roll a random number from 1-100.",
+        description="Roll a number!",
+    )
+    async def roll(self, interaction: nextcord.Interaction):
         embed = nextcord.Embed(
-            title=f"What number did you roll? {emoji}",
-            description=f"You rolled {number}!",
+            title=f"What number did you roll? {await fetch_random_emoji()}",
+            description=f"You rolled {random.randint(1, 100)}!",
             color=EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(name="8ball", description="Ask the 8ball a question!")
-    async def slash_eight_ball(
+    @nextcord.slash_command(
+        name="8ball",
+        description="Ask the 8ball anything.",
+        description="Ask the 8ball a question!",
+    )
+    async def eight_ball(
         self,
         interaction: nextcord.Interaction,
         *,
-        question: str = SlashOption(
+        question: str = nextcord.SlashOption(
             description="Ask the 8ball a question!", required=True
         ),
     ):
@@ -325,4 +365,4 @@ class FunSlash(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Fun(bot))
-    bot.add_cog(FunSlash(bot))
+    bot.add_cog(SlashFun(bot))

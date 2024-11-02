@@ -7,8 +7,9 @@ Takina does not currently follow *all* these, but as of now does follow the vast
 - generally field names should be prefixed with an emoji, preferrably a cute one
 
 ### Formatting
-`black **/*.py` should be run in the takina folder before every commit.
+- `black **/*.py` should be run in the takina folder before every commit.
 - Each commit should follow the Conventional Commits standard, for example: `fix(mod): mute command did not check for perms`. The scope should be the subfolder affected in the cogs dir, and if there is none, use (core) as a scope.
+- Every command should have a description and help information.
 
 ### Categorization
 - the `fun` folder is for fun related commands and cogs
@@ -17,8 +18,12 @@ Takina does not currently follow *all* these, but as of now does follow the vast
 - the `mod` folder is for moderation related commands and cogs
 - the `util` folder is for utility related commands and cogs
 - the `weebism` folder is for anime/manga related commands and cogs
-- if a cog is not palced in a subfolder, it can be considered a core cog, vital to the function of bot
+- if a cog is not palced in a subfolder, it can be considered a core cog, vital to the functionality of bot
 
 ### Responses
 For base commands, `ctx.reply(mention_author=False)` should always be used, save for special scenarios.
 For slash commands, generally `interaction.send(ephemeral=True)` should be used, except for some places where ephemeral messages shouldn't be ephemeral (e.g. moderation commands.)
+
+### Cooldowns
+Generally commands should have at least a one second cooldown.
+`@commands.cooldown(1, 1, commands.BucketType.user)`
