@@ -42,7 +42,3 @@ class GhostPing(commands.Cog):
             content=f"{mention_list}, you were ghost pinged by {message.author.mention}!",
             embed=embed,
         )
-
-
-def setup(bot):
-    bot.add_cog(GhostPing(bot))

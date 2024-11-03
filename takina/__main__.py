@@ -88,7 +88,6 @@ for cog in cogs:
             bot.load_extension("cogs." + cog)
         except Exception as e:
             print(f"Failed to load {cog}: {e}")
-bot.unload_extension("listeners.ghostping")
 
 if __name__ == "__main__":
     bot.run(os.getenv("TOKEN"))

@@ -307,7 +307,6 @@ class SlashFun(commands.Cog):
     @nextcord.slash_command(
         name="roll",
         description="Roll a random number from 1-100.",
-        description="Roll a number!",
     )
     async def roll(self, interaction: nextcord.Interaction):
         embed = nextcord.Embed(
@@ -320,7 +319,6 @@ class SlashFun(commands.Cog):
     @nextcord.slash_command(
         name="8ball",
         description="Ask the 8ball anything.",
-        description="Ask the 8ball a question!",
     )
     async def eight_ball(
         self,

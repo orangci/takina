@@ -201,4 +201,4 @@ class SlashModUtils(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(ModUtils(bot))
-    bot.add_cog(ModUtilsSlash(bot))
+    bot.add_cog(SlashModUtils(bot))

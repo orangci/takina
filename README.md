@@ -10,6 +10,8 @@ Using the Dockerfile or Nix.
 - refactor github module
 - replace aiohttp with requests where i can
 - (long term) add a web dashboard for managing settings 
+- afk module
+- better permissions system .. perhaps limit commands to the use app commands permission
 - levelling module
 - patch ghostping sending embeds when the purge command is used
 - make every command have full documentation (in help commands)
