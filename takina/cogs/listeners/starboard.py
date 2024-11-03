@@ -135,18 +135,7 @@ class Starboard(commands.Cog):
                 updated_embed = self._create_embed(message, emoji_reaction)
                 await starboard_message.edit(embed=updated_embed)
 
-    @commands.group(
-        name="starboard",
-        invoke_without_command=True,
-        help="Starboard command group. Use subcommands: `whitelist`, `list`, `add`, `remove`.",
-    )
-    @commands.has_permissions(manage_channels=True)
-    async def starboard(self, ctx: commands.Context):
-        embed = nextcord.Embed(color=EMBED_COLOR)
-        embed.description = "Please specify a subcommand: `whitelist add`, `whitelist remove`, or `whitelist list`."
-        await ctx.reply(embed=embed, mention_author=False)
-
-    @starboard.command(name="configure", description="Manage the starboard settings")
+    @nextcord.slash_command(name="starboard", description="Manage the starboard settings")
     @application_checks.has_permissions(manage_channels=True)
     async def starboard_configure(
         self,
@@ -180,6 +169,17 @@ class Starboard(commands.Cog):
         await interaction.followup.send(
             f"Starboard channel has been set to {channel.mention}.", ephemeral=True
         )
+
+    @commands.group(
+        name="starboard",
+        invoke_without_command=True,
+        help="Starboard command group. Use subcommands: `whitelist`, `list`, `add`, `remove`.",
+    )
+    @commands.has_permissions(manage_channels=True)
+    async def starboard(self, ctx: commands.Context):
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed.description = "Please specify a subcommand: `whitelist add`, `whitelist remove`, or `whitelist list`."
+        await ctx.reply(embed=embed, mention_author=False)
 
     @starboard.group(name="whitelist", invoke_without_command=True)
     async def whitelist(self, ctx: commands.Context):
