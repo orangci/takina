@@ -77,26 +77,28 @@ def perms_check(
 ):
     # Check if member is valid
     if not isinstance(member, nextcord.Member) or member is None:
-        return False, nextcord.Embed(description="Member not found.", color=0xFF0037)
+        return False, nextcord.Embed(
+            description=":x: Member not found.", color=0xFF0037
+        )
 
     if isinstance(ctx, commands.Context):
         author = ctx.author
     elif isinstance(ctx, nextcord.Interaction):
         author = ctx.user
     else:
-        return False, nextcord.Embed(description="Invalid context.", color=0xFF0037)
+        return False, nextcord.Embed(description=":x: Invalid context.", color=0xFF0037)
 
     # Toggle for self-action check
     if author_check and member == author:
         return False, nextcord.Embed(
-            description="You cannot perform this action on yourself.",
+            description=":x: You cannot perform this action on yourself.",
             color=0xFF0037,
         )
 
     # Toggle for server owner check
     if owner_check and member == ctx.guild.owner:
         return False, nextcord.Embed(
-            description="You cannot perform this action on the server owner.",
+            description=":x: You cannot perform this action on the server owner.",
             color=0xFF0037,
         )
 
@@ -106,7 +108,7 @@ def perms_check(
             return (
                 False,
                 nextcord.Embed(
-                    description="You cannot perform this action on someone with a higher or equal role than yours.",
+                    description=":x: You cannot perform this action on someone with a higher or equal role than yours.",
                     color=0xFF0037,
                 ),
             )
@@ -115,7 +117,7 @@ def perms_check(
             return (
                 False,
                 nextcord.Embed(
-                    description="I can't perform this action on someone with a higher or equal role than mine.",
+                    description=":x: I can't perform this action on someone with a higher or equal role than mine.",
                     color=0xFF0037,
                 ),
             )

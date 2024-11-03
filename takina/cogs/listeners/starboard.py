@@ -135,7 +135,11 @@ class Starboard(commands.Cog):
                 updated_embed = self._create_embed(message, emoji_reaction)
                 await starboard_message.edit(embed=updated_embed)
 
-    @commands.group(name="starboard", invoke_without_command=True, help="Starboard command group. Use subcommands: `whitelist`, `list`, `add`, `remove`.")
+    @commands.group(
+        name="starboard",
+        invoke_without_command=True,
+        help="Starboard command group. Use subcommands: `whitelist`, `list`, `add`, `remove`.",
+    )
     @commands.has_permissions(manage_channels=True)
     async def starboard(self, ctx: commands.Context):
         embed = nextcord.Embed(color=EMBED_COLOR)
@@ -183,7 +187,11 @@ class Starboard(commands.Cog):
         embed.description = "Please specify `add`, `remove`, or `list`."
         await ctx.reply(embed=embed, mention_author=False)
 
-    @whitelist.command(name="add", description="Add channels to the starboard whitelist.", help="Usage: `starboard whitelist add #channel #channel2`.")
+    @whitelist.command(
+        name="add",
+        description="Add channels to the starboard whitelist.",
+        help="Usage: `starboard whitelist add #channel #channel2`.",
+    )
     async def whitelist_add(
         self, ctx: commands.Context, *channels: nextcord.TextChannel
     ):
@@ -213,7 +221,11 @@ class Starboard(commands.Cog):
             embed.description = f"You must specify at least one text channel to use this command. Example usage: `starboard whitelist add #{ctx.channel.name}`."
         await ctx.reply(embed=embed, mention_author=False)
 
-    @whitelist.command(name="remove", description="Remove channels from the starboard whitelist.", help="Usage: `starboard whitelist remove #channel #channel2`.")
+    @whitelist.command(
+        name="remove",
+        description="Remove channels from the starboard whitelist.",
+        help="Usage: `starboard whitelist remove #channel #channel2`.",
+    )
     async def whitelist_remove(
         self, ctx: commands.Context, *channels: nextcord.TextChannel
     ):
@@ -247,7 +259,11 @@ class Starboard(commands.Cog):
             embed.description = f"You must specify at least one text channel to use this command. Example usage: `starboard whitelist remove #{ctx.channel.name}`."
         await ctx.reply(embed=embed, mention_author=False)
 
-    @whitelist.command(name="list", description="List all channels in the starboard whitelist.", help="starboard whitelist list")
+    @whitelist.command(
+        name="list",
+        description="List all channels in the starboard whitelist.",
+        help="starboard whitelist list",
+    )
     async def whitelist_list(self, ctx: commands.Context):
         guild_id = ctx.guild.id
         guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})

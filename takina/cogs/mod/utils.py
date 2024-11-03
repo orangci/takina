@@ -32,7 +32,10 @@ class ModUtils(commands.Cog):
                 mention_author=False,
             )
 
-    @commands.command(description="Purges a specified number of messages.", help="Usage: `purge <number>`.")
+    @commands.command(
+        description="Purges a specified number of messages.",
+        help="Usage: `purge <number>`.",
+    )
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def purge(self, ctx: commands.Context, amount: int):
@@ -58,7 +61,11 @@ class ModUtils(commands.Cog):
             mention_author=False,
         )
 
-    @commands.command(aliases=["setnick"], description="Change a member's nickname.", help="Usage: `setnick <member> <new nickname>`.")
+    @commands.command(
+        aliases=["setnick"],
+        description="Change a member's nickname.",
+        help="Usage: `setnick <member> <new nickname>`.",
+    )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_nicknames=True)
     async def nick(

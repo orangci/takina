@@ -75,7 +75,9 @@ class MinecraftServerStatus(commands.Cog):
             embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
             await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(name="mcstatus", description="Display a Minecraft server's status.")
+    @nextcord.slash_command(
+        name="mcstatus", description="Display a Minecraft server's status."
+    )
     async def slash_mcstatus(
         self,
         interaction: nextcord.Interaction,
