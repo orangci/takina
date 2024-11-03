@@ -27,24 +27,19 @@ class Errors(commands.Cog):
             description = f"You do not have sufficient permissions to run this command; command is restricted to {BOT_NAME}'s maintainers."
             error_type = "Maintainer Only Command"
 
-        elif isinstance(error, commands.UserInputError) or isinstance(
-            error, commands.BadArgument
-        ):
-            description = "It seems that you've made a mistake while entering the command. Please check your command syntax and ensure all required parameters are provided correctly. **Run `help command` for information on how to correctly use a command.**"
-            error_type = "User Input Error"
-
-        elif isinstance(error, commands.CommandNotFound):
-            pass
-            # description = "The command you entered does not exist. Please ensure you typed it correctly. Type `help` for a full list of commands."
-            # error_type = "Command Not Found"
-
         elif isinstance(error, commands.errors.DisabledCommand):
             description = f"This command has been disabled by {BOT_NAME}'s maintainers. If you believe this is an error, please contact a maintainer."
             error_type = "Disabled Command"
 
-        elif isinstance(error, nextcord.DiscordException):
-            description = f"{str(error)}"
-            error_type = "Discord Exception"
+        elif isinstance(error, nextcord.PrivilegedIntentsRequired):
+            description = "Privileged intents are required for this command. Please ensure they are enabled in the Discord Developer Portal."
+            error_type = "Privileged Intents Required"
+
+        elif isinstance(error, commands.MissingPermissions):
+            description = (
+                "You do not have sufficent permissions to perform this action."
+            )
+            error_type = "Missing Permissions"
 
         elif isinstance(error, nextcord.Forbidden):
             description = (
@@ -58,22 +53,26 @@ class Errors(commands.Cog):
             )
             error_type = "HTTP Exception"
 
-        elif isinstance(error, nextcord.PrivilegedIntentsRequired):
-            description = "Privileged intents are required for this command. Please ensure they are enabled in the Discord Developer Portal."
-            error_type = "Privileged Intents Required"
+        elif isinstance(error, commands.UserInputError) or isinstance(
+            error, commands.BadArgument
+        ):
+            description = "It seems that you've made a mistake while entering the command. Please check your command syntax and ensure all required parameters are provided correctly. **Run `help command` for information on how to correctly use a command.**"
+            error_type = "User Input Error"
 
-        elif isinstance(error, commands.MissingPermissions):
-            description = (
-                "You do not have sufficent permissions to perform this action."
-            )
-            error_type = "Missing Permissions"
+        # elif isinstance(error, commands.CommandNotFound):
+        # description = "The command you entered does not exist. Please ensure you typed it correctly. Type `help` for a full list of commands."
+        # error_type = "Command Not Found"
+
+        elif isinstance(error, nextcord.DiscordException):
+            description = f"{str(error)}"
+            error_type = "Discord Exception"
 
         else:
             description = "An unexpected error occurred. Please report this issue to a maintainer if it persists."
             error_type = "Unknown Error"
 
         embed = nextcord.Embed(color=0xFF0037)
-        embed.description = f"{error_type}: {description}"
+        embed.description = f":x: {error_type}: {description}"
         await ctx.send(embed=embed)
 
         self.logger.error(f"Command error: {error_type} - {error}")
@@ -113,7 +112,7 @@ class Errors(commands.Cog):
             error_type = "Unknown Error"
 
         embed = nextcord.Embed(color=0xFF0037)
-        embed.description = f"{error_type}: {description}"
+        embed.description = f":x: {error_type}: {description}"
         await interaction.send(embed=embed, ephemeral=True)
 
         self.logger.error(f"Application command error: {error_type} - {error}")

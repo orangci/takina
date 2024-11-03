@@ -50,14 +50,14 @@ def duration_calculator(duration: str) -> int:
     time_value, time_unit = match.groups()
     time_value = int(time_value)
 
-    if time_unit == "d":
-        return time_value * 86400
-    elif time_unit == "h":
-        return time_value * 3600
+    if time_unit == "s":
+        return time_value * 1
     elif time_unit == "m":
         return time_value * 60
-    elif time_unit == "s":
-        return time_value * 1
+    elif time_unit == "h":
+        return time_value * 3600
+    elif time_unit == "d":
+        return time_value * 86400
     elif time_unit == "w":
         return time_value * 604800
     elif time_unit == "y":
@@ -72,7 +72,7 @@ def perms_check(
     *,
     ctx: commands.Context | nextcord.Interaction,
     author_check: bool = True,
-    owner_check: bool = True,
+    owner_check: bool = False,
     role_check: bool = True,
 ):
     # Check if member is valid
@@ -117,7 +117,7 @@ def perms_check(
             return (
                 False,
                 nextcord.Embed(
-                    description=":x: I can't perform this action on someone with a higher or equal role than mine.",
+                    description=":x: I cannot perform this action on someone with a higher or equal role than mine.",
                     color=0xFF0037,
                 ),
             )
