@@ -57,11 +57,11 @@ class PingResponse(commands.Cog):
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def info(self, ctx: commands.Context):
-        await ctx.reply(embed=await construct_info_embed(), mention_author=False)
+        await ctx.reply(embed=await self.construct_info_embed(), mention_author=False)
 
     @nextcord.slash_command(name="info", description="Information about the bot.")
     async def slash_info(self, interaction: nextcord.Interaction):
-        await interaction.send(embed=await construct_info_embed(), ephemeral=True)
+        await interaction.send(embed=await self.construct_info_embed(), ephemeral=True)
 
 
 def setup(bot: commands.Bot):

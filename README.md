@@ -16,6 +16,7 @@ Using the Dockerfile or Nix.
 - patch ghostping sending embeds when the purge command is used
 - make every command have full documentation (in help commands)
 - make every command have it's own error embed responses, instead of using the global error handling
+- fix starboard and starboard configuration success message
 
 ## License
 [Here.](./LICENSE)
