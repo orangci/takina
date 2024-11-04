@@ -17,8 +17,7 @@ class Utils(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
 
-    @commands.command(
-        description="Ping the bot and check its latency.", help="Usage: `ping`."
+    @commands.command(help="Ping the bot and check its latency. \nUsage: `ping`."
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def ping(self, ctx: commands.Context):
@@ -33,8 +32,7 @@ class Utils(commands.Cog):
     @commands.command(
         name="join-position",
         aliases=["jp", "japan"],
-        description="Check a user's join position in the server.",
-        help="Usage: `jp <member>`.",
+        help="Check a user's join position in the server. \nUsage: `jp <member>`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def join_position(self, ctx: commands.Context, member: str = None):
@@ -76,8 +74,7 @@ class Utils(commands.Cog):
     @commands.command(
         name="member-count",
         aliases=["mc"],
-        description="Fetch the server's current member count.",
-        help="Usage: `mc`.",
+        help="Fetch the server's current member count.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def member_count(self, ctx: commands.Context):

@@ -10,8 +10,7 @@ class Topic(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        description="Fetch a random conversational topic.", help="Usage: `topic`."
+    @commands.command(help="Fetch a random conversational topic. \nUsage: `topic`."
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def topic(self, ctx: commands.Context):

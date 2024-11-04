@@ -40,8 +40,7 @@ class AnimeSeasonals(commands.Cog):
 
     @commands.command(
         aliases=["season"],
-        description="Fetch a season's airing anime.",
-        help="Usage: `season <season> <year>` or `season` to fetch the current season.",
+        help="Fetch a season's airing anime. \nUsage: `season <season> <year>` or `season` to fetch the current season.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def seasonals(

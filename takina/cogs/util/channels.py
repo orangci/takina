@@ -11,8 +11,7 @@ class ChannelManagement(commands.Cog):
 
     @commands.command(
         name="slowmode",
-        description="Sets slowmode in the current or specified channel.",
-        help="Usage: `slowmode #channel <duration>`.",
+        help="Sets slowmode in the current or specified channel. \nUsage: `slowmode #channel <duration>` to specify a channel to modify or `slowmode <duration>` to set the slowmode for the current cannel.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
@@ -38,8 +37,7 @@ class ChannelManagement(commands.Cog):
 
     @commands.command(
         name="lock",
-        description="Locks the current or specified channel.",
-        help="Usage: `lock #channel`.",
+        help="Locks the current or specified channel. \nUsage: `lock #channel` to specify a channel to lock or `lock` to lock the current channel.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
@@ -57,8 +55,7 @@ class ChannelManagement(commands.Cog):
 
     @commands.command(
         name="unlock",
-        description="Unlocks the current or specified channel.",
-        help="Usage: `unlock #channel`.",
+        help="Locks the current or specified channel. \nUsage: `unlock #channel` to specify a channel to unlock or `unlock` to unlock the current channel.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)

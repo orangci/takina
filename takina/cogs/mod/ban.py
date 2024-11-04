@@ -11,8 +11,7 @@ class Ban(commands.Cog):
     @commands.command(
         name="ban",
         aliases=["b"],
-        description="Ban a member from the server.",
-        help="Usage: `ban @member`.",
+        help="Ban a member from the server. \nUsage: `ban @member`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
@@ -69,8 +68,7 @@ class Unban(commands.Cog):
     @commands.command(
         name="unban",
         aliases=["pardon", "ub"],
-        description="Unban a member from the server.",
-        help="Usage: `pardon <Discord user id>.",
+        help="Unban a member from the server. \nUsage: `pardon <Discord user id>.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)

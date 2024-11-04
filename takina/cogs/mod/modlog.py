@@ -157,8 +157,7 @@ class ModLog(commands.Cog):
 
     @commands.command(
         name="case",
-        description="Fetch information on a moderation case.",
-        help="Usage: `case <case id>`.",
+        help="Fetch information on a moderation case. \nUsage: `case <case id>`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
@@ -193,8 +192,7 @@ class ModLog(commands.Cog):
     @commands.command(
         name="case_edit",
         aliases=["caseedit", "editc"],
-        description="Edit a moderation case.",
-        help="Usage: `editc <case id> <new reason>`.",
+        help="Edit a moderation case. \nUsage: `editc <case id> <new reason>`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
@@ -214,8 +212,7 @@ class ModLog(commands.Cog):
 
     @commands.command(
         name="cases",
-        description="List all the moderation cases in the server.",
-        help="Usage: `cases`.",
+        help="List all the moderation cases in the server. \nUsage: `cases`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
@@ -237,8 +234,7 @@ class ModLog(commands.Cog):
     @commands.command(
         name="modstats",
         aliases=["ms"],
-        description="Lists all moderation cases in which the user was the moderator.",
-        help="Usage: `ms <user>`.",
+        help="Lists all moderation cases in which the user was the moderator. \nUsage: `ms <user>`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)

@@ -14,7 +14,6 @@ Using the Dockerfile or Nix.
 - better permissions system .. perhaps limit commands to the use app commands permission
 - levelling module
 - patch ghostping sending embeds when the purge command is used
-- make every command have full documentation (in help commands)
 - make every command have it's own error embed responses, instead of using the global error handling
 - fix starboard and starboard configuration success message
 

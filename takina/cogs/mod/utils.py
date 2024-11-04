@@ -33,8 +33,7 @@ class ModUtils(commands.Cog):
             )
 
     @commands.command(
-        description="Purges a specified number of messages.",
-        help="Usage: `purge <number>`.",
+        help="Purges a specified number of messages. \nUsage: `purge <number>`.",
     )
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -63,8 +62,7 @@ class ModUtils(commands.Cog):
 
     @commands.command(
         aliases=["setnick"],
-        description="Change a member's nickname.",
-        help="Usage: `setnick <member> <new nickname>`.",
+        help="Change a member's nickname. \nUsage: `setnick <member> <new nickname>`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_nicknames=True)

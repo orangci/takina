@@ -11,8 +11,7 @@ class Mute(commands.Cog):
 
     @commands.command(
         name="mute",
-        description="Timeout a member.",
-        help="Usage: `mute <member> <duration> <reason>`.",
+        help="Timeout a member. \nUsage: `mute <member> <duration> <reason>`.",
         aliases=["timeout"],
     )
     @commands.has_permissions(moderate_members=True)
@@ -77,8 +76,7 @@ class Unmute(commands.Cog):
 
     @commands.command(
         name="unmute",
-        description="Unmute a member.",
-        help="Usage: `unmute <member> <reason>`.",
+        help="Unmute a member. \nUsage: `unmute <member> <reason>`.",
     )
     @commands.has_permissions(moderate_members=True)
     async def unmute(

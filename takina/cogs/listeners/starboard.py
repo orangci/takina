@@ -189,8 +189,7 @@ class Starboard(commands.Cog):
 
     @whitelist.command(
         name="add",
-        description="Add channels to the starboard whitelist.",
-        help="Usage: `starboard whitelist add #channel #channel2`.",
+        help="Add channels to the list of whitelisted channels which the starboard detects messages from. \nUsage: `starboard whitelist add #channel #channel2`.",
     )
     async def whitelist_add(
         self, ctx: commands.Context, *channels: nextcord.TextChannel
@@ -223,8 +222,7 @@ class Starboard(commands.Cog):
 
     @whitelist.command(
         name="remove",
-        description="Remove channels from the starboard whitelist.",
-        help="Usage: `starboard whitelist remove #channel #channel2`.",
+        help="Remove channels from the list of whitelisted channels which the starboard detects messages from, \nUsage: `starboard whitelist remove #channel #channel2`.",
     )
     async def whitelist_remove(
         self, ctx: commands.Context, *channels: nextcord.TextChannel
@@ -261,8 +259,7 @@ class Starboard(commands.Cog):
 
     @whitelist.command(
         name="list",
-        description="List all channels in the starboard whitelist.",
-        help="starboard whitelist list",
+        help="List all channels in the starboard whitelist.",
     )
     async def whitelist_list(self, ctx: commands.Context):
         guild_id = ctx.guild.id

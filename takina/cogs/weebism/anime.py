@@ -28,8 +28,7 @@ class AnimeSearch(commands.Cog):
 
     @commands.command(
         aliases=["ani"],
-        description="Fetch anime information from MyAnimeList.",
-        help="Usage: `anime Lycoris Recoil` or `anime 50709`.",
+        help="Fetch anime information from MyAnimeList. \nUsage: `anime Lycoris Recoil` or `anime 50709`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def anime(self, ctx: commands.Context, *, anime_name: str):

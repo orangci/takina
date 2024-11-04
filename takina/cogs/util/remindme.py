@@ -17,8 +17,7 @@ class RemindMe(commands.Cog):
 
     @commands.command(
         name="remindme",
-        description="Set a reminder.",
-        help="Usage: `remindme <time> <reminder>`.",
+        help="Set a reminder. \nUsage: `remindme <time> <reminder>`.\n Reminders take a minimum of 10 minutes.",
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def remindme(self, ctx: commands.Context, time: str, *, reminder: str):

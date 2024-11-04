@@ -53,7 +53,7 @@ class PingResponse(commands.Cog):
                 )
 
     @commands.command(
-        name="info", description="Information about the bot.", help="Usage: `info`."
+        name="info", help="Information about the bot."
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def info(self, ctx: commands.Context):

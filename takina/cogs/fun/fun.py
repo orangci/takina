@@ -16,8 +16,7 @@ class Fun(commands.Cog):
 
     @commands.command(
         name="fact",
-        description="Fetch a random fact.",
-        help="Usage: `fact`. This command utilizes the [uselessfacts](https://uselessfacts.jsph.pl) API.",
+        help="Fetch a random fact. \nThis command utilizes the [uselessfacts](https://uselessfacts.jsph.pl) API.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def fact(self, ctx: commands.Context):
@@ -33,8 +32,7 @@ class Fun(commands.Cog):
     @commands.command(
         name="joke",
         aliases=["dadjoke"],
-        description="Fetch a random joke.",
-        help="Usage: `joke`. This command utlizes both the [Joke API](https://jokeapi.dev) and the [icanhazdadjoke](https://icanhazdadjoke.com) API.",
+        help="Fetch a random joke. \nThis command utlizes both the [Joke API](https://jokeapi.dev) and the [icanhazdadjoke](https://icanhazdadjoke.com) API.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def joke(self, ctx: commands.Context):
@@ -71,8 +69,7 @@ class Fun(commands.Cog):
 
     @commands.command(
         name="commit",
-        description="Fetch a random typical git commit message.",
-        help="Usage: `commit`. This command utilizes the [whatthecommit](https://whatthecommit.com) API.",
+        help="Fetch a random typical git commit message. \nThis command utilizes the [whatthecommit](https://whatthecommit.com) API.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def commit(self, ctx: commands.Context):
@@ -91,8 +88,7 @@ class Fun(commands.Cog):
     @commands.command(
         name="avatar",
         aliases=["av"],
-        description="Fetch the Discord user avatar of any member including yourself.",
-        help="Usage: `avatar username` or just `avatar`.",
+        help="Fetch the Discord user avatar of any member including yourself. \nUsage: `avatar <username>` or just `avatar` to fetch your own avatar.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def avatar(self, ctx: commands.Context, member: str = None):
@@ -117,8 +113,7 @@ class Fun(commands.Cog):
 
     @commands.command(
         name="google",
-        description="Google anything!",
-        help="Usage: `google shawarma restaurants near me`.",
+        help="Google anything! \nUsage: `google shawarma restaurants near me`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def google(self, ctx: commands.Context, *, query: str):
@@ -137,8 +132,7 @@ class Fun(commands.Cog):
 
     @commands.command(
         name="roll",
-        description="Roll a random number from 1-100.",
-        help="Usage: `roll`.",
+        help="Roll a random number from 1-100.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def roll(self, ctx: commands.Context):
@@ -151,8 +145,7 @@ class Fun(commands.Cog):
 
     @commands.command(
         name="8ball",
-        description="Ask the 8ball anything.",
-        help="Usage: `8ball are you sentient`.",
+        help="Ask the 8ball anything. \nUsage: `8ball are you sentient`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def eight_ball(self, ctx: commands.Context, *, question: str = None):

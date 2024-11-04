@@ -11,8 +11,7 @@ class UrbanDictionary(commands.Cog):
         self._bot = bot
 
     @commands.command(
-        description="Query Urban Dictionary for a definition.",
-        help="Usage: `ubdict anime`.",
+        help="Query Urban Dictionary for a definition. \nUsage: `ubdict anime`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def ubdict(self, ctx: commands.Context, *, word: str):

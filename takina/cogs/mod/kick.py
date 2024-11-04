@@ -10,8 +10,7 @@ class Kick(commands.Cog):
 
     @commands.command(
         name="kick",
-        description="Kick a member from the server.",
-        help="Usage: `kick @member`.",
+        help="Kick a member from the server. \nUsage: `kick @member`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(kick_members=True)

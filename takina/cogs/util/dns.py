@@ -54,8 +54,7 @@ class DNS(commands.Cog):
 
     @commands.command(
         aliases=["dns"],
-        description="Prints DNS records for a domain.",
-        help="Usage: `dig <URL>`.",
+        help="Fetches DNS records for a domain. \nUsage: `dig <URL>`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def dig(self, ctx: commands.Context, url: str):
