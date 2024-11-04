@@ -52,9 +52,7 @@ class PingResponse(commands.Cog):
                     embed=await construct_info_embed(), mention_author=False
                 )
 
-    @commands.command(
-        name="info", help="Information about the bot."
-    )
+    @commands.command(name="info", help="Information about the bot.")
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def info(self, ctx: commands.Context):
         await ctx.reply(embed=await self.construct_info_embed(), mention_author=False)

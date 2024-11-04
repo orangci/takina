@@ -26,7 +26,8 @@ class MangaSearch(commands.Cog):
         except Exception as e:
             raise e
 
-    @commands.command(help="Fetch anime information from MyAnimeList. \nUsage: `manga Lycoris Recoil` or `anime 135455`.",
+    @commands.command(
+        help="Fetch anime information from MyAnimeList. \nUsage: `manga Lycoris Recoil` or `anime 135455`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def manga(self, ctx: commands.Context, *, manga_name: str):

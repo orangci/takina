@@ -135,7 +135,9 @@ class Starboard(commands.Cog):
                 updated_embed = self._create_embed(message, emoji_reaction)
                 await starboard_message.edit(embed=updated_embed)
 
-    @nextcord.slash_command(name="starboard", description="Manage the starboard settings")
+    @nextcord.slash_command(
+        name="starboard", description="Manage the starboard settings"
+    )
     @application_checks.has_permissions(manage_channels=True)
     async def starboard_configure(
         self,
@@ -166,9 +168,9 @@ class Starboard(commands.Cog):
         await self.db.starboard_settings.update_one(
             {"guild_id": interaction.guild_id}, {"$set": guild_data}, upsert=True
         )
-        await interaction.followup.send(
-            f"Starboard channel has been set to {channel.mention}.", ephemeral=True
-        )
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed.description = f"✅ Starboard channel has been set to {channel.mention} and set the minimum reaction count to **{reaction_count}**."
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     @commands.group(
         name="starboard",

@@ -19,7 +19,8 @@ class MAL_Profiles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(help="Fetch information about a MyAnimeList user. \nUsage: `mal <username>`.",
+    @commands.command(
+        help="Fetch information about a MyAnimeList user. \nUsage: `mal <username>`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def mal(self, ctx: commands.Context, *, username: str):

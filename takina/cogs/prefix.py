@@ -10,7 +10,9 @@ class Prefix(commands.Cog):
         self.bot = bot
         self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
 
-    @nextcord.slash_command(name="prefix", description=f"Set a custom prefix for {BOT_NAME}")
+    @nextcord.slash_command(
+        name="prefix", description=f"Set a custom prefix for {BOT_NAME}"
+    )
     @application_checks.has_permissions(administrator=True)
     async def set_prefix(self, interaction: nextcord.Interaction, new_prefix: str):
         guild_id = interaction.guild.id
