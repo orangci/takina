@@ -122,7 +122,9 @@ class DNS(commands.Cog):
                 embed=construct_embed(url, full_answer), ephemeral=True
             )
         else:
-            await interaction.send(f"No records found for {url}.", ephemeral=True)
+            embed = nextcord.Embed(color=0xFF0037)
+            embed.description = f":x: No records found for {url}."
+            await interaction.send(embed=error_embed, ephemeral=True)
 
 
 def setup(bot: commands.Bot) -> None:

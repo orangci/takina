@@ -142,9 +142,11 @@ class GitHub(commands.Cog):
         repo_url = f"https://api.github.com/repos/{owner}/{repo}"
         repo_data = await fetch_github_data(repo_url)
         if not repo_data:
-            await message.channel.send(
-                f"Error fetching repository {owner}/{repo}. It may not exist."
+            error_embed = nextcord.Embed(color=0xFF0037)
+            error_embed.description = (
+                f":x: Error fetching repository {owner}/{repo}. It may not exist."
             )
+            await message.channel.send(embed=error_embed)
             return
 
         # Build and send the repository embed
