@@ -110,7 +110,7 @@ class Unmute(commands.Cog):
 
         modlog_cog = self.bot.get_cog("ModLog")
         if modlog_cog:
-            await modlog_cog.log_action("unmute", member, reason, ctx.author, duration)
+            await modlog_cog.log_action("unmute", member, reason, ctx.author)
 
 
 class MuteSlash(commands.Cog):
@@ -212,9 +212,7 @@ class UnmuteSlash(commands.Cog):
 
         modlog_cog = self.bot.get_cog("ModLog")
         if modlog_cog:
-            await modlog_cog.log_action(
-                "unmute", member, reason, interaction.user, duration
-            )
+            await modlog_cog.log_action("unmute", member, reason, interaction.user)
 
 
 def setup(bot):
