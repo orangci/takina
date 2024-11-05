@@ -73,9 +73,8 @@ class ModUtils(commands.Cog):
             member = ctx.author
         else:
             member = extract_user_id(member, ctx)
-            if isinstance(member, str):
-                embed = nextcord.Embed(description=member, color=0xFF0037)
-                await ctx.reply(embed=embed, mention_author=False)
+            if isinstance(member, nextcord.Embed):
+                await ctx.reply(embed=member, mention_author=False)
                 return
 
         # Check permissions
@@ -173,9 +172,8 @@ class SlashModUtils(commands.Cog):
             member = ctx.author
         else:
             member = extract_user_id(member, ctx)
-            if isinstance(member, str):
-                embed = nextcord.Embed(description=member, color=0xFF0037)
-                await ctx.reply(embed=embed, mention_author=False)
+            if isinstance(member, nextcord.Embed):
+                await ctx.reply(embed=member, mention_author=False)
                 return
 
         # Check permissions

@@ -25,12 +25,16 @@ def extract_user_id(
         return ctx.guild.get_member(user_id)
 
     member = nextcord.utils.get(
-        ctx.guild.members, name=member_str
-    ) or nextcord.utils.get(ctx.guild.members, display_name=member_str)
+        ctx.guild.members,
+        name=member_str,
+    ) | nextcord.utils.get(ctx.guild.members, display_name=member_str)
 
     if not member:
-        member = ":x: Member not found. Please provide a valid username, display name, mention, or user ID."
-    return member
+        error_embed = nextcord.Embed(
+            color=0xFF0037,
+        )
+        error_embed.description = ":x: Member not found. Please provide a valid username, display name, mention, or user ID."
+        return error_embed
 
 
 # for requesting data from APIs
@@ -45,9 +49,9 @@ def duration_calculator(duration: str) -> int:
     pattern = r"(\d+)([s|m|h|d|w|y])"
     match = re.fullmatch(pattern, duration)
     error_embed = nextcord.Embed(
-                description="Invalid duration format. Use <number>[s|d|h|m|w|y].",
-                color=0xFF0037,
-            )
+        description=":x: Invalid duration format. Use <number>[s|d|h|m|w|y].",
+        color=0xFF0037,
+    )
     if not match:
         return error_embed
 

@@ -24,9 +24,8 @@ class Mute(commands.Cog):
             return
 
         member = extract_user_id(member, ctx)
-        if isinstance(member, str):
-            embed = nextcord.Embed(description=member, color=0xFF0037)
-            await ctx.reply(embed=embed, mention_author=False)
+        if isinstance(member, nextcord.Embed):
+            await ctx.reply(embed=member, mention_author=False)
             return
 
         can_proceed, message = perms_check(member, ctx=ctx)
@@ -80,9 +79,8 @@ class Unmute(commands.Cog):
         self, ctx: commands.Context, member: str, *, reason: str = "No reason provided"
     ):
         member = extract_user_id(member, ctx)
-        if isinstance(member, str):
-            embed = nextcord.Embed(description=member, color=0xFF0037)
-            await ctx.reply(embed=embed, mention_author=False)
+        if isinstance(member, nextcord.Embed):
+            await ctx.reply(embed=member, mention_author=False)
             return
 
         can_proceed, message = perms_check(member, ctx=ctx)
