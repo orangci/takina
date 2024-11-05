@@ -35,7 +35,7 @@ def extract_user_id(
         error_embed = nextcord.Embed(
             color=0xFF0037,
         )
-        error_embed.description = ":x: Member not found. Please provide a valid username, display name, mention, or user ID."
+        error_embed.description = ":x: User not found. Please provide a valid username, display name, mention, or user ID."
         return error_embed
 
 
