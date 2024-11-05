@@ -27,7 +27,9 @@ def extract_user_id(
     member = nextcord.utils.get(
         ctx.guild.members,
         name=member_str,
-    ) | nextcord.utils.get(ctx.guild.members, display_name=member_str)
+    ) or nextcord.utils.get(ctx.guild.members, display_name=member_str)
+    if member:
+        return member
 
     if not member:
         error_embed = nextcord.Embed(
