@@ -44,8 +44,12 @@ async def request(url, *args, **kwargs):
 def duration_calculator(duration: str) -> int:
     pattern = r"(\d+)([s|m|h|d|w|y])"
     match = re.fullmatch(pattern, duration)
+    error_embed = nextcord.Embed(
+                description="Invalid duration format. Use <number>[s|d|h|m|w|y].",
+                color=0xFF0037,
+            )
     if not match:
-        return None
+        return error_embed
 
     time_value, time_unit = match.groups()
     time_value = int(time_value)
@@ -63,7 +67,7 @@ def duration_calculator(duration: str) -> int:
     elif time_unit == "y":
         return time_value * 31536000
     else:
-        return None
+        return error_embed
 
 
 # for checking perms of a command
@@ -204,7 +208,7 @@ class ConfirmationView(View):
         elif isinstance(self.ctx, nextcord.Interaction):
             self.message = await self.ctx.send(embed=embed, view=self)
         else:
-            return False, "Invalid context."
+            return False, ":x: Invalid context."
 
         await self.wait()
 

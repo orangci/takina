@@ -19,11 +19,8 @@ class Mute(commands.Cog):
         self, ctx, member: str, duration: str, *, reason: str = "No reason provided"
     ):
         timeout_duration = duration_calculator(duration)
-        if timeout_duration is None:
-            await ctx.reply(
-                "Invalid duration format. Use <number>[d|h|m|w|y].",
-                mention_author=False,
-            )
+        if isinstance(timeout_duration, nextcord.Embed):
+            await ctx.reply(embed=timeout_duration, mention_author=False)
             return
 
         member = extract_user_id(member, ctx)

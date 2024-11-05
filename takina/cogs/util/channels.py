@@ -20,12 +20,8 @@ class ChannelManagement(commands.Cog):
     ):
         channel = channel or ctx.channel
         duration = duration_calculator(duration)
-        if duration is None:
-            embed = nextcord.Embed(
-                description="❌ Invalid duration format. Use `<number>[d|h|m|w|y].`",
-                color=EMBED_COLOR,
-            )
-            await ctx.reply(embed=embed, mention_author=False)
+        if isinstance(duration, nextcord.Embed):
+            await ctx.reply(embed=duration, mention_author=False)
             return
 
         await channel.edit(slowmode_delay=duration)
@@ -97,11 +93,7 @@ class SlashChannelManagement(commands.Cog):
     ):
         channel = channel or interaction.channel
         duration = duration_calculator(duration)
-        if duration is None:
-            embed = nextcord.Embed(
-                description="❌ Invalid duration format. Use `<number>[d|h|m|w|y].`",
-                color=EMBED_COLOR,
-            )
+        if isinstance(duration, nextcord.Embed):
             await interaction.send(embed=embed, ephemeral=True)
             return
 
