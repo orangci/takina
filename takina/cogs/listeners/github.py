@@ -82,8 +82,7 @@ class GitHub(commands.Cog):
         if not data:
             await message.channel.send(
                 embed=nextcord.Embed(
-                    title="Error",
-                    description=f"Could not fetch information for {owner}/{repo}#{issue_id}.",
+                    description=f":x: Could not fetch information for {owner}/{repo}#{issue_id}.",
                     color=0xFF0037,
                 )
             )
@@ -114,8 +113,7 @@ class GitHub(commands.Cog):
         if not data:
             await message.channel.send(
                 embed=nextcord.Embed(
-                    title="Error",
-                    description=f"Could not fetch repository information for {owner}/{repo}.",
+                    description=f":x: Could not fetch repository information for {owner}/{repo}.",
                     color=0xFF0037,
                 )
             )
@@ -130,23 +128,22 @@ class GitHub(commands.Cog):
             return
 
         content = message.content
-        match = None
+        
+        # Check for PR/Issue link pattern first
+        pr_issue_match = re.search(ISSUE_PR_PATTERN, content)
+        if pr_issue_match:
+            logging.debug("PR/Issue pattern matched.")
+            owner, repo, issue_id = pr_issue_match.groups()
+            await self.handle_pr_issue_embed(message, owner, repo, int(issue_id))
+            return  # Stop after first match for simplicity
 
         # Check for repository link pattern
         repo_match = re.search(REPO_PATTERN, content)
         if repo_match:
-            await message.edit(suppress=True)
+            logging.debug("Repository pattern matched.")
             owner, repo = repo_match.groups()
             await self.handle_repo_embed(message, owner, repo)
-            return  # Only process the first valid match in the message
-
-        # Check for PR/Issue link pattern
-        pr_issue_match = re.search(ISSUE_PR_PATTERN, content)
-        if pr_issue_match:
-            await message.edit(suppress=True)
-            owner, repo, issue_id = pr_issue_match.groups()
-            await self.handle_pr_issue_embed(message, owner, repo, int(issue_id))
-            return  # Only process the first valid match in the message
+            return  # Stop after first match for simplicity
 
 def setup(bot: commands.Bot):
     bot.add_cog(GitHub(bot))
