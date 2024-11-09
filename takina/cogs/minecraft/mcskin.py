@@ -4,6 +4,7 @@ import aiohttp
 from __main__ import EMBED_COLOR
 from ..libs.oclib import *
 
+
 class Minecraft(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -42,17 +43,27 @@ class Minecraft(commands.Cog):
 
         skin_url = await self.fetch_skin_url(uuid)
 
-        embed = nextcord.Embed(title=f"{await fetch_random_emoji()} {username}'s Minecraft Skin", color=EMBED_COLOR)
+        embed = nextcord.Embed(
+            title=f"{await fetch_random_emoji()} {username}'s Minecraft Skin",
+            color=EMBED_COLOR,
+        )
         embed.set_image(url=skin_url)
         embed.set_footer(text=f"UUID: {uuid}")
         await ctx.send(embed=embed, mention_author=False)
-    
+
     @nextcord.slash_command(
         name="mcskin",
         description="Fetch and display a Minecraft player's skin.",
     )
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def slash_mcskin(self, interaction: nextcord.Interaction, username: str = nextcord.SlashOption(description="The Minecraft player whose skin you'd like to fetch", required=True)):
+    async def slash_mcskin(
+        self,
+        interaction: nextcord.Interaction,
+        username: str = nextcord.SlashOption(
+            description="The Minecraft player whose skin you'd like to fetch",
+            required=True,
+        ),
+    ):
         uuid = await self.fetch_uuid(username)
 
         if not uuid:
@@ -65,7 +76,10 @@ class Minecraft(commands.Cog):
 
         skin_url = await self.fetch_skin_url(uuid)
 
-        embed = nextcord.Embed(title=f"{await fetch_random_emoji()} {username}'s Minecraft Skin", color=EMBED_COLOR)
+        embed = nextcord.Embed(
+            title=f"{await fetch_random_emoji()} {username}'s Minecraft Skin",
+            color=EMBED_COLOR,
+        )
         embed.set_image(url=skin_url)
         embed.set_footer(text=f"UUID: {uuid}")
         await interaction.send(embed=embed, ephemeral=True)
