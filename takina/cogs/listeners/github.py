@@ -10,8 +10,8 @@ from __main__ import EMBED_COLOR
 GITHUB_API_BASE_URL = "https://api.github.com/repos"
 
 # Updated patterns for GitHub references to include underscores, dots, and numbers
-REPO_PATTERN = r"repo:([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)"
-ISSUE_PR_PATTERN = r"([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)#(\d+)"
+REPO_PATTERN = r"repo:([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)"
+ISSUE_PR_PATTERN = r"([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)#(\d+)"
 
 # Utility to fetch GitHub data
 async def fetch_github_data(url: str) -> Optional[dict]:
