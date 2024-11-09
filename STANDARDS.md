@@ -27,3 +27,6 @@ For slash commands, generally `interaction.send(ephemeral=True)` should be used,
 ### Cooldowns
 Generally commands should have at least a one second cooldown.
 `@commands.cooldown(1, 1, commands.BucketType.user)`
+
+### Documentation
+Every command must have sufficient documentation for help commands.
