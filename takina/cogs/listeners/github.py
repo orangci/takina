@@ -122,28 +122,28 @@ class GitHub(commands.Cog):
         embed = GitHubEmbedBuilder.create_repo_embed(data)
         await message.channel.send(embed=embed)
 
-    @commands.Cog.listener()
-    async def on_message(self, message: nextcord.Message):
-        if message.author.bot:
-            return
+@commands.Cog.listener()
+async def on_message(self, message: nextcord.Message):
+    if message.author.bot:
+        return
 
-        content = message.content
-        
-        # Check for PR/Issue link pattern first
-        pr_issue_match = re.search(ISSUE_PR_PATTERN, content)
-        if pr_issue_match:
-            logging.debug("PR/Issue pattern matched.")
-            owner, repo, issue_id = pr_issue_match.groups()
-            await self.handle_pr_issue_embed(message, owner, repo, int(issue_id))
-            return  # Stop after first match for simplicity
+    content = message.content
+    
+    # Check for PR/Issue link pattern first
+    pr_issue_match = re.search(ISSUE_PR_PATTERN, content)
+    if pr_issue_match:
+        logging.debug("PR/Issue pattern matched.")
+        owner, repo, issue_id = pr_issue_match.groups()
+        await self.handle_pr_issue_embed(message, owner, repo, int(issue_id))
+        return  # Stop after first match for simplicity
 
-        # Check for repository link pattern
-        repo_match = re.search(REPO_PATTERN, content)
-        if repo_match:
-            logging.debug("Repository pattern matched.")
-            owner, repo = repo_match.groups()
-            await self.handle_repo_embed(message, owner, repo)
-            return  # Stop after first match for simplicity
+    # Check for repository link pattern
+    repo_match = re.search(REPO_PATTERN, content)
+    if repo_match:
+        logging.debug("Repository pattern matched.")
+        owner, repo = repo_match.groups()
+        await self.handle_repo_embed(message, owner, repo)
+        return  # Stop after first match for simplicity
 
 def setup(bot: commands.Bot):
     bot.add_cog(GitHub(bot))
