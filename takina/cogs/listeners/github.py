@@ -4,15 +4,14 @@ import nextcord
 from typing import Optional
 from nextcord.ext import commands
 from nextcord.ui import Button, View
-from urllib.parse import quote
 from __main__ import EMBED_COLOR
 
 # GitHub API Base URL
 GITHUB_API_BASE_URL = "https://api.github.com/repos"
 
-# Patterns for GitHub references
-REPO_PATTERN = r"repo:([A-Za-z0-9-_.]+)/([A-Za-z0-9-_.]+)"
-ISSUE_PR_PATTERN = r"([A-Za-z0-9-_.]+)/([A-Za-z0-9-_.]+)#(\d+)"
+# Updated patterns for GitHub references to include underscores, dots, and numbers
+REPO_PATTERN = r"repo:([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)"
+ISSUE_PR_PATTERN = r"([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)#(\d+)"
 
 # Utility to fetch GitHub data
 async def fetch_github_data(url: str) -> Optional[dict]:
@@ -77,10 +76,7 @@ class GitHub(commands.Cog):
 
     async def handle_pr_issue_embed(self, message: nextcord.Message, owner: str, repo: str, issue_id: int):
         """Fetches and sends an embed with PR/issue status and a refresh button."""
-        # URL encode the owner and repo names
-        owner_encoded = quote(owner)
-        repo_encoded = quote(repo)
-        api_url = f"{GITHUB_API_BASE_URL}/{owner_encoded}/{repo_encoded}/issues/{issue_id}"
+        api_url = f"{GITHUB_API_BASE_URL}/{owner}/{repo}/issues/{issue_id}"
         data = await fetch_github_data(api_url)
 
         if not data:
@@ -112,10 +108,7 @@ class GitHub(commands.Cog):
 
     async def handle_repo_embed(self, message: nextcord.Message, owner: str, repo: str):
         """Fetches and sends an embed with repository information."""
-        # URL encode the owner and repo names
-        owner_encoded = quote(owner)
-        repo_encoded = quote(repo)
-        api_url = f"{GITHUB_API_BASE_URL}/{owner_encoded}/{repo_encoded}"
+        api_url = f"{GITHUB_API_BASE_URL}/{owner}/{repo}"
         data = await fetch_github_data(api_url)
 
         if not data:
@@ -154,7 +147,6 @@ class GitHub(commands.Cog):
             owner, repo, issue_id = pr_issue_match.groups()
             await self.handle_pr_issue_embed(message, owner, repo, int(issue_id))
             return  # Only process the first valid match in the message
-
 
 def setup(bot: commands.Bot):
     bot.add_cog(GitHub(bot))
