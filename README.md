@@ -7,7 +7,6 @@ Using the Dockerfile or Nix.
 
 ## TODO
 - add autoroles / join roles
-- refactor github module
 - replace aiohttp with requests where i can
 - (long term) add a web dashboard for managing settings 
 - afk module
