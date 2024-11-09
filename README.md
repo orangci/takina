@@ -13,7 +13,7 @@ Using the Dockerfile or Nix.
 - afk module
 - better permissions system .. perhaps limit commands to the use app commands permission
 - levelling module
-- patch ghostping sending embeds when the purge command is used
+- mcskin command
 - make every command have it's own error embed responses, instead of using the global error handling
 
 ## License
