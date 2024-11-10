@@ -73,10 +73,19 @@ class Unban(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, id: str, *, reason: str = "No reason provided"):
         user = await self.bot.fetch_user(int(id)) or await self.bot.fetch_user(id)
-        await ctx.guild.unban(
-            user,
-            reason=f"Unbanned by {ctx.author} for: {reason}",
-        )
+        try:
+            await ctx.guild.unban(
+                user,
+                reason=f"Unbanned by {ctx.author} for: {reason}",
+            )
+        except:
+            error_embed = nextcord.Embed(
+            description=f":x: **{user.mention}** is not banned.",
+            color=0xFF0037,
+            )
+            await ctx.reply(embed=error_embed, mention_author=False)
+            return
+            
         embed = nextcord.Embed(
             description=f"✅ Successfully unbanned **{user.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
@@ -160,10 +169,19 @@ class UnbanSlash(commands.Cog):
     ):
         try:
             user = await self.bot.fetch_user(str(id))
-            await interaction.guild.unban(
-                user,
-                reason=f"Unbanned by {interaction.user} for: {reason}",
-            )
+            try:
+                await interaction.guild.unban(
+                    user,
+                    reason=f"Unbanned by {ctx.author} for: {reason}",
+                )
+            except:
+                error_embed = nextcord.Embed(
+                description=f":x: **{user.mention}** is not banned.",
+                color=0xFF0037,
+                )
+                await ctx.reply(embed=error_embed, mention_author=False)
+                return
+
             embed = nextcord.Embed(
                 description=f"✅ Successfully unbanned **{user.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
                 color=EMBED_COLOR,
