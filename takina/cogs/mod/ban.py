@@ -80,12 +80,12 @@ class Unban(commands.Cog):
             )
         except:
             error_embed = nextcord.Embed(
-            description=f":x: **{user.mention}** is not banned.",
-            color=0xFF0037,
+                description=f":x: **{user.mention}** is not banned.",
+                color=0xFF0037,
             )
             await ctx.reply(embed=error_embed, mention_author=False)
             return
-            
+
         embed = nextcord.Embed(
             description=f"✅ Successfully unbanned **{user.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
             color=EMBED_COLOR,
@@ -176,8 +176,8 @@ class UnbanSlash(commands.Cog):
                 )
             except:
                 error_embed = nextcord.Embed(
-                description=f":x: **{user.mention}** is not banned.",
-                color=0xFF0037,
+                    description=f":x: **{user.mention}** is not banned.",
+                    color=0xFF0037,
                 )
                 await ctx.reply(embed=error_embed, mention_author=False)
                 return

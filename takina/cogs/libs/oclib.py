@@ -152,7 +152,6 @@ async def uptime_fetcher():
     return uptime_str
 
 
-# confirmation embed for moderation things
 class ConfirmationView(View):
     def __init__(
         self,
@@ -170,21 +169,28 @@ class ConfirmationView(View):
         self.duration = duration
         self.result = None
         self.message = None
+        self.initiating_user = (
+            ctx.author if isinstance(ctx, commands.Context) else ctx.user
+        )
 
-    # Confirm
     @nextcord.ui.button(label="Confirm", style=nextcord.ButtonStyle.green)
     async def confirm(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
+        if interaction.user != self.initiating_user:
+            return
+
         self.result = True
         await interaction.message.delete()
         self.stop()
 
-    # Cancel
     @nextcord.ui.button(label="Cancel", style=nextcord.ButtonStyle.red)
     async def cancel(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
+        if interaction.user != self.initiating_user:
+            return
+
         self.result = False
         await self.disable_buttons(interaction)
         self.stop()

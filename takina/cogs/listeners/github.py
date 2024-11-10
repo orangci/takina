@@ -13,6 +13,7 @@ GITHUB_API_BASE_URL = "https://api.github.com/repos"
 REPO_PATTERN = r"repo:([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)"
 ISSUE_PR_PATTERN = r"([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)#(\d+)"
 
+
 # Utility to fetch GitHub data
 async def fetch_github_data(url: str) -> Optional[dict]:
     """Fetch data from GitHub API."""
@@ -24,6 +25,7 @@ async def fetch_github_data(url: str) -> Optional[dict]:
     except aiohttp.ClientError:
         pass
     return None
+
 
 class GitHubEmbedBuilder:
     """Helper class to build embeds for GitHub PRs, Issues, and Repos."""
@@ -68,13 +70,16 @@ class GitHubEmbedBuilder:
         embed.add_field(name="Forks", value=forks, inline=True)
         return embed
 
+
 class GitHub(commands.Cog):
     """Cog to interact with GitHub links, fetching information on repositories, PRs, and Issues."""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    async def handle_pr_issue_embed(self, message: nextcord.Message, owner: str, repo: str, issue_id: int):
+    async def handle_pr_issue_embed(
+        self, message: nextcord.Message, owner: str, repo: str, issue_id: int
+    ):
         """Fetches and sends an embed with PR/issue status and a refresh button."""
         api_url = f"{GITHUB_API_BASE_URL}/{owner}/{repo}/issues/{issue_id}"
         data = await fetch_github_data(api_url)
@@ -89,15 +94,19 @@ class GitHub(commands.Cog):
             return
 
         embed = GitHubEmbedBuilder.create_pr_issue_embed(data, owner, repo)
-        
+
         # Add a refresh button to update the PR/issue status
         view = View(timeout=None)
-        refresh_button = Button(label="Refresh Status", style=nextcord.ButtonStyle.primary)
+        refresh_button = Button(
+            label="Refresh Status", style=nextcord.ButtonStyle.primary
+        )
 
         async def refresh_callback(interaction: nextcord.Interaction):
             updated_data = await fetch_github_data(api_url)
             if updated_data:
-                new_embed = GitHubEmbedBuilder.create_pr_issue_embed(updated_data, owner, repo)
+                new_embed = GitHubEmbedBuilder.create_pr_issue_embed(
+                    updated_data, owner, repo
+                )
                 await interaction.response.edit_message(embed=new_embed)
 
         refresh_button.callback = refresh_callback
@@ -122,13 +131,14 @@ class GitHub(commands.Cog):
         embed = GitHubEmbedBuilder.create_repo_embed(data)
         await message.channel.send(embed=embed)
 
+
 @commands.Cog.listener()
 async def on_message(self, message: nextcord.Message):
     if message.author.bot:
         return
 
     content = message.content
-    
+
     # Check for PR/Issue link pattern first
     pr_issue_match = re.search(ISSUE_PR_PATTERN, content)
     if pr_issue_match:
@@ -142,6 +152,7 @@ async def on_message(self, message: nextcord.Message):
         owner, repo = repo_match.groups()
         await self.handle_repo_embed(message, owner, repo)
         return  # Stop after first match for simplicity
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(GitHub(bot))
