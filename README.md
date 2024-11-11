@@ -9,8 +9,8 @@ Using the Dockerfile or Nix.
 - add autoroles / join roles
 - replace aiohttp with requests where i can
 - (long term) add a web dashboard for managing settings 
-- afk module
 - better permissions system .. perhaps limit commands to the use app commands permission
+- make every module where takina performs an action include the command executor in its reason
 - levelling module
 - make every command have it's own error embed responses, instead of using the global error handling
 

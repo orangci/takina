@@ -2,7 +2,7 @@
 Takina does not currently follow *all* these, but as of now does follow the vast majority most of the time. These standards exist because I have a terrible memory and want everything to be uniform.
 
 ### Embeds
-- all embeds must use the EMBED_COLOR env var as it's color, with the exception of it being an error embed; in which case it should be red
+- all embeds must use the EMBED_COLOR env var as it's color, with the exception of it being an error embed; in which case it should be 0xFF0037
 - all mentions of a user should generally be user.mention, not user.name or anything else
 - generally field names should be prefixed with an emoji, preferrably a cute one
 

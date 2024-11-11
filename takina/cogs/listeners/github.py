@@ -12,6 +12,7 @@ GITHUB_BASE_URL = "https://api.github.com"
 REPO_PATTERN = re.compile(r"repo:([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)")
 PR_ISSUE_PATTERN = re.compile(r"([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)#(\d+)")
 
+
 class GitHubCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -24,24 +25,36 @@ class GitHubCog(commands.Cog):
             return None
 
     def build_repo_embed(self, repo_data: dict) -> nextcord.Embed:
-        return (nextcord.Embed(
-            title=f"{repo_data['full_name']} - GitHub Repository",
-            description=repo_data.get("description", "No description available."),
-            color=EMBED_COLOR,
-            url=repo_data["html_url"])
+        return (
+            nextcord.Embed(
+                title=f"{repo_data['full_name']} - GitHub Repository",
+                description=repo_data.get("description", "No description available."),
+                color=EMBED_COLOR,
+                url=repo_data["html_url"],
+            )
             .add_field(name="Stars", value=repo_data["stargazers_count"])
             .add_field(name="Forks", value=repo_data["forks_count"])
             .set_thumbnail(url=repo_data["owner"]["avatar_url"])
         )
 
     def build_pr_issue_embed(self, pr_data: dict, is_issue: bool) -> nextcord.Embed:
-        color = nextcord.Color.green() if pr_data["state"] == "open" else nextcord.Color.red()
-        color = nextcord.Color.purple() if pr_data.get("pull_request", {}).get("merged_at") else color
-        return (nextcord.Embed(
-            title=f"{pr_data['title']} - {'Issue' if is_issue else 'Pull Request'} #{pr_data['number']}",
-            description=pr_data.get("body", "No description available."),
-            color=color,
-            url=pr_data["html_url"])
+        color = (
+            nextcord.Color.green()
+            if pr_data["state"] == "open"
+            else nextcord.Color.red()
+        )
+        color = (
+            nextcord.Color.purple()
+            if pr_data.get("pull_request", {}).get("merged_at")
+            else color
+        )
+        return (
+            nextcord.Embed(
+                title=f"{pr_data['title']} - {'Issue' if is_issue else 'Pull Request'} #{pr_data['number']}",
+                description=pr_data.get("body", "No description available."),
+                color=color,
+                url=pr_data["html_url"],
+            )
             .add_field(name="Status", value=pr_data["state"].capitalize())
             .add_field(name="Comments", value=pr_data["comments"])
             .set_footer(text=f"Last updated: {pr_data['updated_at']}")
@@ -59,7 +72,9 @@ class GitHubCog(commands.Cog):
         if repo_match:
             await message.edit(suppress=True)
             owner, repo_name = repo_match.groups()
-            repo_data = await self.fetch_github_data(f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}")
+            repo_data = await self.fetch_github_data(
+                f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}"
+            )
             if repo_data:
                 await message.channel.send(embed=self.build_repo_embed(repo_data))
             return  # Only process the first match in the message
@@ -68,7 +83,9 @@ class GitHubCog(commands.Cog):
         pr_issue_match = PR_ISSUE_PATTERN.search(content)
         if pr_issue_match:
             owner, repo_name, pr_issue_number = pr_issue_match.groups()
-            url = f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}/issues/{pr_issue_number}"
+            url = (
+                f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}/issues/{pr_issue_number}"
+            )
             pr_issue_data = await self.fetch_github_data(url)
             if pr_issue_data:
                 is_issue = "pull_request" not in pr_issue_data
@@ -92,6 +109,7 @@ class GitHubCog(commands.Cog):
 
     async def cog_unload(self):
         await self.session.close()
+
 
 def setup(bot):
     bot.add_cog(GitHubCog(bot))
