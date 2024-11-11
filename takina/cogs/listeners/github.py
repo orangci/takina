@@ -4,6 +4,7 @@ import nextcord
 from nextcord.ext import commands
 from nextcord import ui
 from __main__ import EMBED_COLOR
+from typing import Optional
 
 GITHUB_BASE_URL = "https://api.github.com"
 
