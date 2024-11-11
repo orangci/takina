@@ -11,6 +11,7 @@ class AFK(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+        self.temp_afk_toggle_off = set()
 
     async def set_afk_status(self, user_id: int, reason: str):
         """Sets a user's AFK status in the database."""
@@ -41,6 +42,7 @@ class AFK(commands.Cog):
         if current_status:
             # Remove AFK status
             await self.remove_afk_status(user_id)
+            self.temp_afk_toggle_off.add(user_id)  # Flag to prevent duplicate message
             embed = nextcord.Embed(
                 description=f"{await fetch_random_emoji()} You are no longer AFK.",
                 color=EMBED_COLOR,
@@ -72,6 +74,7 @@ class AFK(commands.Cog):
         if current_status:
             # Remove AFK status
             await self.remove_afk_status(user_id)
+            self.temp_afk_toggle_off.add(user_id)  # Flag to prevent duplicate message
             embed = nextcord.Embed(
                 description=f"{await fetch_random_emoji()} You are no longer AFK.",
                 color=EMBED_COLOR,
@@ -93,12 +96,16 @@ class AFK(commands.Cog):
         # Check if the author is AFK and remove if so
         current_status = await self.get_afk_status(message.author.id)
         if current_status:
-            await self.remove_afk_status(message.author.id)
-            embed = nextcord.Embed(
-                description=f"{await fetch_random_emoji()} You are no longer AFK.",
-                color=EMBED_COLOR,
-            )
-            await message.channel.send(embed=embed, delete_after=5)
+            # Prevent double message if AFK was toggled off by command
+            if message.author.id in self.temp_afk_toggle_off:
+                self.temp_afk_toggle_off.remove(message.author.id)
+            else:
+                await self.remove_afk_status(message.author.id)
+                embed = nextcord.Embed(
+                    description=f"{await fetch_random_emoji()} You are no longer AFK.",
+                    color=EMBED_COLOR,
+                )
+                await message.channel.send(embed=embed, delete_after=3)
 
         # Notify mentions about AFK users
         for user in message.mentions:
