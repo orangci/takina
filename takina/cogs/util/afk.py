@@ -41,10 +41,7 @@ class AFK(commands.Cog):
         if current_status:
             # Remove AFK status
             await self.remove_afk_status(user_id)
-            embed = nextcord.Embed(
-                description=f"{await fetch_random_emoji()} You are no longer AFK.",
-                color=EMBED_COLOR,
-            )
+            pass
         else:
             # Set AFK status
             await self.set_afk_status(user_id, reason)
