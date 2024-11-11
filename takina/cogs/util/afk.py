@@ -41,7 +41,6 @@ class AFK(commands.Cog):
         if current_status:
             # Remove AFK status
             await self.remove_afk_status(user_id)
-            pass
             return
         else:
             # Set AFK status
