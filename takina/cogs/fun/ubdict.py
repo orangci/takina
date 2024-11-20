@@ -25,6 +25,7 @@ class UrbanDictionary(commands.Cog):
             embed = nextcord.Embed(color=0xFF0037)
             embed.description = "❌ No results found."
             await ctx.reply(embed=embed, mention_author=False)
+            return
         embed = nextcord.Embed(
             title=data["list"][0]["word"],
             description=data["list"][0]["definition"],
