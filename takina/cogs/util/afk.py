@@ -59,9 +59,7 @@ class AFK(commands.Cog):
     async def afk_slash(
         self,
         interaction: nextcord.Interaction,
-        reason: str = SlashOption(
-            description="Reason for going AFK", required=False
-        ),
+        reason: str = SlashOption(description="Reason for going AFK", required=False),
     ):
         user_id = interaction.user.id
         current_status = await self.get_afk_status(user_id)

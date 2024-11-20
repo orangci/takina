@@ -251,6 +251,7 @@ class Starboard(commands.Cog):
             {"$set": {"whitelisted_channels": whitelisted_channels}},
             upsert=True,
         )
+        embed = nextcord.Embed(color=EMBED_COLOR)
         if channels:
             embed.description = (
                 f"Removed from the whitelist: {', '.join(removed_channels)}."
