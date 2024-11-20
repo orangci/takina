@@ -53,6 +53,7 @@ class Snipe(commands.Cog):
 
         # Check if there are attachments (e.g. images)
         if sniped_message["attachments"]:
+            attachments_list = ""
             for attachment in sniped_message["attachments"]:
                 if attachment.filename.lower().endswith(
                     (".png", ".jpg", ".jpeg", ".gif")
