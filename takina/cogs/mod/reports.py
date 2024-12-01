@@ -85,7 +85,7 @@ class Reports(commands.Cog):
         await reports_channel.send(
             content=f"<@&{moderator_role_id}>",
             embed=embed,
-            allowed_mentions=AllowedMentions(roles=True),
+            allowed_mentions=nextcord.AllowedMentions(roles=True),
         )
         submitted_embed = nextcord.Embed(
             description=f"✅ Report successfully submitted. Thank you for helping to keep our server safe!",
