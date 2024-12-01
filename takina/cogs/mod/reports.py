@@ -82,7 +82,11 @@ class Reports(commands.Cog):
         )
 
         # Send the embed to the reports channel, pinging the moderator role
-        await reports_channel.send(content=f"<@&{moderator_role_id}>", embed=embed)
+        await reports_channel.send(
+            content=f"<@&{moderator_role_id}>",
+            embed=embed,
+            allowed_mentions=AllowedMentions(roles=True),
+        )
         submitted_embed = nextcord.Embed(
             description=f"✅ Report successfully submitted. Thank you for helping to keep our server safe!",
             color=nextcord.Color.green(),
