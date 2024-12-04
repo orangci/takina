@@ -18,7 +18,7 @@ class Mute(commands.Cog):
     async def mute(
         self, ctx, member: str, duration: str, *, reason: str = "No reason provided"
     ):
-        timeout_duration = duration_calculator(duration)
+        timeout_duration = duration_calculator(duration, timeout=True)
         if isinstance(timeout_duration, nextcord.Embed):
             await ctx.reply(embed=timeout_duration, mention_author=False)
             return
@@ -127,7 +127,7 @@ class MuteSlash(commands.Cog):
         ),
         reason: str = "No reason provided",
     ):
-        timeout_duration = duration_calculator(duration)
+        timeout_duration = duration_calculator(duration, timeout=True)
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
             await interaction.send(embed=message, ephemeral=True)

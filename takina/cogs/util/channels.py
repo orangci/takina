@@ -19,7 +19,7 @@ class ChannelManagement(commands.Cog):
         self, ctx: commands.Context, duration: str, channel: nextcord.TextChannel = None
     ):
         channel = channel or ctx.channel
-        duration = duration_calculator(duration)
+        duration = duration_calculator(duration, slowmode=True)
         if isinstance(duration, nextcord.Embed):
             await ctx.reply(embed=duration, mention_author=False)
             return
@@ -92,7 +92,7 @@ class SlashChannelManagement(commands.Cog):
         ),
     ):
         channel = channel or interaction.channel
-        duration = duration_calculator(duration)
+        duration = duration_calculator(duration, slowmode=True)
         if isinstance(duration, nextcord.Embed):
             await interaction.send(embed=embed, ephemeral=True)
             return

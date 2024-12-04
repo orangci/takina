@@ -47,13 +47,14 @@ async def request(url, *args, **kwargs):
 
 
 # for calculating durations, e.g. 1d, 2h, 5s, 34m
-def duration_calculator(duration: str) -> int:
-    pattern = r"(\d+)([s|m|h|d|w|y])"
+def duration_calculator(duration: str, slowmode=False, timeout=False) -> int:
+    pattern = r"(\d+)([s|m|h|d|w])"
     match = re.fullmatch(pattern, duration)
     error_embed = nextcord.Embed(
-        description=":x: Invalid duration format. Use <number>[s|d|h|m|w|y].",
+        description=":x: Invalid duration format. Use <number>[s|d|h|m|w].",
         color=0xFF0037,
     )
+
     if not match:
         return error_embed
 
@@ -61,19 +62,30 @@ def duration_calculator(duration: str) -> int:
     time_value = int(time_value)
 
     if time_unit == "s":
-        return time_value * 1
+        time_value *= 1
     elif time_unit == "m":
-        return time_value * 60
+        time_value *= 60
     elif time_unit == "h":
-        return time_value * 3600
+        time_value *= 3600
     elif time_unit == "d":
-        return time_value * 86400
+        time_value *= 86400
     elif time_unit == "w":
-        return time_value * 604800
-    elif time_unit == "y":
-        return time_value * 31536000
+        time_value *= 604800
     else:
         return error_embed
+    
+    if timeout and time_value > 2419200:
+        return nextcord.Embed(
+            description=":x: The duration you've specified is too long. The maximum timeout length you may set is 28 days.",
+            color=0xFF0037,
+        )
+
+    if slowmode and time_value == 21600:
+        return nextcord.Embed(
+            description=":x: The duration you've specified is too long. The maximum slowmode you may set is six hours.",
+            color=0xFF0037,
+        )
+    return time_value
 
 
 # for checking perms of a command
