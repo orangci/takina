@@ -80,7 +80,7 @@ def duration_calculator(duration: str, slowmode=False, timeout=False) -> int:
             color=0xFF0037,
         )
 
-    if slowmode and time_value == 21600:
+    if slowmode and time_value > 21600:
         return nextcord.Embed(
             description=":x: The duration you've specified is too long. The maximum slowmode you may set is six hours.",
             color=0xFF0037,
