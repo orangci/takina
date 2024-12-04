@@ -50,10 +50,12 @@ async def request(url, *args, **kwargs):
 def duration_calculator(duration: str, slowmode=False, timeout=False) -> int:
     pattern = r"(\d+)([s|m|h|d|w])"
     match = re.fullmatch(pattern, duration)
-    error_embed = nextcord.Embed(
-        description=":x: Invalid duration format. Use <number>[s|d|h|m|w].",
-        color=0xFF0037,
+    error_embed = nextcord.Embed(color=0xFF0037,
     )
+    if timeout:
+        error_embed.description=":x: Invalid duration format. Use <number>[s|m|h|d|w]."
+    if slowmode:
+        error_embed.description=":x: Invalid duration format. Use <number>[s|m|h]."
 
     if not match:
         return error_embed
