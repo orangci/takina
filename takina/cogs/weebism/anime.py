@@ -66,7 +66,7 @@ class AnimeSearch(commands.Cog):
 
             else:
                 embed = nextcord.Embed(
-                    description="Anime not found.",
+                    description=":x: Anime not found.",
                     color=0xFF0037,
                 )
 
@@ -116,7 +116,7 @@ class AnimeSearch(commands.Cog):
 
             else:
                 embed = nextcord.Embed(
-                    description="Anime not found.",
+                    description=":x: Anime not found.",
                     color=0xFF0037,
                 )
 

@@ -55,7 +55,7 @@ class MangaSearch(commands.Cog):
 
             else:
                 embed = nextcord.Embed(
-                    description="Manga not found.",
+                    description=":x: Manga not found.",
                     color=0xFF0037,
                 )
 
@@ -95,7 +95,7 @@ class MangaSearch(commands.Cog):
 
             else:
                 embed = nextcord.Embed(
-                    description="Manga not found.",
+                    description=":x: Manga not found.",
                     color=0xFF0037,
                 )
 

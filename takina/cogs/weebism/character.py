@@ -58,7 +58,7 @@ class CharacterSearch(commands.Cog):
 
             else:
                 embed = nextcord.Embed(
-                    description="Character not found.",
+                    description=":x: Character not found.",
                     color=0xFF0037,
                 )
 
@@ -103,7 +103,7 @@ class CharacterSearch(commands.Cog):
 
             else:
                 embed = nextcord.Embed(
-                    description="Character not found.",
+                    description=":x: Character not found.",
                     color=0xFF0037,
                 )
 
