@@ -50,12 +50,15 @@ async def request(url, *args, **kwargs):
 def duration_calculator(duration: str, slowmode=False, timeout=False) -> int:
     pattern = r"(\d+)([s|m|h|d|w])"
     match = re.fullmatch(pattern, duration)
-    error_embed = nextcord.Embed(color=0xFF0037,
+    error_embed = nextcord.Embed(
+        color=0xFF0037,
     )
     if timeout:
-        error_embed.description=":x: Invalid duration format. Use <number>[s|m|h|d|w]."
+        error_embed.description = (
+            ":x: Invalid duration format. Use <number>[s|m|h|d|w]."
+        )
     if slowmode:
-        error_embed.description=":x: Invalid duration format. Use <number>[s|m|h]."
+        error_embed.description = ":x: Invalid duration format. Use <number>[s|m|h]."
 
     if not match:
         return error_embed
@@ -75,7 +78,7 @@ def duration_calculator(duration: str, slowmode=False, timeout=False) -> int:
         time_value *= 604800
     else:
         return error_embed
-    
+
     if timeout and time_value > 2419200:
         return nextcord.Embed(
             description=":x: The duration you've specified is too long. The maximum timeout length you may set is 28 days.",
