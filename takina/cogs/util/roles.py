@@ -34,7 +34,7 @@ class Roles(commands.Cog):
                 await ctx.reply(embed=member, mention_author=False)
                 return
 
-        await member.add_roles(role)
+        await member.add_roles(role, reason=f"Role added by {ctx.author}")
         embed = nextcord.Embed(
             description=f"✅ Added role {role.mention} to {member.mention}.",
             color=EMBED_COLOR,
@@ -57,7 +57,7 @@ class Roles(commands.Cog):
                 await ctx.reply(embed=member, mention_author=False)
                 return
 
-        await member.remove_roles(role)
+        await member.remove_roles(role, reason=f"Role removed by {ctx.author}")
         embed = nextcord.Embed(
             description=f"✅ Removed role {role.mention} from {member.mention}.",
             color=EMBED_COLOR,
@@ -86,7 +86,7 @@ class RolesSlash(commands.Cog):
         ),
     ):
 
-        await member.add_roles(role)
+        await member.add_roles(role, reason=f"Role added by {interaction.user}")
         embed = nextcord.Embed(
             description=f"✅ Added role {role.mention} to {member.mention}.",
             color=EMBED_COLOR,
@@ -106,7 +106,7 @@ class RolesSlash(commands.Cog):
         ),
     ):
 
-        await member.remove_roles(role)
+        await member.remove_roles(role, reason=f"Role removed by {interaction.user}")
         embed = nextcord.Embed(
             description=f"✅ Removed role {role.mention} from {member.mention}.",
             color=EMBED_COLOR,
