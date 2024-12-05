@@ -93,7 +93,7 @@ class Unban(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
         modlog_cog = self.bot.get_cog("ModLog")
         if modlog_cog:
-            await modlog_cog.log_action("unban", member, reason, ctx.author)
+            await modlog_cog.log_action("unban", user, reason, ctx.author)
 
     @unban.error
     async def unban_error(self, ctx, error):
@@ -191,7 +191,7 @@ class UnbanSlash(commands.Cog):
             modlog_cog = self.bot.get_cog("ModLog")
             if modlog_cog:
                 await modlog_cog.log_action(
-                    "unban", member, reason, interaction.user, duratio
+                    "unban", user, reason, interaction.user, duratio
                 )
 
         except nextcord.NotFound:
