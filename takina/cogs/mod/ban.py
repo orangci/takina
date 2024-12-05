@@ -98,8 +98,12 @@ class Unban(commands.Cog):
     @unban.error
     async def unban_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
+            error_embed = nextcord.Embed(
+                description=":x: User not found. Please make sure the User ID is correct.",
+                color=0xFF0037,
+            )
             await ctx.reply(
-                "User not found. Please make sure the User ID is correct.",
+                embed=error_embed,
                 mention_author=False,
             )
 
@@ -195,8 +199,12 @@ class UnbanSlash(commands.Cog):
                 )
 
         except nextcord.NotFound:
+            error_embed = nextcord.Embed(
+                description=":x: User not found. Please make sure the User ID is correct.",
+                color=0xFF0037,
+            )
             await interaction.send(
-                "User not found. Please make sure the User ID is correct.",
+                embed=error_embed,
                 ephemeral=True,
             )
 
