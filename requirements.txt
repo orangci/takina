@@ -1,7 +1,6 @@
 python-dotenv==1.0.1
 onami==2.6.3
 aiohttp==3.11.9
-
 virtualenv==20.28.0
 pymongo==4.10.1
 motor==3.6.0

@@ -80,7 +80,7 @@ class Info(commands.Cog):
             description=(
                 f"> **Server ID:** {guild.id}\n"
                 f"> **Server Name:** {guild.name}\n"
-                f"> **Owner:** {guild.owner}\n"
+                f"> **Owner:** {guild.owner.mention}\n"
                 f"> **Created:** <t:{int(guild.created_at.timestamp())}:D> (<t:{int(guild.created_at.timestamp())}:R>)\n"
                 f"> **Members:** {guild.member_count}\n"
                 f"> **Roles:** {len(guild.roles)}\n"
@@ -170,7 +170,7 @@ class SlashInfo(commands.Cog):
             description=(
                 f"> **Server ID:** {guild.id}\n"
                 f"> **Server Name:** {guild.name}\n"
-                f"> **Owner:** {guild.owner}\n"
+                f"> **Owner:** {guild.owner.mention}\n"
                 f"> **Created:** <t:{int(guild.created_at.timestamp())}:D> (<t:{int(guild.created_at.timestamp())}:R>)\n"
                 f"> **Members:** {guild.member_count}\n"
                 f"> **Roles:** {len(guild.roles)}\n"
