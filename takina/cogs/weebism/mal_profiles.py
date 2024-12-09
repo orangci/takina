@@ -3,6 +3,7 @@ import nextcord
 from nextcord.ext import commands
 from datetime import datetime
 import nextcord
+from __main__ import EMBED_COLOR
 
 
 def format_date(date_str):
@@ -53,10 +54,12 @@ class MAL_Profiles(commands.Cog):
             embed = nextcord.Embed(
                 title=f"{username}'s Profile",
                 url=profile_url,
-                color=0x2E51A2,
+                color=EMBED_COLOR,
             )
 
-            embed.description = f"-# [Anime List]({anime_list_url}) • [Manga List]({manga_list_url})\n"
+            embed.description = (
+                f"-# [Anime List]({anime_list_url}) • [Manga List]({manga_list_url})\n"
+            )
             embed.description += f"\n> **Gender**: {gender}"
             embed.description += f"\n> **Last Online**: {last_online}"
             embed.description += f"\n> **Joined**: {joined}"
@@ -89,7 +92,7 @@ class MAL_Profiles(commands.Cog):
             profile_data = await request(profile_url)
 
             if not profile_data or not profile_data.get("data"):
-                embed = nextcord.Embed(title="User not found.", color=0x2E51A2)
+                embed = nextcord.Embed(title="User not found.", color=EMBED_COLOR)
                 await ctx.response.send_message(embed=embed, ephemeral=True)
                 return
 
@@ -113,10 +116,12 @@ class MAL_Profiles(commands.Cog):
             embed = nextcord.Embed(
                 title=f"{username}'s Profile",
                 url=profile_url,
-                color=0x2E51A2,
+                color=EMBED_COLOR,
             )
 
-            embed.description = f"-# [Anime List]({anime_list_url}) • [Manga List]({manga_list_url})\n"
+            embed.description = (
+                f"-# [Anime List]({anime_list_url}) • [Manga List]({manga_list_url})\n"
+            )
             embed.description += f"\n> **Gender**: {gender}"
             embed.description += f"\n> **Last Online**: {last_online}"
             embed.description += f"\n> **Joined**: {joined}"
