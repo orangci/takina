@@ -37,19 +37,31 @@ class MangaSearch(commands.Cog):
             if manga:
                 title = manga.get("title")
                 chapters = manga.get("chapters")
+                volumes = manga.get("volumes")
                 score = manga.get("score")
+                published = manga.get("published", {}).get("string")
+                english_title = manga.get("title_english")
                 status = manga.get("status")
                 cover_image = manga["images"]["jpg"]["image_url"]
                 url = manga.get("url")
                 mal_id = manga.get("mal_id")
                 genres = ", ".join([genre["name"] for genre in manga.get("genres", [])])
+                authors = " & ".join(
+                    [author["name"] for author in manga.get("authors", [])]
+                )
 
                 embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
-                if not status == "Publishing":
-                    embed.add_field(name="Chapters", value=chapters, inline=True)
-                embed.add_field(name="Score", value=score, inline=True)
-                embed.add_field(name="Status", value=status, inline=True)
-                embed.add_field(name="Genres", value=genres, inline=True)
+                embed.description = ""
+                if english_title and english_title != title:
+                    embed.description += f"-# {english_title}\n"
+                if status != "Publishing":
+                    embed.description += f"\n> **Chapters**: {chapters}"
+                    embed.description += f"\n> **Volumes**: {volumes}"
+                embed.description += f"\n> **Score**: {score}"
+                embed.description += f"\n> **Status**: {status}"
+                embed.description += f"\n> **Genres**: {genres}"
+                embed.description += f"\n> **Published**: {published}"
+                embed.description += f"\n> **Authors**: {authors}"
                 embed.set_thumbnail(url=cover_image)
                 embed.set_footer(text=str(mal_id))
 
@@ -77,19 +89,31 @@ class MangaSearch(commands.Cog):
             if manga:
                 title = manga.get("title")
                 chapters = manga.get("chapters")
+                volumes = manga.get("volumes")
                 score = manga.get("score")
+                published = manga.get("published", {}).get("string")
+                english_title = manga.get("title_english")
                 status = manga.get("status")
                 cover_image = manga["images"]["jpg"]["image_url"]
                 url = manga.get("url")
                 mal_id = manga.get("mal_id")
                 genres = ", ".join([genre["name"] for genre in manga.get("genres", [])])
+                authors = " & ".join(
+                    [author["name"] for author in manga.get("authors", [])]
+                )
 
                 embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
-                if not status == "Publishing":
-                    embed.add_field(name="Chapters", value=chapters, inline=True)
-                embed.add_field(name="Score", value=score, inline=True)
-                embed.add_field(name="Status", value=status, inline=True)
-                embed.add_field(name="Genres", value=genres, inline=True)
+                embed.description = ""
+                if english_title and english_title != title:
+                    embed.description += f"-# {english_title}\n"
+                if status != "Publishing":
+                    embed.description += f"\n> **Chapters**: {chapters}"
+                    embed.description += f"\n> **Volumes**: {volumes}"
+                embed.description += f"\n> **Score**: {score}"
+                embed.description += f"\n> **Status**: {status}"
+                embed.description += f"\n> **Genres**: {genres}"
+                embed.description += f"\n> **Published**: {published}"
+                embed.description += f"\n> **Authors**: {authors}"
                 embed.set_thumbnail(url=cover_image)
                 embed.set_footer(text=str(mal_id))
 
