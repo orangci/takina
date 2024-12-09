@@ -53,27 +53,16 @@ class MAL_Profiles(commands.Cog):
             embed = nextcord.Embed(
                 title=f"{username}'s Profile",
                 url=profile_url,
-                description=f"[Anime List]({anime_list_url}) • [Manga List]({manga_list_url})",
                 color=0x2E51A2,
             )
 
-            if gender == "Not Specified":
-                gender_field_name = ":question: Gender"
-            elif gender == "Male":
-                gender_field_name = ":male_sign: Gender"
-            elif gender == "Female":
-                gender_field_name = ":female_sign: Gender"
-            elif gender == "Non-Binary":
-                gender_field_name = ":left_right_arrow: Gender"
-            else:
-                gender_field_name = "Gender"
-
-            embed.add_field(name=gender_field_name, value=gender, inline=True)
-            embed.add_field(name=":clock1: Last Online", value=last_online, inline=True)
-            embed.add_field(name=":hourglass: Joined", value=joined, inline=True)
-            embed.add_field(name=":map: Location", value=location, inline=True)
-            embed.add_field(name=":tv: Anime", value=str(anime_mean), inline=True)
-            embed.add_field(name=":book: Manga", value=str(manga_mean), inline=True)
+            embed.description = f"-# [Anime List]({anime_list_url}) • [Manga List]({manga_list_url})\n"
+            embed.description += f"\n> **Gender**: {gender}"
+            embed.description += f"\n> **Last Online**: {last_online}"
+            embed.description += f"\n> **Joined**: {joined}"
+            embed.description += f"\n> **Location**: {location}"
+            embed.description += f"\n> **Anime Mean**: {str(anime_mean)}"
+            embed.description += f"\n> **Manga Mean**: {str(manga_mean)}"
             embed.set_footer(text=str(mal_id))
 
             if profile_pic:
@@ -124,27 +113,16 @@ class MAL_Profiles(commands.Cog):
             embed = nextcord.Embed(
                 title=f"{username}'s Profile",
                 url=profile_url,
-                description=f"[Anime List]({anime_list_url}) • [Manga List]({manga_list_url})",
                 color=0x2E51A2,
             )
 
-            if gender == "Not Specified":
-                gender_field_name = ":question: Gender"
-            elif gender == "Male":
-                gender_field_name = ":male_sign: Gender"
-            elif gender == "Female":
-                gender_field_name = ":female_sign: Gender"
-            elif gender == "Non-Binary":
-                gender_field_name = ":left_right_arrow: Gender"
-            else:
-                gender_field_name = "Gender"
-
-            embed.add_field(name=gender_field_name, value=gender, inline=True)
-            embed.add_field(name=":clock1: Last Online", value=last_online, inline=True)
-            embed.add_field(name=":hourglass: Joined", value=joined, inline=True)
-            embed.add_field(name=":map: Location", value=location, inline=True)
-            embed.add_field(name=":tv: Anime", value=str(anime_mean), inline=True)
-            embed.add_field(name=":book: Manga", value=str(manga_mean), inline=True)
+            embed.description = f"-# [Anime List]({anime_list_url}) • [Manga List]({manga_list_url})\n"
+            embed.description += f"\n> **Gender**: {gender}"
+            embed.description += f"\n> **Last Online**: {last_online}"
+            embed.description += f"\n> **Joined**: {joined}"
+            embed.description += f"\n> **Location**: {location}"
+            embed.description += f"\n> **Anime Mean**: {str(anime_mean)}"
+            embed.description += f"\n> **Manga Mean**: {str(manga_mean)}"
             embed.set_footer(text=str(mal_id))
 
             if profile_pic:
