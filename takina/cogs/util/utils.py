@@ -17,7 +17,7 @@ class Utils(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
 
-    @commands.command(help="Ping the bot and check its latency. \nUsage: `ping`.")
+    @commands.command(help="Ping the bot and check its latency. \nUsage: `ping`.", aliases=["pong"])
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def ping(self, ctx: commands.Context):
         latency = round(self.bot.latency * 1000)
