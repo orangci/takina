@@ -1,14 +1,13 @@
 import re
-import aiohttp
 import nextcord
 from nextcord.ext import commands
 from nextcord import ui
 from __main__ import EMBED_COLOR
 from typing import Optional
+from ..libs.oclib import request
 
 GITHUB_BASE_URL = "https://api.github.com"
 
-# Updated regex patterns
 REPO_PATTERN = re.compile(r"repo:([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)")
 PR_ISSUE_PATTERN = re.compile(r"([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)#(\d+)")
 
@@ -16,15 +15,17 @@ PR_ISSUE_PATTERN = re.compile(r"([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)#(\d+)")
 class GitHubCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.session = aiohttp.ClientSession()
 
     async def fetch_github_data(self, url: str) -> Optional[dict]:
-        async with self.session.get(url) as response:
-            if response.status == 200:
-                return await response.json()
+        """Fetch JSON data from the GitHub API."""
+        try:
+            return await request(url)
+        except Exception as e:
+            print(f"Error fetching GitHub data: {e}")
             return None
 
     def build_repo_embed(self, repo_data: dict) -> nextcord.Embed:
+        """Build an embed for repository details."""
         return (
             nextcord.Embed(
                 title=f"{repo_data['full_name']} - GitHub Repository",
@@ -38,6 +39,7 @@ class GitHubCog(commands.Cog):
         )
 
     def build_pr_issue_embed(self, pr_data: dict, is_issue: bool) -> nextcord.Embed:
+        """Build an embed for PR/Issue details."""
         color = (
             nextcord.Color.green()
             if pr_data["state"] == "open"
@@ -62,6 +64,7 @@ class GitHubCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
+        """Detect and handle repository or PR/Issue mentions in messages."""
         if message.author.bot:
             return
 
@@ -106,9 +109,6 @@ class GitHubCog(commands.Cog):
             if pr_issue_data:
                 embed = self.cog.build_pr_issue_embed(pr_issue_data, self.is_issue)
                 await interaction.response.edit_message(embed=embed)
-
-    async def cog_unload(self):
-        await self.session.close()
 
 
 def setup(bot):
