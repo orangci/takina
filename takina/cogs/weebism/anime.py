@@ -38,15 +38,17 @@ class AnimeSearch(commands.Cog):
             if anime:
                 title = anime.get("title")
                 episodes = anime.get("episodes")
-                # score = anime.get("score")
-                # synopsis = anime.get("synopsis")
+                score = anime.get("score")
+                synopsis = anime.get("synopsis")
                 # if len(synopsis) > 200:
                 #     synopsis = synopsis[:700] + '...'
                 source = anime.get("source")
+                english_title = anime.get("title_english")
                 aired = anime.get("aired", {}).get("string")
                 type = anime.get("type")
                 cover_image = anime["images"]["jpg"]["image_url"]
                 url = anime.get("url")
+                rating = anime.get("rating")
                 mal_id = anime.get("mal_id")
                 genres = ", ".join([genre["name"] for genre in anime.get("genres", [])])
                 studios = ", ".join(
@@ -54,13 +56,17 @@ class AnimeSearch(commands.Cog):
                 )
 
                 embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
-                embed.add_field(name="Type", value=type, inline=True)
-                embed.add_field(name="Episodes", value=episodes, inline=True)
-                # embed.add_field(name="Score", value=score, inline=True)
-                embed.add_field(name="Source", value=source, inline=True)
-                embed.add_field(name="Aired", value=aired, inline=True)
-                embed.add_field(name="Genres", value=genres, inline=True)
-                embed.add_field(name="Studios", value=studios, inline=True)
+                embed.description = ""
+                if english_title and english_title != title:
+                    embed.description += f"-# {english_title}\n"
+                embed.description += f"\n> **Type**: {type}"
+                embed.description += f"\n> **Episodes**: {episodes}"
+                embed.description += f"\n> **Score**: {score}"
+                embed.description += f"\n> **Source**: {source}"
+                embed.description += f"\n> **Aired**: {aired}"
+                embed.description += f"\n> **Genres**: {genres}"
+                embed.description += f"\n> **Studios**: {studios}"
+                embed.description += f"\n> **Rating**: {rating}"
                 embed.set_thumbnail(url=cover_image)
                 embed.set_footer(text=str(mal_id))
 
@@ -88,15 +94,17 @@ class AnimeSearch(commands.Cog):
             if anime:
                 title = anime.get("title")
                 episodes = anime.get("episodes")
-                # score = anime.get("score")
-                # synopsis = anime.get("synopsis")
+                score = anime.get("score")
+                synopsis = anime.get("synopsis")
                 # if len(synopsis) > 200:
-                #     synopsis = synopsis[:500] + '...'
+                #     synopsis = synopsis[:700] + '...'
                 source = anime.get("source")
+                english_title = anime.get("title_english")
                 aired = anime.get("aired", {}).get("string")
                 type = anime.get("type")
                 cover_image = anime["images"]["jpg"]["image_url"]
                 url = anime.get("url")
+                rating = anime.get("rating")
                 mal_id = anime.get("mal_id")
                 genres = ", ".join([genre["name"] for genre in anime.get("genres", [])])
                 studios = ", ".join(
@@ -104,13 +112,17 @@ class AnimeSearch(commands.Cog):
                 )
 
                 embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
-                embed.add_field(name="Type", value=type, inline=True)
-                embed.add_field(name="Episodes", value=episodes, inline=True)
-                # embed.add_field(name="Score", value=score, inline=True)
-                embed.add_field(name="Source", value=source, inline=True)
-                embed.add_field(name="Aired", value=aired, inline=True)
-                embed.add_field(name="Genres", value=genres, inline=True)
-                embed.add_field(name="Studios", value=studios, inline=True)
+                embed.description = ""
+                if english_title and english_title != title:
+                    embed.description += f"-# {english_title}\n"
+                embed.description += f"\n> **Type**: {type}"
+                embed.description += f"\n> **Episodes**: {episodes}"
+                embed.description += f"\n> **Score**: {score}"
+                embed.description += f"\n> **Source**: {source}"
+                embed.description += f"\n> **Aired**: {aired}"
+                embed.description += f"\n> **Genres**: {genres}"
+                embed.description += f"\n> **Studios**: {studios}"
+                embed.description += f"\n> **Rating**: {rating}"
                 embed.set_thumbnail(url=cover_image)
                 embed.set_footer(text=str(mal_id))
 
