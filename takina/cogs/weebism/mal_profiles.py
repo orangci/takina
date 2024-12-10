@@ -53,26 +53,10 @@ class MAL_Profiles(commands.Cog):
             anime_stats = profile_stats["data"].get("anime")
             days_watched = f"**{str(anime_stats.get("days_watched"))}**"
             anime_mean = f"**{str(anime_stats.get("mean_score"))}**"
-            # watching = f"**{str(anime_stats.get("watching"))}**"
-            # anime_completed = f"**{str(anime_stats.get("completed"))}**"
-            # anime_on_hold = f"**{str(anime_stats.get("on_hold"))}**"
-            # anime_dropped = f"**{str(anime_stats.get("dropped"))}**"
-            # ptw = f"**{str(anime_stats.get("plan_to_watch"))}**"
-            # anime_total_entries = f"**{str(anime_stats.get("total_entries"))}**"
-            # rewatched = f"**{str(anime_stats.get("rewatched"))}**"
-            # anime_episodes = f"**{str(anime_stats.get("episodes_watched"))}**"
 
             manga_stats = profile_stats["data"].get("manga")
             days_read = f"**{str(manga_stats.get("days_read"))}**"
             manga_mean = f"**{str(manga_stats.get("mean_score"))}**"
-            # reading = f"**{str(manga_stats.get("reading"))}**"
-            # manga_completed = f"**{str(manga_stats.get("completed"))}**"
-            # manga_on_hold = f"**{str(manga_stats.get("on_hold"))}**"
-            # manga_dropped = f"**{str(manga_stats.get("dropped"))}**"
-            # ptr = f"**{str(manga_stats.get("plan_to_read"))}**"
-            # manga_total_entries = f"**{str(manga_stats.get("total_entries"))}**"
-            # reread = f"**{str(manga_stats.get("reread"))}**"
-            # chapters = f"**{str(manga_stats.get("chapters_read"))}**"
 
             embed = nextcord.Embed(
                 title=f"{username}'s Profile",
@@ -138,26 +122,10 @@ class MAL_Profiles(commands.Cog):
             anime_stats = profile_stats["data"].get("anime")
             days_watched = f"**{str(anime_stats.get("days_watched"))}**"
             anime_mean = f"**{str(anime_stats.get("mean_score"))}**"
-            # watching = f"**{str(anime_stats.get("watching"))}**"
-            # anime_completed = f"**{str(anime_stats.get("completed"))}**"
-            # anime_on_hold = f"**{str(anime_stats.get("on_hold"))}**"
-            # anime_dropped = f"**{str(anime_stats.get("dropped"))}**"
-            # ptw = f"**{str(anime_stats.get("plan_to_watch"))}**"
-            # anime_total_entries = f"**{str(anime_stats.get("total_entries"))}**"
-            # rewatched = f"**{str(anime_stats.get("rewatched"))}**"
-            # anime_episodes = f"**{str(anime_stats.get("episodes_watched"))}**"
 
             manga_stats = profile_stats["data"].get("manga")
             days_read = f"**{str(manga_stats.get("days_read"))}**"
             manga_mean = f"**{str(manga_stats.get("mean_score"))}**"
-            # reading = f"**{str(manga_stats.get("reading"))}**"
-            # manga_completed = f"**{str(manga_stats.get("completed"))}**"
-            # manga_on_hold = f"**{str(manga_stats.get("on_hold"))}**"
-            # manga_dropped = f"**{str(manga_stats.get("dropped"))}**"
-            # ptr = f"**{str(manga_stats.get("plan_to_read"))}**"
-            # manga_total_entries = f"**{str(manga_stats.get("total_entries"))}**"
-            # reread = f"**{str(manga_stats.get("reread"))}**"
-            # chapters = f"**{str(manga_stats.get("chapters_read"))}**"
 
             embed = nextcord.Embed(
                 title=f"{username}'s Profile",
