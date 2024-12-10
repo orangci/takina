@@ -12,7 +12,8 @@ audioop-lts==0.2.1
 emoji==2.14.0
 
 ## nextcord stuff
-git+https://github.com/nextcord/nextcord.git@main#egg=nextcord
+# git+https://github.com/nextcord/nextcord.git@main#egg=nextcord
+nextcord==2.6.0
 nextcord-ext-help-commands==0.0.1
 nextcord-ext-menus==1.5.7
 # apparently these make nextcord faster
