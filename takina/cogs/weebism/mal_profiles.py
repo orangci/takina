@@ -46,8 +46,10 @@ class MAL_Profiles(commands.Cog):
             manga_list_url = f"https://myanimelist.net/mangalist/{username}"
 
             # stats
-            profile_stats = await request(f"https://api.jikan.moe/v4/users/{username}/statistics")
-            
+            profile_stats = await request(
+                f"https://api.jikan.moe/v4/users/{username}/statistics"
+            )
+
             anime_stats = profile_stats["data"].get("anime")
             days_watched = f"**{str(anime_stats.get("days_watched"))}**"
             anime_mean = f"**{str(anime_stats.get("mean_score"))}**"
@@ -59,7 +61,7 @@ class MAL_Profiles(commands.Cog):
             # anime_total_entries = f"**{str(anime_stats.get("total_entries"))}**"
             # rewatched = f"**{str(anime_stats.get("rewatched"))}**"
             # anime_episodes = f"**{str(anime_stats.get("episodes_watched"))}**"
-            
+
             manga_stats = profile_stats["data"].get("manga")
             days_read = f"**{str(manga_stats.get("days_read"))}**"
             manga_mean = f"**{str(manga_stats.get("mean_score"))}**"
@@ -129,8 +131,10 @@ class MAL_Profiles(commands.Cog):
             manga_list_url = f"https://myanimelist.net/mangalist/{username}"
 
             # stats
-            profile_stats = await request(f"https://api.jikan.moe/v4/users/{username}/statistics")
-            
+            profile_stats = await request(
+                f"https://api.jikan.moe/v4/users/{username}/statistics"
+            )
+
             anime_stats = profile_stats["data"].get("anime")
             days_watched = f"**{str(anime_stats.get("days_watched"))}**"
             anime_mean = f"**{str(anime_stats.get("mean_score"))}**"
@@ -142,7 +146,7 @@ class MAL_Profiles(commands.Cog):
             # anime_total_entries = f"**{str(anime_stats.get("total_entries"))}**"
             # rewatched = f"**{str(anime_stats.get("rewatched"))}**"
             # anime_episodes = f"**{str(anime_stats.get("episodes_watched"))}**"
-            
+
             manga_stats = profile_stats["data"].get("manga")
             days_read = f"**{str(manga_stats.get("days_read"))}**"
             manga_mean = f"**{str(manga_stats.get("mean_score"))}**"

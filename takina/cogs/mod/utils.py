@@ -3,6 +3,7 @@ import nextcord
 from nextcord import SlashOption
 from __main__ import EMBED_COLOR
 from ..libs.oclib import *
+from datetime import timedelta
 
 
 class ModUtils(commands.Cog):
@@ -43,22 +44,24 @@ class ModUtils(commands.Cog):
                 description="Please specify a number between 1 and 100 for messages to purge.",
                 color=0xFF0037,
             )
-            await ctx.reply(
-                embed=embed,
-                mention_author=False,
-            )
+            await ctx.reply(embed=embed, mention_author=False)
             return
 
-        deleted = await ctx.channel.purge(limit=amount + 1)
+        deleted = await ctx.channel.purge(
+            limit=amount + 1,
+            check=lambda m: m.created_at > nextcord.utils.utcnow() - timedelta(weeks=2),
+            bulk=True,
+        )
+
         embed = nextcord.Embed(
-            description=f"✅ Successfully purged {amount} messages.",
-            color=EMBED_COLOR,
+            description=(
+                f"✅ Successfully purged {len(deleted) - 1} messages."
+                if len(deleted) > 1
+                else ":x: I cannot purge messages older than two weeks."
+            ),
+            color=EMBED_COLOR if len(deleted) > 1 else 0xFF0037,
         )
-        await ctx.send(
-            embed=embed,
-            delete_after=2,
-            mention_author=False,
-        )
+        await ctx.send(embed=embed, delete_after=2)
 
     @commands.command(
         aliases=["setnick"],
@@ -142,21 +145,24 @@ class SlashModUtils(commands.Cog):
                 description="Please specify a number between 1 and 100 for messages to purge.",
                 color=0xFF0037,
             )
-            await interaction.send(
-                embed=embed,
-                ephemeral=True,
-            )
+            await interaction.send(embed=embed, ephemeral=True)
             return
 
-        deleted = await interaction.channel.purge(limit=amount)
+        deleted = await interaction.channel.purge(
+            limit=amount + 1,
+            check=lambda m: m.created_at > nextcord.utils.utcnow() - timedelta(weeks=2),
+            bulk=True,
+        )
+
         embed = nextcord.Embed(
-            description=f"✅ Successfully purged {len(deleted)} messages.",
-            color=EMBED_COLOR,
+            description=(
+                f"✅ Successfully purged {len(deleted) - 1} messages."
+                if len(deleted) > 1
+                else ":x: I cannot purge messages older than two weeks."
+            ),
+            color=EMBED_COLOR if len(deleted) > 1 else 0xFF0037,
         )
-        await interaction.send(
-            embed=embed,
-            ephemeral=True,
-        )
+        await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="nick", description="Change a member's nickname.")
     @application_checks.has_permissions(manage_nicknames=True)

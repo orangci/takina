@@ -71,7 +71,9 @@ class Unban(commands.Cog):
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx: commands.Context, id: str, *, reason: str = "No reason provided"):
+    async def unban(
+        self, ctx: commands.Context, id: str, *, reason: str = "No reason provided"
+    ):
         user = await self.bot.fetch_user(int(id)) or await self.bot.fetch_user(id)
         try:
             await ctx.guild.unban(
