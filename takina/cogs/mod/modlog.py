@@ -206,7 +206,7 @@ class ModLog(commands.Cog):
             embed.description = "❌ Case not found or could not be updated."
             await ctx.reply(embed=embed, mention_author=False)
         else:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=EMBED_COLOR)
             embed.description = f"✅ Case `{case_id}` reason has been updated."
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -311,7 +311,7 @@ class SlashModLog(commands.Cog):
             await interaction.send(embed=embed, ephemeral=True)
         else:
             embed = nextcord.Embed(
-                color=0x00FF37,
+                color=EMBED_COLOR,
                 description=f"✅ Case `{case_id}` reason has been updated.",
             )
             await interaction.send(embed=embed)
