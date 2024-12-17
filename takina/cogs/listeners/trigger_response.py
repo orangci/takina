@@ -37,7 +37,7 @@ class TriggerResponses(commands.Cog):
         )
 
     @commands.has_permissions(manage_server=True)
-    @trigger.command(name="add")
+    @trigger.command(name="add", help="Usage: `trigger add <triggername> \"trigger\" \"trigger response\"`")
     async def add_trigger(self, ctx: commands.Context, name: str, trigger: str, response: str):
         """Add a new trigger response."""
         if len(name) > MAX_TRIGGER_NAME_LEN:
@@ -77,7 +77,7 @@ class TriggerResponses(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.has_permissions(manage_server=True)
-    @trigger.command(name="remove")
+    @trigger.command(name="remove", help="Usage: `trigger remove <triggername>`")
     async def remove_trigger(self, ctx: commands.Context, name: str):
         """Remove an existing trigger."""
         guild_data = await self.get_guild_triggers(ctx.guild.id)
