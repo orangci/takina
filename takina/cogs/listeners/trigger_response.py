@@ -1,6 +1,6 @@
 import os
 import nextcord
-from nextcord.ext import commands
+from nextcord.ext import commands, application_checks
 from nextcord import Interaction, SlashOption, Embed
 from motor.motor_asyncio import AsyncIOMotorClient
 from __main__ import DB_NAME, EMBED_COLOR
@@ -36,6 +36,7 @@ class TriggerResponses(commands.Cog):
             mention_author=False,
         )
 
+    @commands.has_permissions(manage_server=True)
     @trigger.command(name="add")
     async def add_trigger(self, ctx: commands.Context, name: str, trigger: str, response: str):
         """Add a new trigger response."""
@@ -75,6 +76,7 @@ class TriggerResponses(commands.Cog):
         embed.description = f"✅ Trigger `{name}` added."
         await ctx.reply(embed=embed, mention_author=False)
 
+    @commands.has_permissions(manage_server=True)
     @trigger.command(name="remove")
     async def remove_trigger(self, ctx: commands.Context, name: str):
         """Remove an existing trigger."""
@@ -144,6 +146,7 @@ class SlashTriggerResponses(commands.Cog):
         """Base slash command for trigger management."""
         pass
 
+    @application_checks.has_permissions(manage_server=True)
     @slash_trigger.subcommand(name="add")
     async def slash_add_trigger(
         self,
@@ -164,7 +167,7 @@ class SlashTriggerResponses(commands.Cog):
             return await interaction.send(embed=embed, ephemeral=True)
 
         if len(response) > MAX_RESPONSE_LEN:
-             embed = Embed(color=0xFF0037)
+            embed = Embed(color=0xFF0037)
             embed.description = f":x: Trigger response text cannot exceed {MAX_RESPONSE_LEN} characters."
             return await interaction.send(embed=embed, ephemeral=True)
 
@@ -172,7 +175,7 @@ class SlashTriggerResponses(commands.Cog):
         triggers = guild_data["triggers"]
 
         if len(triggers) >= MAX_TRIGGERS:
-             embed = Embed(color=0xFF0037)
+            embed = Embed(color=0xFF0037)
             embed.description = f":x: Maximum of {MAX_TRIGGERS} triggers reached."
             return await interaction.send(embed=embed, ephemeral=True)
 
@@ -189,6 +192,7 @@ class SlashTriggerResponses(commands.Cog):
         embed.description = f"✅ Trigger `{name}` added."
         await interaction.send(embed=embed, ephemeral=True)
 
+    @application_checks.has_permissions(manage_server=True)
     @slash_trigger.subcommand(name="remove")
     async def slash_remove_trigger(
         self,
