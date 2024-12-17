@@ -40,7 +40,7 @@ class TriggerResponses(commands.Cog):
             mention_author=False,
         )
 
-    @commands.has_permissions(manage_server=True)
+    @commands.has_permissions(manage_channels=True)
     @trigger.command(
         name="add",
         help='Usage: `trigger add <triggername> "trigger" "trigger response"`',
@@ -87,7 +87,7 @@ class TriggerResponses(commands.Cog):
         embed.description = f"✅ Trigger `{name}` added."
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.has_permissions(manage_server=True)
+    @commands.has_permissions(manage_channels=True)
     @trigger.command(name="remove", help="Usage: `trigger remove <triggername>`")
     async def remove_trigger(self, ctx: commands.Context, name: str):
         """Remove an existing trigger."""
@@ -161,7 +161,7 @@ class SlashTriggerResponses(commands.Cog):
         """Base slash command for trigger management."""
         pass
 
-    @application_checks.has_permissions(manage_server=True)
+    @application_checks.has_permissions(manage_channels=True)
     @slash_trigger.subcommand(name="add")
     async def slash_add_trigger(
         self,
@@ -209,7 +209,7 @@ class SlashTriggerResponses(commands.Cog):
         embed.description = f"✅ Trigger `{name}` added."
         await interaction.send(embed=embed, ephemeral=True)
 
-    @application_checks.has_permissions(manage_server=True)
+    @application_checks.has_permissions(manage_channels=True)
     @slash_trigger.subcommand(name="remove")
     async def slash_remove_trigger(
         self,
