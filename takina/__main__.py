@@ -38,7 +38,7 @@ class Bot(commands.Bot):
             guild_id = message.guild.id
             guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
             if guild_data and "prefix" in guild_data:
-                return [guild_data["prefix"], 'takina ', "Takina "]
+                return [guild_data["prefix"], "takina ", "Takina "]
             return [".", "takina ", "Takina "]
 
     @commands.Cog.listener()

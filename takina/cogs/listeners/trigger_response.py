@@ -11,6 +11,7 @@ MAX_TRIGGER_NAME_LEN = 20
 MAX_TRIGGER_LEN = 75
 MAX_RESPONSE_LEN = 200
 
+
 class TriggerResponses(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -18,7 +19,10 @@ class TriggerResponses(commands.Cog):
 
     async def get_guild_triggers(self, guild_id: int):
         """Fetch all triggers for a guild."""
-        return await self.db.triggers.find_one({"guild_id": guild_id}) or {"guild_id": guild_id, "triggers": {}}
+        return await self.db.triggers.find_one({"guild_id": guild_id}) or {
+            "guild_id": guild_id,
+            "triggers": {},
+        }
 
     async def update_guild_triggers(self, guild_id: int, triggers: dict):
         """Update triggers for a guild."""
@@ -37,17 +41,26 @@ class TriggerResponses(commands.Cog):
         )
 
     @commands.has_permissions(manage_server=True)
-    @trigger.command(name="add", help="Usage: `trigger add <triggername> \"trigger\" \"trigger response\"`")
-    async def add_trigger(self, ctx: commands.Context, name: str, trigger: str, response: str):
+    @trigger.command(
+        name="add",
+        help='Usage: `trigger add <triggername> "trigger" "trigger response"`',
+    )
+    async def add_trigger(
+        self, ctx: commands.Context, name: str, trigger: str, response: str
+    ):
         """Add a new trigger response."""
         if len(name) > MAX_TRIGGER_NAME_LEN:
             embed = Embed(color=0xFF0037)
-            embed.description = f":x: Trigger name cannot exceed {MAX_TRIGGER_NAME_LEN} characters."
+            embed.description = (
+                f":x: Trigger name cannot exceed {MAX_TRIGGER_NAME_LEN} characters."
+            )
             return await ctx.reply(embed=embed, mention_author=False)
 
         if len(trigger) > MAX_TRIGGER_LEN:
             embed = Embed(color=0xFF0037)
-            embed.description = f":x: Trigger text cannot exceed {MAX_TRIGGER_LEN} characters."
+            embed.description = (
+                f":x: Trigger text cannot exceed {MAX_TRIGGER_LEN} characters."
+            )
             return await ctx.reply(embed=embed, mention_author=False)
 
         if len(response) > MAX_RESPONSE_LEN:
@@ -66,9 +79,7 @@ class TriggerResponses(commands.Cog):
         if name in triggers:
             embed = Embed(color=0xFF0037)
             embed.description = f":x: A trigger with the name `{name}` already exists."
-            return await ctx.reply(
-                embed=embed, mention_author=False
-            )
+            return await ctx.reply(embed=embed, mention_author=False)
 
         triggers[name] = {"trigger": trigger, "response": response}
         await self.update_guild_triggers(ctx.guild.id, triggers)
@@ -86,9 +97,7 @@ class TriggerResponses(commands.Cog):
         if name not in triggers:
             embed = Embed(color=0xFF0037)
             embed.description = f":x: No trigger with the name `{name}` exists."
-            return await ctx.reply(
-                embed=embed, mention_author=False
-            )
+            return await ctx.reply(embed=embed, mention_author=False)
 
         del triggers[name]
         await self.update_guild_triggers(ctx.guild.id, triggers)
@@ -107,7 +116,9 @@ class TriggerResponses(commands.Cog):
             embed.description = ":x: No triggers set for this server."
             return await ctx.reply(embed=embed, mention_author=False)
 
-        embed = Embed(title=f"{await fetch_random_emoji()} Trigger List", color=EMBED_COLOR)
+        embed = Embed(
+            title=f"{await fetch_random_emoji()} Trigger List", color=EMBED_COLOR
+        )
         embed.description = ""
         for name, data in triggers.items():
             embed.description += f"\n- `{name}`:\nTrigger — `{data['trigger']}`\nResponse — `{data['response']}`"
@@ -126,6 +137,7 @@ class TriggerResponses(commands.Cog):
                 await message.channel.send(data["response"])
                 break
 
+
 class SlashTriggerResponses(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -133,7 +145,10 @@ class SlashTriggerResponses(commands.Cog):
 
     async def get_guild_triggers(self, guild_id: int):
         """Fetch all triggers for a guild."""
-        return await self.db.triggers.find_one({"guild_id": guild_id}) or {"guild_id": guild_id, "triggers": {}}
+        return await self.db.triggers.find_one({"guild_id": guild_id}) or {
+            "guild_id": guild_id,
+            "triggers": {},
+        }
 
     async def update_guild_triggers(self, guild_id: int, triggers: dict):
         """Update triggers for a guild."""
@@ -158,12 +173,16 @@ class SlashTriggerResponses(commands.Cog):
         """Add a new trigger response."""
         if len(name) > MAX_TRIGGER_NAME_LEN:
             embed = Embed(color=0xFF0037)
-            embed.description = f":x: Trigger name cannot exceed {MAX_TRIGGER_NAME_LEN} characters."
+            embed.description = (
+                f":x: Trigger name cannot exceed {MAX_TRIGGER_NAME_LEN} characters."
+            )
             return await interaction.send(embed=embed, ephemeral=True)
 
         if len(trigger) > MAX_TRIGGER_LEN:
             embed = Embed(color=0xFF0037)
-            embed.description = f":x: Trigger text cannot exceed {MAX_TRIGGER_LEN} characters."
+            embed.description = (
+                f":x: Trigger text cannot exceed {MAX_TRIGGER_LEN} characters."
+            )
             return await interaction.send(embed=embed, ephemeral=True)
 
         if len(response) > MAX_RESPONSE_LEN:
@@ -182,9 +201,7 @@ class SlashTriggerResponses(commands.Cog):
         if name in triggers:
             embed = Embed(color=0xFF0037)
             embed.description = f":x: A trigger with the name `{name}` already exists."
-            return await interaction.send(
-                embed=embed, ephemeral=True
-            )
+            return await interaction.send(embed=embed, ephemeral=True)
 
         triggers[name] = {"trigger": trigger, "response": response}
         await self.update_guild_triggers(interaction.guild.id, triggers)
@@ -206,9 +223,7 @@ class SlashTriggerResponses(commands.Cog):
         if name not in triggers:
             embed = Embed(color=0xFF0037)
             embed.description = f":x: No trigger with the name `{name}` exists."
-            return await interaction.send(
-                embed=embed, ephemeral=True
-            )
+            return await interaction.send(embed=embed, ephemeral=True)
 
         del triggers[name]
         await self.update_guild_triggers(interaction.guild.id, triggers)
@@ -225,11 +240,11 @@ class SlashTriggerResponses(commands.Cog):
         if not triggers:
             embed = Embed(color=0xFF0037)
             embed.description = ":x: No triggers set for this server."
-            return await interaction.send(
-                embed=embed, ephemeral=True
-            )
+            return await interaction.send(embed=embed, ephemeral=True)
 
-        embed = Embed(title=f"{await fetch_random_emoji()} Trigger List", color=EMBED_COLOR)
+        embed = Embed(
+            title=f"{await fetch_random_emoji()} Trigger List", color=EMBED_COLOR
+        )
         for name, data in triggers.items():
             embed.description += f"\n- `{name}`:\nTrigger — `{data['trigger']}`\nResponse — `{data['response']}`"
         await interaction.send(embed=embed, ephemeral=True)
