@@ -38,8 +38,8 @@ class Bot(commands.Bot):
             guild_id = message.guild.id
             guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
             if guild_data and "prefix" in guild_data:
-                return guild_data["prefix"]
-            return "."
+                return [guild_data["prefix"], 'takina ']
+            return [".", "takina "]
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -50,7 +50,7 @@ class Bot(commands.Bot):
 
 bot = Bot(
     intents=nextcord.Intents.all(),
-    command_prefix=[Bot.get_prefix, "takina "],
+    command_prefix=Bot.get_prefix,
     case_insensitive=True,
     help_command=help_commands.PaginatedHelpCommand(),
     owner_ids=[961063229168164864],
