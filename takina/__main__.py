@@ -50,7 +50,7 @@ class Bot(commands.Bot):
 
 bot = Bot(
     intents=nextcord.Intents.all(),
-    command_prefix=Bot.get_prefix,
+    command_prefix=[Bot.get_prefix, "takina "],
     case_insensitive=True,
     help_command=help_commands.PaginatedHelpCommand(),
     owner_ids=[961063229168164864],
