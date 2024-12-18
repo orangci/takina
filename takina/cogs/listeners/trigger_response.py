@@ -133,7 +133,7 @@ class TriggerResponses(commands.Cog):
         triggers = guild_data["triggers"]
 
         for data in triggers.values():
-            if data["trigger"] in message.content:
+            if data["trigger"] in message.content.lower():
                 await message.channel.send(data["response"])
                 break
 
