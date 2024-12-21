@@ -69,20 +69,23 @@ class Fun(commands.Cog):
 
     @commands.command(
         name="commit",
-        help="Fetch a random typical git commit message. \nThis command utilizes the [whatthecommit](https://whatthecommit.com) API.",
+        help="Order Takina to do anything. Usage: `commit arson`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def commit(self, ctx: commands.Context):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://whatthecommit.com/index.txt") as response:
-                commit_message = await response.text()
-
-        embed = nextcord.Embed(
-            title=f"Most normal commit message {await fetch_random_emoji()}",
-            description=commit_message,
-            color=EMBED_COLOR,
-        )
-
+        possible_responses = [
+            "Yes, sir!",
+            "I don't particularly feel like it.",
+            "Why would I do that?",
+            "Of course!",
+            "Right away.",
+            "As your majesty orders.",
+            "No, I refuse.",
+            "I don't want to, get lost."
+        ]
+        
+        embed = nextcord.Embed(color=EMBED_COLOR,)
+        embed.description = f"{random.choice(possible_responses)} {await fetch_random_emoji()}"
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
@@ -235,19 +238,22 @@ class SlashFun(commands.Cog):
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(
-        name="commit", description="Fetch a random typical git commit message."
+        name="commit", description="Order me to do something."
     )
     async def commit(self, interaction: nextcord.Interaction):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://whatthecommit.com/index.txt") as response:
-                commit_message = await response.text()
-
-        embed = nextcord.Embed(
-            title=f"Most normal commit message {await fetch_random_emoji()}",
-            description=commit_message,
-            color=EMBED_COLOR,
-        )
-
+        possible_responses = [
+            "Yes, sir!",
+            "I don't particularly feel like it.",
+            "Why would I do that?",
+            "Of course!",
+            "Right away.",
+            "As your majesty orders.",
+            "No, I refuse.",
+            "I don't want to, get lost."
+        ]
+        
+        embed = nextcord.Embed(color=EMBED_COLOR,)
+        embed.description = f"{random.choice(possible_responses)} {await fetch_random_emoji()}"
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(
