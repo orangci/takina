@@ -73,7 +73,7 @@ class Utils(commands.Cog):
 
     @commands.command(
         name="member-count",
-        aliases=["mc"],
+        aliases=["mc", "membercount", "members", "minecraft"],
         help="Fetch the server's current member count.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
