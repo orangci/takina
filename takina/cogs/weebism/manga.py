@@ -3,7 +3,7 @@ import nextcord
 from nextcord.ext import commands
 from nextcord import Interaction, SlashOption
 import nextcord
-from __main__ import EMBED_COLOR
+from config import *
 
 
 class MangaSearch(commands.Cog):
@@ -68,11 +68,11 @@ class MangaSearch(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description=":x: Manga not found.",
-                    color=0xFF0037,
+                    color=ERROR_COLOR,
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
@@ -120,11 +120,11 @@ class MangaSearch(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description=":x: Manga not found.",
-                    color=0xFF0037,
+                    color=ERROR_COLOR,
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
         await interaction.response.send_message(embed=embed)
 
 

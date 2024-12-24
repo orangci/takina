@@ -2,7 +2,7 @@ import re
 import nextcord
 from nextcord.ext import commands
 from nextcord import ui
-from __main__ import EMBED_COLOR
+from config import *
 from typing import Optional
 from ..libs.oclib import request
 

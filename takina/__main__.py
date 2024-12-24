@@ -1,28 +1,15 @@
 from __future__ import annotations
 import os
 import nextcord
-from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 from nextcord.ext import commands, help_commands
-
-load_dotenv()
-
-BOT_NAME = os.getenv("BOT_NAME")
-DB_NAME = os.getenv("DB_NAME").lower()
-EMBED_COLOR_STR = os.getenv("EMBED_COLOR", "#000000")
-
-if EMBED_COLOR_STR.startswith("#"):
-    EMBED_COLOR = int(EMBED_COLOR_STR[1:], 16)  # Remove "#" and convert hex to int
-elif EMBED_COLOR_STR.startswith("0x"):
-    EMBED_COLOR = int(EMBED_COLOR_STR, 16)  # Directly convert hex to int
-else:
-    EMBED_COLOR = int(EMBED_COLOR_STR)  # Handle cases where it might be directly an int
+from config import *
 
 
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
 
     async def setup_database(self) -> None:
         """Setup MongoDB connection and collections"""
@@ -30,7 +17,7 @@ class Bot(commands.Bot):
             raise Exception(
                 "No Mongo found. Set the HASDB variable in case you do have a Mongo instance runnin'."
             )
-        self.db_client = AsyncIOMotorClient(os.getenv("MONGO"))
+        self.db_client = AsyncIOMotorClient(MONGO_URI)
         self.db = self.db_client.get_database(DB_NAME)
 
     async def get_prefix(self, message):

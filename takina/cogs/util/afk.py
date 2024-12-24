@@ -1,16 +1,15 @@
 import nextcord
 from nextcord.ext import commands, application_checks
 from nextcord import SlashOption
-import os
 from motor.motor_asyncio import AsyncIOMotorClient
-from __main__ import EMBED_COLOR, DB_NAME
+from config import *
 from ..libs.oclib import fetch_random_emoji
 
 
 class AFK(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
 
     async def set_afk_status(self, user_id: int, reason: str):
         """Sets a user's AFK status in the database."""

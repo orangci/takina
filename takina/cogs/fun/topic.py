@@ -2,7 +2,7 @@ import random
 import nextcord
 from nextcord.ext import commands
 from ..libs.topics_list import topics
-from __main__ import EMBED_COLOR
+from config import *
 from ..libs.oclib import *
 
 

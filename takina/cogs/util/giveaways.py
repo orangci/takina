@@ -3,8 +3,7 @@ from nextcord.ext import commands, application_checks
 from nextcord import SlashOption
 from motor.motor_asyncio import AsyncIOMotorClient
 import random
-import os
-from __main__ import EMBED_COLOR, DB_NAME
+from config import *
 import emoji as emotelib
 from ..libs.oclib import *
 
@@ -22,7 +21,7 @@ async def is_valid_emoji(interaction, emoji: str) -> bool:
 class Giveaway(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
 
     @nextcord.slash_command(name="giveaway", description="Giveaway management commands")
     async def giveaway(self, interaction: nextcord.Interaction):

@@ -1,6 +1,6 @@
 import nextcord
 from nextcord.ext import application_checks, commands
-from __main__ import EMBED_COLOR
+from config import *
 from ..libs.oclib import *
 
 
@@ -83,7 +83,7 @@ class Unban(commands.Cog):
         except:
             error_embed = nextcord.Embed(
                 description=f":x: **{user.mention}** is not banned.",
-                color=0xFF0037,
+                color=ERROR_COLOR,
             )
             await ctx.reply(embed=error_embed, mention_author=False)
             return
@@ -102,7 +102,7 @@ class Unban(commands.Cog):
         if isinstance(error, commands.BadArgument):
             error_embed = nextcord.Embed(
                 description=":x: User not found. Please make sure the User ID is correct.",
-                color=0xFF0037,
+                color=ERROR_COLOR,
             )
             await ctx.reply(
                 embed=error_embed,
@@ -183,7 +183,7 @@ class UnbanSlash(commands.Cog):
             except:
                 error_embed = nextcord.Embed(
                     description=f":x: **{user.mention}** is not banned.",
-                    color=0xFF0037,
+                    color=ERROR_COLOR,
                 )
                 await ctx.reply(embed=error_embed, mention_author=False)
                 return
@@ -203,7 +203,7 @@ class UnbanSlash(commands.Cog):
         except nextcord.NotFound:
             error_embed = nextcord.Embed(
                 description=":x: User not found. Please make sure the User ID is correct.",
-                color=0xFF0037,
+                color=ERROR_COLOR,
             )
             await interaction.send(
                 embed=error_embed,

@@ -1,7 +1,7 @@
 from ..libs.oclib import *
 import nextcord
 from nextcord.ext import commands
-from __main__ import EMBED_COLOR
+from config import *
 
 
 class MAL_Stats(commands.Cog):
@@ -14,7 +14,7 @@ class MAL_Stats(commands.Cog):
         if ctx.invoked_subcommand is None:
             embed = nextcord.Embed(
                 description="Please specify either `anime` or `manga`.\nUsage: `malstats <anime/manga> <username>`.",
-                color=0xFF0037,
+                color=ERROR_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -63,7 +63,7 @@ class MAL_Stats(commands.Cog):
                 embed.set_thumbnail(url=profile_pic)
 
         except Exception as e:
-            embed = nextcord.Embed(description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -123,7 +123,7 @@ class SlashMAL_Stats(commands.Cog):
                 embed.set_thumbnail(url=profile_pic)
 
         except Exception as e:
-            embed = nextcord.Embed(description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
 
         await interaction.response.send_message(embed=embed, ephemeral=False)
 

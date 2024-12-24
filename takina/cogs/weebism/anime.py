@@ -2,7 +2,7 @@ import nextcord
 from nextcord.ext import commands
 import nextcord
 from nextcord import Interaction, SlashOption
-from __main__ import EMBED_COLOR
+from config import *
 from ..libs.oclib import *
 
 
@@ -73,11 +73,11 @@ class AnimeSearch(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description=":x: Anime not found.",
-                    color=0xFF0037,
+                    color=ERROR_COLOR,
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
@@ -129,11 +129,11 @@ class AnimeSearch(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description=":x: Anime not found.",
-                    color=0xFF0037,
+                    color=ERROR_COLOR,
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
         await interaction.response.send_message(embed=embed)
 
 

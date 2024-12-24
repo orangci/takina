@@ -1,9 +1,8 @@
-import os
 import nextcord
 from nextcord.ext import commands, application_checks
 from nextcord import Interaction, SlashOption, Embed
 from motor.motor_asyncio import AsyncIOMotorClient
-from __main__ import DB_NAME, EMBED_COLOR
+from config import *
 from ..libs.oclib import fetch_random_emoji
 
 MAX_TRIGGERS = 30
@@ -15,7 +14,7 @@ MAX_RESPONSE_LEN = 200
 class TriggerResponses(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
 
     async def get_guild_triggers(self, guild_id: int):
         """Fetch all triggers for a guild."""
@@ -50,21 +49,21 @@ class TriggerResponses(commands.Cog):
     ):
         """Add a new trigger response."""
         if len(name) > MAX_TRIGGER_NAME_LEN:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = (
                 f":x: Trigger name cannot exceed {MAX_TRIGGER_NAME_LEN} characters."
             )
             return await ctx.reply(embed=embed, mention_author=False)
 
         if len(trigger) > MAX_TRIGGER_LEN:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = (
                 f":x: Trigger text cannot exceed {MAX_TRIGGER_LEN} characters."
             )
             return await ctx.reply(embed=embed, mention_author=False)
 
         if len(response) > MAX_RESPONSE_LEN:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = f":x: Trigger response text cannot exceed {MAX_RESPONSE_LEN} characters."
             return await ctx.reply(embed=embed, mention_author=False)
 
@@ -72,12 +71,12 @@ class TriggerResponses(commands.Cog):
         triggers = guild_data["triggers"]
 
         if len(triggers) >= MAX_TRIGGERS:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = f":x: Maximum of {MAX_TRIGGERS} triggers reached."
             return await ctx.reply(embed=embed, mention_author=False)
 
         if name in triggers:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = f":x: A trigger with the name `{name}` already exists."
             return await ctx.reply(embed=embed, mention_author=False)
 
@@ -95,7 +94,7 @@ class TriggerResponses(commands.Cog):
         triggers = guild_data["triggers"]
 
         if name not in triggers:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = f":x: No trigger with the name `{name}` exists."
             return await ctx.reply(embed=embed, mention_author=False)
 
@@ -112,7 +111,7 @@ class TriggerResponses(commands.Cog):
         triggers = guild_data["triggers"]
 
         if not triggers:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = ":x: No triggers set for this server."
             return await ctx.reply(embed=embed, mention_author=False)
 
@@ -141,7 +140,7 @@ class TriggerResponses(commands.Cog):
 class SlashTriggerResponses(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
 
     async def get_guild_triggers(self, guild_id: int):
         """Fetch all triggers for a guild."""
@@ -172,21 +171,21 @@ class SlashTriggerResponses(commands.Cog):
     ):
         """Add a new trigger response."""
         if len(name) > MAX_TRIGGER_NAME_LEN:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = (
                 f":x: Trigger name cannot exceed {MAX_TRIGGER_NAME_LEN} characters."
             )
             return await interaction.send(embed=embed, ephemeral=True)
 
         if len(trigger) > MAX_TRIGGER_LEN:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = (
                 f":x: Trigger text cannot exceed {MAX_TRIGGER_LEN} characters."
             )
             return await interaction.send(embed=embed, ephemeral=True)
 
         if len(response) > MAX_RESPONSE_LEN:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = f":x: Trigger response text cannot exceed {MAX_RESPONSE_LEN} characters."
             return await interaction.send(embed=embed, ephemeral=True)
 
@@ -194,12 +193,12 @@ class SlashTriggerResponses(commands.Cog):
         triggers = guild_data["triggers"]
 
         if len(triggers) >= MAX_TRIGGERS:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = f":x: Maximum of {MAX_TRIGGERS} triggers reached."
             return await interaction.send(embed=embed, ephemeral=True)
 
         if name in triggers:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = f":x: A trigger with the name `{name}` already exists."
             return await interaction.send(embed=embed, ephemeral=True)
 
@@ -221,7 +220,7 @@ class SlashTriggerResponses(commands.Cog):
         triggers = guild_data["triggers"]
 
         if name not in triggers:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = f":x: No trigger with the name `{name}` exists."
             return await interaction.send(embed=embed, ephemeral=True)
 
@@ -238,7 +237,7 @@ class SlashTriggerResponses(commands.Cog):
         triggers = guild_data["triggers"]
 
         if not triggers:
-            embed = Embed(color=0xFF0037)
+            embed = Embed(color=ERROR_COLOR)
             embed.description = ":x: No triggers set for this server."
             return await interaction.send(embed=embed, ephemeral=True)
 

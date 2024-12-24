@@ -3,7 +3,7 @@ from ..libs.oclib import *
 import dotenv
 import nextcord
 from nextcord.ext import commands
-from __main__ import EMBED_COLOR
+from config import *
 import urllib
 import random
 
@@ -81,11 +81,15 @@ class Fun(commands.Cog):
             "Right away.",
             "As your majesty orders.",
             "No, I refuse.",
-            "I don't want to, get lost."
+            "I don't want to, get lost.",
         ]
-        
-        embed = nextcord.Embed(color=EMBED_COLOR,)
-        embed.description = f"{random.choice(possible_responses)} {await fetch_random_emoji()}"
+
+        embed = nextcord.Embed(
+            color=EMBED_COLOR,
+        )
+        embed.description = (
+            f"{random.choice(possible_responses)} {await fetch_random_emoji()}"
+        )
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
@@ -107,7 +111,7 @@ class Fun(commands.Cog):
         if member.avatar:
             embed.set_image(url=member.avatar.url)
         else:
-            error_embed = nextcord.Embed(color=0xFF0037)
+            error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = "❌ This user does not have an avatar set."
             await ctx.reply(embed=error_embed, mention_author=False)
             return
@@ -174,7 +178,7 @@ class Fun(commands.Cog):
             "Very doubtful.",
         ]
         if not question:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = (
                 "You need to ask a question to the 8ball for this command to work!"
             )
@@ -237,9 +241,7 @@ class SlashFun(commands.Cog):
         )
         await interaction.send(embed=embed)
 
-    @nextcord.slash_command(
-        name="commit", description="Order me to do something."
-    )
+    @nextcord.slash_command(name="commit", description="Order me to do something.")
     async def commit(self, interaction: nextcord.Interaction):
         possible_responses = [
             "Yes, sir!",
@@ -249,11 +251,15 @@ class SlashFun(commands.Cog):
             "Right away.",
             "As your majesty orders.",
             "No, I refuse.",
-            "I don't want to, get lost."
+            "I don't want to, get lost.",
         ]
-        
-        embed = nextcord.Embed(color=EMBED_COLOR,)
-        embed.description = f"{random.choice(possible_responses)} {await fetch_random_emoji()}"
+
+        embed = nextcord.Embed(
+            color=EMBED_COLOR,
+        )
+        embed.description = (
+            f"{random.choice(possible_responses)} {await fetch_random_emoji()}"
+        )
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(
@@ -274,7 +280,7 @@ class SlashFun(commands.Cog):
         if member.avatar:
             embed.set_image(url=member.avatar.url)
         else:
-            error_embed = nextcord.Embed(color=0xFF0037)
+            error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = "❌ This user does not have an avatar set."
             await interaction.send(embed=error_embed, ephemeral=True)
             return

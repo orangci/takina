@@ -1,16 +1,15 @@
-import os
 import nextcord
 from nextcord.ext import application_checks, commands
 from nextcord import Interaction, SlashOption
 from motor.motor_asyncio import AsyncIOMotorClient
-from __main__ import DB_NAME
+from config import *
 from ..libs.oclib import *
 
 
 class Reports(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
 
     async def get_server_config(self, guild_id: int):
         """Retrieve the report settings for a server from the database."""
@@ -68,7 +67,7 @@ class Reports(commands.Cog):
         embed = nextcord.Embed(
             title="New Report",
             description=f"Issue reported in {interaction.channel.mention}",
-            color=0xFF0037,
+            color=ERROR_COLOR,
         )
         embed.add_field(name="Reason", value=reason, inline=False)
 

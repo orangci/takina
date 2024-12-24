@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands, application_checks
 from ..libs.oclib import *
-from __main__ import EMBED_COLOR
+from config import *
 
 
 class Warnings(commands.Cog):
