@@ -6,7 +6,7 @@ import datetime
 from nextcord.ui import View
 import os
 import random
-from __main__ import EMBED_COLOR
+from config import *
 
 start_time = datetime.datetime.utcnow()
 
@@ -33,7 +33,7 @@ def extract_user_id(
 
     if not member:
         error_embed = nextcord.Embed(
-            color=0xFF0037,
+            color=ERROR_COLOR,
         )
         error_embed.description = ":x: User not found. Please provide a valid username, display name, mention, or user ID."
         return error_embed
@@ -51,7 +51,7 @@ def duration_calculator(duration: str, slowmode=False, timeout=False) -> int:
     pattern = r"(\d+)([s|m|h|d|w])"
     match = re.fullmatch(pattern, duration)
     error_embed = nextcord.Embed(
-        color=0xFF0037,
+        color=ERROR_COLOR,
     )
     if timeout:
         error_embed.description = (
@@ -82,13 +82,13 @@ def duration_calculator(duration: str, slowmode=False, timeout=False) -> int:
     if timeout and time_value > 2419200:
         return nextcord.Embed(
             description=":x: The duration you've specified is too long. The maximum timeout length you may set is 28 days.",
-            color=0xFF0037,
+            color=ERROR_COLOR,
         )
 
     if slowmode and time_value > 21600:
         return nextcord.Embed(
             description=":x: The duration you've specified is too long. The maximum slowmode you may set is six hours.",
-            color=0xFF0037,
+            color=ERROR_COLOR,
         )
     return time_value
 
@@ -105,7 +105,7 @@ def perms_check(
     # Check if member is valid
     if not isinstance(member, nextcord.Member) or member is None:
         return False, nextcord.Embed(
-            description=":x: Member not found.", color=0xFF0037
+            description=":x: Member not found.", color=ERROR_COLOR
         )
 
     if isinstance(ctx, commands.Context):
@@ -113,20 +113,22 @@ def perms_check(
     elif isinstance(ctx, nextcord.Interaction):
         author = ctx.user
     else:
-        return False, nextcord.Embed(description=":x: Invalid context.", color=0xFF0037)
+        return False, nextcord.Embed(
+            description=":x: Invalid context.", color=ERROR_COLOR
+        )
 
     # Toggle for self-action check
     if author_check and member == author:
         return False, nextcord.Embed(
             description=":x: You cannot perform this action on yourself.",
-            color=0xFF0037,
+            color=ERROR_COLOR,
         )
 
     # Toggle for server owner check
     if owner_check and member == ctx.guild.owner:
         return False, nextcord.Embed(
             description=":x: You cannot perform this action on the server owner.",
-            color=0xFF0037,
+            color=ERROR_COLOR,
         )
 
     # Toggle for role hierarchy checks
@@ -136,7 +138,7 @@ def perms_check(
                 False,
                 nextcord.Embed(
                     description=":x: You cannot perform this action on someone with a higher or equal role than yours.",
-                    color=0xFF0037,
+                    color=ERROR_COLOR,
                 ),
             )
 
@@ -145,7 +147,7 @@ def perms_check(
                 False,
                 nextcord.Embed(
                     description=":x: I cannot perform this action on someone with a higher or equal role than mine.",
-                    color=0xFF0037,
+                    color=ERROR_COLOR,
                 ),
             )
 

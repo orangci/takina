@@ -1,6 +1,6 @@
 from nextcord.ext import commands
 import nextcord
-from __main__ import BOT_NAME, EMBED_COLOR
+from config import *
 from ..libs.oclib import *
 
 

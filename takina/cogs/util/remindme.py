@@ -1,17 +1,14 @@
 import nextcord
 from nextcord.ext import commands, tasks
 from motor.motor_asyncio import AsyncIOMotorClient
-import os
 from datetime import datetime, timedelta
-from __main__ import EMBED_COLOR
+from config import *
 
 
 class RemindMe(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(
-            os.getenv("DB_NAME")
-        )
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
         self.reminders = self.db.reminders
         self.check_reminders.start()
 
@@ -27,7 +24,7 @@ class RemindMe(commands.Cog):
         if remind_time is None:
             embed = nextcord.Embed(
                 description="Invalid time format. Use <number>[m|h|d].)",
-                color=0xFF0037,
+                color=ERROR_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -64,7 +61,7 @@ class RemindMe(commands.Cog):
         if remind_time is None:
             embed = nextcord.Embed(
                 description="Invalid time format. Use <number>[m|h|d].)",
-                color=0xFF0037,
+                color=ERROR_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
             return

@@ -3,7 +3,7 @@ from ..libs.oclib import *
 import aiohttp
 import nextcord
 from nextcord.ext import commands
-from __main__ import EMBED_COLOR
+from config import *
 
 
 class UrbanDictionary(commands.Cog):
@@ -22,7 +22,7 @@ class UrbanDictionary(commands.Cog):
             ) as response:
                 data = await response.json()
         if not data["list"]:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = "❌ No results found."
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -56,7 +56,7 @@ class UrbanDictionary(commands.Cog):
             ) as response:
                 data = await response.json()
         if not data["list"]:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = "❌ No results found."
             await interaction.send(embed=embed, ephemeral=True)
             return

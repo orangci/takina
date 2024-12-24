@@ -1,14 +1,13 @@
-import os
 import nextcord
 from nextcord.ext import commands, application_checks
 from motor.motor_asyncio import AsyncIOMotorClient
-from __main__ import DB_NAME, EMBED_COLOR, BOT_NAME
+from config import *
 
 
 class Prefix(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
 
     @nextcord.slash_command(
         name="prefix", description=f"Set a custom prefix for {BOT_NAME}"

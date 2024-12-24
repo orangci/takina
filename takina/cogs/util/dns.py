@@ -36,7 +36,7 @@ from __future__ import annotations
 import nextcord
 from dns import resolver as _dnsresolver
 from nextcord.ext import commands
-from __main__ import EMBED_COLOR
+from config import *
 from ..libs.oclib import *
 
 
@@ -73,7 +73,7 @@ class DNS(commands.Cog):
             except _dnsresolver.NoAnswer:
                 continue
             except _dnsresolver.NXDOMAIN:
-                error_embed = nextcord.Embed(color=0xFF0037)
+                error_embed = nextcord.Embed(color=ERROR_COLOR)
                 error_embed.description = f"❌ Domain '{url}' does not exist."
                 await ctx.reply(embed=error_embed, mention_author=False)
                 return
@@ -83,7 +83,7 @@ class DNS(commands.Cog):
                 embed=construct_embed(url, full_answer), mention_author=False
             )
         else:
-            error_embed = nextcord.Embed(color=0xFF0037)
+            error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = f"❌ No records found for {url}."
             await ctx.reply(embed=error_embed, mention_author=False)
 
@@ -111,7 +111,7 @@ class DNS(commands.Cog):
             except _dnsresolver.NoAnswer:
                 continue
             except _dnsresolver.NXDOMAIN:
-                error_embed = nextcord.Embed(color=0xFF0037)
+                error_embed = nextcord.Embed(color=ERROR_COLOR)
                 error_embed.description = f"❌ Domain '{url}' does not exist."
                 await ctx.reply(embed=error_embed, mention_author=False)
                 await interaction.send(embed=embed, ephemeral=True)
@@ -122,7 +122,7 @@ class DNS(commands.Cog):
                 embed=construct_embed(url, full_answer), ephemeral=True
             )
         else:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = f":x: No records found for {url}."
             await interaction.send(embed=error_embed, ephemeral=True)
 

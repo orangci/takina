@@ -1,6 +1,7 @@
 from nextcord.ext import commands, application_checks
 import nextcord
-from __main__ import Bot, BOT_NAME
+from __main__ import Bot
+from config import *
 import logging
 
 
@@ -72,7 +73,7 @@ class Errors(commands.Cog):
             description = "An unexpected error occurred. Please report this issue to a maintainer if it persists."
             error_type = "Unknown Error"
 
-        embed = nextcord.Embed(color=0xFF0037)
+        embed = nextcord.Embed(color=ERROR_COLOR)
         embed.description = f":x: {error_type}: {description}"
         await ctx.send(embed=embed)
 
@@ -112,7 +113,7 @@ class Errors(commands.Cog):
             description = f"An unexpected error occurred while processing your command. Please contact {BOT_NAME}'s maintainers if the issue persists."
             error_type = "Unknown Error"
 
-        embed = nextcord.Embed(color=0xFF0037)
+        embed = nextcord.Embed(color=ERROR_COLOR)
         embed.description = f":x: {error_type}: {description}"
         await interaction.send(embed=embed, ephemeral=True)
 

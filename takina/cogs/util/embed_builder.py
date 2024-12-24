@@ -1,6 +1,6 @@
 import nextcord
 from nextcord.ext import commands, application_checks
-from __main__ import EMBED_COLOR
+from config import *
 
 
 class EmbedBuilder(commands.Cog):

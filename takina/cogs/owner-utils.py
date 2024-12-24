@@ -1,7 +1,8 @@
 import nextcord
 from nextcord.ext import commands, menus
 import os
-from __main__ import cogs, cogs_blacklist, BOT_NAME
+from __main__ import cogs, cogs_blacklist
+from config import *
 import subprocess
 from __main__ import EMBED_COLOR
 import importlib
@@ -88,7 +89,7 @@ class OwnerUtils(commands.Cog):
         else:
             command = self._bot.get_command(cmd)
             if command is None:
-                embed = nextcord.Embed(color=0xFF0037)
+                embed = nextcord.Embed(color=ERROR_COLOR)
                 embed.description = "❌ Command not found."
                 await ctx.reply(embed=embed, mention_author=False)
                 return
@@ -107,7 +108,7 @@ class OwnerUtils(commands.Cog):
         else:
             command = self._bot.get_command(cmd)
             if command is None:
-                embed = nextcord.Embed(color=0xFF0037)
+                embed = nextcord.Embed(color=ERROR_COLOR)
                 embed.description = "❌ Command not found."
                 await ctx.reply(embed=embed, mention_author=False)
                 return
@@ -158,7 +159,7 @@ class OwnerUtils(commands.Cog):
                     f"\nReloaded all except the following cogs:\n"
                     + "\n".join(failed_cogs)
                 )
-                embed = nextcord.Embed(color=0xFF0037)
+                embed = nextcord.Embed(color=ERROR_COLOR)
                 embed.description = error_message
                 await ctx.reply(error_message, mention_author=False)
             else:
@@ -175,11 +176,11 @@ class OwnerUtils(commands.Cog):
                     embed.description = f"✅ Successfully reloaded `cogs.{cog}`."
                     await ctx.reply(embed=embed, mention_author=False)
                 except Exception as error:
-                    embed = nextcord.Embed(color=0xFF0037)
+                    embed = nextcord.Embed(color=ERROR_COLOR)
                     embed.description = f"❌ Failed to reload `{cog}`: {error}"
                     await ctx.reply(embed=embed, mention_author=False)
             else:
-                embed = nextcord.Embed(color=0xFF0037)
+                embed = nextcord.Embed(color=ERROR_COLOR)
                 embed.description = f"❌ Cog `cogs.{cog}` is not loaded."
                 await ctx.reply(embed=embed, mention_author=False)
 
@@ -201,7 +202,7 @@ class OwnerUtils(commands.Cog):
             embed.description = f"✅ Successfully unloaded `cogs.{cog}`."
             await ctx.reply(embed=embed, mention_author=False)
         except commands.ExtensionNotLoaded:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = f"❌ `cogs.{cog}` was already unloaded."
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -212,7 +213,7 @@ class OwnerUtils(commands.Cog):
         try:
             self.bot.load_extension("cogs." + cog)
         except commands.ExtensionNotLoaded:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = f"❌ `cogs.{cog}` was already loaded."
             await ctx.reply(embed=embed, mention_author=False)
         embed = nextcord.Embed(color=EMBED_COLOR)

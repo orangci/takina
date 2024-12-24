@@ -3,7 +3,7 @@ from ..libs.oclib import *
 import dotenv
 import nextcord
 from nextcord.ext import commands
-from __main__ import EMBED_COLOR
+from config import *
 
 dotenv.load_dotenv()
 

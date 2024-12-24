@@ -3,7 +3,7 @@ import nextcord
 import base64
 from nextcord.ext import commands
 from io import BytesIO
-from __main__ import EMBED_COLOR
+from config import *
 
 
 class MinecraftServerStatus(commands.Cog):
@@ -66,12 +66,12 @@ class MinecraftServerStatus(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description="Server not found.",
-                    color=0xFF0037,
+                    color=ERROR_COLOR,
                 )
                 await ctx.reply(embed=embed, mention_author=False)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
             await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
@@ -125,12 +125,12 @@ class MinecraftServerStatus(commands.Cog):
             else:
                 embed = nextcord.Embed(
                     description="Server not found.",
-                    color=0xFF0037,
+                    color=ERROR_COLOR,
                 )
                 await interaction.send(embed=embed, ephemeral=True)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
             await interaction.send(embed=embed, ephemeral=True)
 
 

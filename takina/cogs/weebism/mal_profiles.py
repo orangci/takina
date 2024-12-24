@@ -3,7 +3,7 @@ import nextcord
 from nextcord.ext import commands
 from datetime import datetime
 import nextcord
-from __main__ import EMBED_COLOR
+from config import *
 
 
 def format_date(date_str):
@@ -79,7 +79,7 @@ class MAL_Profiles(commands.Cog):
                 embed.set_thumbnail(url=profile_pic)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -148,7 +148,7 @@ class MAL_Profiles(commands.Cog):
                 embed.set_thumbnail(url=profile_pic)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
 
         await ctx.response.send_message(embed=embed, ephemeral=True)
 

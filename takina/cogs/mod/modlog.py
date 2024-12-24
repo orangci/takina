@@ -1,10 +1,9 @@
-import os
 import nextcord
 from nextcord.ext import commands, application_checks
 from nextcord import ui
 from motor.motor_asyncio import AsyncIOMotorClient
 import datetime
-from __main__ import DB_NAME, EMBED_COLOR
+from config import *
 from ..libs.oclib import *
 
 
@@ -76,7 +75,7 @@ class CaseListButtonView(ui.View):
 class ModLog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
 
     @nextcord.slash_command(description="Manage the modlog settings")
     async def modlog(self, interaction: nextcord.Interaction):
@@ -166,7 +165,7 @@ class ModLog(commands.Cog):
             {"guild_id": ctx.guild.id, "case_id": case_id}
         )
         if not case:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = "❌ Case not found."
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -202,7 +201,7 @@ class ModLog(commands.Cog):
             {"$set": {"reason": new_reason}},
         )
         if result.modified_count == 0:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = "❌ Case not found or could not be updated."
             await ctx.reply(embed=embed, mention_author=False)
         else:
@@ -223,7 +222,7 @@ class ModLog(commands.Cog):
 
         cases = await self.db.modlog_cases.find(query).to_list(length=None)
         if not cases:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = "❌ No cases found."
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -245,7 +244,7 @@ class ModLog(commands.Cog):
             {"guild_id": ctx.guild.id, "moderator_id": user.id}
         ).to_list(length=None)
         if not cases:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = (
                 f"❌ {user.mention} has not performed any moderation actions."
             )
@@ -259,7 +258,7 @@ class ModLog(commands.Cog):
 class SlashModLog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
 
     @nextcord.slash_command(description="Manage the modlog settings")
     @application_checks.has_permissions(moderate_members=True)
@@ -273,7 +272,7 @@ class SlashModLog(commands.Cog):
             {"guild_id": interaction.guild.id, "case_id": case_id}
         )
         if not case:
-            embed = nextcord.Embed(color=0xFF0037, description="❌ Case not found.")
+            embed = nextcord.Embed(color=ERROR_COLOR, description="❌ Case not found.")
             await interaction.send(embed=embed, ephemeral=True)
             return
 
@@ -306,7 +305,8 @@ class SlashModLog(commands.Cog):
         )
         if result.modified_count == 0:
             embed = nextcord.Embed(
-                color=0xFF0037, description="❌ Case not found or could not be updated."
+                color=ERROR_COLOR,
+                description="❌ Case not found or could not be updated.",
             )
             await interaction.send(embed=embed, ephemeral=True)
         else:
@@ -329,7 +329,7 @@ class SlashModLog(commands.Cog):
 
         cases = await self.db.modlog_cases.find(query).to_list(length=None)
         if not cases:
-            embed = nextcord.Embed(color=0xFF0037, description="❌ No cases found.")
+            embed = nextcord.Embed(color=ERROR_COLOR, description="❌ No cases found.")
             await interaction.send(embed=embed, ephemeral=True)
             return
 
@@ -355,7 +355,7 @@ class SlashModLog(commands.Cog):
         ).to_list(length=None)
         if not cases:
             embed = nextcord.Embed(
-                color=0xFF0037,
+                color=ERROR_COLOR,
                 description=f"❌ {user.mention} has not performed any moderation actions.",
             )
             await interaction.send(embed=embed, ephemeral=True)

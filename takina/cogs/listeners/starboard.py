@@ -1,14 +1,13 @@
 import nextcord
 from nextcord.ext import commands, application_checks
 from motor.motor_asyncio import AsyncIOMotorClient
-import os
-from __main__ import DB_NAME, EMBED_COLOR
+from config import *
 
 
 class Starboard(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(os.getenv("MONGO")).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: nextcord.RawReactionActionEvent):
@@ -233,7 +232,7 @@ class Starboard(commands.Cog):
         guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
 
         if not guild_data:
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = "❌ No channels are whitelisted."
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -269,7 +268,7 @@ class Starboard(commands.Cog):
         guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
 
         if not guild_data or not guild_data.get("whitelisted_channels"):
-            embed = nextcord.Embed(color=0xFF0037)
+            embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = "❌ No channels are whitelisted."
             await ctx.reply(embed=embed, mention_author=False)
             return

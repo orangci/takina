@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 import aiohttp
-from __main__ import EMBED_COLOR
+from config import *
 from ..libs.oclib import *
 
 
@@ -34,7 +34,7 @@ class Minecraft(commands.Cog):
         uuid = await self.fetch_uuid(username)
 
         if not uuid:
-            error_embed = nextcord.Embed(color=0xFF0037)
+            error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = (
                 f":x: Could not find a Minecraft player with the username `{username}`."
             )
@@ -67,7 +67,7 @@ class Minecraft(commands.Cog):
         uuid = await self.fetch_uuid(username)
 
         if not uuid:
-            error_embed = nextcord.Embed(color=0xFF0037)
+            error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = (
                 f":x: Could not find a Minecraft player with the username `{username}`."
             )

@@ -1,7 +1,7 @@
 from nextcord.ext import application_checks, commands
 import nextcord
 from nextcord import SlashOption
-from __main__ import EMBED_COLOR
+from config import *
 from ..libs.oclib import *
 from datetime import timedelta
 
@@ -42,7 +42,7 @@ class ModUtils(commands.Cog):
         if amount <= 0 or amount > 100:
             embed = nextcord.Embed(
                 description="Please specify a number between 1 and 100 for messages to purge.",
-                color=0xFF0037,
+                color=ERROR_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -59,7 +59,7 @@ class ModUtils(commands.Cog):
                 if len(deleted) > 1
                 else ":x: I cannot purge messages older than two weeks."
             ),
-            color=EMBED_COLOR if len(deleted) > 1 else 0xFF0037,
+            color=EMBED_COLOR if len(deleted) > 1 else ERROR_COLOR,
         )
         await ctx.send(embed=embed, delete_after=2)
 
@@ -143,7 +143,7 @@ class SlashModUtils(commands.Cog):
         if amount <= 0 or amount > 100:
             embed = nextcord.Embed(
                 description="Please specify a number between 1 and 100 for messages to purge.",
-                color=0xFF0037,
+                color=ERROR_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
             return
@@ -160,7 +160,7 @@ class SlashModUtils(commands.Cog):
                 if len(deleted) > 1
                 else ":x: I cannot purge messages older than two weeks."
             ),
-            color=EMBED_COLOR if len(deleted) > 1 else 0xFF0037,
+            color=EMBED_COLOR if len(deleted) > 1 else ERROR_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
 

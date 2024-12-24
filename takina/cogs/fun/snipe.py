@@ -1,6 +1,6 @@
 import nextcord
 from nextcord.ext import commands
-from __main__ import EMBED_COLOR
+from config import *
 
 
 class Snipe(commands.Cog):

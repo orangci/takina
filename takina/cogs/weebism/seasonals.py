@@ -3,7 +3,7 @@ import nextcord
 from nextcord.ext import commands
 from nextcord import ButtonStyle, Interaction, SlashOption
 from nextcord.ui import Button, View
-from __main__ import EMBED_COLOR
+from config import *
 
 
 class PaginatedView(View):
@@ -74,7 +74,7 @@ class AnimeSeasonals(commands.Cog):
                 embed = nextcord.Embed(
                     title="No Seasonals Found",
                     description="No seasonal anime available.",
-                    color=0xFF0037,
+                    color=ERROR_COLOR,
                 )
                 await ctx.reply(embed=embed, mention_author=False)
                 return
@@ -107,7 +107,7 @@ class AnimeSeasonals(commands.Cog):
             await ctx.reply(embed=pages[0], view=view, mention_author=False)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
             await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
@@ -151,7 +151,7 @@ class AnimeSeasonals(commands.Cog):
                 embed = nextcord.Embed(
                     title="No Seasonals Found",
                     description="No seasonal anime available.",
-                    color=0xFF0037,
+                    color=ERROR_COLOR,
                 )
                 await interaction.response.send_message(embed=embed)
                 return
@@ -184,7 +184,7 @@ class AnimeSeasonals(commands.Cog):
             await interaction.response.send_message(embed=pages[0], view=view)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=0xFF0037)
+            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
             await interaction.response.send_message(embed=embed)
 
 

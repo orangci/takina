@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import application_checks, commands
 from datetime import timedelta
-from __main__ import EMBED_COLOR
+from config import *
 from ..libs.oclib import *
 
 

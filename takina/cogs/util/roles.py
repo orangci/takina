@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import application_checks, commands
 from ..libs.oclib import *
-from __main__ import EMBED_COLOR
+from config import *
 
 
 class Roles(commands.Cog):
