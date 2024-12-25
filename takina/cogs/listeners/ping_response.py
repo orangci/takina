@@ -3,6 +3,7 @@ from nextcord.ext import commands
 from config import *
 import os
 from ..libs.oclib import *
+from motor.motor_asyncio import AsyncIOMotorClient
 
 
 class PingResponse(commands.Cog):
