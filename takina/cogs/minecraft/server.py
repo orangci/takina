@@ -23,7 +23,7 @@ class MinecraftServerStatus(commands.Cog):
 
     @commands.command(
         help="Display a Minecraft server's status. \nUsage: `mcstatus play.mccisland.net`.",
-        aliases=["mcserver"]
+        aliases=["mcserver"],
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def mcstatus(self, ctx: commands.Context, *, server_name: str):

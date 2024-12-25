@@ -166,7 +166,7 @@ class AnimeSynopsis(commands.Cog):
                 title = anime.get("title")
                 synopsis = anime.get("synopsis")
                 if len(synopsis) > 700:
-                    synopsis = synopsis[:700] + '...'
+                    synopsis = synopsis[:700] + "..."
                 english_title = anime.get("title_english")
                 cover_image = anime["images"]["jpg"]["image_url"]
                 url = anime.get("url")
@@ -205,7 +205,7 @@ class AnimeSynopsis(commands.Cog):
                 title = anime.get("title")
                 synopsis = anime.get("synopsis")
                 if len(synopsis) > 700:
-                    synopsis = synopsis[:700] + '...'
+                    synopsis = synopsis[:700] + "..."
                 english_title = anime.get("title_english")
                 cover_image = anime["images"]["jpg"]["image_url"]
                 url = anime.get("url")
