@@ -7,7 +7,6 @@ Using the Dockerfile or Nix.
 
 ## TODO
 - make avatar fetch user IDs too and fix the error when it cant fetch a user
-- fix ping response prefix field
 - make nick command reset the nick properly
 
 ## License
