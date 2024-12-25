@@ -12,6 +12,10 @@ class PingResponse(commands.Cog):
         self.forks = 0
         self.bot.loop.create_task(self.fetch_repo_data())
         self.prefix = os.getenv("PREFIX")
+        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
+        
+        if guild_data and "prefix" in guild_data:
+                self.prefix = [guild_data["prefix"], "takina ", "Takina "]
 
     async def fetch_repo_data(self):
         try:
