@@ -14,9 +14,6 @@ class PingResponse(commands.Cog):
         self.bot.loop.create_task(self.fetch_repo_data())
         self.prefix = os.getenv("PREFIX")
         self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
-        guild_data = self.db.prefixes.find_one({"guild_id": guild_id})
-        if guild_data and "prefix" in guild_data:
-            self.prefix = [guild_data["prefix"], "takina ", "Takina "]
 
     async def fetch_repo_data(self):
         try:
@@ -35,6 +32,12 @@ class PingResponse(commands.Cog):
             description="Takina is a multipurpose [opensource](https://github.com/orangci/takina) bot written in Python. More information is available in the [website](https://orangc.xyz/takina).",
             color=EMBED_COLOR,
         )
+
+        guild_id = ctx.guild.id
+        guild_data = self.db.prefixes.find_one({"guild_id": guild_id})
+        if guild_data and "prefix" in guild_data:
+            self.prefix = [guild_data["prefix"], "takina ", "Takina "]
+
         embed.add_field(name=":sparkles: Prefix", value=self.prefix, inline=True)
         embed.add_field(name=":star: Stars", value=str(self.stars), inline=True)
         embed.add_field(
