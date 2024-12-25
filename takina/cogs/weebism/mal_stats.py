@@ -13,7 +13,7 @@ class MAL_Stats(commands.Cog):
     async def malstats(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             embed = nextcord.Embed(
-                description="Please specify either `anime` or `manga`.\nUsage: `malstats <anime/manga> <username>`.",
+                description=":x: Please specify either `anime` or `manga`.\nUsage: `malstats <anime/manga> <username>`.",
                 color=ERROR_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
