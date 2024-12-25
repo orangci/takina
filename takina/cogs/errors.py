@@ -62,7 +62,7 @@ class Errors(commands.Cog):
             error_type = "User Input Error"
 
         elif isinstance(error, commands.CommandNotFound):
-            pass
+            return
         # description = "The command you entered does not exist. Please ensure you typed it correctly. Type `help` for a full list of commands."
         # error_type = "Command Not Found"
 
