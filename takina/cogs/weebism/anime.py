@@ -40,8 +40,6 @@ class AnimeSearch(commands.Cog):
                 episodes = anime.get("episodes")
                 score = anime.get("score")
                 synopsis = anime.get("synopsis")
-                # if len(synopsis) > 200:
-                #     synopsis = synopsis[:700] + '...'
                 source = anime.get("source")
                 english_title = anime.get("title_english")
                 aired = anime.get("aired", {}).get("string")
@@ -77,7 +75,7 @@ class AnimeSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
@@ -96,8 +94,6 @@ class AnimeSearch(commands.Cog):
                 episodes = anime.get("episodes")
                 score = anime.get("score")
                 synopsis = anime.get("synopsis")
-                # if len(synopsis) > 200:
-                #     synopsis = synopsis[:700] + '...'
                 source = anime.get("source")
                 english_title = anime.get("title_english")
                 aired = anime.get("aired", {}).get("string")
@@ -133,9 +129,107 @@ class AnimeSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+        await interaction.response.send_message(embed=embed)
+
+
+class AnimeSynopsis(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    async def fetch_anime(self, anime_name: str):
+        url1 = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
+        url2 = f"https://api.jikan.moe/v4/anime/{anime_name}"
+
+        try:
+            data = await request(url2)
+            if data and data.get("data"):
+                return data["data"]
+
+            data = await request(url1)
+            if data and data.get("data"):
+                return data["data"][0]
+
+        except Exception as e:
+            raise e
+
+    @commands.command(
+        aliases=["animeplot", "anisyn", "animesyn"],
+        help="Fetch anime information from MyAnimeList. \nUsage: `anisyn Lycoris Recoil` or `anisyn 50709`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
+    async def anime_synopsis(self, ctx: commands.Context, *, anime_name: str):
+        url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
+        try:
+            anime = await self.fetch_anime(anime_name)
+            if anime:
+                title = anime.get("title")
+                synopsis = anime.get("synopsis")
+                if len(synopsis) > 700:
+                    synopsis = synopsis[:700] + '...'
+                english_title = anime.get("title_english")
+                cover_image = anime["images"]["jpg"]["image_url"]
+                url = anime.get("url")
+                mal_id = anime.get("mal_id")
+
+                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
+                embed.description = ""
+                if english_title and english_title != title:
+                    embed.description += f"-# {english_title}\n"
+                embed.description += f"\n{synopsis}"
+                embed.set_thumbnail(url=cover_image)
+                embed.set_footer(text=str(mal_id))
+
+            else:
+                embed = nextcord.Embed(
+                    description=":x: Anime not found.",
+                    color=ERROR_COLOR,
+                )
+
+        except Exception as e:
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @nextcord.slash_command(
+        name="anime_synopsis", description="Fetch anime information from MyAnimeList."
+    )
+    async def slash_anime_synopsis(
+        self,
+        interaction: Interaction,
+        anime_name: str = SlashOption(description="Name of the anime"),
+    ):
+        url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
+        try:
+            anime = await self.fetch_anime(anime_name)
+            if anime:
+                title = anime.get("title")
+                synopsis = anime.get("synopsis")
+                if len(synopsis) > 700:
+                    synopsis = synopsis[:700] + '...'
+                english_title = anime.get("title_english")
+                cover_image = anime["images"]["jpg"]["image_url"]
+                url = anime.get("url")
+                mal_id = anime.get("mal_id")
+
+                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
+                embed.description = ""
+                if english_title and english_title != title:
+                    embed.description += f"-# {english_title}\n"
+                embed.description += f"\n{synopsis}"
+                embed.set_thumbnail(url=cover_image)
+                embed.set_footer(text=str(mal_id))
+
+            else:
+                embed = nextcord.Embed(
+                    description=":x: Anime not found.",
+                    color=ERROR_COLOR,
+                )
+
+        except Exception as e:
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await interaction.response.send_message(embed=embed)
 
 
 def setup(bot):
     bot.add_cog(AnimeSearch(bot))
+    bot.add_cog(AnimeSynopsis(bot))

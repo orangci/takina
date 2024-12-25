@@ -72,7 +72,7 @@ class MangaSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
@@ -124,9 +124,105 @@ class MangaSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await interaction.response.send_message(embed=embed)
 
+class MangaSynopsis(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    async def fetch_manga(self, manga_name: str):
+        url1 = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
+        url2 = f"https://api.jikan.moe/v4/manga/{manga_name}"
+
+        try:
+            data = await request(url2)
+            if data and data.get("data"):
+                return data["data"]
+
+            data = await request(url1)
+            if data and data.get("data"):
+                return data["data"][0]
+
+        except Exception as e:
+            raise e
+
+    @commands.command(
+        aliases=["mangaplot", "mangasyn"],
+        help="Fetch anime information from MyAnimeList. \nUsage: `mangasyn Lycoris Recoil` or `mangasyn 50709`.",
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
+    async def manga_synopsis(self, ctx: commands.Context, *, manga_name: str):
+        url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
+        try:
+            manga = await self.fetch_manga(manga_name)
+            if manga:
+                title = manga.get("title")
+                english_title = manga.get("title_english")
+                cover_image = manga["images"]["jpg"]["image_url"]
+                url = manga.get("url")
+                mal_id = manga.get("mal_id")
+                synopsis = manga.get("synopsis")
+                if len(synopsis) > 700:
+                    synopsis = synopsis[:700] + '...'
+
+                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
+                embed.description = ""
+                if english_title and english_title != title:
+                    embed.description += f"-# {english_title}\n"
+                embed.description += f"\n{synopsis}"
+                embed.set_thumbnail(url=cover_image)
+                embed.set_footer(text=str(mal_id))
+
+            else:
+                embed = nextcord.Embed(
+                    description=":x: Manga not found.",
+                    color=ERROR_COLOR,
+                )
+
+        except Exception as e:
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @nextcord.slash_command(
+        name="manga_synopsis", description="Fetch manga synopsis from MyAnimeList."
+    )
+    async def slash_manga_synopsis(
+        self,
+        interaction: Interaction,
+        manga_name: str = SlashOption(description="Name of the manga"),
+    ):
+        url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
+        try:
+            manga = await self.fetch_manga(manga_name)
+            if manga:
+                title = manga.get("title")
+                english_title = manga.get("title_english")
+                cover_image = manga["images"]["jpg"]["image_url"]
+                url = manga.get("url")
+                mal_id = manga.get("mal_id")
+                synopsis = manga.get("synopsis")
+                if len(synopsis) > 700:
+                    synopsis = synopsis[:700] + '...'
+
+                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
+                embed.description = ""
+                if english_title and english_title != title:
+                    embed.description += f"-# {english_title}\n"
+                embed.description += f"\n{synopsis}"
+                embed.set_thumbnail(url=cover_image)
+                embed.set_footer(text=str(mal_id))
+
+            else:
+                embed = nextcord.Embed(
+                    description=":x: Manga not found.",
+                    color=ERROR_COLOR,
+                )
+
+        except Exception as e:
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+        await interaction.response.send_message(embed=embed)
 
 def setup(bot):
     bot.add_cog(MangaSearch(bot))
+    bot.add_cog(MangaSynopsis(bot))
