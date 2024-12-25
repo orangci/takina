@@ -23,6 +23,7 @@ class Errors(commands.Cog):
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
         error_type = "Unknown Error"
+        description = "Please try again later. If you believe this is a bug, contact the maintainer."
 
         if isinstance(error, commands.NotOwner):
             description = f"You do not have sufficient permissions to run this command; command is restricted to {BOT_NAME}'s maintainers."
@@ -37,21 +38,15 @@ class Errors(commands.Cog):
             error_type = "Privileged Intents Required"
 
         elif isinstance(error, commands.MissingPermissions):
-            description = (
-                "You do not have sufficent permissions to perform this action."
-            )
+            description = "You do not have sufficent permissions to perform this action."
             error_type = "Missing Permissions"
 
         elif isinstance(error, nextcord.Forbidden):
-            description = (
-                "You do not have sufficent permissions to perform this action."
-            )
+            description = "You do not have sufficent permissions to perform this action."
             error_type = "Forbidden"
 
         elif isinstance(error, nextcord.HTTPException):
-            description = (
-                f"An HTTP error occurred: `{error.text}` (Status Code: {error.status})."
-            )
+            description =  f"An HTTP error occurred: `{error.text}` (Status Code: {error.status})."
             error_type = "HTTP Exception"
 
         elif isinstance(error, commands.UserInputError) or isinstance(
@@ -66,7 +61,7 @@ class Errors(commands.Cog):
         # error_type = "Command Not Found"
 
         elif isinstance(error, nextcord.DiscordException):
-            description = f"{str(error)}"
+            description = str(error)
             error_type = "Discord Exception"
 
         else:
@@ -88,9 +83,7 @@ class Errors(commands.Cog):
         error = getattr(error, "original", error)
 
         if isinstance(error, application_checks.errors.ApplicationMissingRole):
-            description = (
-                "You do not have the required role necessary to execute this command."
-            )
+            description = "You do not have the required role necessary to execute this command."
             error_type = "Missing Role"
 
         elif isinstance(error, application_checks.errors.ApplicationNotOwner):
@@ -98,9 +91,7 @@ class Errors(commands.Cog):
             error_type = "Maintainer Only Command"
 
         elif isinstance(error, application_checks.errors.ApplicationMissingPermissions):
-            description = (
-                "You do not have sufficent permissions to perform this action."
-            )
+            description = "You do not have sufficent permissions to perform this action."
             error_type = "Missing Permissions"
 
         elif isinstance(
