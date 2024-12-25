@@ -51,8 +51,14 @@ class Errors(commands.Cog):
 
         elif isinstance(error, commands.UserInputError) or isinstance(
             error, commands.BadArgument
-        ):
-            description = "It seems that you've made a mistake while entering the command. Please check your command syntax and ensure all required parameters are provided correctly. **Run `help command` for information on how to correctly use a command.**"
+        ):  
+            description = "It seems that you've made a mistake while entering the command."
+            command = ctx.command
+            if command and command.help:
+                help_lines = command.help.split('\n')
+                usage_line = next((line for line in help_lines if line.strip().startswith('Usage:')), None)
+                if usage_line:
+                    description += f"\n\n{usage_line}"
             error_type = "User Input Error"
 
         elif isinstance(error, commands.CommandNotFound):
