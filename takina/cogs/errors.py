@@ -38,25 +38,36 @@ class Errors(commands.Cog):
             error_type = "Privileged Intents Required"
 
         elif isinstance(error, commands.MissingPermissions):
-            description = "You do not have sufficent permissions to perform this action."
+            description = (
+                "You do not have sufficent permissions to perform this action."
+            )
             error_type = "Missing Permissions"
 
         elif isinstance(error, nextcord.Forbidden):
-            description = "You do not have sufficent permissions to perform this action."
+            description = (
+                "You do not have sufficent permissions to perform this action."
+            )
             error_type = "Forbidden"
 
         elif isinstance(error, nextcord.HTTPException):
-            description =  f"An HTTP error occurred: `{error.text}` (Status Code: {error.status})."
+            description = (
+                f"An HTTP error occurred: `{error.text}` (Status Code: {error.status})."
+            )
             error_type = "HTTP Exception"
 
         elif isinstance(error, commands.UserInputError) or isinstance(
             error, commands.BadArgument
-        ):  
-            description = "It seems that you've made a mistake while entering the command."
+        ):
+            description = (
+                "It seems that you've made a mistake while entering the command."
+            )
             command = ctx.command
             if command and command.help:
-                help_lines = command.help.split('\n')
-                usage_line = next((line for line in help_lines if line.strip().startswith('Usage:')), None)
+                help_lines = command.help.split("\n")
+                usage_line = next(
+                    (line for line in help_lines if line.strip().startswith("Usage:")),
+                    None,
+                )
                 if usage_line:
                     description += f"\n\n{usage_line}"
             error_type = "User Input Error"
@@ -89,7 +100,9 @@ class Errors(commands.Cog):
         error = getattr(error, "original", error)
 
         if isinstance(error, application_checks.errors.ApplicationMissingRole):
-            description = "You do not have the required role necessary to execute this command."
+            description = (
+                "You do not have the required role necessary to execute this command."
+            )
             error_type = "Missing Role"
 
         elif isinstance(error, application_checks.errors.ApplicationNotOwner):
@@ -97,7 +110,9 @@ class Errors(commands.Cog):
             error_type = "Maintainer Only Command"
 
         elif isinstance(error, application_checks.errors.ApplicationMissingPermissions):
-            description = "You do not have sufficent permissions to perform this action."
+            description = (
+                "You do not have sufficent permissions to perform this action."
+            )
             error_type = "Missing Permissions"
 
         elif isinstance(

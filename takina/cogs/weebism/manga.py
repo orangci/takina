@@ -127,6 +127,7 @@ class MangaSearch(commands.Cog):
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await interaction.response.send_message(embed=embed)
 
+
 class MangaSynopsis(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -164,7 +165,7 @@ class MangaSynopsis(commands.Cog):
                 mal_id = manga.get("mal_id")
                 synopsis = manga.get("synopsis")
                 if len(synopsis) > 700:
-                    synopsis = synopsis[:700] + '...'
+                    synopsis = synopsis[:700] + "..."
 
                 embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
                 embed.description = ""
@@ -203,7 +204,7 @@ class MangaSynopsis(commands.Cog):
                 mal_id = manga.get("mal_id")
                 synopsis = manga.get("synopsis")
                 if len(synopsis) > 700:
-                    synopsis = synopsis[:700] + '...'
+                    synopsis = synopsis[:700] + "..."
 
                 embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
                 embed.description = ""
@@ -222,6 +223,7 @@ class MangaSynopsis(commands.Cog):
         except Exception as e:
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await interaction.response.send_message(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(MangaSearch(bot))
