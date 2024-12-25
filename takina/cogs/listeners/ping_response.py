@@ -14,7 +14,7 @@ class PingResponse(commands.Cog):
         self.bot.loop.create_task(self.fetch_repo_data())
         self.prefix = os.getenv("PREFIX")
         self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
-        guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
+        guild_data = self.db.prefixes.find_one({"guild_id": guild_id})
         if guild_data and "prefix" in guild_data:
             self.prefix = [guild_data["prefix"], "takina ", "Takina "]
 
