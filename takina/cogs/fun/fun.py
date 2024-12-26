@@ -107,6 +107,12 @@ class Fun(commands.Cog):
                 await ctx.reply(embed=member, mention_author=False)
                 return
 
+        if not isinstance(member, nextcord.Member):
+            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed.description = ":x: I do not have access to this user's avatar."
+            await ctx.reply(embed=error_embed, mention_author=False)
+            return
+
         embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
         if member.avatar:
             embed.set_image(url=member.avatar.url)

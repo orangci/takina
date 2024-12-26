@@ -57,14 +57,18 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def guilds(self, ctx: commands.Context):
         """Lists all guilds the bot is in, ranked from most members to least."""
-        guilds_sorted = sorted(self.bot.guilds, key=lambda g: g.member_count, reverse=True)
+        guilds_sorted = sorted(
+            self.bot.guilds, key=lambda g: g.member_count, reverse=True
+        )
         description = ""
         for guild in guilds_sorted:
             invite_link = None
             for channel in guild.text_channels:
                 if channel.permissions_for(guild.me).create_instant_invite:
                     try:
-                        invite = await channel.create_invite(max_age=0, max_uses=0, unique=False)
+                        invite = await channel.create_invite(
+                            max_age=0, max_uses=0, unique=False
+                        )
                         invite_link = invite.url
                         break
                     except nextcord.Forbidden:
@@ -73,7 +77,7 @@ class OwnerUtils(commands.Cog):
                 entry = f"\n[**{guild.name}**]({invite_link})"
             else:
                 entry = f"\n**{guild.name}**"
-            
+
             if len(description) + len(entry) > 4096:
                 break
             description += entry
@@ -81,9 +85,10 @@ class OwnerUtils(commands.Cog):
         if not description:
             description = "No guilds available to display."
 
-        embed = nextcord.Embed(title="Guilds", description=description, color=EMBED_COLOR)
+        embed = nextcord.Embed(
+            title="Guilds", description=description, color=EMBED_COLOR
+        )
         await ctx.reply(embed=embed, mention_author=False)
-
 
     @commands.command()
     @commands.is_owner()
