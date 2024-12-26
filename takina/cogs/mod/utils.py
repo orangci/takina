@@ -87,7 +87,7 @@ class ModUtils(commands.Cog):
             return
 
         if not nickname:
-            nickname = member.name
+            nickname = member.global_name
 
         await member.edit(nick=nickname)
         embed = nextcord.Embed(
@@ -189,7 +189,7 @@ class SlashModUtils(commands.Cog):
             return
 
         if not nickname:
-            nickname = member.name
+            nickname = member.global_name
 
         await member.edit(nick=nickname)
         embed = nextcord.Embed(
