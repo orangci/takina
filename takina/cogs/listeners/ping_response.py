@@ -2,8 +2,8 @@ import nextcord
 from nextcord.ext import commands
 from config import *
 import os
-from ..libs.oclib import *
 from motor.motor_asyncio import AsyncIOMotorClient
+from ..libs.oclib import *
 
 
 class PingResponse(commands.Cog):
@@ -25,7 +25,7 @@ class PingResponse(commands.Cog):
         except Exception as e:
             print(f"Error fetching repository data: {e}")
 
-    async def construct_info_embed(self):
+    async def construct_info_embed(self, ctx: commands.Context | nextcord.Interaction | nextcord.Message = None):
         embed = nextcord.Embed(
             title=f"{await fetch_random_emoji()} Takina",
             url="https://orangc.xyz/takina",
@@ -33,10 +33,11 @@ class PingResponse(commands.Cog):
             color=EMBED_COLOR,
         )
 
-        guild_id = ctx.guild.id
-        guild_data = self.db.prefixes.find_one({"guild_id": guild_id})
-        if guild_data and "prefix" in guild_data:
-            self.prefix = [guild_data["prefix"], "takina ", "Takina "]
+        if ctx and hasattr(ctx, "guild"):
+            guild_id = ctx.guild.id
+            guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
+            if guild_data and "prefix" in guild_data:
+                self.prefix = f"`{guild_data["prefix"]}`, `takina `, `Takina `"
 
         embed.add_field(name=":sparkles: Prefix", value=self.prefix, inline=True)
         embed.add_field(name=":star: Stars", value=str(self.stars), inline=True)
@@ -57,17 +58,17 @@ class PingResponse(commands.Cog):
         if self.bot.user.mentioned_in(message) and not message.author.bot:
             if message.content.strip() == message.guild.me.mention:
                 await message.reply(
-                    embed=await construct_info_embed(), mention_author=False
+                    embed=await self.construct_info_embed(message), mention_author=False
                 )
 
     @commands.command(name="info", help="Information about the bot.")
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def info(self, ctx: commands.Context):
-        await ctx.reply(embed=await self.construct_info_embed(), mention_author=False)
+        await ctx.reply(embed=await self.construct_info_embed(ctx), mention_author=False)
 
     @nextcord.slash_command(name="info", description="Information about the bot.")
     async def slash_info(self, interaction: nextcord.Interaction):
-        await interaction.send(embed=await self.construct_info_embed(), ephemeral=True)
+        await interaction.send(embed=await self.construct_info_embed(interaction), ephemeral=True)
 
 
 def setup(bot: commands.Bot):
