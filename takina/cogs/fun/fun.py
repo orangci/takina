@@ -98,7 +98,7 @@ class Fun(commands.Cog):
         help="Fetch the Discord user avatar of any member including yourself. \nUsage: `avatar <username>` or just `avatar` to fetch your own avatar.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
-    async def avatar(self, ctx: commands.Context, member: str = None):
+    async def avatar(self, ctx: commands.Context, *, member: str = None):
         if member is None:
             member = ctx.author
         else:

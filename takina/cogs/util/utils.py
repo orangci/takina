@@ -36,7 +36,7 @@ class Utils(commands.Cog):
         help="Check a user's join position in the server. \nUsage: `jp <member>`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
-    async def join_position(self, ctx: commands.Context, member: str = None):
+    async def join_position(self, ctx: commands.Context, *, member: str = None):
         guild = ctx.guild
         if member is None:
             member = ctx.author

@@ -11,7 +11,7 @@ class ChannelManagement(commands.Cog):
 
     @commands.command(
         name="slowmode",
-        help="Sets slowmode in the current or specified channel. \nUsage: `slowmode #channel <duration>` to specify a channel to modify or `slowmode <duration>` to set the slowmode for the current cannel.",
+        help="Sets slowmode in the current or specified channel. \nUsage: `slowmode <duration> #channel` to specify a channel to modify or `slowmode <duration>` to set the slowmode for the current cannel.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)

@@ -13,7 +13,7 @@ class Info(commands.Cog):
         help="Fetch information about a user. \nUsage: `userinfo <user>` or just `userinfo` if you want to fetch information about yourself.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
-    async def userinfo(self, ctx: commands.Context, member: str = None):
+    async def userinfo(self, ctx: commands.Context, *, member: str = None):
         if member is None:
             member = ctx.author
         else:

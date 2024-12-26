@@ -103,32 +103,6 @@ class SlashModUtils(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
 
-    # @nextcord.slash_command(name="send", description="Send a message as the bot.")
-    # @application_checks.has_permissions(moderate_members=True, manage_messages=True)
-    # async def send(
-    #     self,
-    #     interaction: nextcord.Interaction,
-    #     channel: nextcord.TextChannel = SlashOption(
-    #         description="The channel to send the message in", required=True
-    #     ),
-    #     *,
-    #     message: str = SlashOption(description="The message to send", required=True),
-    # ):
-    #     """Send a message as the bot."""
-    #     if channel and message:
-    #         await channel.send(message)
-    #         embed = nextcord.Embed(
-    #             description="✅ Successfully sent message.", color=EMBED_COLOR
-    #         )
-    #         await interaction.send(embed=embed, ephemeral=True)
-    #     elif message:
-    #         await interaction.send(message, ephemeral=True)
-    #     else:
-    #         await interaction.send(
-    #             "Please provide a message and channel to use this command.",
-    #             ephemeral=True,
-    #         )
-
     @nextcord.slash_command(
         name="purge", description="Purges a specified number of messages."
     )
