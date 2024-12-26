@@ -56,28 +56,34 @@ class OwnerUtils(commands.Cog):
     @commands.command(name="guilds")
     @commands.is_owner()
     async def guilds(self, ctx: commands.Context):
-        """Lists all guilds the bot is in, ranked from most members to least, paginated if necessary."""
-        guilds = sorted(self.bot.guilds, key=lambda g: g.member_count, reverse=True)
+        """Lists all guilds the bot is in, ranked from most members to least."""
+        guilds_sorted = sorted(self.bot.guilds, key=lambda g: g.member_count, reverse=True)
+        description = ""
+        for guild in guilds_sorted:
+            invite_link = None
+            for channel in guild.text_channels:
+                if channel.permissions_for(guild.me).create_instant_invite:
+                    try:
+                        invite = await channel.create_invite(max_age=0, max_uses=0, unique=False)
+                        invite_link = invite.url
+                        break
+                    except nextcord.Forbidden:
+                        continue
+            if invite_link:
+                entry = f"\n[**{guild.name}**]({invite_link})"
+            else:
+                entry = f"\n**{guild.name}**"
+            
+            if len(description) + len(entry) > 4096:
+                break
+            description += entry
 
-        if len(guilds) > 10:
-            # Paginated view if guild count is greater than 10
-            menu = GuildListMenu(guilds=guilds)
-            view = GuildListView(source=menu)
-            await ctx.reply(
-                embed=await menu.get_page(0), view=view, mention_author=False
-            )
-        else:
-            # Single page for fewer than 10 guilds
-            description = "\n".join(
-                [
-                    f"`{i + 1}.` **{guild.name}** - {guild.member_count} members"
-                    for i, guild in enumerate(guilds)
-                ]
-            )
-            embed = nextcord.Embed(
-                title="Guilds the bot is in", description=description, color=EMBED_COLOR
-            )
-            await ctx.reply(embed=embed, mention_author=False)
+        if not description:
+            description = "No guilds available to display."
+
+        embed = nextcord.Embed(title="Guilds", description=description, color=EMBED_COLOR)
+        await ctx.reply(embed=embed, mention_author=False)
+
 
     @commands.command()
     @commands.is_owner()
