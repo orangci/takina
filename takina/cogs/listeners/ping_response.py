@@ -25,7 +25,9 @@ class PingResponse(commands.Cog):
         except Exception as e:
             print(f"Error fetching repository data: {e}")
 
-    async def construct_info_embed(self, ctx: commands.Context | nextcord.Interaction | nextcord.Message = None):
+    async def construct_info_embed(
+        self, ctx: commands.Context | nextcord.Interaction | nextcord.Message = None
+    ):
         embed = nextcord.Embed(
             title=f"{await fetch_random_emoji()} Takina",
             url="https://orangc.xyz/takina",
@@ -64,11 +66,15 @@ class PingResponse(commands.Cog):
     @commands.command(name="info", help="Information about the bot.")
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def info(self, ctx: commands.Context):
-        await ctx.reply(embed=await self.construct_info_embed(ctx), mention_author=False)
+        await ctx.reply(
+            embed=await self.construct_info_embed(ctx), mention_author=False
+        )
 
     @nextcord.slash_command(name="info", description="Information about the bot.")
     async def slash_info(self, interaction: nextcord.Interaction):
-        await interaction.send(embed=await self.construct_info_embed(interaction), ephemeral=True)
+        await interaction.send(
+            embed=await self.construct_info_embed(interaction), ephemeral=True
+        )
 
 
 def setup(bot: commands.Bot):
