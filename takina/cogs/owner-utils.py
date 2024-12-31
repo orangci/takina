@@ -98,7 +98,7 @@ class OwnerUtils(commands.Cog):
                 "You cannot disable the disable command.", mention_author=False
             )
         else:
-            command = self._bot.get_command(cmd)
+            command = self.bot.get_command(cmd)
             if command is None:
                 embed = nextcord.Embed(color=ERROR_COLOR)
                 embed.description = "❌ Command not found."
