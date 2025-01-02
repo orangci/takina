@@ -3,20 +3,25 @@ from nextcord.ext import commands
 from config import *
 from ..libs.oclib import *
 
+
 class Dictionary(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(
         help="Query the dictionary for a definition. \nUsage: `define grass`.",
-        aliases=["dict"]
+        aliases=["dict"],
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def define(self, ctx: commands.Context, *, word: str):
         api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
         response = await request(api_url)
-        
-        if not response or isinstance(response, dict) and response.get("title") == "No Definitions Found":
+
+        if (
+            not response
+            or isinstance(response, dict)
+            and response.get("title") == "No Definitions Found"
+        ):
             error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = ":x: No definition found."
             await ctx.reply(embed=error_embed, mention_author=False)
@@ -46,21 +51,24 @@ class Dictionary(commands.Cog):
                     example = definition.get("example")
                     description += f"{idx}. {def_text}\n"
                     if example:
-                        description += f"\"*{example}*\"\n"
+                        description += f'"*{example}*"\n'
                     if idx >= 3:
                         break
                 description += "\n"
 
         embed.description = description.strip()
         await ctx.reply(embed=embed, mention_author=False)
-    
-    
+
     @nextcord.slash_command(name="define")
     async def slash_define(self, interaction: nextcord.Interaction, *, word: str):
         api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
         response = await request(api_url)
-        
-        if not response or isinstance(response, dict) and response.get("title") == "No Definitions Found":
+
+        if (
+            not response
+            or isinstance(response, dict)
+            and response.get("title") == "No Definitions Found"
+        ):
             error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = ":x: No definition found."
             await interaction.send(embed=error_embed, ephemeral=True)
@@ -90,11 +98,12 @@ class Dictionary(commands.Cog):
                     example = definition.get("example")
                     description += f"{idx}. {def_text}\n"
                     if example:
-                        description += f"\"*{example}*\"\n"
+                        description += f'"*{example}*"\n'
                 description += "\n"
 
         embed.description = description.strip()
         await interaction.send(embed=embed, ephemeral=True)
+
 
 def setup(bot):
     bot.add_cog(Dictionary(bot))
