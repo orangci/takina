@@ -15,39 +15,86 @@ class Dictionary(commands.Cog):
     async def define(self, ctx: commands.Context, *, word: str):
         api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
         response = await request(api_url)
-        if response[0]:
-            data = response[0]
-        else:
+        
+        if not response or isinstance(response, dict) and response.get("title") == "No Definitions Found":
             error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = ":x: No definition found."
+            await ctx.reply(embed=error_embed, mention_author=False)
             return
-        
+
+        data = response[0]
         word = data.get("word", "N/A")
         phonetic = data.get("phonetic", "")
         meanings = data.get("meanings", [])
-        
-        embed = nextcord.Embed(title=word,color=EMBED_COLOR)
-        embed.description = ""
-        if phonetic:
-            embed.description += f"-# {phonetic}"
-        
-        if meanings:
-            for meaning in meanings:
-                part_of_speech = meaning.get("partOfSpeech", "N/A")
-                definitions = meaning.get("definitions", [])
-                if definitions:
-                    definition = definitions[0].get("definition", "N/A")
-                    example = definitions[0].get("example")
-                    
-                    embed.description += f"\n\n**{part_of_speech.capitalize()}**: {definition}"
-                    if example: embed.description += f"\n**Example**: {example}"
-        else:
+
+        if not meanings:
             error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = ":x: No definition found."
+            await ctx.reply(embed=error_embed, mention_author=False)
             return
-        
+
+        embed = nextcord.Embed(title=word, color=EMBED_COLOR)
+        description = f"*{phonetic}*\n\n" if phonetic else ""
+
+        for meaning in meanings:
+            part_of_speech = meaning.get("partOfSpeech", "N/A").capitalize()
+            definitions = meaning.get("definitions", [])
+            if definitions:
+                description += f"**{part_of_speech}**\n"
+                for idx, definition in enumerate(definitions, start=1):
+                    def_text = definition.get("definition", "N/A")
+                    example = definition.get("example")
+                    description += f"{idx}. {def_text}\n"
+                    if example:
+                        description += f"\"*{example}*\"\n"
+                    if idx >= 3:
+                        break
+                description += "\n"
+
+        embed.description = description.strip()
         await ctx.reply(embed=embed, mention_author=False)
+    
+    
+    @nextcord.slash_command(name="define")
+    async def slash_define(self, interaction: nextcord.Interaction, *, word: str):
+        api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
+        response = await request(api_url)
         
+        if not response or isinstance(response, dict) and response.get("title") == "No Definitions Found":
+            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed.description = ":x: No definition found."
+            await interaction.send(embed=error_embed, ephemeral=True)
+            return
+
+        data = response[0]
+        word = data.get("word", "N/A")
+        phonetic = data.get("phonetic", "")
+        meanings = data.get("meanings", [])
+
+        if not meanings:
+            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed.description = ":x: No definition found."
+            await interaction.send(embed=error_embed, ephemeral=True)
+            return
+
+        embed = nextcord.Embed(title=word, color=EMBED_COLOR)
+        description = f"*{phonetic}*\n\n" if phonetic else ""
+
+        for meaning in meanings:
+            part_of_speech = meaning.get("partOfSpeech", "N/A").capitalize()
+            definitions = meaning.get("definitions", [])
+            if definitions:
+                description += f"**{part_of_speech}**\n"
+                for idx, definition in enumerate(definitions, start=1):
+                    def_text = definition.get("definition", "N/A")
+                    example = definition.get("example")
+                    description += f"{idx}. {def_text}\n"
+                    if example:
+                        description += f"\"*{example}*\"\n"
+                description += "\n"
+
+        embed.description = description.strip()
+        await interaction.send(embed=embed, ephemeral=True)
 
 def setup(bot):
     bot.add_cog(Dictionary(bot))
