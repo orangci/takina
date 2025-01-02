@@ -12,6 +12,7 @@ Using the Dockerfile or Nix. You must set the env variables in a `.env` file; ch
 - upgrade snipe command: snipe specific user perhaps
 - upgrade purge command: purge only the bot, purge specific user, purge all bots, purge before/after specific date
 - dont allow two triggers with the same trigger; and potentially fix the thing where triggers are faster than commands
+- partial matching for display names
 
 ## License
 [Here.](./LICENSE)
