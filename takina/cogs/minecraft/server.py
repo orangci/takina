@@ -22,58 +22,40 @@ class MinecraftServerStatus(commands.Cog):
             raise e
 
     @commands.command(
-        help="Display a Minecraft server's status. \nUsage: `mcstatus play.mccisland.net`.",
+        help="Display a Minecraft server's status. \nUsage: `mcstatus play.spire-mc.com`.",
         aliases=["mcserver"],
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def mcstatus(self, ctx: commands.Context, *, server_name: str):
         try:
             server = await self.fetch_server_info(server_name)
-            if server:
-                title = server.get("host")
-                if server.get("online") == True:
-                    emoji = await fetch_random_emoji()
-                    title = f"{emoji} {title} (Online)"
-                else:
-                    title = title + " (Offline)"
-                embed = nextcord.Embed(title=title, color=EMBED_COLOR)
+        except:
+            raise commands.UserInputError
 
-                if server.get("players"):
-                    embed.add_field(
-                        name="Players",
-                        value=f"{server['players']['online']}/{server['players']['max']}",
-                        inline=True,
-                    )
-                if server.get("version"):
-                    embed.add_field(
-                        name="Version",
-                        value=server["version"]["name_clean"],
-                        inline=True,
-                    )
-                if server.get("motd"):
-                    embed.add_field(
-                        name="MOTD", value=server["motd"]["clean"], inline=True
-                    )
+        if not server.get("online"):
+            error_embed = nextcord.Embed(
+                description=":x: Server not found or is offline.", color=ERROR_COLOR
+            )
+            await ctx.reply(embed=error_embed, mention_author=False)
+            return
 
-                if server.get("icon"):
-                    icon_data = server["icon"].split(",")[1]
-                    image_data = base64.b64decode(icon_data)
-                    image = BytesIO(image_data)
-                    file = nextcord.File(image, filename="server_icon.png")
-                    embed.set_thumbnail(url="attachment://server_icon.png")
-                    await ctx.reply(file=file, embed=embed, mention_author=False)
-                else:
-                    await ctx.reply(embed=embed, mention_author=False)
-            else:
-                embed = nextcord.Embed(
-                    description="Server not found.",
-                    color=ERROR_COLOR,
-                )
-                await ctx.reply(embed=embed, mention_author=False)
+        title = server.get("host")
+        emoji = await fetch_random_emoji()
+        title = f"{emoji} {title}"
+        embed = nextcord.Embed(title=title, color=EMBED_COLOR)
+        embed.description = ""
 
-        except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
-            await ctx.reply(embed=embed, mention_author=False)
+        try:
+            embed.set_image(f"https://api.mcstatus.io/v2/widget/java/{server_name}")
+        except:
+            raise commands.DiscordException
+
+        if server.get("version"):
+            embed.description += f"-# {server["version"]["name_clean"]} (Java)"
+        if server.get("motd"):
+            embed.description += f"\n\n**MOTD**:\n```{server["motd"]["clean"]}```"
+
+        await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
         name="mcstatus", description="Display a Minecraft server's status."
@@ -88,51 +70,33 @@ class MinecraftServerStatus(commands.Cog):
     ):
         try:
             server = await self.fetch_server_info(server_name)
-            if server:
-                title = server.get("host")
-                if server.get("online") == True:
-                    emoji = await fetch_random_emoji()
-                    title = f"{emoji} {title} (Online)"
-                else:
-                    title = title + " (Offline)"
-                embed = nextcord.Embed(title=title, color=EMBED_COLOR)
+        except:
+            raise commands.UserInputError
 
-                if server.get("players"):
-                    embed.add_field(
-                        name="Players",
-                        value=f"{server['players']['online']}/{server['players']['max']}",
-                        inline=True,
-                    )
-                if server.get("version"):
-                    embed.add_field(
-                        name="Version",
-                        value=server["version"]["name_clean"],
-                        inline=True,
-                    )
-                if server.get("motd"):
-                    embed.add_field(
-                        name="MOTD", value=server["motd"]["clean"], inline=True
-                    )
+        if not server.get("online"):
+            error_embed = nextcord.Embed(
+                description=":x: Server not found or is offline.", color=ERROR_COLOR
+            )
+            await interaction.send(embed=error_embed, ephemeral=True)
+            return
 
-                if server.get("icon"):
-                    icon_data = server["icon"].split(",")[1]
-                    image_data = base64.b64decode(icon_data)
-                    image = BytesIO(image_data)
-                    file = nextcord.File(image, filename="server_icon.png")
-                    embed.set_thumbnail(url="attachment://server_icon.png")
-                    await interaction.send(file=file, embed=embed, ephemeral=True)
-                else:
-                    await interaction.send(embed=embed, ephemeral=True)
-            else:
-                embed = nextcord.Embed(
-                    description="Server not found.",
-                    color=ERROR_COLOR,
-                )
-                await interaction.send(embed=embed, ephemeral=True)
+        title = server.get("host")
+        emoji = await fetch_random_emoji()
+        title = f"{emoji} {title}"
+        embed = nextcord.Embed(title=title, color=EMBED_COLOR)
+        embed.description = ""
 
-        except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
-            await interaction.send(embed=embed, ephemeral=True)
+        try:
+            embed.set_image(f"https://api.mcstatus.io/v2/widget/java/{server_name}")
+        except:
+            raise commands.DiscordException
+
+        if server.get("version"):
+            embed.description += f"-# {server["version"]["name_clean"]} (Java)"
+        if server.get("motd"):
+            embed.description += f"\n\n**MOTD**:\n```{server["motd"]["clean"]}```"
+
+        await interaction.send(embed=embed, ephemeral=True)
 
 
 def setup(bot):
