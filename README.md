@@ -13,6 +13,11 @@ Using the Dockerfile or Nix. You must set the env variables in a `.env` file; ch
 - upgrade purge command: purge only the bot, purge specific user, purge all bots, purge before/after specific date
 - dont allow two triggers with the same trigger; and potentially fix the thing where triggers are faster than commands
 - partial matching for display names
+- add another type of modstats command
+- upgrade mcskin command with different poses
+- when mc servers are offline, give a different error
+- possibly upgrade the help command
+- add time limits to giveaway command and other improvements
 
 ## License
 [Here.](./LICENSE)
