@@ -228,7 +228,7 @@ class ModLog(commands.Cog):
             return
 
         view = CaseListButtonView(cases)
-        await ctx.send(embed=view.get_page_embed(), view=view)
+        await ctx.reply(embed=view.get_page_embed(), view=view, mention_author=False)
 
     @commands.command(
         name="modstats",
@@ -252,7 +252,7 @@ class ModLog(commands.Cog):
             return
 
         view = CaseListButtonView(cases)
-        await ctx.send(embed=view.get_page_embed(), view=view)
+        await ctx.reply(embed=view.get_page_embed(), view=view, mention_author=False)
 
 
 class SlashModLog(commands.Cog):
