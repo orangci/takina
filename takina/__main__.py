@@ -4,6 +4,9 @@ import nextcord
 from motor.motor_asyncio import AsyncIOMotorClient
 from nextcord.ext import commands, help_commands
 from config import *
+import datetime
+
+start_time = datetime.datetime.utcnow()
 
 
 class Bot(commands.Bot):

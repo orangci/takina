@@ -31,6 +31,17 @@ class Utils(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
+        help="Check the bot's uptime since the last downtime. \nUsage: `uptime`."
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
+    async def uptime(self, ctx: commands.Context):
+        embed = nextcord.Embed(
+            description=f"{await fetch_random_emoji()} {BOT_NAME} has been up for {await uptime_fetcher()}.",
+            color=EMBED_COLOR,
+        )
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.command(
         name="join-position",
         aliases=["jp", "japan"],
         help="Check a user's join position in the server. \nUsage: `jp <member>`.",
@@ -105,6 +116,15 @@ class UtilsSlash(commands.Cog):
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             description=f"{emoji} Success! {BOT_NAME} is awake. Ping: {latency}ms",
+            color=EMBED_COLOR,
+        )
+        await interaction.send(embed=embed, ephemeral=True)
+
+    @commands.command(description="Check the bot's uptime since the last downtime.")
+    @commands.cooldown(1, 1, commands.BucketType.user)
+    async def uptime(self, ctx: commands.Context):
+        embed = nextcord.Embed(
+            description=f"{await fetch_random_emoji()} {BOT_NAME} has been up for {await uptime_fetcher()}.",
             color=EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
