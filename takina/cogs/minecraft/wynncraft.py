@@ -126,7 +126,7 @@ class Wynncraft(commands.Cog):
     )
     async def wynn(self, ctx: commands.Context):
         embed = nextcord.Embed(
-            description=":x: Please specify a subcommand: `player`, `guild`, or `item`",
+            description=":x: Please specify a subcommand: `player` or `guild`",
             color=ERROR_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
