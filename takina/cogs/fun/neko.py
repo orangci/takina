@@ -37,7 +37,7 @@ class Neko(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def neko(self, ctx: commands.Context):
         embed = await request_neko("png", "neko")
-        await ctx.reply(target, embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="kitsune",
@@ -47,7 +47,7 @@ class Neko(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def kitsune(self, ctx: commands.Context):
         embed = await request_neko("png", "kitsune")
-        await ctx.reply(target, embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="lurk",
@@ -57,7 +57,7 @@ class Neko(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def lurk(self, ctx: commands.Context):
         embed = await request_neko("gif", "lurk")
-        await ctx.reply(target, embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="shoot",
@@ -85,7 +85,7 @@ class Neko(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def sleep(self, ctx: commands.Context):
         embed = await request_neko("gif", "sleep")
-        await ctx.reply(target, embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="shrug",
@@ -203,7 +203,7 @@ class Neko(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def blush(self, ctx: commands.Context):
         embed = await request_neko("gif", "blush")
-        await ctx.reply(target, embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="smug",
@@ -213,7 +213,7 @@ class Neko(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def smug(self, ctx: commands.Context):
         embed = await request_neko("gif", "smug")
-        await ctx.reply(target, embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="yeet",
@@ -241,7 +241,7 @@ class Neko(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def think(self, ctx: commands.Context):
         embed = await request_neko("gif", "think")
-        await ctx.reply(target, embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="yawn",
@@ -377,7 +377,7 @@ class Neko(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def happy(self, ctx: commands.Context):
         embed = await request_neko("gif", "happy")
-        await ctx.reply(target, embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="hug",
@@ -451,7 +451,7 @@ class Neko(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def nope(self, ctx: commands.Context):
         embed = await request_neko("gif", "nope")
-        await ctx.reply(target, embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="kiss",
@@ -479,7 +479,7 @@ class Neko(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def dance(self, ctx: commands.Context):
         embed = await request_neko("gif", "dance")
-        await ctx.reply(target, embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="punch",
@@ -543,7 +543,7 @@ class Neko(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def cry(self, ctx: commands.Context):
         embed = await request_neko("gif", "cry")
-        await ctx.reply(target, embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="pout",
