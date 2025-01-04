@@ -22,7 +22,7 @@ class Minecraft(commands.Cog):
 
     async def fetch_skin_url(self, uuid: str) -> str:
         """Fetch the skin image URL of a Minecraft player by UUID."""
-        skin_url = f"https://mc-heads.net/body/{uuid}/512"
+        skin_url = f"https://visage.surgeplay.com/full/384/{uuid}"
         return skin_url
 
     @commands.command(
@@ -44,7 +44,7 @@ class Minecraft(commands.Cog):
         skin_url = await self.fetch_skin_url(uuid)
 
         embed = nextcord.Embed(
-            title=f"{await fetch_random_emoji()} {username}'s Minecraft Skin",
+            title=f"{await fetch_random_emoji()} {username}",
             color=EMBED_COLOR,
         )
         embed.set_image(url=skin_url)
@@ -77,7 +77,7 @@ class Minecraft(commands.Cog):
         skin_url = await self.fetch_skin_url(uuid)
 
         embed = nextcord.Embed(
-            title=f"{await fetch_random_emoji()} {username}'s Minecraft Skin",
+            title=f"{await fetch_random_emoji()} {username}",
             color=EMBED_COLOR,
         )
         embed.set_image(url=skin_url)
