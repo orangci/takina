@@ -25,19 +25,27 @@ def parse_iso8601(date_str):
         raise ValueError(f"Date string '{date_str}' is not in a recognized format.")
     return dt.strftime("%B %-d, %Y at %-H.%M")
 
-
 class WynnPlayers(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def player_information_embed_builder(self, player):
+    async def player_information_embed_builder(self, username):
         embed = nextcord.Embed(color=EMBED_COLOR)
         embed.description = ""
+        player = get_player(username)
 
         if player.get("Error"):
             error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = ":x: No player found with that username."
             return error_embed
+        
+        characters = get_character_list(username)
+        sorted_characters = sorted(characters.values(), key=lambda x: x['level'], reverse=True)
+        result = []
+        for char in sorted_characters:
+            char_type = char['reskin'] if char['reskin'] else char['type'].capitalize()
+            result.append(f"Lvl {char['level']} {char_type}")
+        characters = ", ".join(result)
 
         username = player.get("username")
         uuid = player.get("uuid")
@@ -52,7 +60,6 @@ class WynnPlayers(commands.Cog):
         forum = player.get("forumLink")
         gd = player.get("globalData")
         wars = gd.get("wars")
-        total_level = gd.get("totalLevels")
         dungeons = gd.get("dungeons").get("total")
         raids = gd.get("raids").get("total")
         quests = gd.get("completedQuests")
@@ -92,7 +99,7 @@ class WynnPlayers(commands.Cog):
         embed.description += f"\n> **Chests opened**: {chests}"
         embed.description += f"\n> **Quests completed**: {quests}"
         embed.description += f"\n> **Dungeons completed**: {dungeons}"
-        embed.description += f"\n> **Total level**: {total_level}"
+        embed.description += f"\n> **Characters**: {characters}"
 
         if raids > 0:
             embed.description += f"\n> **Raids**: {raids}"
@@ -126,8 +133,7 @@ class WynnPlayers(commands.Cog):
     )
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def player(self, ctx: commands.Context, username: str):
-        player = get_player(username)
-        embed = await self.player_information_embed_builder(player)
+        embed = await self.player_information_embed_builder(username)
         await ctx.reply(embed=embed, mention_author=False)
     
     @nextcord.slash_command(name="wynn", description="Wynncraft utility commands.")
@@ -142,8 +148,7 @@ class WynnPlayers(commands.Cog):
             description="The player to fetch information on", required=True
         )
     ):
-        player = get_player(username)
-        embed = await self.player_information_embed_builder(player)
+        embed = await self.player_information_embed_builder(username)
         await interaction.send(embed=embed)
 
 
