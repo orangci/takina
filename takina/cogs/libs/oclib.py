@@ -7,8 +7,7 @@ from nextcord.ui import View
 import os
 import random
 from config import *
-
-start_time = datetime.datetime.utcnow()
+from __main__ import start_time
 
 
 # for those commands where you can mention a user either by mentioning them, using their ID, their username, or displayname
