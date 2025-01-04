@@ -49,7 +49,7 @@ class Minecraft(commands.Cog):
         )
         embed.set_image(url=skin_url)
         embed.set_footer(text=f"UUID: {uuid}")
-        await ctx.send(embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
         name="mcskin",
