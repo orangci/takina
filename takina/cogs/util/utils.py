@@ -120,7 +120,9 @@ class UtilsSlash(commands.Cog):
         )
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(name="uptime", description="Check the bot's uptime since the last downtime.")
+    @nextcord.slash_command(
+        name="uptime", description="Check the bot's uptime since the last downtime."
+    )
     async def slash_uptime(self, interaction: nextcord.Interaction):
         embed = nextcord.Embed(
             description=f"{await fetch_random_emoji()} {BOT_NAME} has been up for {await uptime_fetcher()}.",

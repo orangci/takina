@@ -13,11 +13,10 @@ Using the Dockerfile or Nix. You must set the env variables in a `.env` file; ch
 - dont allow two triggers with the same trigger; and potentially fix the thing where triggers are faster than commands
 - partial matching for display names
 - add another type of modstats command
-- upgrade mcskin command with different poses
 - possibly upgrade the help command
 - add time limits to giveaway command and other improvements
 - add the capabability to delete and list reminders
-- add wynncraft module: item lookup, player stats, guild stats
+- wynncraft module: item lookup, guild stats
 
 ## License
 [Here.](./LICENSE)
