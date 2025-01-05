@@ -6,7 +6,7 @@ from nextcord.ext import commands, help_commands
 from config import *
 import datetime
 
-start_time = datetime.datetime.utcnow()
+start_time = datetime.datetime.now(datetime.UTC)
 
 
 class Bot(commands.Bot):
