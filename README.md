@@ -8,7 +8,6 @@ Using the Dockerfile or Nix. You must set the env variables in a `.env` file; ch
 ## TODO
 - (long term) document all code with comments
 - dont allow two triggers with the same trigger; and potentially fix the thing where triggers are faster than commands
-- partial matching for display names
 - add another type of modstats command
 - possibly upgrade the help command
 - add time limits to giveaway command and other improvements
