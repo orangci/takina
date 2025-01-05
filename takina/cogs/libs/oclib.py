@@ -46,7 +46,9 @@ async def request(url, *args, **kwargs):
 
 
 # for calculating durations, e.g. 1d, 2h, 5s, 34m
-def duration_calculator(duration: str, slowmode=False, timeout=False) -> int:
+def duration_calculator(
+    duration: str, slowmode=False, timeout=False, purge=False
+) -> int:
     pattern = r"(\d+)([s|m|h|d|w])"
     match = re.fullmatch(pattern, duration)
     error_embed = nextcord.Embed(
@@ -89,6 +91,19 @@ def duration_calculator(duration: str, slowmode=False, timeout=False) -> int:
             description=":x: The duration you've specified is too long. The maximum slowmode you may set is six hours.",
             color=ERROR_COLOR,
         )
+
+    if purge and time_value > 1209600:
+        return nextcord.Embed(
+            description=":x: You may only purge messages within the last two weeks.",
+            color=ERROR_COLOR,
+        )
+
+    if purge and time_value < 0:
+        return nextcord.Embed(
+            description=":x: You must specify a time period within which to purge messages.",
+            color=ERROR_COLOR,
+        )
+
     return time_value
 
 
