@@ -30,6 +30,18 @@ def extract_user_id(
     if member:
         return member
 
+    partial_matches = [
+        member
+        for member in ctx.guild.members
+        if member.display_name.lower().startswith(member_str.lower())
+        or member.display_name.lower().find(member_str.lower()) != -1
+    ]
+    if partial_matches:
+        if len(partial_matches) == 1:
+            return partial_matches[0]
+        else:
+            member = None
+
     if not member:
         error_embed = nextcord.Embed(
             color=ERROR_COLOR,
