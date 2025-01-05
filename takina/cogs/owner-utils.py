@@ -257,6 +257,22 @@ class OwnerUtils(commands.Cog):
 
         await ctx.reply(message, mention_author=False)
 
+    @commands.command()
+    @commands.is_owner()
+    async def send(
+        self,
+        ctx: commands.Context,
+        channel: nextcord.TextChannel = None,
+        *,
+        message: str,
+    ):
+        if channel and message:
+            await channel.send(message)
+        elif message:
+            await ctx.send(message)
+        else:
+            raise commands.UserInputError
+
 
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(OwnerUtils(bot))
