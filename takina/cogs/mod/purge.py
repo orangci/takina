@@ -42,7 +42,7 @@ class Purge(commands.Cog):
         help="Purges messages from a specific user. Usage: purge user <user> <number>.",
     )
     async def purge_user(
-        self, ctx: commands.Context, user: nextcord.Member, amount: int
+        self, ctx: commands.Context, member: str, amount: int
     ):
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(
@@ -52,16 +52,21 @@ class Purge(commands.Cog):
             await ctx.reply(embed=embed, mention_author=False)
             return
 
+        member = extract_user_id(member, ctx)
+        if isinstance(member, nextcord.Embed):
+            await ctx.reply(embed=member, mention_author=False)
+            return
+
         def check(message):
             return (
-                message.author == user
+                message.author == member
                 and message.created_at > nextcord.utils.utcnow() - timedelta(weeks=2)
             )
 
         deleted = await ctx.channel.purge(limit=amount, check=check, bulk=True)
 
         embed = nextcord.Embed(
-            description=f"✅ Successfully purged {len(deleted)} messages from {user.mention}.",
+            description=f"✅ Successfully purged {len(deleted)} messages from {member.mention}.",
             color=EMBED_COLOR,
         )
         await ctx.send(embed=embed, delete_after=2)
@@ -114,7 +119,7 @@ class SlashPurge(commands.Cog):
             await interaction.send(embed=embed, ephemeral=True)
             return
 
-        deleted = await ctx.channel.purge(
+        deleted = await interaction.channel.purge(
             limit=amount + 1,
             check=lambda m: m.created_at > nextcord.utils.utcnow() - timedelta(weeks=2),
             bulk=True,
