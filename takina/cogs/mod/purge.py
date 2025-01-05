@@ -93,6 +93,7 @@ class Purge(commands.Cog):
         )
         await ctx.send(embed=embed, delete_after=2)
 
+
 class SlashPurge(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -144,7 +145,7 @@ class SlashPurge(commands.Cog):
                 and message.created_at > nextcord.utils.utcnow() - timedelta(weeks=2)
             )
 
-        deleted = await ctx.channel.purge(limit=amount, check=check, bulk=True)
+        deleted = await interaction.channel.purge(limit=amount, check=check, bulk=True)
 
         embed = nextcord.Embed(
             description=f"✅ Successfully purged {len(deleted)} messages from {user.mention}.",
@@ -176,6 +177,7 @@ class SlashPurge(commands.Cog):
             color=EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
+
 
 def setup(bot):
     bot.add_cog(Purge(bot))
