@@ -4,7 +4,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime, timedelta
 from config import *
 from bson.objectid import ObjectId
-
+from ..libs.oclib import*
 
 class RemindMe(commands.Cog):
     def __init__(self, bot: commands.Bot):
