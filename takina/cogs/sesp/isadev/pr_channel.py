@@ -4,7 +4,7 @@ from nextcord.ext import commands
 import aiohttp
 from typing import Optional
 from nextcord.ui import Button, View
-from .lib import *
+from .libs.lib import *
 
 GITHUB_URL_PATTERN = r"https:\/\/github.com\/([A-Za-z0-9-]+)\/([A-Za-z0-9-]+)(\/pull|\/issues)?(#|\/)(?P<pr_id>\d+)"
 SHORT_PR_PATTERN = r"##(\d+)"

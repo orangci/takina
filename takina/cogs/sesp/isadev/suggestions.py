@@ -36,7 +36,7 @@ from typing import Literal, cast
 from nextcord.ext import commands, application_checks
 import nextcord
 from config import *
-from .lib import *
+from .libs.lib import *
 
 
 class ApproveOrDeny(nextcord.ui.Modal):
