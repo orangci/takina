@@ -41,7 +41,7 @@ import nextcord
 from nextcord.ext import application_checks as ac, commands
 from nextcord import Interaction, OptionConverter
 from config import *
-from .lib import *
+from .libs.lib import *
 
 
 class Domain(TypedDict):

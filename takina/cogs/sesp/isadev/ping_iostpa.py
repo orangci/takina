@@ -1,6 +1,6 @@
 from nextcord.ext import commands
 import nextcord
-from .lib import *
+from .libs.lib import *
 
 
 class PingIostpa(commands.Cog):

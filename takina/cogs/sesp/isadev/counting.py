@@ -3,7 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 from nextcord.ext import commands
 from config import *
-from .lib import *
+from .libs.lib import *
 
 
 class Counting(commands.Cog):

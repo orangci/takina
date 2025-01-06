@@ -3,7 +3,7 @@ from nextcord.ext import commands
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 from config import *
-from .lib import *
+from .libs.lib import *
 
 
 class CustomRoleManager(commands.Cog):
