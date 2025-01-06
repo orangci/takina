@@ -80,6 +80,8 @@ class Errors(commands.Cog):
         elif isinstance(error, nextcord.DiscordException):
             description = str(error)
             error_type = "Discord Exception"
+            if description.startswith("The check functions for command"):
+                return
 
         else:
             description = "An unexpected error occurred. Please report this issue to a maintainer if it persists."
