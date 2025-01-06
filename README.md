@@ -10,6 +10,8 @@ Using the Dockerfile or Nix. You must set the env variables in a `.env` file; ch
 - add another type of modstats command
 - possibly upgrade the help command
 - add time limits to giveaway command and other improvements
+- make rx reload only loaded cogs
+- remove exception when using server specific command outside of the specific server
 
 ## License
 [Here.](./LICENSE)

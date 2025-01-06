@@ -69,7 +69,7 @@ class TriggerResponses(commands.Cog):
 
         guild_data = await self.get_guild_triggers(ctx.guild.id)
         triggers = guild_data["triggers"]
-        
+
         for trigger_data in triggers.values():
             if trigger_data["trigger"] == trigger:
                 embed = nextcord.Embed(color=ERROR_COLOR)
@@ -135,11 +135,10 @@ class TriggerResponses(commands.Cog):
     async def on_message(self, message):
         if message.author.bot or not message.guild:
             return
-        
+
         prefixes = await self.bot.get_prefix(message)
         if any(message.content.startswith(prefix) for prefix in prefixes):
             return
-
 
         guild_data = await self.get_guild_triggers(message.guild.id)
         triggers = guild_data["triggers"]
@@ -204,7 +203,7 @@ class SlashTriggerResponses(commands.Cog):
 
         guild_data = await self.get_guild_triggers(interaction.guild.id)
         triggers = guild_data["triggers"]
-        
+
         for trigger_data in triggers.values():
             if trigger_data["trigger"] == trigger:
                 embed = nextcord.Embed(color=ERROR_COLOR)
