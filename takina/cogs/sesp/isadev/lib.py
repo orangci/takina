@@ -46,4 +46,4 @@ SETUP_HELP_SUCCESS = "Successfully set up help system."
 
 
 # celebrating cirno's power
-SERVER_ID = 1281898369236602903
+# SERVER_ID = 1281898369236602903
