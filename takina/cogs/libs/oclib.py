@@ -183,7 +183,7 @@ def perms_check(
 # uptime checker
 async def uptime_fetcher():
     global start_time
-    current_time = datetime.datetime.utcnow()
+    current_time = datetime.datetime.now(datetime.UTC)
     uptime_duration = current_time - start_time
 
     # Format the uptime duration
