@@ -4,7 +4,7 @@ import os
 from nextcord.ext import commands
 from config import *
 from .libs.lib import *
-
+from ...libs.oclib import *
 
 class Counting(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -49,25 +49,28 @@ class Counting(commands.Cog):
         except ValueError:
             await message.delete()
 
-    @commands.command()
+    @commands.command(help="Fetches and displays the current count in the counting channel.")
     @is_in_guild()
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def count(self, ctx: commands.Context):
-        """Fetches and displays the current count from the database."""
 
         current_count = await self.db.counting.find_one(
             {"channel_id": COUNTING_CHANNEL_ID}
         )
 
         if not current_count:
-            await ctx.reply("The count has not started yet!", mention_author=False)
+            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed.description = ":x: The count has not started yet!"
+            await ctx.reply(embed=embed, mention_author=False)
             return
 
         count = current_count["count"]
 
-        await ctx.reply(f"The current count is: {count}", mention_author=False)
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed.description = f"{await fetch_random_emoji()} The current count is: {count}"
+        await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command()
+    @commands.command(help="Set the count of the counting channel. Usage: `set_count <number>`.", aliases=["setcount"])
     @is_in_guild()
     @commands.is_owner()
     async def set_count(self, ctx: commands.Context, count: int):
@@ -76,7 +79,10 @@ class Counting(commands.Cog):
         await self.db.counting.update_one(
             {"channel_id": COUNTING_CHANNEL_ID}, {"$set": {"count": count}}
         )
-        await ctx.reply(f"The count has been set to {count}.", mention_author=False)
+        
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed.description = f"✅ The count has been set to {count}."
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 def setup(bot: commands.Bot):
