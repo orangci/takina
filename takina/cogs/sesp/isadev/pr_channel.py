@@ -97,8 +97,7 @@ class GitHubTwo(commands.Cog):
         if not data:
             await message.channel.send(
                 embed=nextcord.Embed(
-                    title="Error",
-                    description=f"Could not fetch information for {OWNER}/{REPO}#{issue_id}.",
+                    description=f":x: Could not fetch information for {OWNER}/{REPO}#{issue_id}.",
                     color=ERROR_COLOR,
                 )
             )

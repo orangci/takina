@@ -161,9 +161,9 @@ class SubdomainUtils(commands.Cog):
                 f"https://raw.githubusercontent.com/is-a-dev/register/main/domains/{domain}.json",
             )
         except DomainNotExistError:
-            await ctx.reply(
-                "The domain queried cannot be found. Aborting.", mention_author=False
-            )
+            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed.description = ":x: The domain queried cannot be found. Aborting."
+            await ctx.reply(embed=embed, mention_author=False)
             return
         embed = nextcord.Embed(
             color=EMBED_COLOR,
@@ -262,9 +262,9 @@ class SubdomainUtilsSlash(commands.Cog):
                 ephemeral=True,
             )
         except DomainNotExistError:
-            await interaction.send(
-                "Domain requested cannot be found. Aborting.", ephemeral=True
-            )
+            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed.description = ":x: Domain requested cannot be found. Aborting."
+            await interaction.send(embed=embed, ephemeral=True)
 
 
 def setup(bot: commands.Bot):
