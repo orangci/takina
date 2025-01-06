@@ -153,46 +153,53 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def reload_exts(self, ctx: commands.Context, *args):
         importlib.reload(oclib)
+
         if not args:
             failed_cogs = []
-
-            for cog in cogs:
-                if cog not in cogs_blacklist:
-                    if cog in self.bot.extensions:
-                        continue
-                    try:
-                        self.bot.reload_extension("cogs." + cog)
-                    except Exception as e:
-                        failed_cogs.append(f"{cog}: {e}")
+            for cog in list(
+                self.bot.extensions.keys()
+            ):  # Iterate over loaded extensions
+                try:
+                    self.bot.reload_extension(cog)
+                except Exception as e:
+                    failed_cogs.append(f"{cog}: {e}")
 
             if failed_cogs:
                 error_message = (
-                    f"\nReloaded all except the following cogs:\n"
-                    + "\n".join(failed_cogs)
+                    f"❌ Reloaded all except the following cogs:\n\n"
+                    + "\n> ".join(failed_cogs)
                 )
-                embed = nextcord.Embed(color=ERROR_COLOR)
-                embed.description = error_message
-                await ctx.reply(error_message, mention_author=False)
+                embed = nextcord.Embed(color=ERROR_COLOR, description=error_message)
+                await ctx.reply(embed=embed, mention_author=False)
             else:
-                embed = nextcord.Embed(color=EMBED_COLOR)
-                embed.description = "✅ Successfully reloaded all cogs."
+                embed = nextcord.Embed(
+                    color=EMBED_COLOR, description="✅ Successfully reloaded all cogs."
+                )
                 await ctx.reply(embed=embed, mention_author=False)
 
         else:
             cog = args[0]
-            if "cogs." + cog in self.bot.extensions:
+            full_cog_name = f"cogs.{cog}" if not cog.startswith("cogs.") else cog
+
+            if full_cog_name in self.bot.extensions:
                 try:
-                    self.bot.reload_extension("cogs." + cog)
-                    embed = nextcord.Embed(color=EMBED_COLOR)
-                    embed.description = f"✅ Successfully reloaded `cogs.{cog}`."
+                    self.bot.reload_extension(full_cog_name)
+                    embed = nextcord.Embed(
+                        color=EMBED_COLOR,
+                        description=f"✅ Successfully reloaded `{full_cog_name}`.",
+                    )
                     await ctx.reply(embed=embed, mention_author=False)
-                except Exception as error:
-                    embed = nextcord.Embed(color=ERROR_COLOR)
-                    embed.description = f"❌ Failed to reload `{cog}`: {error}"
+                except Exception as e:
+                    embed = nextcord.Embed(
+                        color=ERROR_COLOR,
+                        description=f"❌ Failed to reload `{full_cog_name}`: {e}",
+                    )
                     await ctx.reply(embed=embed, mention_author=False)
             else:
-                embed = nextcord.Embed(color=ERROR_COLOR)
-                embed.description = f"❌ Cog `cogs.{cog}` is not loaded."
+                embed = nextcord.Embed(
+                    color=ERROR_COLOR,
+                    description=f"❌ Cog `{full_cog_name}` is not loaded.",
+                )
                 await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(aliases=["rsc"])
