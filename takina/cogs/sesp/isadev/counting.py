@@ -6,6 +6,7 @@ from config import *
 from .libs.lib import *
 from ...libs.oclib import *
 
+
 class Counting(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -49,7 +50,9 @@ class Counting(commands.Cog):
         except ValueError:
             await message.delete()
 
-    @commands.command(help="Fetches and displays the current count in the counting channel.")
+    @commands.command(
+        help="Fetches and displays the current count in the counting channel."
+    )
     @is_in_guild()
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def count(self, ctx: commands.Context):
@@ -67,10 +70,15 @@ class Counting(commands.Cog):
         count = current_count["count"]
 
         embed = nextcord.Embed(color=EMBED_COLOR)
-        embed.description = f"{await fetch_random_emoji()} The current count is: {count}"
+        embed.description = (
+            f"{await fetch_random_emoji()} The current count is: {count}"
+        )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(help="Set the count of the counting channel. Usage: `set_count <number>`.", aliases=["setcount"])
+    @commands.command(
+        help="Set the count of the counting channel. Usage: `set_count <number>`.",
+        aliases=["setcount"],
+    )
     @is_in_guild()
     @commands.is_owner()
     async def set_count(self, ctx: commands.Context, count: int):
@@ -79,7 +87,7 @@ class Counting(commands.Cog):
         await self.db.counting.update_one(
             {"channel_id": COUNTING_CHANNEL_ID}, {"$set": {"count": count}}
         )
-        
+
         embed = nextcord.Embed(color=EMBED_COLOR)
         embed.description = f"✅ The count has been set to {count}."
         await ctx.reply(embed=embed, mention_author=False)

@@ -53,7 +53,7 @@ class OwnerUtils(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="guilds")
+    @commands.command(hidden=True, name="guilds")
     @commands.is_owner()
     async def guilds(self, ctx: commands.Context):
         """Lists all guilds the bot is in, ranked from most members to least."""
@@ -90,7 +90,7 @@ class OwnerUtils(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def disable(self, ctx: commands.Context, cmd: str):
         if cmd == "disable":
@@ -109,7 +109,7 @@ class OwnerUtils(commands.Cog):
             embed.description = f"✅ Successfully disabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def enable(self, ctx: commands.Context, cmd: str):
         if cmd == "disable":
@@ -128,7 +128,7 @@ class OwnerUtils(commands.Cog):
             embed.description = f"✅ Successfully enabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(aliases=["maintainer", "perms"])
+    @commands.command(hidden=True, aliases=["maintainer", "perms"])
     async def owner(self, ctx: commands.Context):
         owner_names = []
         for owner_id in self.bot.owner_ids:
@@ -149,7 +149,7 @@ class OwnerUtils(commands.Cog):
             embed.description = f"You are not a maintainer of {BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(aliases=["rx"])
+    @commands.command(hidden=True, aliases=["rx"])
     @commands.is_owner()
     async def reload_exts(self, ctx: commands.Context, *args):
         importlib.reload(oclib)
@@ -202,7 +202,7 @@ class OwnerUtils(commands.Cog):
                 )
                 await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(aliases=["rsc"])
+    @commands.command(hidden=True, aliases=["rsc"])
     @commands.is_owner()
     async def reload_slash_command(self, ctx: commands.Context) -> None:
         await ctx.bot.sync_application_commands()
@@ -210,7 +210,7 @@ class OwnerUtils(commands.Cog):
         embed.description = "✅ Successfully synced bot application commands."
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(aliases=["ux"])
+    @commands.command(hidden=True, aliases=["ux"])
     @commands.is_owner()
     async def unload(self, ctx: commands.Context, *args) -> None:
         cog = args[0]
@@ -224,7 +224,7 @@ class OwnerUtils(commands.Cog):
             embed.description = f"❌ `cogs.{cog}` was already unloaded."
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(aliases=["lx"])
+    @commands.command(hidden=True, aliases=["lx"])
     @commands.is_owner()
     async def load(self, ctx: commands.Context, *args) -> None:
         cog = args[0]
@@ -238,7 +238,7 @@ class OwnerUtils(commands.Cog):
         embed.description = f"✅ Successfully loaded `cogs.{cog}`."
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def pull(self, ctx: commands.Context):
         current_dir = os.getcwd()
@@ -264,7 +264,7 @@ class OwnerUtils(commands.Cog):
 
         await ctx.reply(message, mention_author=False)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def send(
         self,

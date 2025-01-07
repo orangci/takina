@@ -38,11 +38,15 @@ class Bot(commands.Bot):
         await self.setup_database()
 
 
+# help command stuff
+helpcmd = help_commands.PaginatedHelpCommand
+helpcmd.COLOUR = EMBED_COLOR
+
 bot = Bot(
     intents=nextcord.Intents.all(),
     command_prefix=Bot.get_prefix,
     case_insensitive=True,
-    help_command=help_commands.PaginatedHelpCommand(),
+    help_command=helpcmd(),
     owner_ids=[961063229168164864],
     allowed_mentions=nextcord.AllowedMentions(
         everyone=False, roles=False, users=True, replied_user=True
