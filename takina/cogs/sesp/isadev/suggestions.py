@@ -29,7 +29,7 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-# code is heavily modified and is not the original code from maskduck
+# code has been modified and is not the original code from MaskDuck
 
 from contextlib import suppress
 from typing import Literal, cast
