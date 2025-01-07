@@ -47,7 +47,7 @@ bot = Bot(
     command_prefix=Bot.get_prefix,
     case_insensitive=True,
     help_command=helpcmd(),
-    owner_ids=[961063229168164864],
+    owner_ids=[961063229168164864, 716306888492318790], # orangc, iostpa 
     allowed_mentions=nextcord.AllowedMentions(
         everyone=False, roles=False, users=True, replied_user=True
     ),

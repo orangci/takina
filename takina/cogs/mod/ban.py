@@ -22,6 +22,9 @@ class Ban(commands.Cog):
         *,
         reason: str = "No reason provided",
     ):
+        if not member:
+            raise commands.UserInputError
+            
         member = extract_user_id(member, ctx)
         if isinstance(member, nextcord.Embed):
             await ctx.reply(embed=member, mention_author=False)
