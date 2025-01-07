@@ -79,7 +79,7 @@ class MAL_Profiles(commands.Cog):
                 embed.set_thumbnail(url=profile_pic)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -148,7 +148,7 @@ class MAL_Profiles(commands.Cog):
                 embed.set_thumbnail(url=profile_pic)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
 
         await ctx.response.send_message(embed=embed, ephemeral=True)
 

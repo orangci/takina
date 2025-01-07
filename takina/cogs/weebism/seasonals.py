@@ -72,7 +72,6 @@ class AnimeSeasonals(commands.Cog):
 
             if not seasonals:
                 embed = nextcord.Embed(
-                    title="No Seasonals Found",
                     description="No seasonal anime available.",
                     color=ERROR_COLOR,
                 )
@@ -107,7 +106,7 @@ class AnimeSeasonals(commands.Cog):
             await ctx.reply(embed=pages[0], view=view, mention_author=False)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
             await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
@@ -149,11 +148,10 @@ class AnimeSeasonals(commands.Cog):
 
             if not seasonals:
                 embed = nextcord.Embed(
-                    title="No Seasonals Found",
                     description="No seasonal anime available.",
                     color=ERROR_COLOR,
                 )
-                await interaction.response.send_message(embed=embed)
+                await interaction.send(embed=embed)
                 return
 
             # Create paginated embeds (5 seasonals per page)
@@ -181,11 +179,11 @@ class AnimeSeasonals(commands.Cog):
 
             # Send first page with buttons for navigation
             view = PaginatedView(pages)
-            await interaction.response.send_message(embed=pages[0], view=view)
+            await interaction.send(embed=pages[0], view=view)
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
-            await interaction.response.send_message(embed=embed)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+            await interaction.send(embed=embed)
 
 
 def setup(bot):
