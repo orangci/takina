@@ -236,11 +236,14 @@ class ModLog(commands.Cog):
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
-    async def get_mod_cases(self, ctx, user: str):
-        member = extract_user_id(user, ctx)
-        if isinstance(member, nextcord.Embed):
-            await ctx.reply(embed=member, mention_author=False)
-            return
+    async def get_mod_cases(self, ctx, user: str = None):
+        if user:
+            user = extract_user_id(user, ctx)
+            if isinstance(user, nextcord.Embed):
+                await ctx.reply(embed=user, mention_author=False)
+                return
+        else:
+            user = ctx.author
 
         cases = await self.db.modlog_cases.find(
             {"guild_id": ctx.guild.id, "moderator_id": user.id}
