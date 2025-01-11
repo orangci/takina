@@ -126,7 +126,7 @@ class ModLog(commands.Cog):
         case_id = (
             await self.db.modlog_cases.count_documents({"guild_id": guild_id})
         ) + 1
-        timestamp = datetime.datetime.utcnow()
+        timestamp = datetime.datetime.now(datetime.UTC)
 
         case_data = {
             "guild_id": guild_id,
@@ -271,7 +271,7 @@ class ModLog(commands.Cog):
             user = ctx.author
 
         guild_id = ctx.guild.id
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.UTC)
 
         # Define time ranges
         past_7_days = now - datetime.timedelta(days=7)
@@ -449,7 +449,7 @@ class SlashModLog(commands.Cog):
             user = interaction.user
 
         guild_id = interaction.guild.id
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.UTC)
 
         # Define time ranges
         past_7_days = now - datetime.timedelta(days=7)

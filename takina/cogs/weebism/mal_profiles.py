@@ -8,12 +8,12 @@ from config import *
 
 def format_date(date_str):
     dt = datetime.fromisoformat(date_str)
-    return dt.strftime("%B %d, %Y")
+    return f"<t:{int(dt.timestamp())}:D>"
 
 
 def format_date_long(date_str):
     dt = datetime.fromisoformat(date_str)
-    return dt.strftime("%b %d, %Y at %I:%M %p")
+    return f"<t:{int(dt.timestamp())}>"
 
 
 class MAL_Profiles(commands.Cog):
@@ -68,7 +68,7 @@ class MAL_Profiles(commands.Cog):
                 f"-# [Anime List]({anime_list_url}) • [Manga List]({manga_list_url})\n"
             )
             embed.description += f"\n> **Gender**: {gender}"
-            embed.description += f"\n> **Last Online**: {last_online}"
+            embed.description += f"\n> **Last Seen**: {last_online}"
             embed.description += f"\n> **Joined**: {joined}"
             embed.description += f"\n> **Location**: {location}"
             embed.description += f"\n> **Anime:** {days_watched} days watched with a mean score of {anime_mean}."
@@ -137,7 +137,7 @@ class MAL_Profiles(commands.Cog):
                 f"-# [Anime List]({anime_list_url}) • [Manga List]({manga_list_url})\n"
             )
             embed.description += f"\n> **Gender**: {gender}"
-            embed.description += f"\n> **Last Online**: {last_online}"
+            embed.description += f"\n> **Last Seen**: {last_online}"
             embed.description += f"\n> **Joined**: {joined}"
             embed.description += f"\n> **Location**: {location}"
             embed.description += f"\n> **Anime:** {days_watched} days watched with a mean score of {anime_mean}."

@@ -30,8 +30,8 @@ class PingResponse(commands.Cog):
     ):
         embed = nextcord.Embed(
             title=f"{await fetch_random_emoji()} Takina",
-            url="https://orangc.xyz/takina",
-            description="Takina is a multipurpose [opensource](https://github.com/orangci/takina) bot written in Python. More information is available in the [website](https://orangc.xyz/takina).",
+            url="https://orangc.net/takina",
+            description="Takina is a multipurpose [opensource](https://github.com/orangci/takina) bot written in Python. More information is available in the [website](https://orangc.net/takina).",
             color=EMBED_COLOR,
         )
 
@@ -49,7 +49,7 @@ class PingResponse(commands.Cog):
         orangc = await self.bot.fetch_user(961063229168164864)
         embed.set_author(
             name="orangc",
-            url="https://orangc.xyz",
+            url="https://orangc.net",
             icon_url=orangc.avatar.url
             or "https://cdn.discordapp.com/avatars/961063229168164864/4bfbf378514a9dcc7a619b5ce5e7e57c.webp",
         )
