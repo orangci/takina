@@ -289,7 +289,7 @@ class Starboard(commands.Cog):
 
         embed = nextcord.Embed(
             title="Starred Message",
-            description=f"-# [Jump to Message]({message.jump_url})\n\n {message.content if message.content else "Image / Other Media / No Content\n"}",
+            description=f"-# [Jump to Message]({message.jump_url})\n\n {message.content if message.content else "*No text content*\n"}",
             color=EMBED_COLOR,
         )
         embed.add_field(name="👤 Author", value=message.author.mention, inline=True)
