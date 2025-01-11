@@ -96,7 +96,7 @@ class Wynncraft(commands.Cog):
 
         embed.description += f"\n> **Playtime**: {playtime} hours"
 
-        join_date = f"<t:{parse_iso8601(join_date)}>"
+        join_date = f"<t:{parse_iso8601(join_date)}> (<t:{parse_iso8601(join_date)}:R>)"
         embed.description += f"\n> **Joined**: {join_date}"
 
         embed.description += f"\n> **Mobs killed**: {mobs}"
@@ -183,7 +183,7 @@ class Wynncraft(commands.Cog):
         embed.title = f"[{prefix}] {name}"
         embed.url = f"https://wynncraft.com/stats/guild/{prefix}"
         embed.description += f"\n> **Owner(s):** {owners}"
-        embed.description += f"\n> **Created on:** {created_at}"
+        embed.description += f"\n> **Created:** <t:{created_at}> (<t:{created_at}:R>)"
         embed.description += f"\n> **Level:** {level} ({xp_percent}% XP)"
         embed.description += f"\n> **Territories controlled:** {territories}"
         embed.description += f"\n> **Wars participated:** {wars}"
