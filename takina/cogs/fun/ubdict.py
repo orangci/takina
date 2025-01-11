@@ -1,4 +1,3 @@
-from __future__ import annotations
 from ..libs.oclib import *
 import aiohttp
 import nextcord
@@ -26,14 +25,34 @@ class UrbanDictionary(commands.Cog):
             embed.description = "❌ No results found."
             await ctx.reply(embed=embed, mention_author=False)
             return
+
+        def format_text(text: str) -> str:
+            """Trims the text to 300 characters and formats [anything] links."""
+            # Replace [anything] with markdown-style links
+            text = re.sub(
+                r"\[(.*?)\]",
+                r"[\1](http://\1.urbanup.com)",
+                text,
+            )
+            # Trim the text to 300 characters, adding "..." if necessary
+            return text[:300] + "..." if len(text) > 300 else text
+
+        definition = format_text(data["list"][0]["definition"])
+        example = (
+            format_text(data["list"][0]["example"])
+            if data["list"][0]["example"]
+            else "No examples provided."
+        )
+
         embed = nextcord.Embed(
             title=data["list"][0]["word"],
-            description=data["list"][0]["definition"],
+            description=definition,
             url=data["list"][0]["permalink"],
             color=EMBED_COLOR,
         )
+        embed.add_field(name="Example", value=example, inline=False)
         embed.set_footer(
-            text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by: Urban Dictionary"
+            text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by Urban Dictionary"
         )
         embed.set_thumbnail(url="https://www.urbandictionary.com/favicon-32x32.png")
         await ctx.reply(embed=embed, mention_author=False)
@@ -46,7 +65,7 @@ class UrbanDictionary(commands.Cog):
         self,
         interaction: nextcord.Interaction,
         word: str = nextcord.SlashOption(
-            description="The word to search for", required=True
+            description="The word to define", required=True
         ),
     ) -> None:
         params = {"term": word}
@@ -60,14 +79,34 @@ class UrbanDictionary(commands.Cog):
             embed.description = "❌ No results found."
             await interaction.send(embed=embed, ephemeral=True)
             return
+
+        def format_text(text: str) -> str:
+            """Trims the text to 300 characters and formats [anything] links."""
+            # Replace [anything] with markdown-style links
+            text = re.sub(
+                r"\[(.*?)\]",
+                r"[\1](http://\1.urbanup.com)",
+                text,
+            )
+            # Trim the text to 300 characters, adding "..." if necessary
+            return text[:300] + "..." if len(text) > 300 else text
+
+        definition = format_text(data["list"][0]["definition"])
+        example = (
+            format_text(data["list"][0]["example"])
+            if data["list"][0]["example"]
+            else "No examples provided."
+        )
+
         embed = nextcord.Embed(
             title=data["list"][0]["word"],
-            description=data["list"][0]["definition"],
+            description=definition,
             url=data["list"][0]["permalink"],
             color=EMBED_COLOR,
         )
+        embed.add_field(name="Example", value=example, inline=False)
         embed.set_footer(
-            text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by: Urban Dictionary"
+            text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by Urban Dictionary"
         )
         embed.set_thumbnail(url="https://www.urbandictionary.com/favicon-32x32.png")
         await interaction.send(embed=embed)
