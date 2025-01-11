@@ -2,18 +2,6 @@ import nextcord
 from nextcord.ext import commands
 from ..libs.oclib import *
 from config import *
-from datetime import datetime
-
-
-def parse_iso8601(date_str):
-    try:
-        dt = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S.%f%z")
-    except ValueError:
-        raise ValueError(
-            f"Date string '{date_str}' is not in the required format: '{fmt}'"
-        )
-
-    return int(dt.timestamp())
 
 
 class Info(commands.Cog):
@@ -75,7 +63,7 @@ class Info(commands.Cog):
                 f"> **Hoisted:** {role.hoist}\n"
                 f"> **Managed:** {role.managed}\n"
                 f"> **Members:** {len(role.members)}\n"
-                f"> **Created:** <t:{parse_iso8601(str(role.created_at))}>\n"
+                f"> **Created:** <t:{int(role.created_at.timestamp())}:D> (<t:{int(role.created_at.timestamp())}:R>)\n"
                 f"> **Permissions:** {', '.join([perm[0].replace('_', ' ').title() for perm in role.permissions if perm[1]])}"
             ),
         )
@@ -100,10 +88,18 @@ class Info(commands.Cog):
                 f"> **Owner:** {guild.owner.mention}\n"
                 f"> **Created:** <t:{int(guild.created_at.timestamp())}:D> (<t:{int(guild.created_at.timestamp())}:R>)\n"
                 f"> **Members:** {guild.member_count}\n"
+                f"> **Verification Level:** {guild.verification_level}\n"
                 f"> **Roles:** {len(guild.roles)}\n"
-                f"> **Channels:** {len(guild.channels)}"
+                f"> **Channels:** {len(guild.channels)}\n"
+                f"> **Emojis:** {len(guild.emojis)} emojis and {len(guild.stickers)} stickers\n"
             ),
         )
+        if guild.description:
+            embed.description = f"{guild.description}\n\n" + embed.description
+
+        if guild.banner:
+            embed.set_image(url=guild.banner.url)
+
         embed.set_thumbnail(url=guild.icon.url)
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -172,7 +168,7 @@ class SlashInfo(commands.Cog):
                 f"> **Hoisted:** {role.hoist}\n"
                 f"> **Managed:** {role.managed}\n"
                 f"> **Members:** {len(role.members)}\n"
-                f"> **Created:** <t:{parse_iso8601(str(role.created_at))}>\n"
+                f"> **Created:** <t:{int(role.created_at.timestamp())}:D> (<t:{int(role.created_at.timestamp())}:R>)\n"
                 f"> **Permissions:** {', '.join([perm[0].replace('_', ' ').title() for perm in role.permissions if perm[1]])}"
             ),
         )
@@ -195,10 +191,18 @@ class SlashInfo(commands.Cog):
                 f"> **Owner:** {guild.owner.mention}\n"
                 f"> **Created:** <t:{int(guild.created_at.timestamp())}:D> (<t:{int(guild.created_at.timestamp())}:R>)\n"
                 f"> **Members:** {guild.member_count}\n"
+                f"> **Verification Level:** {guild.verification_level}\n"
                 f"> **Roles:** {len(guild.roles)}\n"
-                f"> **Channels:** {len(guild.channels)}"
+                f"> **Channels:** {len(guild.channels)}\n"
+                f"> **Emojis:** {len(guild.emojis)} emojis and {len(guild.stickers)} stickers\n"
             ),
         )
+        if guild.description:
+            embed.description = f"{guild.description}\n\n" + embed.description
+
+        if guild.banner:
+            embed.set_image(url=guild.banner.url)
+
         embed.set_thumbnail(url=guild.icon.url)
 
         await interaction.send(embed=embed, ephemeral=True)

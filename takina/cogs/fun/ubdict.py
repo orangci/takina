@@ -5,6 +5,7 @@ from nextcord.ext import commands
 from config import *
 import urllib
 
+
 class UrbanDictionary(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
