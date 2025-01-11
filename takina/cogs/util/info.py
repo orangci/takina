@@ -24,6 +24,25 @@ class Info(commands.Cog):
 
         roles = [role for role in member.roles if role != ctx.guild.default_role]
 
+        dangerous_permissions = [
+            "administrator",
+            "ban_members",
+            "kick_members",
+            "manage_channels",
+            "manage_guild",
+            "manage_roles",
+            "manage_webhooks",
+            "moderate_members",
+        ]
+
+        dangerous_perms = [
+            perm[0].replace("_", " ").title()
+            for perm in member.guild_permissions
+            if perm[1] and perm[0] in dangerous_permissions
+        ]
+
+        permissions_str = ", ".join(dangerous_perms) if dangerous_perms else None
+
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             color=EMBED_COLOR,
@@ -37,6 +56,16 @@ class Info(commands.Cog):
                 f"> **Roles ({len(roles)}):** {' '.join([role.mention for role in reversed(roles)])}"
             ),
         )
+
+        if permissions_str:
+            embed.description += f"\n> **Dangerous Permissions:** {permissions_str}"
+
+        if member.communication_disabled_until:
+            embed.description += f"\n> **Timed out until:** <t:{int(member.communication_disabled_until.timestamp())}> (<t:{int(member.communication_disabled_until.timestamp())}:R>)"
+
+        if member.banner:
+            embed.set_thumbnail(url=member.banner.url)
+
         if member.avatar:
             embed.set_thumbnail(url=member.avatar.url)
 
@@ -125,21 +154,51 @@ class SlashInfo(commands.Cog):
             role for role in member.roles if role != interaction.guild.default_role
         ]
 
+        dangerous_permissions = [
+            "administrator",
+            "ban_members",
+            "kick_members",
+            "manage_channels",
+            "manage_guild",
+            "manage_roles",
+            "manage_webhooks",
+            "moderate_members",
+        ]
+
+        dangerous_perms = [
+            perm[0].replace("_", " ").title()
+            for perm in member.guild_permissions
+            if perm[1] and perm[0] in dangerous_permissions
+        ]
+
+        permissions_str = ", ".join(dangerous_perms) if dangerous_perms else None
+
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             color=EMBED_COLOR,
             title=f"{emoji} {member}",
             description=(
+                f"> **Username:** {member.name}\n"
+                f"> **Display Name:** {member.display_name}\n"
                 f"> **ID:** {member.id}\n"
-                f"> **Name:** {member.display_name}\n"
-                f"> **Created:** <t:{int(member.created_at.timestamp())}:D> (<t:{int(member.created_at.timestamp())}:R>)\n"
-                f"> **Joined:** <t:{int(member.joined_at.timestamp())}:D> (<t:{int(member.joined_at.timestamp())}:R>)\n"
-                f"> **Roles ({len(roles)}):** {' '.join([role.mention for role in reversed(roles)])}\n"
-                f"> **Top Role:** {member.top_role.mention}"
+                f"> **Created on:** <t:{int(member.created_at.timestamp())}:D> (<t:{int(member.created_at.timestamp())}:R>)\n"
+                f"> **Joined on:** <t:{int(member.joined_at.timestamp())}:D> (<t:{int(member.joined_at.timestamp())}:R>)\n"
+                f"> **Roles ({len(roles)}):** {' '.join([role.mention for role in reversed(roles)])}"
             ),
         )
+
+        if permissions_str:
+            embed.description += f"\n> **Dangerous Permissions:** {permissions_str}"
+
+        if member.communication_disabled_until:
+            embed.description += f"\n> **Timed out until:** <t:{int(member.communication_disabled_until.timestamp())}> (<t:{int(member.communication_disabled_until.timestamp())}:R>)"
+
+        if member.banner:
+            embed.set_thumbnail(url=member.banner.url)
+
         if member.avatar:
             embed.set_thumbnail(url=member.avatar.url)
+
         if member.bot:
             embed.set_footer(text="This user is a bot account.")
 
