@@ -3,7 +3,7 @@ import aiohttp
 import nextcord
 from nextcord.ext import commands
 from config import *
-
+import urllib
 
 class UrbanDictionary(commands.Cog):
     def __init__(self, bot):
@@ -27,15 +27,15 @@ class UrbanDictionary(commands.Cog):
             return
 
         def format_text(text: str) -> str:
-            """Trims the text to 300 characters and formats [anything] links."""
-            # Replace [anything] with markdown-style links
+            """Trims the text to 200 characters and formats [anything] links."""
+            # Replace [anything] with markdown-style links to Urban Dictionary
             text = re.sub(
                 r"\[(.*?)\]",
-                r"[\1](http://\1.urbanup.com)",
+                lambda match: f"[{match.group(1)}](https://www.urbandictionary.com/define.php?term={urllib.parse.quote(match.group(1))})",
                 text,
             )
-            # Trim the text to 300 characters, adding "..." if necessary
-            return text[:300] + "..." if len(text) > 300 else text
+            # Trim the text to 200 characters, adding "..." if necessary
+            return text[:200] + "..." if len(text) > 200 else text
 
         definition = format_text(data["list"][0]["definition"])
         example = (
@@ -81,15 +81,15 @@ class UrbanDictionary(commands.Cog):
             return
 
         def format_text(text: str) -> str:
-            """Trims the text to 300 characters and formats [anything] links."""
-            # Replace [anything] with markdown-style links
+            """Trims the text to 200 characters and formats [anything] links."""
+            # Replace [anything] with markdown-style links to Urban Dictionary
             text = re.sub(
                 r"\[(.*?)\]",
-                r"[\1](http://\1.urbanup.com)",
+                lambda match: f"[{match.group(1)}](https://www.urbandictionary.com/define.php?term={urllib.parse.quote(match.group(1))})",
                 text,
             )
-            # Trim the text to 300 characters, adding "..." if necessary
-            return text[:300] + "..." if len(text) > 300 else text
+            # Trim the text to 200 characters, adding "..." if necessary
+            return text[:200] + "..." if len(text) > 200 else text
 
         definition = format_text(data["list"][0]["definition"])
         example = (
