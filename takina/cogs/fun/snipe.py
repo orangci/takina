@@ -51,23 +51,22 @@ class Snipe(commands.Cog):
         )
         embed.set_footer(text=f"Deleted in #{ctx.channel.name}")
 
+        embed_list = [embed]
+
         # Check if there are attachments (e.g. images)
         if sniped_message["attachments"]:
-            attachments_list = ""
+            embed.url = "https://orangc.xyz"
             for attachment in sniped_message["attachments"]:
-                if attachment.filename.lower().endswith(
-                    (".png", ".jpg", ".jpeg", ".gif", ".webp")
-                ):
-                    # Set image in embed
-                    embed.set_image(url=attachment.url)
-                else:
-                    # Add non-image attachment as a clickable link
-                    attachments_list += f"\n [{attachment.filename}]({attachment.url})"
-                embed.add_field(
-                    name="Attachments", value=attachments_list, inline=False
-                )
+                if "image" in str(attachment.content_type):
+                    if not embed.image:
+                        embed.set_image(url=attachment.url)
+                    else:
+                        new_embed = nextcord.Embed(color=EMBED_COLOR)
+                        new_embed.set_image(url=attachment.url)
+                        new_embed.url = embed.url
+                        embed_list.append(new_embed)
 
-        await ctx.reply(embed=embed, mention_author=False)
+        await ctx.reply(embeds=embed_list, mention_author=False)
 
 
 def setup(bot):
