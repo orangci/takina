@@ -56,7 +56,7 @@ class Snipe(commands.Cog):
             attachments_list = ""
             for attachment in sniped_message["attachments"]:
                 if attachment.filename.lower().endswith(
-                    (".png", ".jpg", ".jpeg", ".gif")
+                    (".png", ".jpg", ".jpeg", ".gif", ".webp")
                 ):
                     # Set image in embed
                     embed.set_image(url=attachment.url)
