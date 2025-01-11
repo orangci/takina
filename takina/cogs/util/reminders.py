@@ -52,7 +52,7 @@ class RemindMe(commands.Cog):
             await ctx.reply(embed=embed, mention_author=False)
             return
 
-        remind_at = datetime.utcnow() + remind_time
+        remind_at = datetime.datetime.now(datetime.UTC) + remind_time
         result = await self.reminders.insert_one(
             {
                 "user_id": user_id,
@@ -147,7 +147,7 @@ class RemindMe(commands.Cog):
             await interaction.send(embed=embed, ephemeral=True)
             return
 
-        remind_at = datetime.utcnow() + remind_time
+        remind_at = datetime.datetime.now(datetime.UTC) + remind_time
         result = await self.reminders.insert_one(
             {
                 "user_id": user_id,
@@ -220,7 +220,7 @@ class RemindMe(commands.Cog):
 
     @tasks.loop(seconds=600)
     async def check_reminders(self):
-        now = datetime.utcnow()
+        now = datetime.datetime.now(datetime.UTC)
         reminders_to_send = self.reminders.find({"remind_at": {"$lte": now}})
 
         async for reminder in reminders_to_send:

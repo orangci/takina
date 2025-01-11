@@ -24,7 +24,7 @@ def parse_iso8601(date_str):
             continue
     else:
         raise ValueError(f"Date string '{date_str}' is not in a recognized format.")
-    return dt.strftime("%B %-d, %Y at %-H.%M")
+    return int(dt.timestamp())
 
 
 class Wynncraft(commands.Cog):
@@ -79,7 +79,7 @@ class Wynncraft(commands.Cog):
         if online:
             embed.description += f"-# Currently online on {server}."
         else:
-            last_join = parse_iso8601(last_join)
+            last_join = f"<t:{parse_iso8601(last_join)}:R>"
             embed.description += f"-# Last seen {last_join}"
 
         if guild:
@@ -96,7 +96,7 @@ class Wynncraft(commands.Cog):
 
         embed.description += f"\n> **Playtime**: {playtime} hours"
 
-        join_date = parse_iso8601(join_date)
+        join_date = f"<t:{parse_iso8601(join_date)}>"
         embed.description += f"\n> **Joined**: {join_date}"
 
         embed.description += f"\n> **Mobs killed**: {mobs}"
