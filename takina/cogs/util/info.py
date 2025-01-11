@@ -2,6 +2,18 @@ import nextcord
 from nextcord.ext import commands
 from ..libs.oclib import *
 from config import *
+from datetime import datetime
+
+
+def parse_iso8601(date_str):
+    try:
+        dt = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S.%f%z")
+    except ValueError:
+        raise ValueError(
+            f"Date string '{date_str}' is not in the required format: '{fmt}'"
+        )
+
+    return int(dt.timestamp())
 
 
 class Info(commands.Cog):
@@ -52,18 +64,22 @@ class Info(commands.Cog):
     async def roleinfo(self, ctx: commands.Context, *, role: nextcord.Role):
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title=f"{emoji} Role Info - {role.name}",
+            title=f"{emoji} {role.name}",
             color=role.color,
             description=(
                 f"> **ID:** {role.id}\n"
                 f"> **Name:** {role.name}\n"
-                f"> **Color:** {str(role.color)}\n"
-                f"> **Position:** {role.position}\n"
+                f"> **Colour:** {str(role.color)}\n"
+                f"> **Position:** {len(ctx.guild.roles) - role.position}\n"
                 f"> **Mentionable:** {role.mentionable}\n"
+                f"> **Hoisted:** {role.hoist}\n"
+                f"> **Managed:** {role.managed}\n"
                 f"> **Members:** {len(role.members)}\n"
+                f"> **Created:** <t:{parse_iso8601(str(role.created_at))}>\n"
                 f"> **Permissions:** {', '.join([perm[0].replace('_', ' ').title() for perm in role.permissions if perm[1]])}"
             ),
         )
+
         embed.set_thumbnail(url=role.icon.url if role.icon else None)
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -145,18 +161,22 @@ class SlashInfo(commands.Cog):
     ):
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title=f"{emoji} Role Info - {role.name}",
+            title=f"{emoji} {role.name}",
             color=role.color,
             description=(
                 f"> **ID:** {role.id}\n"
                 f"> **Name:** {role.name}\n"
-                f"> **Color:** {str(role.color)}\n"
-                f"> **Position:** {role.position}\n"
+                f"> **Colour:** {str(role.color)}\n"
+                f"> **Position:** {len(interaction.guild.roles) - role.position}\n"
                 f"> **Mentionable:** {role.mentionable}\n"
+                f"> **Hoisted:** {role.hoist}\n"
+                f"> **Managed:** {role.managed}\n"
                 f"> **Members:** {len(role.members)}\n"
+                f"> **Created:** <t:{parse_iso8601(str(role.created_at))}>\n"
                 f"> **Permissions:** {', '.join([perm[0].replace('_', ' ').title() for perm in role.permissions if perm[1]])}"
             ),
         )
+
         embed.set_thumbnail(url=role.icon.url if role.icon else None)
         await interaction.send(embed=embed, ephemeral=True)
 
