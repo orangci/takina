@@ -64,11 +64,11 @@ class Starboard(commands.Cog):
                     )
                     if starboard_message:
                         updated_embed = self._create_embed(message, emoji_reaction)
-                        await starboard_message.edit(embed=updated_embed)
+                        await starboard_message.edit(embeds=updated_embed)
             else:
                 # Create a new starboard entry
                 embed = self._create_embed(message, emoji_reaction)
-                starboard_message = await starboard_channel.send(embed=embed)
+                starboard_message = await starboard_channel.send(embeds=embed)
 
                 # Save the starboard message ID to the database
                 await self.db.starboard.insert_one(
@@ -132,7 +132,7 @@ class Starboard(commands.Cog):
             )
             if starboard_message:
                 updated_embed = self._create_embed(message, emoji_reaction)
-                await starboard_message.edit(embed=updated_embed)
+                await starboard_message.edit(embeds=updated_embed)
 
     @nextcord.slash_command(
         name="starboard", description="Manage the starboard settings"
@@ -286,11 +286,10 @@ class Starboard(commands.Cog):
 
     def _create_embed(self, message: nextcord.Message, reaction: nextcord.Reaction):
         """Helper function to create the starboard embed."""
+
         embed = nextcord.Embed(
             title="Starred Message",
-            description=f"[Jump to Message]({message.jump_url})\n\n" + message.content
-            or f"[Jump to Message]({message.jump_url})\n\n"
-            + "Image / Other Media / No Content",
+            description=f"-# [Jump to Message]({message.jump_url})\n\n {message.content if message.content else "Image / Other Media / No Content\n"}",
             color=EMBED_COLOR,
         )
         embed.add_field(name="👤 Author", value=message.author.mention, inline=True)
@@ -299,12 +298,28 @@ class Starboard(commands.Cog):
             value=message.channel.mention,
             inline=True,
         )
+
         embed.add_field(
-            name="Reaction",
+            name=":sparkles: Reaction",
             value=f"{reaction.count} {reaction.emoji} reactions",
             inline=True,
         )
-        return embed
+
+        embed.url = message.jump_url
+        embed_list = [embed]
+
+        if message.attachments:
+            for attachment in message.attachments:
+                if "image" in str(attachment.content_type):
+                    if not embed.image:
+                        embed.set_image(url=attachment.url)
+                    else:
+                        new_embed = nextcord.Embed(
+                            color=EMBED_COLOR, url=message.jump_url
+                        )
+                        new_embed.set_image(url=attachment.url)
+                        embed_list.append(new_embed)
+        return embed_list
 
 
 def setup(bot: commands.Bot):
