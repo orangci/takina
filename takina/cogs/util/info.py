@@ -25,6 +25,10 @@ class Info(commands.Cog):
         roles = [role for role in member.roles if role != ctx.guild.default_role]
 
         dangerous_permissions = [
+            "manage_events",
+            "mention_everyone",
+            "create_events",
+            "manage_threads",
             "administrator",
             "ban_members",
             "kick_members",
@@ -155,6 +159,10 @@ class SlashInfo(commands.Cog):
         ]
 
         dangerous_permissions = [
+            "manage_events",
+            "mention_everyone",
+            "create_events",
+            "manage_threads",
             "administrator",
             "ban_members",
             "kick_members",
