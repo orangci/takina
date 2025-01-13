@@ -162,7 +162,7 @@ class SubdomainUtils(commands.Cog):
             )
         except DomainNotExistError:
             embed = nextcord.Embed(color=ERROR_COLOR)
-            embed.description = ":x: The domain queried cannot be found. Aborting."
+            embed.description = ":x: The domain queried does not exist."
             await ctx.reply(embed=embed, mention_author=False)
             return
         embed = nextcord.Embed(
@@ -263,7 +263,7 @@ class SubdomainUtilsSlash(commands.Cog):
             )
         except DomainNotExistError:
             embed = nextcord.Embed(color=ERROR_COLOR)
-            embed.description = ":x: Domain requested cannot be found. Aborting."
+            embed.description = ":x: The domain queried does not exist."
             await interaction.send(embed=embed, ephemeral=True)
 
 

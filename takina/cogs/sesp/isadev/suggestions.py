@@ -117,8 +117,10 @@ class Suggestion(commands.Cog):
         channel = interaction.guild.get_channel(self.suggestion_channel)
         channel = cast(nextcord.TextChannel, channel)
         message = await channel.send(embed=embed)
-        await message.add_reaction("✅")
-        await message.add_reaction("❌")
+        success_react = await interaction.guild.fetch_emoji(1249728142084673690)
+        skullsob_react = await interaction.guild.fetch_emoji(1229339480884908085)
+        await message.add_reaction(success_react)
+        await message.add_reaction(skullsob_react)
 
         log_channel = self.bot.get_channel(955105139461607444)
         log_channel = cast(nextcord.TextChannel, log_channel)
