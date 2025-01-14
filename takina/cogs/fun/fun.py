@@ -414,7 +414,7 @@ class SlashFun(commands.Cog):
         )
         if interaction.user.id in guaranteed_marriages:
             embed.description = "Yes! I love you too. I can't wait to get married!"
-            interaction.send(embed=embed, ephemeral=True)
+            await interaction.send(embed=embed, ephemeral=True)
             return
         
         choice = bool(random.getrandbits(1))
