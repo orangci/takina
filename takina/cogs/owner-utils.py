@@ -4,49 +4,8 @@ import os
 from __main__ import cogs, cogs_blacklist
 from config import *
 import subprocess
-from __main__ import EMBED_COLOR
 import importlib
 from .libs import oclib
-
-
-class GuildListMenu(menus.ListPageSource):
-    def __init__(self, guilds):
-        super().__init__(guilds, per_page=10)
-
-    async def format_page(self, menu, guilds):
-        embed = nextcord.Embed(
-            title="Bot Guilds",
-            description="\n".join(
-                [
-                    f"`{i + 1}.` **{guild.name}** - {guild.member_count} members"
-                    for i, guild in enumerate(guilds)
-                ]
-            ),
-            color=EMBED_COLOR,
-        )
-        return embed
-
-
-class GuildListView(nextcord.ui.View):
-    def __init__(self, source):
-        super().__init__()
-        self.menu = menus.MenuPages(source=source, clear_items_after=True)
-
-    @nextcord.ui.button(label="Previous", style=nextcord.ButtonStyle.grey)
-    async def previous_page(
-        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
-    ):
-        await self.menu.show_checked_page(
-            self.menu.current_page - 1, interaction=interaction
-        )
-
-    @nextcord.ui.button(label="Next", style=nextcord.ButtonStyle.grey)
-    async def next_page(
-        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
-    ):
-        await self.menu.show_checked_page(
-            self.menu.current_page + 1, interaction=interaction
-        )
 
 
 class OwnerUtils(commands.Cog):
@@ -258,11 +217,55 @@ class OwnerUtils(commands.Cog):
 
         current_dir_result = run_git_pull(current_dir)
 
-        message = (
-            f"**Git Pull Results:**\n\n**Current Directory:**\n{current_dir_result}"
-        )
+        embed = nextcord.Embed()
 
-        await ctx.reply(message, mention_author=False)
+        if "Already up to date." in current_dir_result:
+            # No changes
+            embed.color = ERROR_COLOR
+            embed.description = ":x: I'm already up to date with upstream."
+        elif "Updating" in current_dir_result:
+            # Successfully pulled
+            modified = []
+            created = []
+            deleted = []
+            commit_id = None
+
+            for line in current_dir_result.splitlines():
+                if line.startswith("Updating"):
+                    commit_id = line.split("..")[-1].strip()  # Extract latest commit ID
+                if line.startswith("   "):  # Parse files from git output
+                    if "modified:" in line:
+                        modified.append(line.split("modified:")[1].strip())
+                    elif "create mode" in line:
+                        created.append(line.split("create mode")[1].strip())
+                    elif "delete mode" in line:
+                        deleted.append(line.split("delete mode")[1].strip())
+
+            changes = ""
+            if modified:
+                changes += f"**Modified**:\n{', '.join(modified)}\n"
+            if created:
+                changes += f"**Created**:\n{', '.join(created)}\n"
+            if deleted:
+                changes += f"**Deleted**:\n{', '.join(deleted)}\n"
+
+            embed.color = EMBED_COLOR
+            embed.description = (
+                "✅ Successfully pulled changes from upstream git repository.\n\n"
+                f"**Changes made:**\n{changes if changes else 'No detailed changes found.'}"
+            )
+
+            if commit_id:
+                embed.set_footer(text=f"Commit ID: {commit_id}")
+        else:
+            # Error occurred
+            embed.color = ERROR_COLOR
+            embed.description = (
+                f":x: An error occurred:\n```\n{current_dir_result.strip()}\n```"
+            )
+
+        # Send the embed
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True)
     @commands.is_owner()
