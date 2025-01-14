@@ -211,21 +211,21 @@ class Fun(commands.Cog):
             # Add more as needed, orangc.
         ]
         embed = nextcord.embed(
-            title=f"<@{interaction.user.id}> proposed to takina",
+            title=f"{ctx.author.mention} proposed to {BOT_NAME}",
             color=EMBED_COLOR
         )
         if ctx.author.id in guaranteed_marriages:
             embed.description = "Yes! I love you too. I can't wait to get married!"
-            ctx.reply(embed=embed, mention_author=False)
+            await ctx.reply(embed=embed, mention_author=False)
             return
         
         choice = bool(random.getrandbits(1))
         if choice == True:
             embed.description = "Sure, I will marry you."
-            ctx.reply(embed=embed, mention_author=False)
+            await ctx.reply(embed=embed, mention_author=False)
         else:
             embed.description = "No, stay away from me."
-            ctx.reply(embed=embed, mention_author=False)
+            await ctx.reply(embed=embed, mention_author=False)
 
 class SlashFun(commands.Cog):
     def __init__(self, bot):
@@ -398,7 +398,7 @@ class SlashFun(commands.Cog):
 
     @nextcord.slashcommand(
         name="willyoumarryme",
-        description="Takina replies to wether or not marriage is feasible."
+        description="Takina replies to whether or not marriage is feasible."
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def willyoumarryme(self, interaction: nextcord.Interaction):
@@ -409,7 +409,7 @@ class SlashFun(commands.Cog):
             # Add more as needed, orangc.
         ]
         embed = nextcord.Embed(
-            title=f"<@{interaction.user.id}> proposed to takina",
+            title=f"{interaction.user.mention} proposed to {BOT_NAME}",
             color=EMBED_COLOR
         )
         if interaction.user.id in guaranteed_marriages:
@@ -420,10 +420,10 @@ class SlashFun(commands.Cog):
         choice = bool(random.getrandbits(1))
         if choice == True:
             embed.description = "Sure, I will marry you."
-            interaction.send(embed=embed, ephemeral=True)
+            await interaction.send(embed=embed, ephemeral=True)
         else:
             embed.description = "No, stay away from me."
-            interaction.send(embed=embed, ephemeral=True)
+            await interaction.send(embed=embed, ephemeral=True)
 
 def setup(bot):
     bot.add_cog(Fun(bot))
