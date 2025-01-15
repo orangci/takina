@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ext import commands, application_checks
 from motor.motor_asyncio import AsyncIOMotorClient
 from config import *
+from nextcord.ui import Button, View
 
 
 class Starboard(commands.Cog):
@@ -63,12 +64,16 @@ class Starboard(commands.Cog):
                         starboard_message_id
                     )
                     if starboard_message:
-                        updated_embed = self._create_embed(message, emoji_reaction)
-                        await starboard_message.edit(embeds=updated_embed)
+                        updated_embed, view = self._create_embed(
+                            message, emoji_reaction
+                        )
+                        await starboard_message.edit(embeds=updated_embed, view=view)
             else:
                 # Create a new starboard entry
-                embed = self._create_embed(message, emoji_reaction)
-                starboard_message = await starboard_channel.send(embeds=embed)
+                embed, view = self._create_embed(message, emoji_reaction)
+                starboard_message = await starboard_channel.send(
+                    embeds=embed, view=view
+                )
 
                 # Save the starboard message ID to the database
                 await self.db.starboard.insert_one(
@@ -131,8 +136,8 @@ class Starboard(commands.Cog):
                 starboard_message_id
             )
             if starboard_message:
-                updated_embed = self._create_embed(message, emoji_reaction)
-                await starboard_message.edit(embeds=updated_embed)
+                updated_embed, view = self._create_embed(message, emoji_reaction)
+                await starboard_message.edit(embeds=updated_embed, view=view)
 
     @nextcord.slash_command(
         name="starboard", description="Manage the starboard settings"
@@ -289,21 +294,29 @@ class Starboard(commands.Cog):
 
         embed = nextcord.Embed(
             title="Starred Message",
-            description=f"-# [Jump to Message]({message.jump_url})\n\n {message.content if message.content else "*No text content*\n"}",
+            description=message.content if message.content else "*No text content*\n",
             color=EMBED_COLOR,
         )
-        embed.add_field(name="👤 Author", value=message.author.mention, inline=True)
-        embed.add_field(
-            name=":hash: Channel",
-            value=message.channel.mention,
-            inline=True,
+
+        embed.set_author(
+            name=message.author.name,
+            icon_url=message.author.avatar.url,
+            url=f"https://discord.com/users/{message.author.id}",
         )
 
         embed.add_field(
-            name=":sparkles: Reaction",
+            name=":sparkles: Reactions",
             value=f"{reaction.count} {reaction.emoji} reactions",
             inline=True,
         )
+
+        view = View()
+        button = Button(
+            style=nextcord.ButtonStyle.primary,
+            label="Jump to Message",
+            url=message.jump_url,
+        )
+        view.add_item(button)
 
         embed.url = message.jump_url
         embed_list = [embed]
@@ -319,7 +332,7 @@ class Starboard(commands.Cog):
                         )
                         new_embed.set_image(url=attachment.url)
                         embed_list.append(new_embed)
-        return embed_list
+        return embed_list, view
 
 
 def setup(bot: commands.Bot):
