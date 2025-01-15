@@ -112,7 +112,7 @@ class Suggestion(commands.Cog):
         embed = nextcord.Embed(
             title="Suggestion", description=suggestion, color=EMBED_COLOR
         )
-        embed.set_footer(text=f"By {interaction.user.name} ({interaction.user.id})")
+        embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar, url=f"https://discord.com/users/{interaction.user.id}")
 
         channel = interaction.guild.get_channel(self.suggestion_channel)
         channel = cast(nextcord.TextChannel, channel)
