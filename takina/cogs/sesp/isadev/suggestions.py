@@ -109,10 +109,12 @@ class Suggestion(commands.Cog):
             name="suggestion", description="Write your suggestion here.", required=True
         ),
     ):
-        embed = nextcord.Embed(
-            title="Suggestion", description=suggestion, color=EMBED_COLOR
+        embed = nextcord.Embed(description=f"### **Suggestion**:\n\n{suggestion}", color=EMBED_COLOR)
+        embed.set_author(
+            name=interaction.user.name,
+            icon_url=interaction.user.avatar.url,
+            url=f"https://discord.com/users/{interaction.user.id}",
         )
-        embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar.url, url=f"https://discord.com/users/{interaction.user.id}")
 
         channel = interaction.guild.get_channel(self.suggestion_channel)
         channel = cast(nextcord.TextChannel, channel)
