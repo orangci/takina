@@ -47,10 +47,8 @@ class Info(commands.Cog):
 
         permissions_str = ", ".join(dangerous_perms) if dangerous_perms else None
 
-        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             color=EMBED_COLOR,
-            title=f"{emoji} {member}",
             description=(
                 f"> **Username:** {member.name}\n"
                 f"> **Display Name:** {member.display_name}\n"
@@ -59,6 +57,12 @@ class Info(commands.Cog):
                 f"> **Joined on:** <t:{int(member.joined_at.timestamp())}:D> (<t:{int(member.joined_at.timestamp())}:R>)\n"
                 f"> **Roles ({len(roles)}):** {' '.join([role.mention for role in reversed(roles)])}"
             ),
+        )
+
+        embed.set_author(
+            name=member.name,
+            icon_url=member.avatar.url if member.avatar.url else None,
+            url=f"https://discord.com/users/{member.id}",
         )
 
         if permissions_str:
@@ -125,6 +129,7 @@ class Info(commands.Cog):
                 f"> **Roles:** {len(guild.roles)}\n"
                 f"> **Channels:** {len(guild.channels)}\n"
                 f"> **Emojis:** {len(guild.emojis)} emojis and {len(guild.stickers)} stickers\n"
+                f"> **Boosts:** Tier {guild.premium_tier} — {guild.premium_subscription_count} boosts\n"
             ),
         )
         if guild.description:
@@ -181,10 +186,8 @@ class SlashInfo(commands.Cog):
 
         permissions_str = ", ".join(dangerous_perms) if dangerous_perms else None
 
-        emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             color=EMBED_COLOR,
-            title=f"{emoji} {member}",
             description=(
                 f"> **Username:** {member.name}\n"
                 f"> **Display Name:** {member.display_name}\n"
@@ -193,6 +196,12 @@ class SlashInfo(commands.Cog):
                 f"> **Joined on:** <t:{int(member.joined_at.timestamp())}:D> (<t:{int(member.joined_at.timestamp())}:R>)\n"
                 f"> **Roles ({len(roles)}):** {' '.join([role.mention for role in reversed(roles)])}"
             ),
+        )
+
+        embed.set_author(
+            name=member.name,
+            icon_url=member.avatar.url if member.avatar.url else None,
+            url=f"https://discord.com/users/{member.id}",
         )
 
         if permissions_str:
@@ -262,6 +271,7 @@ class SlashInfo(commands.Cog):
                 f"> **Roles:** {len(guild.roles)}\n"
                 f"> **Channels:** {len(guild.channels)}\n"
                 f"> **Emojis:** {len(guild.emojis)} emojis and {len(guild.stickers)} stickers\n"
+                f"> **Boosts:** Tier {guild.premium_tier} — {guild.premium_subscription_count} boosts\n"
             ),
         )
         if guild.description:

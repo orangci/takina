@@ -8,6 +8,7 @@ Using the Dockerfile or Nix. You must set the env variables in a `.env` file; ch
 ## TODO
 - (long term) document all code with comments
 - add time limits to giveaway command and other improvements
+- add server avatar support to the avatar command
 
 ## License
 [Here.](./LICENSE)
