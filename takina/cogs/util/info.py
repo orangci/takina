@@ -11,6 +11,7 @@ class Info(commands.Cog):
     @commands.command(
         name="userinfo",
         help="Fetch information about a user. \nUsage: `userinfo <user>` or just `userinfo` if you want to fetch information about yourself.",
+        aliases=["ui"],
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def userinfo(self, ctx: commands.Context, *, member: str = None):
@@ -84,6 +85,7 @@ class Info(commands.Cog):
     @commands.command(
         name="roleinfo",
         help="Fetch information about a role. \nUsage: `Usage: roleinfo <role>`.",
+        aliases=["ri"],
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def roleinfo(self, ctx: commands.Context, *, role: nextcord.Role):
@@ -111,6 +113,7 @@ class Info(commands.Cog):
     @commands.command(
         name="serverinfo",
         help="Fetch information about the server. \nUsage: `serverinfo`.",
+        aliases=["si"],
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def serverinfo(self, ctx: commands.Context):
