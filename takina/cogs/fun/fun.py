@@ -212,7 +212,7 @@ class Fun(commands.Cog):
             713254655999868931
             # Add more as needed, orangc.
         ]
-        embed = nextcord.embed(
+        embed = nextcord.Embed(
             title=f"{ctx.author.mention} proposed to {BOT_NAME}",
             color=EMBED_COLOR
         )
