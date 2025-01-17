@@ -201,7 +201,8 @@ class Fun(commands.Cog):
 
     @commands.command(
         name="willyoumarryme",
-        help="Takina replies to wether or not marriage is feasible."
+        help="Takina replies to whether or not marriage is feasible.",
+        hidden=True
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def willyoumarryme(self, ctx: commands.Context):
