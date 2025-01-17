@@ -214,7 +214,7 @@ class Fun(commands.Cog):
             # Add more as needed, orangc.
         ]
         embed = nextcord.Embed(
-            description=f"### {ctx.author.mention} proposed to {BOT_NAME}",
+            description=f"### {ctx.author.mention} proposed to {BOT_NAME}\n\n",
             color=EMBED_COLOR
         )
         if ctx.author.id in guaranteed_marriages:
