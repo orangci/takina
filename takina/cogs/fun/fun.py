@@ -397,36 +397,6 @@ class SlashFun(commands.Cog):
             color=EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
-        
-
-    @nextcord.slashcommand(
-        name="willyoumarryme",
-        description="Takina replies to whether or not marriage is feasible."
-    )
-    @commands.cooldown(1, 1, commands.BucketType.user)
-    async def willyoumarryme(self, interaction: nextcord.Interaction):
-        guaranteed_marriages = [
-            1040303561847881729,
-            961063229168164864,
-            713254655999868931
-            # Add more as needed, orangc.
-        ]
-        embed = nextcord.Embed(
-            title=f"{interaction.user.mention} proposed to {BOT_NAME}",
-            color=EMBED_COLOR
-        )
-        if interaction.user.id in guaranteed_marriages:
-            embed.description = "Yes! I love you too. I can't wait to get married!"
-            await interaction.send(embed=embed, ephemeral=True)
-            return
-
-        choice = bool(random.getrandbits(1))
-        if choice == True:
-            embed.description = "Sure, I will marry you."
-            await interaction.send(embed=embed, ephemeral=True)
-        else:
-            embed.description = "No, stay away from me."
-            await interaction.send(embed=embed, ephemeral=True)
 
 
 def setup(bot):
