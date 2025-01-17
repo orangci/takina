@@ -202,7 +202,8 @@ class Fun(commands.Cog):
     @commands.command(
         name="willyoumarryme",
         help="Takina replies to whether or not marriage is feasible.",
-        hidden=True
+        hidden=True,
+        aliases=["will you marry me"],
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def willyoumarryme(self, ctx: commands.Context):
@@ -213,20 +214,20 @@ class Fun(commands.Cog):
             # Add more as needed, orangc.
         ]
         embed = nextcord.Embed(
-            title=f"{ctx.author.mention} proposed to {BOT_NAME}",
+            description=f"### {ctx.author.mention} proposed to {BOT_NAME}",
             color=EMBED_COLOR
         )
         if ctx.author.id in guaranteed_marriages:
-            embed.description = "Yes! I love you too. I can't wait to get married!"
+            embed.description += "Yes! I love you too. I can't wait to get married!"
             await ctx.reply(embed=embed, mention_author=False)
             return
 
         choice = bool(random.getrandbits(1))
         if choice == True:
-            embed.description = "Sure, I will marry you."
+            embed.description += "Sure, I will marry you."
             await ctx.reply(embed=embed, mention_author=False)
         else:
-            embed.description = "No, stay away from me."
+            embed.description += "No, stay away from me."
             await ctx.reply(embed=embed, mention_author=False)
 
 
