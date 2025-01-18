@@ -42,6 +42,7 @@ from nextcord.ext import application_checks as ac, commands
 from nextcord import Interaction, OptionConverter
 from config import *
 from .libs.lib import *
+import random
 
 
 class Domain(TypedDict):
@@ -195,6 +196,37 @@ class SubdomainUtils(commands.Cog):
                 color=EMBED_COLOR,
                 description=f"Congratulations, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is available!",
             )
+            await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.command(
+        name="willyoumarryme",
+        help="Takina replies to whether or not marriage is feasible.",
+        hidden=True,
+    )
+    @is_in_guild()
+    @commands.cooldown(1, 1, commands.BucketType.user)
+    async def willyoumarryme(self, ctx: commands.Context):
+        guaranteed_marriages = [
+            1040303561847881729,
+            961063229168164864,
+            713254655999868931,
+            # Add more as needed, orangc.
+        ]
+        embed = nextcord.Embed(
+            description=f"### {ctx.author.mention} proposed to {BOT_NAME}\n\n",
+            color=EMBED_COLOR,
+        )
+        if ctx.author.id in guaranteed_marriages:
+            embed.description += "Yes! I love you too. I can't wait to get married!"
+            await ctx.reply(embed=embed, mention_author=False)
+            return
+
+        choice = bool(random.getrandbits(1))
+        if choice == True:
+            embed.description += "Sure, I will marry you."
+            await ctx.reply(embed=embed, mention_author=False)
+        else:
+            embed.description += "No, stay away from me."
             await ctx.reply(embed=embed, mention_author=False)
 
 

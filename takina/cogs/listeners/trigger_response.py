@@ -95,7 +95,9 @@ class TriggerResponses(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.has_permissions(manage_channels=True)
-    @trigger.command(name="remove", help="Usage: `trigger remove <triggername>`", aliases=["delete"])
+    @trigger.command(
+        name="remove", help="Usage: `trigger remove <triggername>`", aliases=["delete"]
+    )
     async def remove_trigger(self, ctx: commands.Context, name: str):
         """Remove an existing trigger."""
         guild_data = await self.get_guild_triggers(ctx.guild.id)
