@@ -94,7 +94,7 @@ class Fun(commands.Cog):
 
     @commands.command(
         name="avatar",
-        aliases=["av"],
+        aliases=["av", "pfp"],
         help="Fetch the Discord user avatar of any member including yourself. \nUsage: `avatar <username>` or just `avatar` to fetch your own avatar.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
