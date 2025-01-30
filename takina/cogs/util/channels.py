@@ -26,7 +26,7 @@ class ChannelManagement(commands.Cog):
 
         await channel.edit(slowmode_delay=duration_parsed)
         embed = nextcord.Embed(
-            description=f" :timer: Slowmode set to {duration} seconds in {channel.mention}.",
+            description=f" :timer: Slowmode set to {duration} in {channel.mention}.",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
@@ -99,7 +99,7 @@ class SlashChannelManagement(commands.Cog):
 
         await channel.edit(slowmode_delay=duration_parsed)
         embed = nextcord.Embed(
-            description=f":timer: Slowmode set to {duration} seconds in {channel.mention}.",
+            description=f":timer: Slowmode set to {duration} in {channel.mention}.",
             color=EMBED_COLOR,
         )
         await interaction.send(embed=embed)
