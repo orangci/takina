@@ -9,6 +9,8 @@ Using the Dockerfile or Nix. You must set the env variables in a `.env` file; ch
 - (long term) document all code with comments
 - add time limits to giveaway command and other improvements
 - add server avatar support to the avatar command
+- refactor reports command
+- fix a neko commands error
 
 ## License
 [Here.](./LICENSE)
