@@ -19,12 +19,12 @@ class ChannelManagement(commands.Cog):
         self, ctx: commands.Context, duration: str, channel: nextcord.TextChannel = None
     ):
         channel = channel or ctx.channel
-        duration = duration_calculator(duration, slowmode=True)
-        if isinstance(duration, nextcord.Embed):
-            await ctx.reply(embed=duration, mention_author=False)
+        duration_parsed = duration_calculator(duration, slowmode=True)
+        if isinstance(duration_parsed, nextcord.Embed):
+            await ctx.reply(embed=duration_parsed, mention_author=False)
             return
 
-        await channel.edit(slowmode_delay=duration)
+        await channel.edit(slowmode_delay=duration_parsed)
         embed = nextcord.Embed(
             description=f" :timer: Slowmode set to {duration} seconds in {channel.mention}.",
             color=EMBED_COLOR,
@@ -92,12 +92,12 @@ class SlashChannelManagement(commands.Cog):
         ),
     ):
         channel = channel or interaction.channel
-        duration = duration_calculator(duration, slowmode=True)
-        if isinstance(duration, nextcord.Embed):
-            await interaction.send(embed=embed, ephemeral=True)
+        duration_parsed = duration_calculator(duration, slowmode=True)
+        if isinstance(duration_parsed, nextcord.Embed):
+            await interaction.send(embed=duration_parsed, ephemeral=True)
             return
 
-        await channel.edit(slowmode_delay=duration)
+        await channel.edit(slowmode_delay=duration_parsed)
         embed = nextcord.Embed(
             description=f":timer: Slowmode set to {duration} seconds in {channel.mention}.",
             color=EMBED_COLOR,
