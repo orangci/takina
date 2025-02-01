@@ -22,7 +22,7 @@ class Snipe(commands.Cog):
 
     @commands.command(
         name="snipe",
-        help="Snipe the last deleted message in a channel. \nUsage: `snipe`.\nRequires the Moderator role or higher."
+        help="Snipe the last deleted message in a channel. \nUsage: `snipe`."
     )
     async def snipe(self, ctx: commands.Context):
         nolifer_role_id = 1235232374862643301  
