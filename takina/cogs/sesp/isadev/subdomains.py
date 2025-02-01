@@ -210,6 +210,7 @@ class SubdomainUtils(commands.Cog):
             1040303561847881729,
             961063229168164864,
             713254655999868931,
+            1049263707177353247,
             # Add more as needed, orangc.
         ]
         embed = nextcord.Embed(
