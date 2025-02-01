@@ -22,9 +22,24 @@ class Snipe(commands.Cog):
 
     @commands.command(
         name="snipe",
-        help="Snipe the last deleted message in a channel. \nUsage: `snipe`.",
+        help="Snipe the last deleted message in a channel. \nUsage: `snipe`.\nRequires the Moderator role or higher."
     )
     async def snipe(self, ctx: commands.Context):
+        nolifer_role_id = 1235232374862643301  
+        nolifer_role = ctx.author.guild.get_role(nolifer_role_id)
+
+        if nolifer_role is None:
+            await ctx.send("The No Lifer role does not exist in this server.")
+            return
+
+        has_moderator_role = nolifer_role in ctx.author.roles
+        if not has_moderator_role:
+            if ctx.author.top_role.position >= nolifer_role.position:
+                pass 
+            else:
+                await ctx.send("You need the Moderator role or higher to use this command.")
+                return
+            
         sniped_message = self.sniped_messages.get(ctx.channel.id)
 
         # Handle if there's neither text nor attachments
