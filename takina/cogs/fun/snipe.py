@@ -24,7 +24,6 @@ class Snipe(commands.Cog):
         name="snipe",
         help="Snipe the last deleted message in a channel. \nUsage: `snipe`.",
     )
-    @commands.has_permissions(manage_messages=True)
     async def snipe(self, ctx: commands.Context):
         sniped_message = self.sniped_messages.get(ctx.channel.id)
 
