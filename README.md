@@ -31,8 +31,8 @@ In the future, this will be managed with a proper flake.
 
 - `git clone https://github.com/orangci/takina && cd takina`
 - Set all the required environment variables in the `.env` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the `TOKEN` (Discord bot token), `HASDB=yes`, and  `MONGO` (your MongoDB URI.)
-- `docker build -t takina:latest .`
-- `docker run -d -p 8000:8000 --name takina takina:latest` # modify the ports as you see fit
+- `docker build --tag 'takina' .`
+- `docker run 'takina'`
 
 
 ## Legalese
