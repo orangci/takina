@@ -20,7 +20,7 @@ Before proceeding, I am assuming that you have a running MongoDB database. The m
 *Assuming that you have `git` installed.*
 
 - `git clone https://github.com/orangci/takina && cd takina`
-- Set all the required environment variables in the `.env` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the TOKEN (Discord bot token), HASDB=yes, and  MONGO (your MongoDB URI.)
+- Set all the required environment variables in the `.env` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the `TOKEN` (Discord bot token), `HASDB=yes`, and  `MONGO` (your MongoDB URI.)
 - Run `nix-shell`; You may need to run `nix-shell` twice if the first time doesn't start the bot up.
 
 In the future, this will be managed with a proper flake.
@@ -30,7 +30,7 @@ In the future, this will be managed with a proper flake.
 *Assuming you have `git` and `docker` installed.*
 
 - `git clone https://github.com/orangci/takina && cd takina`
-- Set all the required environment variables in the `.env` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the TOKEN (Discord bot token), HASDB=yes, and  MONGO (your MongoDB URI.)
+- Set all the required environment variables in the `.env` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the `TOKEN` (Discord bot token), `HASDB=yes`, and  `MONGO` (your MongoDB URI.)
 - `docker build -t takina:latest .`
 - `docker run -d -p 8000:8000 --name takina takina:latest` # modify the ports as you see fit
 
