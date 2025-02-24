@@ -9,7 +9,7 @@ For a list of features and other information please visit: https://orangc.net/ta
 - add server avatar support to the avatar command
 - refactor reports command
 - fix a neko commands error
-- pull request embed footer, the time
+- issue refresh buttons
 
 ## Selfhosting
 Before proceeding, I am assuming that you have a running MongoDB database. The majority of Takina's functionality depends on a MongoDB instance being available. A guide on selfhosting MongoDB with Docker is available [here](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker/).

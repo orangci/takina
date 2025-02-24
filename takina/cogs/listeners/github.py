@@ -5,11 +5,23 @@ from nextcord import ui
 from config import *
 from typing import Optional
 from ..libs.oclib import request
+from datetime import datetime
 
 GITHUB_BASE_URL = "https://api.github.com"
 
 REPO_PATTERN = re.compile(r"repo:([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)")
 PR_ISSUE_PATTERN = re.compile(r"([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)#(\d+)")
+
+
+def format_timestamp(iso_timestamp: str) -> str:
+    dt = datetime.strptime(iso_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    day_suffix = (
+        "th"
+        if 11 <= dt.day <= 13
+        else {1: "st", 2: "nd", 3: "rd"}.get(dt.day % 10, "th")
+    )
+    formatted_time = dt.strftime(f"%B {dt.day}{day_suffix}, %Y at %H:%M")
+    return formatted_time
 
 
 class GitHubCog(commands.Cog):
@@ -50,6 +62,7 @@ class GitHubCog(commands.Cog):
             if pr_data.get("pull_request", {}).get("merged_at")
             else color
         )
+        updated_at_formatted = format_timestamp(pr_data["updated_at"])
         return (
             nextcord.Embed(
                 title=f"{pr_data['title']} - {'Issue' if is_issue else 'Pull Request'} #{pr_data['number']}",
@@ -59,7 +72,7 @@ class GitHubCog(commands.Cog):
             )
             .add_field(name="Status", value=pr_data["state"].capitalize())
             .add_field(name="Comments", value=pr_data["comments"])
-            .set_footer(text=f"Last updated: {pr_data['updated_at']}")
+            .set_footer(text=f"Last updated on {updated_at_formatted}")
         )
 
     @commands.Cog.listener()
