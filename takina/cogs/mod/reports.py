@@ -49,9 +49,11 @@ class Reports(commands.Cog):
         config = await self.get_server_config(guild_id)
 
         if not config:
-            await interaction.response.send_message(
-                "Reports system is not set up. Please contact an admin.", ephemeral=True
+            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed.description = (
+                ":x: Reports system is not set up. Please contact an admin."
             )
+            await interaction.send(embed=embed, ephemeral=True)
             return
 
         moderator_role_id = config.get("moderator_role_id")
@@ -59,9 +61,9 @@ class Reports(commands.Cog):
 
         reports_channel = self.bot.get_channel(reports_channel_id)
         if not reports_channel:
-            await interaction.response.send_message(
-                "Reports channel not found.", ephemeral=True
-            )
+            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed.description = ":x: Reports channel not found."
+            await interaction.send(embed=embed, ephemeral=True)
             return
 
         embed = nextcord.Embed(
@@ -90,7 +92,7 @@ class Reports(commands.Cog):
             description=f"✅ Report successfully submitted. Thank you for helping to keep our server safe!",
             color=nextcord.Color.green(),
         )
-        await interaction.response.send_message(embed=submitted_embed, ephemeral=True)
+        await interaction.send(embed=submitted_embed, ephemeral=True)
 
     @nextcord.slash_command(
         name="admin_report", description="Set up the report system for this server."
@@ -110,8 +112,11 @@ class Reports(commands.Cog):
 
         await self.set_server_config(guild_id, mod_role.id, reports_channel.id)
 
-        await interaction.response.send_message(
-            f"Successfully set up the report system. Moderator role: {mod_role.mention}, reports channel: {reports_channel.mention}",
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed.description = f"✅ Successfully set up the report system. Moderator role: {mod_role.mention}, reports channel: {reports_channel.mention}"
+
+        await interaction.send(
+            embed=embed,
             ephemeral=True,
         )
 
