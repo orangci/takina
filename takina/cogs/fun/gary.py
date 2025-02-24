@@ -5,7 +5,6 @@ from nextcord.ext import commands
 from config import *
 
 
-
 async def gary_api(cat: str) -> nextcord.Embed:
     url = f"https://garybot.dev/api/{cat}"
     data = await request(url)
@@ -13,7 +12,7 @@ async def gary_api(cat: str) -> nextcord.Embed:
 
     embed = nextcord.Embed(color=EMBED_COLOR)
     embed.set_image(url=image_url)
-    
+
     return embed
 
 

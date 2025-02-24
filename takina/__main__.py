@@ -71,6 +71,26 @@ def load_exts(directory):
     return cogs
 
 
+REQUIRED_ENV_VARS = [
+    "TOKEN",
+    "HASDB",
+    "MONGO",
+    "BOT_NAME",
+    "DB_NAME",
+    "EMBED_COLOR",
+]
+
+
+def check_env_vars():
+    missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
+    if missing_vars:
+        raise EnvironmentError(
+            f"Missing required environment variables: {', '.join(missing_vars)}"
+        )
+
+
+check_env_vars()
+
 bot.load_extension("onami")
 
 cogs_blacklist = []
