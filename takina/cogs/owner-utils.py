@@ -241,18 +241,9 @@ class OwnerUtils(commands.Cog):
                     elif "delete mode" in line:
                         deleted.append(line.split("delete mode")[1].strip())
 
-            changes = ""
-            if modified:
-                changes += f"**Modified**:\n{', '.join(modified)}\n"
-            if created:
-                changes += f"**Created**:\n{', '.join(created)}\n"
-            if deleted:
-                changes += f"**Deleted**:\n{', '.join(deleted)}\n"
-
             embed.color = EMBED_COLOR
             embed.description = (
-                "✅ Successfully pulled changes from upstream git repository.\n\n"
-                f"**Changes made:**\n{changes if changes else 'No detailed changes found.'}"
+                "✅ Successfully pulled changes from upstream git repository."
             )
 
             if commit_id:
