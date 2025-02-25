@@ -43,6 +43,7 @@ from nextcord import Interaction, OptionConverter
 from config import *
 from .libs.lib import *
 import random
+import json
 
 
 class Domain(TypedDict):
@@ -88,6 +89,31 @@ class SubdomainUtils(commands.Cog):
 
     def __init__(self, bot: commands.Bot) -> None:
         self._bot: commands.Bot = bot
+        self.reserved_domains = []
+
+    async def fetch_reserved_domains(self) -> None:
+        """Fetches the list of reserved domains."""
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/util/reserved.json"
+            ) as response:
+                if response.status == 200:
+                    text_data = await response.text()
+                    try:
+                        self.reserved_domains = json.loads(text_data)
+                    except json.JSONDecodeError:
+                        print("Failed to parse reserved domains as JSON.")
+                        self.reserved_domains = []
+                else:
+                    print(
+                        f"Failed to fetch reserved domains. Status code: {response.status}"
+                    )
+                    self.reserved_domains = []
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        """Fetch reserved domains when the bot is ready."""
+        await self.fetch_reserved_domains()
 
     @classmethod
     def fetch_description_about_a_domain(cls, data: Domain):
@@ -146,7 +172,7 @@ class SubdomainUtils(commands.Cog):
     async def whois(
         self, ctx: commands.Context, domain: SubdomainNameConverter
     ) -> None:
-        """Lookup information about an is-a.dev domain. Usage: `a?whois domain.is-a.dev`."""
+        """Lookup information about an is-a.dev domain. Usage: `whois domain.is-a.dev`."""
         k = nextcord.ui.View()
         k.add_item(
             nextcord.ui.Button(
@@ -179,7 +205,15 @@ class SubdomainUtils(commands.Cog):
     async def check(
         self, ctx: commands.Context, domain: SubdomainNameConverter
     ) -> None:
-        """Checks if an is-a.dev domain is available. Usage: `a?check domain.is-a.dev`."""
+        """Checks if an is-a.dev domain is available. Usage: `check domain.is-a.dev`."""
+        if domain in self.reserved_domains:
+            embed = nextcord.Embed(
+                color=EMBED_COLOR,
+                description=f":x: Sorry, `{domain}.is-a.dev` has been reserved by maintainers and cannot be registered.",
+            )
+            await ctx.reply(embed=embed, mention_author=False)
+            return
+
         try:
             await request(
                 True,
@@ -188,13 +222,13 @@ class SubdomainUtils(commands.Cog):
             )
             embed = nextcord.Embed(
                 color=EMBED_COLOR,
-                description=f"Sorry, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is taken.",
+                description=f":x: Sorry, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is taken.",
             )
             await ctx.reply(embed=embed, mention_author=False)
         except DomainNotExistError:
             embed = nextcord.Embed(
                 color=EMBED_COLOR,
-                description=f"Congratulations, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is available!",
+                description=f"✅ Congratulations, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is available!",
             )
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -234,6 +268,31 @@ class SubdomainUtils(commands.Cog):
 class SubdomainUtilsSlash(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot: commands.Bot = bot
+        self.reserved_domains = []
+
+    async def fetch_reserved_domains(self) -> None:
+        """Fetches the list of reserved domains."""
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/util/reserved.json"
+            ) as response:
+                if response.status == 200:
+                    text_data = await response.text()
+                    try:
+                        self.reserved_domains = json.loads(text_data)
+                    except json.JSONDecodeError:
+                        print("Failed to parse reserved domains as JSON.")
+                        self.reserved_domains = []
+                else:
+                    print(
+                        f"Failed to fetch reserved domains. Status code: {response.status}"
+                    )
+                    self.reserved_domains = []
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        """Fetch reserved domains when the bot is ready."""
+        await self.fetch_reserved_domains()
 
     @nextcord.slash_command(name="check", guild_ids=[SERVER_ID])
     async def check(
@@ -243,6 +302,14 @@ class SubdomainUtilsSlash(commands.Cog):
             description="The domain name to check for.", required=True
         ),
     ) -> None:
+        if domain in self.reserved_domains:
+            embed = nextcord.Embed(
+                color=EMBED_COLOR,
+                description=f":x: Sorry, `{domain}.is-a.dev` has been reserved by maintainers and cannot be registered.",
+            )
+            await interaction.send(embed=embed)
+            return
+
         try:
             await request(
                 True,
@@ -251,13 +318,13 @@ class SubdomainUtilsSlash(commands.Cog):
             )
             embed = nextcord.Embed(
                 color=EMBED_COLOR,
-                description=f"Sorry, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is taken.",
+                description=f":x: Sorry, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is taken.",
             )
             await interaction.send(embed=embed)
         except DomainNotExistError:
             embed = nextcord.Embed(
                 color=EMBED_COLOR,
-                description=f"Congratulations, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is available!",
+                description=f"✅ Congratulations, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is available!",
             )
             await interaction.send(embed=embed)
 
