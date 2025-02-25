@@ -49,6 +49,11 @@ class Neko(commands.Cog):
         embed = await request_neko("png", "kitsune")
         await ctx.reply(embed=embed, mention_author=False)
 
+
+class NekoInteractions(commands.Cog):
+    def __init__(self, bot):
+        self._bot = bot
+
     @commands.command(
         name="lurk",
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
