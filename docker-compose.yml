@@ -1,13 +1,17 @@
 services:
+  mongodb:
+    ports:
+      - 27017:27017
+    image: mongodb/mongodb-community-server:latest
   takina:
-    image: ghcr.io/orangci/takina:latest
+    image: ghcr.io/iostpa/takina:latest
     restart: always
     environment:
-      - TOKEN= # You put your bots token here
-      - PREFIX=? # You can always change this to any prefix you want
+      - TOKEN=
+      - PREFIX=?
       - HASDB=yes
-      - MONGO= # Add your Mongo URI
-      - BOT_NAME=Takina #this can be modified
-      - DB_NAME=takina #this can be modified
+      - MONGO=mongodb://localhost:27017/?directConnection=true #check if the IP is right
+      - BOT_NAME=Takina
+      - DB_NAME=takina
       - EMBED_COLOR=0x2B2D31
-      - NO_EMOJIS=unfortunately yes # necessary so that your bot doesn't try to use Takina's emojis
+      - NO_EMOJIS=unfortunately yes
