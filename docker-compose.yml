@@ -1,0 +1,13 @@
+services:
+  takina:
+    image: ghcr.io/orangci/takina:latest
+    restart: always
+    environment:
+      - TOKEN= # You put your bots token here
+      - PREFIX=? # You can always change this to any prefix you want
+      - HASDB=yes
+      - MONGO= # Add your Mongo URI
+      - BOT_NAME=Takina #this can be modified
+      - DB_NAME=takina #this can be modified
+      - EMBED_COLOR=0x2B2D31
+      - NO_EMOJIS=unfortunately yes # necessary so that your bot doesn't try to use Takina's emojis
