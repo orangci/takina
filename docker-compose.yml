@@ -1,17 +1,27 @@
 services:
-  mongodb:
+  mongo:
+    image: mongo:latest
+    restart: always
+    container_name: mongodb
     ports:
-      - 27017:27017
-    image: mongodb/mongodb-community-server:latest
+      - "27017:27017"
+    volumes:
+      - data-volume:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=takina
+      - MONGO_INITDB_ROOT_PASSWORD=thisisapassword # it is highly recommended to change the password for the database
   takina:
     image: ghcr.io/iostpa/takina:latest
     restart: always
     environment:
-      - TOKEN=
-      - PREFIX=?
+      - TOKEN= # You put your bots token here
+      - PREFIX=. # You can always change this to any prefix you want
       - HASDB=yes
-      - MONGO=mongodb://localhost:27017/?directConnection=true #check if the IP is right
+      - MONGO=mongodb://takina:thisisapassword@mongodb:27017/?directConnection=true # Don't forget to change the password if you changed from the default one
       - BOT_NAME=Takina
       - DB_NAME=takina
       - EMBED_COLOR=0x2B2D31
-      - NO_EMOJIS=unfortunately yes
+      - NO_EMOJIS=unfortunately yes # Necessary so that your bot doesn't try to use Takina's emojis
+
+volumes:
+  data-volume:
