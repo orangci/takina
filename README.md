@@ -25,7 +25,7 @@ In the future, this will be managed with a proper flake.
 
 #### With Docker
 
-## Manually
+##### Manually
 
 *Assuming you have `git` and `docker` installed.*
 
@@ -34,14 +34,12 @@ In the future, this will be managed with a proper flake.
 - `docker build --tag 'takina' .`
 - `docker run 'takina'`
 
-## Docker Compose
+##### Docker Compose
 
 *Assuming you have `git` and `docker` installed.*
 
 - `git clone https://github.com/orangci/takina && cd takina`
-- Set all the required environment variables in the `docker-compose.yml` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the `TOKEN` (Discord bot token).
-> [!IMPORTANT]  
-> You need to make sure the `MONGO` variable is correctly setup, usually its either `localhost` or the IP your server is running on.
+- Set all the required environment variables in the `docker-compose.yml` file. You can find a list of what those are in the `docker-compose.yml` file, which has all the ENV's you need.
 - `docker compose up -d`
 
 ## Legalese
