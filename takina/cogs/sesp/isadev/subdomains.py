@@ -208,7 +208,7 @@ class SubdomainUtils(commands.Cog):
         """Checks if an is-a.dev domain is available. Usage: `check domain.is-a.dev`."""
         if domain in self.reserved_domains:
             embed = nextcord.Embed(
-                color=EMBED_COLOR,
+                color=ERROR_COLOR,
                 description=f":x: Sorry, `{domain}.is-a.dev` has been reserved by maintainers and cannot be registered.",
             )
             await ctx.reply(embed=embed, mention_author=False)
@@ -304,7 +304,7 @@ class SubdomainUtilsSlash(commands.Cog):
     ) -> None:
         if domain in self.reserved_domains:
             embed = nextcord.Embed(
-                color=EMBED_COLOR,
+                color=ERROR_COLOR,
                 description=f":x: Sorry, `{domain}.is-a.dev` has been reserved by maintainers and cannot be registered.",
             )
             await interaction.send(embed=embed)
