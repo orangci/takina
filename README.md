@@ -25,7 +25,7 @@ In the future, this will be managed with a proper flake.
 
 #### With Docker
 
-# Manually
+## Manually
 
 *Assuming you have `git` and `docker` installed.*
 
@@ -34,7 +34,7 @@ In the future, this will be managed with a proper flake.
 - `docker build --tag 'takina' .`
 - `docker run 'takina'`
 
-# Docker Compose
+## Docker Compose
 
 *Assuming you have `git` and `docker` installed.*
 
