@@ -11,7 +11,7 @@ For a list of features and other information please visit: https://orangc.net/ta
 - issue refresh buttons
 
 ## Selfhosting
-Before proceeding, I am assuming that you have a running MongoDB database. The majority of Takina's functionality depends on a MongoDB instance being available. A guide on selfhosting MongoDB with Docker is available [here](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker/), you can also consider using [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database).
+Before proceeding, I am assuming that you have a running MongoDB database. The majority of Takina's functionality depends on a MongoDB instance being available. A guide on selfhosting MongoDB with Docker is available [here](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker/), you can also consider using [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database) or use the MongoDB server made in the docker compose file.
 
 #### On NixOS
 
@@ -25,6 +25,8 @@ In the future, this will be managed with a proper flake.
 
 #### With Docker
 
+# Manually
+
 *Assuming you have `git` and `docker` installed.*
 
 - `git clone https://github.com/orangci/takina && cd takina`
@@ -32,6 +34,15 @@ In the future, this will be managed with a proper flake.
 - `docker build --tag 'takina' .`
 - `docker run 'takina'`
 
+# Docker Compose
+
+*Assuming you have `git` and `docker` installed.*
+
+- `git clone https://github.com/orangci/takina && cd takina`
+- Set all the required environment variables in the `docker-compose.yml` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the `TOKEN` (Discord bot token).
+> [!IMPORTANT]  
+> You need to make sure the `MONGO` variable is correctly setup, usually its either `localhost` or the IP your server is running on.
+- `docker compose up -d`
 
 ## Legalese
 - [License: BSD 3-Clause License](./LICENSE)
