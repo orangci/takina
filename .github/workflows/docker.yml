@@ -27,4 +27,4 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/iostpa/takina:latest
+            ghcr.io/orangci/takina:latest
