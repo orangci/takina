@@ -11,7 +11,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=takina
       - MONGO_INITDB_ROOT_PASSWORD=thisisapassword # it is highly recommended to change the password for the database
   takina:
-    image: ghcr.io/iostpa/takina:latest
+    image: ghcr.io/orangci/takina:latest
     restart: always
     environment:
       - TOKEN= # You put your bots token here
