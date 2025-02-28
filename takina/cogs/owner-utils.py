@@ -289,7 +289,7 @@ class OwnerUtils(commands.Cog):
             required=False,
         ),
     ) -> None:
-        if interaction.user.id != self.bot.owner_id:
+        if interaction.user.id != 961063229168164864:
             embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = ":x: You are not authorized to use this command."
             await interaction.response.send_message(embed=embed, ephemeral=True)
