@@ -289,14 +289,17 @@ class OwnerUtils(commands.Cog):
             required=False,
         ),
     ) -> None:
-        if interaction.user.id != 961063229168164864:
+        if interaction.user.id not in self.bot.owner_ids:
             embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = ":x: You are not authorized to use this command."
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.send(embed=embed, ephemeral=True)
             return
 
         target_channel = channel or interaction.channel
         await target_channel.send(message)
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed.description = f"✅ Successfully sent message in {target_channel.mention}."
+        await interaction.send(embed=embed, ephemeral=True)
 
 
 def setup(bot: commands.Bot) -> None:
