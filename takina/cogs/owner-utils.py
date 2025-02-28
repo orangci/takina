@@ -274,6 +274,30 @@ class OwnerUtils(commands.Cog):
         else:
             raise commands.UserInputError
 
+    @nextcord.slash_command(name="send", description="Maintainer only command.")
+    async def slash_send(
+        self,
+        interaction: nextcord.Interaction,
+        message: str = nextcord.SlashOption(
+            name="message",
+            description="The message to send.",
+            required=True,
+        ),
+        channel: nextcord.TextChannel = nextcord.SlashOption(
+            name="channel",
+            description="The channel to send the message to (optional).",
+            required=False,
+        ),
+    ) -> None:
+        if interaction.user.id != self.bot.owner_id:
+            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed.description = ":x: You are not authorized to use this command."
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
+        target_channel = channel or interaction.channel
+        await target_channel.send(message)
+
 
 def setup(bot: commands.Bot) -> None:
     bot.add_cog(OwnerUtils(bot))
