@@ -42,7 +42,7 @@ class ESnipe(commands.Cog):
 
         # Create embed for sniped message
         embed = nextcord.Embed(
-            description=f"**Before Edit:**\n{sniped_message['content'] or '*No text content*'}\n\n**After Edit:**\n{sniped_message['new_content'] or '*No new text content*}",
+            description=f"**Before Edit:**\n{sniped_message['content'] or '*No text content*'}\n\n**After Edit:**\n{sniped_message['new_content'] or '*No new text content*'}",
             color=EMBED_COLOR,
             timestamp=sniped_message["time"],
         )
