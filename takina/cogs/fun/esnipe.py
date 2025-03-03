@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ext import commands
 from config import *
 
+
 class ESnipe(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -11,7 +12,7 @@ class ESnipe(commands.Cog):
     async def on_message_edit(self, before, after):
         if before.author.bot:
             return
-        
+
         # Store the last edited message and its details
         self.sniped_messages[before.channel.id] = {
             "content": before.content,
@@ -48,7 +49,7 @@ class ESnipe(commands.Cog):
         )
         embed.set_author(
             name=f"{sniped_message['author'].display_name}",
-            icon_url=sniped_message['author'].avatar.url,
+            icon_url=sniped_message["author"].avatar.url,
         )
         embed.set_footer(text=f"Edited in #{ctx.channel.name}")
 
