@@ -221,7 +221,7 @@ class SubdomainUtils(commands.Cog):
                 f"https://raw.githubusercontent.com/is-a-dev/register/main/domains/{domain}.json",
             )
             embed = nextcord.Embed(
-                color=EMBED_COLOR,
+                color=ERROR_COLOR,
                 description=f":x: Sorry, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is taken.",
             )
             await ctx.reply(embed=embed, mention_author=False)
@@ -317,7 +317,7 @@ class SubdomainUtilsSlash(commands.Cog):
                 f"https://raw.githubusercontent.com/is-a-dev/register/main/domains/{domain}.json",
             )
             embed = nextcord.Embed(
-                color=EMBED_COLOR,
+                color=ERROR_COLOR,
                 description=f":x: Sorry, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is taken.",
             )
             await interaction.send(embed=embed)
