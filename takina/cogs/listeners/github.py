@@ -66,7 +66,7 @@ class GitHubCog(commands.Cog):
         return (
             nextcord.Embed(
                 title=f"{pr_data['title']} - {'Issue' if is_issue else 'Pull Request'} #{pr_data['number']}",
-                description=pr_data.get("body", "No description available."),
+                description=pr_data.get("body", "No description available.")[:500],
                 color=color,
                 url=pr_data["html_url"],
             )
