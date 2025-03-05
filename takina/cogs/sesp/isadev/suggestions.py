@@ -109,6 +109,14 @@ class Suggestion(commands.Cog):
             name="suggestion", description="Write your suggestion here.", required=True
         ),
     ):
+        if len(suggestion) > 500:
+            embed = nextcord.Embed(
+                description=":x: Your suggestion may not contain more than 500 characters.",
+                color=ERROR_COLOR,
+            )
+            await interaction.send(embed=embed, ephemeral=True)
+            return
+
         embed = nextcord.Embed(
             description=f"### **Suggestion**:\n\n{suggestion}", color=EMBED_COLOR
         )
@@ -130,7 +138,7 @@ class Suggestion(commands.Cog):
         log_channel = cast(nextcord.TextChannel, log_channel)
         await log_channel.send(
             embed=nextcord.Embed(
-                description=f"{str(interaction.user)} has suggested: {suggestion}.",
+                description=f"{str(interaction.user.mention)} has suggested: {suggestion}.",
                 color=EMBED_COLOR,
             )
         )
