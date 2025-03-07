@@ -49,7 +49,7 @@ class CharacterSearch(commands.Cog):
                 embed = nextcord.Embed(
                     title=name,
                     url=url,
-                    description=nicknames or name_kanji,
+                    description=nicknames or name_kanji or None,
                     color=EMBED_COLOR,
                 )
                 embed.add_field(name="About", value=about, inline=False)
@@ -63,7 +63,7 @@ class CharacterSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -94,7 +94,7 @@ class CharacterSearch(commands.Cog):
                 embed = nextcord.Embed(
                     title=name,
                     url=url,
-                    description=nicknames or name_kanji,
+                    description=nicknames or name_kanji or None,
                     color=EMBED_COLOR,
                 )
                 embed.add_field(name="About", value=about, inline=False)
@@ -108,7 +108,7 @@ class CharacterSearch(commands.Cog):
                 )
 
         except Exception as e:
-            embed = nextcord.Embed(title="Error", description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
 
         await interaction.response.send_message(embed=embed)
 
