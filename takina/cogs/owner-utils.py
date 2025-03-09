@@ -21,21 +21,7 @@ class OwnerUtils(commands.Cog):
         )
         description = ""
         for guild in guilds_sorted:
-            invite_link = None
-            for channel in guild.text_channels:
-                if channel.permissions_for(guild.me).create_instant_invite:
-                    try:
-                        invite = await channel.create_invite(
-                            max_age=0, max_uses=0, unique=False
-                        )
-                        invite_link = invite.url
-                        break
-                    except nextcord.Forbidden:
-                        continue
-            if invite_link:
-                entry = f"\n[**{guild.name}**]({invite_link})"
-            else:
-                entry = f"\n**{guild.name}**"
+            entry = f"\n**{guild.name}**"
 
             if len(description) + len(entry) > 4096:
                 break
