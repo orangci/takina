@@ -49,7 +49,7 @@ class CharacterSearch(commands.Cog):
                 embed = nextcord.Embed(
                     title=name,
                     url=url,
-                    description=nicknames or name_kanji or None,
+                    description=nicknames or name_kanji,
                     color=EMBED_COLOR,
                 )
                 embed.add_field(name="About", value=about, inline=False)
@@ -94,7 +94,7 @@ class CharacterSearch(commands.Cog):
                 embed = nextcord.Embed(
                     title=name,
                     url=url,
-                    description=nicknames or name_kanji or None,
+                    description=nicknames or name_kanji,
                     color=EMBED_COLOR,
                 )
                 embed.add_field(name="About", value=about, inline=False)
