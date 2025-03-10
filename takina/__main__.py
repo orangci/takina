@@ -93,7 +93,7 @@ check_env_vars()
 
 bot.load_extension("onami")
 
-cogs_blacklist = []
+cogs_blacklist = ["fun.snipe", "fun.esnipe"]
 cogs = load_exts("takina/cogs")
 
 for cog in cogs:
