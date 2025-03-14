@@ -163,6 +163,7 @@ async def isadev_domain_data_overview_embed_builder():
     )
     return statistics_embed
 
+
 async def isadev_user_domain_data_overview_embed_builder(username):
     data = await request("https://raw.is-a.dev")
 
@@ -182,7 +183,7 @@ async def isadev_user_domain_data_overview_embed_builder(username):
     }
 
     for entry in data:
-        if entry.get("owner").get("username") != username:
+        if entry.get("owner").get("username").lower() != username.lower():
             continue
 
         subdomains_count += 1
@@ -198,10 +199,7 @@ async def isadev_user_domain_data_overview_embed_builder(username):
 
     records_count = sum(dns_records.values())
 
-    statistics = (
-        f"- Subdomains: {subdomains_count}\n"
-        f"- Records: {records_count}\n"
-    )
+    statistics = f"- Subdomains: {subdomains_count}\n" f"- Records: {records_count}\n"
 
     statistics += "\n**DNS Records**:\n"
     for record_type, count in dns_records.items():
@@ -220,6 +218,7 @@ async def isadev_user_domain_data_overview_embed_builder(username):
         icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
     )
     return statistics_embed
+
 
 async def build_check_embed(domain):
     domain_data = await fetch_subdomain_info(domain)
@@ -284,7 +283,11 @@ class SubdomainUtilsSlash(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    @nextcord.slash_command(name="whois", guild_ids=[SERVER_ID], description="Lookup information on a subdomain of is-a.dev. Usage: `whois cirno.is-a.dev`.")
+    @nextcord.slash_command(
+        name="whois",
+        guild_ids=[SERVER_ID],
+        description="Lookup information on a subdomain of is-a.dev. Usage: `whois cirno.is-a.dev`.",
+    )
     async def whois(
         self,
         interaction: nextcord.Interaction,
@@ -296,7 +299,11 @@ class SubdomainUtilsSlash(commands.Cog):
         embed = await build_whois_embed(domain)
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(name="check", guild_ids=[SERVER_ID], description="Check whether an is-a.dev subdomain is available for registration.")
+    @nextcord.slash_command(
+        name="check",
+        guild_ids=[SERVER_ID],
+        description="Check whether an is-a.dev subdomain is available for registration.",
+    )
     async def check(
         self,
         interaction: nextcord.Interaction,
@@ -307,8 +314,12 @@ class SubdomainUtilsSlash(commands.Cog):
     ) -> None:
         embed = await build_check_embed(domain)
         await interaction.send(embed=embed, ephemeral=True)
-    
-    @nextcord.slash_command(name="is-a-dev", guild_ids=[SERVER_ID], description="Fetch is-a.dev statistics for either the entire service or a specific Github username.")
+
+    @nextcord.slash_command(
+        name="is-a-dev",
+        guild_ids=[SERVER_ID],
+        description="Fetch is-a.dev statistics for either the entire service or a specific Github username.",
+    )
     async def is_a_dev(
         self,
         interaction: nextcord.Interaction,
@@ -318,7 +329,9 @@ class SubdomainUtilsSlash(commands.Cog):
         ),
     ) -> None:
         if github_username:
-            embed = await isadev_user_domain_data_overview_embed_builder(github_username)
+            embed = await isadev_user_domain_data_overview_embed_builder(
+                github_username
+            )
         else:
             embed = await isadev_domain_data_overview_embed_builder()
         await interaction.send(embed=embed, ephemeral=True)
