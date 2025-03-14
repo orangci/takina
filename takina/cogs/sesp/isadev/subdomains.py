@@ -1,370 +1,327 @@
-"""
-    BSD 3-Clause License
-
-    Copyright (c) 2024 - present, MaskDuck
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-    3. Neither the name of the copyright holder nor the names of its
-    contributors may be used to endorse or promote products derived from
-    this software without specific prior written permission.
-
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-"""
-
-# code has been modified and is not the original code from MaskDuck
-
-from __future__ import annotations
-
 import re
-from typing import List, TypedDict
-from typing_extensions import NotRequired
 import aiohttp
 import nextcord
 from nextcord.ext import application_checks as ac, commands
-from nextcord import Interaction, OptionConverter
 from config import *
 from .libs.lib import *
-import random
-import json
+from ...libs.oclib import *
 
 
-class Domain(TypedDict):
-    description: NotRequired[str]
-    repo: NotRequired[str]
-    owner: _OwnerObject
-    record: _RecordObject
+async def fetch_subdomain_info(subdomain_name):
+    if subdomain_name.endswith(".is-a.dev"):
+        subdomain_name = subdomain_name[:-9]
+    data = await request("https://raw.is-a.dev")
+
+    for entry in data:
+        if entry.get("domain")[:-9] == subdomain_name:
+            return entry
+
+    return None
 
 
-class SubdomainNameConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> str:  # type: ignore
-        argument = argument.lower()
-        if argument.endswith(".is-a.dev"):
-            return argument[:-9]
-        return argument
+async def build_whois_embed(domain):
+    domain_data = await fetch_subdomain_info(domain)
+
+    if not domain_data:
+        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed.description = ":x: The domain queried does not exist."
+        return embed
+
+    if domain_data.get("reserved"):
+        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed.description = f":x: `{domain}.is-a.dev` has been reserved by the maintainers and cannot be registered."
+        return embed
+
+    embed = nextcord.Embed(color=EMBED_COLOR)
+    embed.url = f"https://{domain}.is-a.dev"
+    embed.title = f"{domain}.is-a.dev"
+    embed.set_footer(
+        text="is-a.dev",
+        icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
+    )
+
+    owner_field_value = ""
+    for platform, username in domain_data["owner"].items():
+        if platform == "username":
+            owner_field_value += (
+                f"Github: [{username}](https://github.com/{username})\n"
+            )
+        else:
+            owner_field_value += f"{platform.capitalize()}: {username}\n"
+
+    records_field_value = ""
+    for record_type, record_value in domain_data["record"].items():
+        if isinstance(record_value, str):
+            records_field_value += f"{record_type}: {record_value}\n"
+        elif isinstance(record_value, dict):
+            record_items = ", ".join(
+                f"{key}: {value}" for key, value in record_value.items()
+            )
+            records_field_value += f"{record_type}: {{{record_items}}}\n"
+        else:
+            records_field_value += (
+                f"{record_type}: {', '.join(map(str, record_value))}\n"
+            )
+
+    redirect_config = domain_data.get("redirect_config")
+    if redirect_config:
+        redirect_config_field_value = ""
+        custom_paths = redirect_config.get("custom_paths")
+
+        if custom_paths:
+            custom_paths_items = "\n".join(
+                f" {path}: {url}" for path, url in custom_paths.items()
+            )
+            redirect_config_field_value += f"{custom_paths_items}\n"
+
+        if redirect_config.get("redirect_paths"):
+            redirect_config_field_value += f"Redirect Paths: True\n"
+
+    embed.add_field(name="Owner", value=owner_field_value, inline=True)
+    embed.add_field(name="Records", value=records_field_value, inline=True)
+    if redirect_config:
+        embed.add_field(name="Redirect Config", value=redirect_config_field_value)
+
+    if domain_data.get("proxied"):
+        embed.description += "\n *This domain is proxied.*"
+
+    return embed
 
 
-class SlashSubdomainNameConverter(OptionConverter):
-    async def convert(self, interaction: Interaction, value: str) -> str:  # type: ignore
-        value = value.lower()
-        if value.endswith(".is-a.dev"):
-            return value[:-9]
-        return value
+async def isadev_domain_data_overview_embed_builder():
+    data = await request("https://raw.is-a.dev")
 
+    subdomains_count = 0
+    records_count = 0
+    unique_users = set()
+    domains_per_user = {}
+    dns_records = {
+        "A": 0,
+        "AAAA": 0,
+        "CAA": 0,
+        "CNAME": 0,
+        "DS": 0,
+        "MX": 0,
+        "NS": 0,
+        "SRV": 0,
+        "TXT": 0,
+        "URL": 0,
+    }
 
-class DomainNotExistError(commands.CommandError):
-    """Error raised when domain cannot be found."""
+    for entry in data:
+        if entry.get("reserved"):
+            continue
 
+        subdomains_count += 1
 
-async def request(requesting_domain: bool = False, *args, **kwargs):
-    async with aiohttp.ClientSession() as session:
-        async with session.request(*args, **kwargs) as ans:
-            if ans.status == 404 and requesting_domain:
-                raise DomainNotExistError("imagine")
-            return await ans.json(content_type=None)
+        for record_type, record_value in entry.get("record", {}).items():
+            if record_type in dns_records:
+                if isinstance(record_value, int):
+                    dns_records[record_type] += record_value
+                elif isinstance(record_value, str):
+                    dns_records[record_type] += 1
+                elif isinstance(record_value, list):
+                    dns_records[record_type] += len(record_value)
 
+        owner = entry.get("owner", {}).get("username", "Unknown")
+        unique_users.add(owner)
+        if owner in domains_per_user:
+            domains_per_user[owner] += 1
+        else:
+            domains_per_user[owner] = 1
 
-request.__doc__ = aiohttp.ClientSession.request.__doc__
+    records_count = sum(dns_records.values())
+    average_domains_per_user = (
+        subdomains_count / len(unique_users) if unique_users else 0
+    )
+    most_domains_user = max(
+        domains_per_user.items(), key=lambda x: x[1], default=("None", 0)
+    )
+
+    statistics = (
+        f"- Subdomains: {subdomains_count}\n"
+        f"- Records: {records_count}\n"
+        f"- Unique users: {len(unique_users)}\n"
+        f"- Average domains per user: {average_domains_per_user:.1f}\n"
+        f"- Most domains: {most_domains_user[0]} ({most_domains_user[1]})\n\n"
+    )
+
+    record_statistics = ""
+    for record_type, count in dns_records.items():
+        record_statistics += f"- {record_type}: {count}\n"
+
+    statistics_embed = nextcord.Embed(
+        color=EMBED_COLOR,
+        title="is-a.dev Statistics",
+        url="https://data.is-a.dev",
+    )
+    statistics_embed.add_field(name="Stats", value=statistics, inline=True)
+    statistics_embed.add_field(name="DNS Records", value=record_statistics, inline=True)
+    statistics_embed.set_footer(
+        text="is-a.dev",
+        icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
+    )
+    return statistics_embed
+
+async def isadev_user_domain_data_overview_embed_builder(username):
+    data = await request("https://raw.is-a.dev")
+
+    subdomains_count = 0
+    records_count = 0
+    dns_records = {
+        "A": 0,
+        "AAAA": 0,
+        "CAA": 0,
+        "CNAME": 0,
+        "DS": 0,
+        "MX": 0,
+        "NS": 0,
+        "SRV": 0,
+        "TXT": 0,
+        "URL": 0,
+    }
+
+    for entry in data:
+        if entry.get("owner").get("username") != username:
+            continue
+
+        subdomains_count += 1
+
+        for record_type, record_value in entry.get("record", {}).items():
+            if record_type in dns_records:
+                if isinstance(record_value, int):
+                    dns_records[record_type] += record_value
+                elif isinstance(record_value, str):
+                    dns_records[record_type] += 1
+                elif isinstance(record_value, list):
+                    dns_records[record_type] += len(record_value)
+
+    records_count = sum(dns_records.values())
+
+    statistics = (
+        f"- Subdomains: {subdomains_count}\n"
+        f"- Records: {records_count}\n"
+    )
+
+    statistics += "\n**DNS Records**:\n"
+    for record_type, count in dns_records.items():
+        if count == 0:
+            continue
+        statistics += f"- {record_type}: {count}\n"
+
+    statistics_embed = nextcord.Embed(
+        color=EMBED_COLOR,
+        title=f"is-a.dev Statistics for {username}",
+        description=statistics,
+        url=f"https://github.com/{username}",
+    )
+    statistics_embed.set_footer(
+        text="is-a.dev",
+        icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
+    )
+    return statistics_embed
+
+async def build_check_embed(domain):
+    domain_data = await fetch_subdomain_info(domain)
+
+    if not domain_data:
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed.description = f"✅ [{domain}.is-a.dev](https://{domain}.is-a.dev) is available for [registration](https://github.com/is-a-dev/register?tab=readme-ov-file#how-to-register)."
+
+    if domain_data.get("reserved"):
+        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed.description = f":x: Sorry, `{domain}.is-a.dev` has been reserved by the maintainers and cannot be registered."
+
+    if domain_data:
+        embed = nextcord.Embed(color=ERROR_COLOR)
+        domain_holder = domain_data.get("owner").get("username")
+        embed.description = f":x: [{domain}.is-a.dev](https://{domain}.is-a.dev) has already been registered by [{domain_holder}](https://github.com/{domain_holder})."
+
+    embed.set_footer(
+        text="is-a.dev",
+        icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
+    )
+    return embed
 
 
 class SubdomainUtils(commands.Cog):
-    """Various utility commands."""
-
     def __init__(self, bot: commands.Bot) -> None:
-        self._bot: commands.Bot = bot
-        self.reserved_domains = []
+        self.bot = bot
 
-    async def fetch_reserved_domains(self) -> None:
-        """Fetches the list of reserved domains."""
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                "https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/util/reserved.json"
-            ) as response:
-                if response.status == 200:
-                    text_data = await response.text()
-                    try:
-                        self.reserved_domains = json.loads(text_data)
-                    except json.JSONDecodeError:
-                        print("Failed to parse reserved domains as JSON.")
-                        self.reserved_domains = []
-                else:
-                    print(
-                        f"Failed to fetch reserved domains. Status code: {response.status}"
-                    )
-                    self.reserved_domains = []
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        """Fetch reserved domains when the bot is ready."""
-        await self.fetch_reserved_domains()
-
-    @classmethod
-    def fetch_description_about_a_domain(cls, data: Domain):
-        parsed_contact = {}
-        for platform, username in data["owner"].items():
-            if platform == "username":
-                parsed_contact["github"] = (
-                    f"[{username}](https://github.com/{username})"
-                )
-            elif platform == "twitter":
-                parsed_contact["twitter"] = (
-                    f"[{username}](https://twitter.com/{username})"
-                )
-            elif platform == "email":
-                if username != "":
-                    parsed_contact["email"] = username
-            else:
-                # unknown contact, ignoring
-                parsed_contact[platform] = username
-
-        contact_desc = """**Contact Info**:\n"""
-        for x, y in parsed_contact.items():
-            contact_desc += f"**{x}**: {y}\n"
-
-        record_desc = """**Record Info**:\n"""
-        for x, y in data["record"].items():
-            if x == "CNAME":
-                record_desc += f"**{x}**: [{y}](https://{y})\n"
-            else:
-                record_desc += f"**{x}**: {y}\n"
-
-        if domain_desc := data.get("description"):
-            domain_desc = "**Description**: " + domain_desc + "\n"
-        else:
-            domain_desc = None
-
-        if repo := data.get("repo"):
-            repo_desc = "**Repository**: " + f"[here]({repo})" + "\n"
-        else:
-            repo_desc = None
-
-        my_description = f"""
-        {contact_desc}
-
-        {record_desc}
-        """
-        if domain_desc is not None:
-            my_description += domain_desc + "\n"
-        if repo_desc is not None:
-            my_description += repo_desc + "\n"
-        return my_description
-
-    @commands.command()
     @is_in_guild()
-    @commands.cooldown(1, 1, commands.BucketType.user)
-    async def whois(
-        self, ctx: commands.Context, domain: SubdomainNameConverter
-    ) -> None:
-        """Lookup information about an is-a.dev domain. Usage: `whois domain.is-a.dev`."""
-        k = nextcord.ui.View()
-        k.add_item(
-            nextcord.ui.Button(
-                style=nextcord.ButtonStyle.url,
-                url=f"https://github.com/is-a-dev/register/edit/main/domains/{domain}.json",
-                label="Edit this subdomain?",
-            )
-        )
-        try:
-            data = await request(
-                True,
-                "GET",
-                f"https://raw.githubusercontent.com/is-a-dev/register/main/domains/{domain}.json",
-            )
-        except DomainNotExistError:
-            embed = nextcord.Embed(color=ERROR_COLOR)
-            embed.description = ":x: The domain queried does not exist."
-            await ctx.reply(embed=embed, mention_author=False)
-            return
-        embed = nextcord.Embed(
-            color=EMBED_COLOR,
-            title=f"Info about {domain}.is-a.dev",
-            description=self.fetch_description_about_a_domain(data),
-        )
-        await ctx.reply(embed=embed, view=k, mention_author=False)
-
-    @commands.command()
-    @is_in_guild()
-    @commands.cooldown(1, 1, commands.BucketType.user)
-    async def check(
-        self, ctx: commands.Context, domain: SubdomainNameConverter
-    ) -> None:
-        """Checks if an is-a.dev domain is available. Usage: `check domain.is-a.dev`."""
-        if domain in self.reserved_domains:
-            embed = nextcord.Embed(
-                color=ERROR_COLOR,
-                description=f":x: Sorry, `{domain}.is-a.dev` has been reserved by maintainers and cannot be registered.",
-            )
-            await ctx.reply(embed=embed, mention_author=False)
-            return
-
-        try:
-            await request(
-                True,
-                "GET",
-                f"https://raw.githubusercontent.com/is-a-dev/register/main/domains/{domain}.json",
-            )
-            embed = nextcord.Embed(
-                color=ERROR_COLOR,
-                description=f":x: Sorry, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is taken.",
-            )
-            await ctx.reply(embed=embed, mention_author=False)
-        except DomainNotExistError:
-            embed = nextcord.Embed(
-                color=EMBED_COLOR,
-                description=f"✅ Congratulations, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is available!",
-            )
-            await ctx.reply(embed=embed, mention_author=False)
-
     @commands.command(
-        name="willyoumarryme",
-        help="Takina replies to whether or not marriage is feasible.",
-        hidden=True,
+        help="Lookup information on a subdomain of is-a.dev. Usage: `whois cirno.is-a.dev`."
     )
-    @is_in_guild()
     @commands.cooldown(1, 1, commands.BucketType.user)
-    async def willyoumarryme(self, ctx: commands.Context):
-        guaranteed_marriages = [
-            1040303561847881729,
-            961063229168164864,
-            713254655999868931,
-            1049263707177353247,
-            # Add more as needed, orangc.
-        ]
-        embed = nextcord.Embed(
-            description=f"### {ctx.author.mention} proposed to {BOT_NAME}\n\n",
-            color=EMBED_COLOR,
-        )
-        if ctx.author.id in guaranteed_marriages:
-            embed.description += "Yes! I love you too. I can't wait to get married!"
-            await ctx.reply(embed=embed, mention_author=False)
-            return
+    async def whois(self, ctx: commands.Context, domain: str) -> None:
+        embed = await build_whois_embed(domain)
+        await ctx.reply(embed=embed, mention_author=False)
 
-        choice = bool(random.getrandbits(1))
-        if choice == True:
-            embed.description += "Sure, I will marry you."
-            await ctx.reply(embed=embed, mention_author=False)
+    @is_in_guild()
+    @commands.command(
+        help="Check whether an is-a.dev subdomain is available for registration. Usage: `check cirno`."
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
+    async def check(self, ctx: commands.Context, domain: str):
+        embed = await build_check_embed(domain)
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @is_in_guild()
+    @commands.command(
+        help="Fetch is-a.dev statistics for either the entire service or a specific Github username. Usage: `is-a-dev orangci`.",
+        aliases=["isadev", "is-a-dev"],
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
+    async def is_a_dev(self, ctx: commands.Context, username: str = None):
+        if username:
+            embed = await isadev_user_domain_data_overview_embed_builder(username)
         else:
-            embed.description += "No, stay away from me."
-            await ctx.reply(embed=embed, mention_author=False)
+            embed = await isadev_domain_data_overview_embed_builder()
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 class SubdomainUtilsSlash(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
-        self._bot: commands.Bot = bot
-        self.reserved_domains = []
+        self.bot = bot
 
-    async def fetch_reserved_domains(self) -> None:
-        """Fetches the list of reserved domains."""
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                "https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/util/reserved.json"
-            ) as response:
-                if response.status == 200:
-                    text_data = await response.text()
-                    try:
-                        self.reserved_domains = json.loads(text_data)
-                    except json.JSONDecodeError:
-                        print("Failed to parse reserved domains as JSON.")
-                        self.reserved_domains = []
-                else:
-                    print(
-                        f"Failed to fetch reserved domains. Status code: {response.status}"
-                    )
-                    self.reserved_domains = []
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        """Fetch reserved domains when the bot is ready."""
-        await self.fetch_reserved_domains()
-
-    @nextcord.slash_command(name="check", guild_ids=[SERVER_ID])
-    async def check(
+    @nextcord.slash_command(name="whois", guild_ids=[SERVER_ID], description="Lookup information on a subdomain of is-a.dev. Usage: `whois cirno.is-a.dev`.")
+    async def whois(
         self,
         interaction: nextcord.Interaction,
-        domain: SlashSubdomainNameConverter = nextcord.SlashOption(
-            description="The domain name to check for.", required=True
-        ),
-    ) -> None:
-        if domain in self.reserved_domains:
-            embed = nextcord.Embed(
-                color=ERROR_COLOR,
-                description=f":x: Sorry, `{domain}.is-a.dev` has been reserved by maintainers and cannot be registered.",
-            )
-            await interaction.send(embed=embed)
-            return
-
-        try:
-            await request(
-                True,
-                "GET",
-                f"https://raw.githubusercontent.com/is-a-dev/register/main/domains/{domain}.json",
-            )
-            embed = nextcord.Embed(
-                color=ERROR_COLOR,
-                description=f":x: Sorry, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is taken.",
-            )
-            await interaction.send(embed=embed)
-        except DomainNotExistError:
-            embed = nextcord.Embed(
-                color=EMBED_COLOR,
-                description=f"✅ Congratulations, [{domain}.is-a.dev](<https://{domain}.is-a.dev>) is available!",
-            )
-            await interaction.send(embed=embed)
-
-    @nextcord.slash_command(name="whois", guild_ids=[SERVER_ID])
-    async def whois_slash(
-        self,
-        interaction: nextcord.Interaction,
-        domain: SlashSubdomainNameConverter = nextcord.SlashOption(
-            description="The is-a.dev domain name to lookup information for.",
+        domain: str = nextcord.SlashOption(
+            description="The is-a.dev subdomain name to lookup information on.",
             required=True,
         ),
     ) -> None:
-        try:
-            data = await request(
-                True,
-                "GET",
-                f"https://raw.githubusercontent.com/is-a-dev/register/main/domains/{domain}.json",
-            )
-            view = nextcord.ui.View()
+        embed = await build_whois_embed(domain)
+        await interaction.send(embed=embed, ephemeral=True)
 
-            view.add_item(
-                nextcord.ui.Button(
-                    style=nextcord.ButtonStyle.url,
-                    url=f"https://github.com/is-a-dev/register/edit/main/domains/{domain}.json",
-                    label="Edit this subdomain?",
-                )
-            )
-            await interaction.send(
-                embed=nextcord.Embed(
-                    title=f"Domain info for {domain}.is-a.dev",
-                    description=SubdomainUtils.fetch_description_about_a_domain(data),
-                    color=EMBED_COLOR,
-                ),
-                view=view,
-                ephemeral=True,
-            )
-        except DomainNotExistError:
-            embed = nextcord.Embed(color=ERROR_COLOR)
-            embed.description = ":x: The domain queried does not exist."
-            await interaction.send(embed=embed, ephemeral=True)
+    @nextcord.slash_command(name="check", guild_ids=[SERVER_ID], description="Check whether an is-a.dev subdomain is available for registration.")
+    async def check(
+        self,
+        interaction: nextcord.Interaction,
+        domain: str = nextcord.SlashOption(
+            description="The is-a.dev subdomain name to check the availability of.",
+            required=True,
+        ),
+    ) -> None:
+        embed = await build_check_embed(domain)
+        await interaction.send(embed=embed, ephemeral=True)
+    
+    @nextcord.slash_command(name="is-a-dev", guild_ids=[SERVER_ID], description="Fetch is-a.dev statistics for either the entire service or a specific Github username.")
+    async def is_a_dev(
+        self,
+        interaction: nextcord.Interaction,
+        github_username: str = nextcord.SlashOption(
+            description="The GitHub username to check the statistics of.",
+            required=False,
+        ),
+    ) -> None:
+        if github_username:
+            embed = await isadev_user_domain_data_overview_embed_builder(github_username)
+        else:
+            embed = await isadev_domain_data_overview_embed_builder()
+        await interaction.send(embed=embed, ephemeral=True)
 
 
 def setup(bot: commands.Bot):
