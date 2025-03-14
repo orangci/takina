@@ -184,7 +184,7 @@ async def isadev_user_domain_data_overview_embed_builder(username):
 
     for entry in data:
         entry_owner = entry.get("owner").get("username")
-        if entry_owner.lower() != username.lower():
+        if str(entry_owner).lower() != username.lower():
             continue
 
         subdomains_count += 1
