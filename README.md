@@ -12,6 +12,8 @@ For a list of features and other information please visit: https://orangc.net/ta
 - fix the weebism/character bug
 - add ping command (to ping things, not just check the bot's ping)
 - add more dns related commands
+- add a check for correct domain formatting in sesp.isadev.subdomains
+- add a check for whether the github account exists in the isadev command in sesp.isadev.subdomains
 
 ## Selfhosting
 Before proceeding, I am assuming that you have a running MongoDB database. The majority of Takina's functionality depends on a MongoDB instance being available. A guide on selfhosting MongoDB with Docker is available [here](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker/), you can also consider using [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database) or use the MongoDB server made in the docker compose file.
