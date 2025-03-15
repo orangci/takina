@@ -8,14 +8,14 @@ from ...libs.oclib import *
 import re
 
 
-def is_valid_domain(domain):
+async def is_valid_domain(domain):
     pattern = r"^(?!.*--)[a-z0-9-]+$"
-    return bool(re.match(pattern, s))
+    return bool(re.match(pattern, domain))
 
 
 async def fetch_subdomain_info(subdomain_name):
-    is_valid_domain = is_valid_domain(subdomain_name)
-    if not is_valid_domain:
+    is_valid = await is_valid_domain(subdomain_name)
+    if not is_valid:
         return None
 
     if subdomain_name.endswith(".is-a.dev"):
@@ -235,29 +235,46 @@ async def isadev_user_domain_data_overview_embed_builder(username):
 
 async def build_check_embed(domain):
     domain_data = await fetch_subdomain_info(domain)
-    is_valid_domain = is_valid_domain(subdomain_name)
-    if not is_valid_domain:
+    is_valid = await is_valid_domain(domain)
+    
+    if not is_valid:
         embed = nextcord.Embed(color=ERROR_COLOR)
         embed.description = f":x: That is not a valid domain name. A valid domain may only have alphabetical, numerical, period (.), and dash (-) characters."
+        embed.set_footer(
+            text="is-a.dev",
+            icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
+        )
+        return embed
 
     if not domain_data:
         embed = nextcord.Embed(color=EMBED_COLOR)
         embed.description = f"✅ [{domain}.is-a.dev](https://{domain}.is-a.dev) is available for [registration](https://github.com/is-a-dev/register?tab=readme-ov-file#how-to-register)."
-
+        embed.set_footer(
+            text="is-a.dev",
+            icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
+        )
+        return embed
+    
     if domain_data.get("reserved"):
         embed = nextcord.Embed(color=ERROR_COLOR)
         embed.description = f":x: Sorry, `{domain}.is-a.dev` has been reserved by the maintainers and cannot be registered."
+        embed.set_footer(
+            text="is-a.dev",
+            icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
+        )
+        return embed
 
     if domain_data:
         embed = nextcord.Embed(color=ERROR_COLOR)
         domain_holder = str(domain_data.get("owner").get("username"))
         embed.description = f":x: [{domain}.is-a.dev](https://{domain}.is-a.dev) has already been registered by [{domain_holder}](https://github.com/{domain_holder})."
+        embed.set_footer(
+            text="is-a.dev",
+            icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
+        )
+        return embed
 
-    embed.set_footer(
-        text="is-a.dev",
-        icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
-    )
-    return embed
+    raise commands.DiscordException
 
 
 class SubdomainUtils(commands.Cog):
