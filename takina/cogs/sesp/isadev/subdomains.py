@@ -5,9 +5,19 @@ from nextcord.ext import application_checks as ac, commands
 from config import *
 from .libs.lib import *
 from ...libs.oclib import *
+import re
+
+
+def is_valid_domain(domain):
+    pattern = r"^(?!.*--)[a-z0-9-]+$"
+    return bool(re.match(pattern, s))
 
 
 async def fetch_subdomain_info(subdomain_name):
+    is_valid_domain = is_valid_domain(subdomain_name)
+    if not is_valid_domain:
+        return None
+
     if subdomain_name.endswith(".is-a.dev"):
         subdomain_name = subdomain_name[:-9]
     data = await request("https://raw.is-a.dev")
@@ -223,6 +233,10 @@ async def isadev_user_domain_data_overview_embed_builder(username):
 
 async def build_check_embed(domain):
     domain_data = await fetch_subdomain_info(domain)
+    is_valid_domain = is_valid_domain(subdomain_name)
+    if not is_valid_domain:
+        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed.description = f":x: That is not a valid domain name. A valid domain may only have alphabetical, numerical, period (.), and dash (-) characters."
 
     if not domain_data:
         embed = nextcord.Embed(color=EMBED_COLOR)
@@ -234,7 +248,7 @@ async def build_check_embed(domain):
 
     if domain_data:
         embed = nextcord.Embed(color=ERROR_COLOR)
-        domain_holder = domain_data.get("owner").get("username")
+        domain_holder = str(domain_data.get("owner").get("username"))
         embed.description = f":x: [{domain}.is-a.dev](https://{domain}.is-a.dev) has already been registered by [{domain_holder}](https://github.com/{domain_holder})."
 
     embed.set_footer(
