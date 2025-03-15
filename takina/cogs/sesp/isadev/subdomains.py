@@ -196,6 +196,8 @@ async def isadev_user_domain_data_overview_embed_builder(username):
         entry_owner = entry.get("owner").get("username")
         if str(entry_owner).lower() != username.lower():
             continue
+        if entry.get("reserved"):
+            continue
 
         subdomains_count += 1
 
