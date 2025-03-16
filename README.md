@@ -10,7 +10,6 @@ For a list of features and other information please visit: https://orangc.net/ta
 - issue refresh buttons
 - make info commands case insensitive
 - fix the weebism/character bug
-- add ping command (to ping things, not just check the bot's ping)
 - add more dns related commands
 
 ## Selfhosting

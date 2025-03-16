@@ -236,7 +236,7 @@ async def isadev_user_domain_data_overview_embed_builder(username):
 async def build_check_embed(domain):
     domain_data = await fetch_subdomain_info(domain)
     is_valid = await is_valid_domain(domain)
-    
+
     if not is_valid:
         embed = nextcord.Embed(color=ERROR_COLOR)
         embed.description = f":x: That is not a valid domain name. A valid domain may only have alphabetical, numerical, period (.), and dash (-) characters."
@@ -254,7 +254,7 @@ async def build_check_embed(domain):
             icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
         )
         return embed
-    
+
     if domain_data.get("reserved"):
         embed = nextcord.Embed(color=ERROR_COLOR)
         embed.description = f":x: Sorry, `{domain}.is-a.dev` has been reserved by the maintainers and cannot be registered."
