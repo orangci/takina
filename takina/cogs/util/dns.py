@@ -39,15 +39,6 @@ from nextcord.ext import commands
 from config import *
 from ..libs.oclib import *
 
-
-def construct_embed(url: str, full_answer: str):
-    return nextcord.Embed(
-        title=f"DNS Records for {url}",
-        description=full_answer,
-        color=EMBED_COLOR,
-    )
-
-
 class DNS(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot: commands.Bot = bot
@@ -85,8 +76,13 @@ class DNS(commands.Cog):
                 return
 
         if full_answer:
+            embed = nextcord.Embed(
+                title=f"DNS Records for {url}",
+                description=full_answer,
+                color=EMBED_COLOR,
+            )
             await interaction.send(
-                embed=construct_embed(url, full_answer), ephemeral=True
+                embed=embed, ephemeral=True
             )
         else:
             embed = nextcord.Embed(color=ERROR_COLOR)
