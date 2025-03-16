@@ -52,40 +52,7 @@ class DNS(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot: commands.Bot = bot
 
-    @commands.command(
-        aliases=["dns"],
-        help="Fetches DNS records for a domain. \nUsage: `dig <URL>`.",
-    )
-    @commands.cooldown(1, 1, commands.BucketType.user)
-    async def dig(self, ctx: commands.Context, url: str):
-        record_types = ["A", "CNAME", "AAAA", "MX", "TXT", "SRV", "NS"]
-        full_answer = ""
-
-        for record_type in record_types:
-            try:
-                answers = _dnsresolver.resolve(url, record_type)
-                records = "\n".join([str(ans) for ans in answers])
-                if records:
-                    emoji = await fetch_random_emoji()
-                    full_answer += (
-                        f"{emoji} **{record_type} Records**\n```{records}```\n"
-                    )
-            except _dnsresolver.NoAnswer:
-                continue
-            except _dnsresolver.NXDOMAIN:
-                error_embed = nextcord.Embed(color=ERROR_COLOR)
-                error_embed.description = f"❌ Domain '{url}' does not exist."
-                await ctx.reply(embed=error_embed, mention_author=False)
-                return
-
-        if full_answer:
-            await ctx.reply(
-                embed=construct_embed(url, full_answer), mention_author=False
-            )
-        else:
-            error_embed = nextcord.Embed(color=ERROR_COLOR)
-            error_embed.description = f"❌ No records found for {url}."
-            await ctx.reply(embed=error_embed, mention_author=False)
+    # 2025.03.16: removed base command because the output for dig commands are too long; an ephemeral slash command is the best choice here
 
     @nextcord.slash_command(name="dig", description="Dig an URL for its DNS records.")
     async def dig_slash(
