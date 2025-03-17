@@ -39,6 +39,7 @@ from nextcord.ext import commands
 from config import *
 from ..libs.oclib import *
 
+
 class DNS(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot: commands.Bot = bot
@@ -81,9 +82,7 @@ class DNS(commands.Cog):
                 description=full_answer,
                 color=EMBED_COLOR,
             )
-            await interaction.send(
-                embed=embed, ephemeral=True
-            )
+            await interaction.send(embed=embed, ephemeral=True)
         else:
             embed = nextcord.Embed(color=ERROR_COLOR)
             embed.description = f":x: No records found for {url}."

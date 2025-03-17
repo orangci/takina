@@ -158,7 +158,7 @@ class BanSlash(commands.Cog):
         modlog_cog = self.bot.get_cog("ModLog")
         if modlog_cog:
             await modlog_cog.log_action(
-                "ban", member, reason, interaction.user, duratio
+                "ban", member, reason, interaction.user
             )
 
 
@@ -200,7 +200,7 @@ class UnbanSlash(commands.Cog):
             modlog_cog = self.bot.get_cog("ModLog")
             if modlog_cog:
                 await modlog_cog.log_action(
-                    "unban", user, reason, interaction.user, duratio
+                    "unban", user, reason, interaction.user
                 )
 
         except nextcord.NotFound:
