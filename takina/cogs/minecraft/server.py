@@ -22,7 +22,7 @@ class MinecraftServerStatus(commands.Cog):
             raise e
 
     @commands.command(
-        help="Display a Minecraft server's status. \nUsage: `mcstatus play.spire-mc.com`.",
+        help="Display a Minecraft server's status. \nUsage: `mcstatus hypixel.net`.",
         aliases=["mcserver"],
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
