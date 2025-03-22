@@ -77,6 +77,7 @@ class CharacterSearch(commands.Cog):
             description="Name or MAL ID of the character"
         ),
     ):
+        await interaction.response.defer()
         try:
             character = await self.fetch_character(character_name)
 

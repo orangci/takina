@@ -72,6 +72,7 @@ class PingResponse(commands.Cog):
 
     @nextcord.slash_command(name="info", description="Information about the bot.")
     async def slash_info(self, interaction: nextcord.Interaction):
+        await interaction.response.defer()
         await interaction.send(
             embed=await self.construct_info_embed(interaction), ephemeral=True
         )

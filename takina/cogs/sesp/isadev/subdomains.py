@@ -330,6 +330,7 @@ class SubdomainUtilsSlash(commands.Cog):
             required=True,
         ),
     ) -> None:
+        await interaction.response.defer()
         embed = await build_whois_embed(domain)
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -346,6 +347,7 @@ class SubdomainUtilsSlash(commands.Cog):
             required=True,
         ),
     ) -> None:
+        await interaction.response.defer()
         embed = await build_check_embed(domain)
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -362,6 +364,7 @@ class SubdomainUtilsSlash(commands.Cog):
             required=False,
         ),
     ) -> None:
+        await interaction.response.defer()
         if github_username:
             embed = await isadev_user_domain_data_overview_embed_builder(
                 github_username

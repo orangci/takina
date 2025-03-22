@@ -94,6 +94,7 @@ class MAL_Profiles(commands.Cog):
             description="Username of the user to fetch"
         ),
     ):
+        await interaction.response.defer()
         try:
             profile_data = await request(f"https://api.jikan.moe/v4/users/{username}")
 

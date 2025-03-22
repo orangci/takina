@@ -45,6 +45,7 @@ class Reports(commands.Cog):
             description="The channel where the incident occured.", required=False
         ),
     ):
+        await interaction.response.defer()
         guild_id = interaction.guild.id
         config = await self.get_server_config(guild_id)
 

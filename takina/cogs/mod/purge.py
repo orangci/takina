@@ -111,6 +111,7 @@ class SlashPurge(commands.Cog):
     @purge.subcommand(name="all", description="Purge a number of messages.")
     @application_checks.has_permissions(manage_messages=True)
     async def purge_all(self, interaction: nextcord.Interaction, amount: int):
+        await interaction.response.defer()
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(
                 description=":x: Please specify a number between 1 and 200.",
@@ -136,6 +137,7 @@ class SlashPurge(commands.Cog):
     async def purge_user(
         self, interaction: nextcord.Interaction, user: nextcord.Member, amount: int
     ):
+        await interaction.response.defer()
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(
                 description=":x: Please specify a number between 1 and 200.",
@@ -161,6 +163,7 @@ class SlashPurge(commands.Cog):
     @purge.subcommand(name="bots", description="Purge messages sent by bots.")
     @application_checks.has_permissions(manage_messages=True)
     async def purge_bots(self, interaction: nextcord.Interaction, amount: int):
+        await interaction.response.defer()
         if amount <= 0 or amount > 100:
             embed = nextcord.Embed(
                 description=":x: Please specify a number between 1 and 200.",

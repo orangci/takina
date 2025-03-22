@@ -154,6 +154,7 @@ class Wynncraft(commands.Cog):
             description="The player to fetch information on", required=True
         ),
     ):
+        await interaction.response.defer()
         embed = await self.player_information_embed_builder(username)
         await interaction.send(embed=embed)
 
@@ -210,6 +211,7 @@ class Wynncraft(commands.Cog):
             description="The guild to fetch information on", required=True
         ),
     ):
+        await interaction.response.defer()
         embed = await self.guild_information_embed_builder(guild)
         await interaction.send(embed=embed)
 

@@ -78,6 +78,7 @@ class SlashMAL_Stats(commands.Cog):
         interaction: nextcord.Interaction,
         username: str = nextcord.SlashOption(description="MyAnimeList username"),
     ):
+        await interaction.response.defer()
         await self.fetch_stats(interaction, username, category="anime")
 
     @nextcord.slash_command(description="Fetch MyAnimeList user's manga statistics.")
@@ -91,6 +92,7 @@ class SlashMAL_Stats(commands.Cog):
     async def fetch_stats(
         self, interaction: nextcord.Interaction, username: str, category: str
     ):
+        await interaction.response.defer()
         try:
             profile_data = await request(f"https://api.jikan.moe/v4/users/{username}")
             if not profile_data or not profile_data.get("data"):

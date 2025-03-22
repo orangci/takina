@@ -83,6 +83,7 @@ class MangaSearch(commands.Cog):
         interaction: Interaction,
         manga_name: str = SlashOption(description="Name of the manga"),
     ):
+        await interaction.response.defer()
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
         try:
             manga = await self.fetch_manga(manga_name)
@@ -193,6 +194,7 @@ class MangaSynopsis(commands.Cog):
         interaction: Interaction,
         manga_name: str = SlashOption(description="Name of the manga"),
     ):
+        await interaction.response.defer()
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
         try:
             manga = await self.fetch_manga(manga_name)

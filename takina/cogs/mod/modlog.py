@@ -341,6 +341,7 @@ class SlashModLog(commands.Cog):
     @case.subcommand(name="fetch", description="Get case details by case ID.")
     @application_checks.has_permissions(moderate_members=True)
     async def case_fetch(self, interaction: nextcord.Interaction, case_id: int):
+        await interaction.response.defer()
         case = await self.db.modlog_cases.find_one(
             {"guild_id": interaction.guild.id, "case_id": case_id}
         )
@@ -372,6 +373,7 @@ class SlashModLog(commands.Cog):
     async def case_edit(
         self, interaction: nextcord.Interaction, case_id: int, new_reason: str
     ):
+        await interaction.response.defer()
         result = await self.db.modlog_cases.update_one(
             {"guild_id": interaction.guild.id, "case_id": case_id},
             {"$set": {"reason": new_reason}},
@@ -396,6 +398,7 @@ class SlashModLog(commands.Cog):
     async def cases(
         self, interaction: nextcord.Interaction, user: nextcord.Member = None
     ):
+        await interaction.response.defer()
         query = {"guild_id": interaction.guild.id}
         if user:
             query["member_id"] = user.id
@@ -421,6 +424,7 @@ class SlashModLog(commands.Cog):
             required=False,
         ),
     ):
+        await interaction.response.defer()
         if not user:
             user = interaction.user
         cases = await self.db.modlog_cases.find(
@@ -448,6 +452,7 @@ class SlashModLog(commands.Cog):
             description="User to fetch modstats on", required=False
         ),
     ):
+        await interaction.response.defer()
         if not user:
             user = interaction.user
 

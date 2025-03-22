@@ -68,6 +68,7 @@ class MinecraftServerStatus(commands.Cog):
             description="The Minecraft server IP to fetch information on", required=True
         ),
     ):
+        await interaction.response.defer()
         try:
             server = await self.fetch_server_info(server_name)
         except:

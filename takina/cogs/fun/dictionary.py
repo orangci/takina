@@ -63,6 +63,7 @@ class Dictionary(commands.Cog):
         name="define", description="Fetch a dictionary definition for a word."
     )
     async def slash_define(self, interaction: nextcord.Interaction, *, word: str):
+        await interaction.response.defer()
         api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
         response = await request(api_url)
 

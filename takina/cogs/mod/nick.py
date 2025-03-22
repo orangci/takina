@@ -54,6 +54,7 @@ class Nick(commands.Cog):
         ),
         nickname: str = SlashOption(description="New nickname"),
     ):
+        await interaction.response.defer()
         if member is None:
             member = ctx.author
         else:

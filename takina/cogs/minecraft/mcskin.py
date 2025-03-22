@@ -64,6 +64,7 @@ class Minecraft(commands.Cog):
             required=True,
         ),
     ):
+        await interaction.response.defer()
         uuid = await self.fetch_uuid(username)
 
         if not uuid:
