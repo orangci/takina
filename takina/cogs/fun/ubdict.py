@@ -69,6 +69,7 @@ class UrbanDictionary(commands.Cog):
             description="The word to define", required=True
         ),
     ) -> None:
+        await interaction.response.defer()
         params = {"term": word}
         async with aiohttp.ClientSession() as session:
             async with session.get(

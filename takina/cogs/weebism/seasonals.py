@@ -124,6 +124,7 @@ class AnimeSeasonals(commands.Cog):
             name="year", description="The anime year", required=False
         ),
     ):
+        await interaction.response.defer()
         if season is None or year is None:
             url = "https://api.jikan.moe/v4/seasons/now"
             embed_title = "Current Season's Anime"

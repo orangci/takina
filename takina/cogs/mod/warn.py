@@ -71,6 +71,7 @@ class SlashWarnings(commands.Cog):
             description="The reason for warning the user", required=True
         ),
     ):
+        await interaction.response.defer()
 
         member = extract_user_id(member, interaction)
         if isinstance(member, nextcord.Embed):

@@ -86,6 +86,7 @@ class AnimeSearch(commands.Cog):
         interaction: Interaction,
         anime_name: str = SlashOption(description="Name of the anime"),
     ):
+        await interaction.response.defer()
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)
@@ -200,6 +201,7 @@ class AnimeSynopsis(commands.Cog):
     ):
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
+            await interaction.response.defer()
             anime = await self.fetch_anime(anime_name)
             if anime:
                 title = anime.get("title")

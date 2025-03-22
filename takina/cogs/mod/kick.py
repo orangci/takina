@@ -73,6 +73,7 @@ class KickSlash(commands.Cog):
         ),
         reason: str = "No reason provided",
     ):
+        await interaction.response.defer()
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
             await interaction.send(embed=message, ephemeral=True)

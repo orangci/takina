@@ -127,6 +127,7 @@ class MuteSlash(commands.Cog):
         ),
         reason: str = "No reason provided",
     ):
+        await interaction.response.defer()
         timeout_duration = duration_calculator(duration, timeout=True)
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
@@ -183,6 +184,7 @@ class UnmuteSlash(commands.Cog):
         ),
         reason: str = "No reason provided",
     ):
+        await interaction.response.defer()
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
             await interaction.send(embed=message, ephemeral=True)

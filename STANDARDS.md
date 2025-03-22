@@ -24,6 +24,9 @@ Takina does not currently follow *all* these, but as of now does follow the vast
 For base commands, `ctx.reply(mention_author=False)` should always be used, save for special scenarios.
 For slash commands, generally `interaction.send(ephemeral=True)` should be used, except for some places where ephemeral messages shouldn't be ephemeral (e.g. moderation commands.)
 
+### Slash Commands
+`await interaction.response.defer()` should be used in all complex slash commands.
+
 ### Cooldowns
 Generally commands should have at least a one second cooldown.
 `@commands.cooldown(1, 1, commands.BucketType.user)`

@@ -183,7 +183,7 @@ class SlashTriggerResponses(commands.Cog):
         trigger: str = SlashOption(description="The text to trigger the response."),
         response: str = SlashOption(description="The response to send when triggered."),
     ):
-        """Add a new trigger response."""
+        await interaction.response.defer()
         if len(name) > MAX_TRIGGER_NAME_LEN:
             embed = Embed(color=ERROR_COLOR)
             embed.description = (
@@ -237,7 +237,7 @@ class SlashTriggerResponses(commands.Cog):
         interaction: Interaction,
         name: str = SlashOption(description="The name of the trigger to remove."),
     ):
-        """Remove an existing trigger."""
+        await interaction.response.defer()
         guild_data = await self.get_guild_triggers(interaction.guild.id)
         triggers = guild_data["triggers"]
 
@@ -254,6 +254,7 @@ class SlashTriggerResponses(commands.Cog):
 
     @slash_trigger.subcommand(name="list")
     async def slash_list_triggers(self, interaction: Interaction):
+        await interaction.response.defer()
         """List all triggers for the guild."""
         guild_data = await self.get_guild_triggers(interaction.guild.id)
         triggers = guild_data["triggers"]
