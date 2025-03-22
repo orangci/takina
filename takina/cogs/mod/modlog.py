@@ -109,8 +109,11 @@ class ModLog(commands.Cog):
         reason: str,
         moderator: nextcord.Member,
         duration: str = None,
+        ctx: commands.Context or nextcord.Interaction = None,
     ):
-        guild_id = member.guild.id
+        guild_id = (
+            member.guild.id if isinstance(member, nextcord.Member) else ctx.guild.id
+        )
         guild_data = await self.db.modlog_settings.find_one({"guild_id": guild_id})
         if not guild_data:
             return
