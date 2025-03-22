@@ -53,9 +53,9 @@ class Ban(commands.Cog):
             await member.send(embed=dm_embed)
         except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
-        await member.ban(
-            reason=f"Banned by {ctx.author} for: {reason}",
-        )
+        # await member.ban(
+        #     reason=f"Banned by {ctx.author} for: {reason}",
+        # )
         await ctx.reply(embed=embed, mention_author=False)
 
         modlog_cog = self.bot.get_cog("ModLog")
@@ -77,6 +77,13 @@ class Unban(commands.Cog):
     async def unban(
         self, ctx: commands.Context, id: str, *, reason: str = "No reason provided"
     ):
+        try:
+            id = int(id)
+        except:
+            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed.description = ":x: Please provide a valid Discord user ID."
+            await ctx.reply(embed=embed, mention_author=False)
+            return
         user = await self.bot.fetch_user(int(id)) or await self.bot.fetch_user(id)
         try:
             await ctx.guild.unban(
@@ -98,7 +105,7 @@ class Unban(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
         modlog_cog = self.bot.get_cog("ModLog")
         if modlog_cog:
-            await modlog_cog.log_action("unban", user, reason, ctx.author)
+            await modlog_cog.log_action("unban", user, reason, ctx.author, ctx=ctx)
 
     @unban.error
     async def unban_error(self, ctx, error):
@@ -127,6 +134,7 @@ class BanSlash(commands.Cog):
         ),
         reason: str = "No reason provided",
     ):
+        await interaction.response.defer()
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
             await interaction.send(embed=message, ephemeral=True)
@@ -150,9 +158,9 @@ class BanSlash(commands.Cog):
             await member.send(embed=dm_embed)
         except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
-        await member.ban(
-            reason=f"Banned by {interaction.user} for: {reason}",
-        )
+        # await member.ban(
+        #     reason=f"Banned by {interaction.user} for: {reason}",
+        # )
         await interaction.send(embed=embed)
 
         modlog_cog = self.bot.get_cog("ModLog")
@@ -174,39 +182,37 @@ class UnbanSlash(commands.Cog):
         ),
         reason: str = "No reason provided",
     ):
+        await interaction.response.defer()
         try:
-            user = await self.bot.fetch_user(str(id))
-            try:
-                await interaction.guild.unban(
-                    user,
-                    reason=f"Unbanned by {ctx.author} for: {reason}",
-                )
-            except:
-                error_embed = nextcord.Embed(
-                    description=f":x: **{user.mention}** is not banned.",
-                    color=ERROR_COLOR,
-                )
-                await ctx.reply(embed=error_embed, mention_author=False)
-                return
-
-            embed = nextcord.Embed(
-                description=f"✅ Successfully unbanned **{user.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
-                color=EMBED_COLOR,
+            id = int(id)
+        except:
+            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed.description = ":x: Please provide a valid Discord user ID."
+            await interaction.send(embed=embed, ephemeral=True)
+            return
+        user = await self.bot.fetch_user(int(id)) or await self.bot.fetch_user(id)
+        try:
+            await interaction.guild.unban(
+                user,
+                reason=f"Unbanned by {interaction.user} for: {reason}",
             )
-            await interaction.send(embed=embed)
-
-            modlog_cog = self.bot.get_cog("ModLog")
-            if modlog_cog:
-                await modlog_cog.log_action("unban", user, reason, interaction.user)
-
-        except nextcord.NotFound:
+        except:
             error_embed = nextcord.Embed(
-                description=":x: User not found. Please make sure the User ID is correct.",
+                description=f":x: **{user.mention}** is not banned.",
                 color=ERROR_COLOR,
             )
-            await interaction.send(
-                embed=error_embed,
-                ephemeral=True,
+            await interaction.send(embed=error_embed, ephemeral=True)
+            return
+
+        embed = nextcord.Embed(
+            description=f"✅ Successfully unbanned **{user.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
+            color=EMBED_COLOR,
+        )
+        await interaction.send(embed=embed)
+        modlog_cog = self.bot.get_cog("ModLog")
+        if modlog_cog:
+            await modlog_cog.log_action(
+                "unban", user, reason, interaction.user, ctx=interaction
             )
 
 
