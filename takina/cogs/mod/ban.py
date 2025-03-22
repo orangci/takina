@@ -53,9 +53,9 @@ class Ban(commands.Cog):
             await member.send(embed=dm_embed)
         except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
-        # await member.ban(
-        #     reason=f"Banned by {ctx.author} for: {reason}",
-        # )
+        await member.ban(
+            reason=f"Banned by {ctx.author} for: {reason}",
+        )
         await ctx.reply(embed=embed, mention_author=False)
 
         modlog_cog = self.bot.get_cog("ModLog")
@@ -158,9 +158,9 @@ class BanSlash(commands.Cog):
             await member.send(embed=dm_embed)
         except Exception as e:
             embed.set_footer(text="I was unable to DM this user.")
-        # await member.ban(
-        #     reason=f"Banned by {interaction.user} for: {reason}",
-        # )
+        await member.ban(
+            reason=f"Banned by {interaction.user} for: {reason}",
+        )
         await interaction.send(embed=embed)
 
         modlog_cog = self.bot.get_cog("ModLog")
