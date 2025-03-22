@@ -255,7 +255,6 @@ class SlashTriggerResponses(commands.Cog):
     @slash_trigger.subcommand(name="list")
     async def slash_list_triggers(self, interaction: Interaction):
         await interaction.response.defer()
-        """List all triggers for the guild."""
         guild_data = await self.get_guild_triggers(interaction.guild.id)
         triggers = guild_data["triggers"]
 
@@ -267,6 +266,7 @@ class SlashTriggerResponses(commands.Cog):
         embed = Embed(
             title=f"{await fetch_random_emoji()} Trigger List", color=EMBED_COLOR
         )
+        embed.description = ""
         for name, data in triggers.items():
             embed.description += f"\n- `{name}`:\nTrigger — `{data['trigger']}`\nResponse — `{data['response']}`"
         await interaction.send(embed=embed, ephemeral=True)
