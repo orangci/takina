@@ -199,9 +199,9 @@ class AnimeSynopsis(commands.Cog):
         interaction: Interaction,
         anime_name: str = SlashOption(description="Name of the anime"),
     ):
+        await interaction.response.defer()
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
-            await interaction.response.defer()
             anime = await self.fetch_anime(anime_name)
             if anime:
                 title = anime.get("title")
@@ -229,7 +229,9 @@ class AnimeSynopsis(commands.Cog):
 
         except Exception as e:
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
-        await interaction.response.send_message(embed=embed)
+            await interaction.send(embed=embed, ephemeral=True)
+            return
+        await interaction.send(embed=embed)
 
 
 def setup(bot):
