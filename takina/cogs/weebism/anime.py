@@ -27,11 +27,12 @@ class AnimeSearch(commands.Cog):
             raise e
 
     @commands.command(
+        name="anime",
         aliases=["ani"],
         help="Fetch anime information from MyAnimeList. \nUsage: `anime Lycoris Recoil` or `anime 50709`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
-    async def anime(self, ctx: commands.Context, *, anime_name: str):
+    async def base_anime(self, ctx: commands.Context, *, anime_name: str):
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)
@@ -79,9 +80,18 @@ class AnimeSearch(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
-        name="anime", description="Fetch anime information from MyAnimeList."
+        name="anime", description="MyAnimeList anime information commands."
     )
-    async def slash_anime(
+    async def anime(
+        self,
+        interaction: nextcord.Interaction,
+    ):
+        pass
+
+    @anime.subcommand(
+        name="info", description="Fetch anime information from MyAnimeList."
+    )
+    async def slash_anime_info(
         self,
         interaction: Interaction,
         anime_name: str = SlashOption(description="Name of the anime"),
@@ -131,11 +141,11 @@ class AnimeSearch(commands.Cog):
 
         except Exception as e:
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
-        await interaction.response.send_message(embed=embed)
+        await interaction.send(embed=embed)
 
     @commands.command(
         aliases=["animeplot", "anisyn", "animesyn"],
-        help="Fetch anime information from MyAnimeList. \nUsage: `anisyn Lycoris Recoil` or `anisyn 50709`.",
+        help="Fetch a anime's summary from MyAnimeList. \nUsage: `anisyn Lycoris Recoil` or `anisyn 50709`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def anime_synopsis(self, ctx: commands.Context, *, anime_name: str):
@@ -170,7 +180,7 @@ class AnimeSearch(commands.Cog):
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @slash_anime.subcommand(
+    @anime.subcommand(
         name="synopsis", description="Fetch an anime's summary from MyAnimeList."
     )
     async def slash_anime_synopsis(

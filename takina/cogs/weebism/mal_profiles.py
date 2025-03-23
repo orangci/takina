@@ -30,7 +30,7 @@ class MAL_Profiles(commands.Cog):
 
             if not profile_data or not profile_data.get("data"):
                 embed = nextcord.Embed(title="User not found.", color=EMBED_COLOR)
-                await ctx.response.send_message(embed=embed, ephemeral=True)
+                await ctx.send(embed=embed, ephemeral=True)
                 return
 
             user = profile_data["data"]
@@ -100,7 +100,7 @@ class MAL_Profiles(commands.Cog):
 
             if not profile_data or not profile_data.get("data"):
                 embed = nextcord.Embed(title="User not found.", color=EMBED_COLOR)
-                await ctx.response.send_message(embed=embed, ephemeral=True)
+                await ctx.send(embed=embed, ephemeral=True)
                 return
 
             user = profile_data["data"]
@@ -151,7 +151,7 @@ class MAL_Profiles(commands.Cog):
         except Exception as e:
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
 
-        await ctx.response.send_message(embed=embed, ephemeral=True)
+        await ctx.send(embed=embed, ephemeral=True)
 
 
 def setup(bot):

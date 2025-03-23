@@ -27,10 +27,11 @@ class MangaSearch(commands.Cog):
             raise e
 
     @commands.command(
-        help="Fetch anime information from MyAnimeList. \nUsage: `manga Lycoris Recoil` or `anime 135455`.",
+        name="manga",
+        help="Fetch manga information from MyAnimeList. \nUsage: `manga Lycoris Recoil` or `anime 135455`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
-    async def manga(self, ctx: commands.Context, *, manga_name: str):
+    async def base_manga(self, ctx: commands.Context, *, manga_name: str):
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
         try:
             manga = await self.fetch_manga(manga_name)
@@ -76,9 +77,18 @@ class MangaSearch(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
-        name="manga", description="Fetch manga information from MyAnimeList."
+        name="manga", description="MyAnimeList manga information commands."
     )
-    async def slash_manga(
+    async def manga(
+        self,
+        interaction: nextcord.Interaction,
+    ):
+        pass
+
+    @manga.subcommand(
+        name="info", description="Fetch manga information from MyAnimeList."
+    )
+    async def slash_manga_info(
         self,
         interaction: Interaction,
         manga_name: str = SlashOption(description="Name of the manga"),
@@ -126,11 +136,11 @@ class MangaSearch(commands.Cog):
 
         except Exception as e:
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
-        await interaction.response.send_message(embed=embed)
+        await interaction.send(embed=embed)
 
     @commands.command(
         aliases=["mangaplot", "mangasyn"],
-        help="Fetch anime information from MyAnimeList. \nUsage: `mangasyn Lycoris Recoil` or `mangasyn 50709`.",
+        help="Fetch a manga's summary from MyAnimeList. \nUsage: `mangasyn Lycoris Recoil` or `mangasyn 50709`.",
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def manga_synopsis(self, ctx: commands.Context, *, manga_name: str):
@@ -165,7 +175,7 @@ class MangaSearch(commands.Cog):
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @slash_manga.subcommand(
+    @manga.subcommand(
         name="synopsis", description="Fetch a manga's summary from MyAnimeList."
     )
     async def slash_manga_synopsis(
