@@ -60,6 +60,7 @@ class AFK(commands.Cog):
         interaction: nextcord.Interaction,
         reason: str = SlashOption(description="Reason for going AFK", required=False),
     ):
+        await interaction.response.defer()
         user_id = interaction.user.id
         current_status = await self.get_afk_status(user_id)
 
