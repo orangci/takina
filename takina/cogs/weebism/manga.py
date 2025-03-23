@@ -128,27 +128,6 @@ class MangaSearch(commands.Cog):
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await interaction.response.send_message(embed=embed)
 
-
-class MangaSynopsis(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    async def fetch_manga(self, manga_name: str):
-        url1 = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
-        url2 = f"https://api.jikan.moe/v4/manga/{manga_name}"
-
-        try:
-            data = await request(url2)
-            if data and data.get("data"):
-                return data["data"]
-
-            data = await request(url1)
-            if data and data.get("data"):
-                return data["data"][0]
-
-        except Exception as e:
-            raise e
-
     @commands.command(
         aliases=["mangaplot", "mangasyn"],
         help="Fetch anime information from MyAnimeList. \nUsage: `mangasyn Lycoris Recoil` or `mangasyn 50709`.",
@@ -186,8 +165,8 @@ class MangaSynopsis(commands.Cog):
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="manga_synopsis", description="Fetch manga synopsis from MyAnimeList."
+    @slash_manga.subcommand(
+        name="synopsis", description="Fetch a manga's summary from MyAnimeList."
     )
     async def slash_manga_synopsis(
         self,
@@ -231,4 +210,3 @@ class MangaSynopsis(commands.Cog):
 
 def setup(bot):
     bot.add_cog(MangaSearch(bot))
-    bot.add_cog(MangaSynopsis(bot))
