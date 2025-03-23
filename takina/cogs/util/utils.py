@@ -129,6 +129,7 @@ class UtilsSlash(commands.Cog):
 
     @nextcord.slash_command(name="ping", description="Ping the bot.")
     async def slash_ping(self, interaction: nextcord.Interaction):
+        await interaction.response.defer()
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(color=EMBED_COLOR)
         if not ip:
@@ -174,6 +175,7 @@ class UtilsSlash(commands.Cog):
             required=False,
         ),
     ):
+        await interaction.response.defer()
         guild = interaction.guild
         if member is None:
             member = interaction.user
@@ -207,6 +209,7 @@ class UtilsSlash(commands.Cog):
         name="member-count", description="Fetch the server's current member count."
     )
     async def slash_member_count(self, interaction: nextcord.Interaction):
+        await interaction.response.defer()
         guild = interaction.guild
 
         total_members = len([member for member in guild.members if not member.bot])

@@ -136,6 +136,7 @@ class RemindMe(commands.Cog):
     async def slash_reminder_set(
         self, interaction: nextcord.Interaction, time: str, *, reminder: str
     ):
+        await interaction.response.defer()
         user_id = interaction.user.id
         remind_time = self.parse_time(time)
 
@@ -166,6 +167,7 @@ class RemindMe(commands.Cog):
         name="list", description="List all your active reminders."
     )
     async def slash_reminder_list(self, interaction: nextcord.Interaction):
+        await interaction.response.defer()
         user_id = interaction.user.id
         reminders = self.reminders.find({"user_id": user_id}).sort("remind_at", 1)
 
@@ -193,6 +195,7 @@ class RemindMe(commands.Cog):
     async def slash_reminder_delete(
         self, interaction: nextcord.Interaction, reminder_id: str
     ):
+        await interaction.response.defer()
         user_id = interaction.user.id
 
         try:
