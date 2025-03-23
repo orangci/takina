@@ -133,27 +133,6 @@ class AnimeSearch(commands.Cog):
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await interaction.response.send_message(embed=embed)
 
-
-class AnimeSynopsis(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    async def fetch_anime(self, anime_name: str):
-        url1 = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
-        url2 = f"https://api.jikan.moe/v4/anime/{anime_name}"
-
-        try:
-            data = await request(url2)
-            if data and data.get("data"):
-                return data["data"]
-
-            data = await request(url1)
-            if data and data.get("data"):
-                return data["data"][0]
-
-        except Exception as e:
-            raise e
-
     @commands.command(
         aliases=["animeplot", "anisyn", "animesyn"],
         help="Fetch anime information from MyAnimeList. \nUsage: `anisyn Lycoris Recoil` or `anisyn 50709`.",
@@ -191,8 +170,8 @@ class AnimeSynopsis(commands.Cog):
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="anime_synopsis", description="Fetch anime information from MyAnimeList."
+    @slash_anime.subcommand(
+        name="synopsis", description="Fetch an anime's summary from MyAnimeList."
     )
     async def slash_anime_synopsis(
         self,
@@ -236,4 +215,3 @@ class AnimeSynopsis(commands.Cog):
 
 def setup(bot):
     bot.add_cog(AnimeSearch(bot))
-    bot.add_cog(AnimeSynopsis(bot))
