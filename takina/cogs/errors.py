@@ -23,7 +23,7 @@ class Errors(commands.Cog):
         self, ctx: commands.Context, error: commands.CommandError
     ) -> None:
         error_type = "Unknown Error"
-        description = "Please try again later. If you believe this is a bug, contact the maintainer."
+        description = "Please try again later. If you believe this is a bug, contact the maintainer or even better, open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md)."
 
         if isinstance(error, commands.NotOwner):
             description = f"You do not have sufficient permissions to run this command; command is restricted to {BOT_NAME}'s maintainers."
@@ -84,7 +84,7 @@ class Errors(commands.Cog):
                 return
 
         else:
-            description = "An unexpected error occurred. Please report this issue to a maintainer if it persists."
+            description = "An unexpected error occurred. Please report this issue to a maintainer if it persists, or even better, open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md)."
             error_type = "Unknown Error"
 
         embed = nextcord.Embed(color=ERROR_COLOR)
@@ -124,7 +124,7 @@ class Errors(commands.Cog):
             error_type = "Bot Missing Permissions"
 
         else:
-            description = f"An unexpected error occurred while processing your command. Please contact {BOT_NAME}'s maintainers if the issue persists."
+            description = f"An unexpected error occurred while processing your command. Please contact {BOT_NAME}'s maintainers if the issue persists, or even better, open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md)."
             error_type = "Unknown Error"
 
         embed = nextcord.Embed(color=ERROR_COLOR)
