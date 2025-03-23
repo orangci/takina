@@ -31,7 +31,7 @@ class PingResponse(commands.Cog):
         embed = nextcord.Embed(
             title=f"{await fetch_random_emoji()} Takina",
             url="https://orangc.net/takina",
-            description="Takina is a multipurpose [opensource](https://github.com/orangci/takina) bot written in Python. More information is available in the [website](https://orangc.net/takina).",
+            description="-# Open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md) • Make a [feature request](https://github.com/orangci/takina/issues/new?template=feature_request.md)\n\n Takina is a multipurpose [opensource](https://github.com/orangci/takina) bot written in Python. More information is available in the [website](https://orangc.net/takina).",
             color=EMBED_COLOR,
         )
 
