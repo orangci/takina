@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a bug report to help Takina improve
-title: ''
+title: 'bug: insert short title here'
 labels: bug
 assignees: orangci
 
