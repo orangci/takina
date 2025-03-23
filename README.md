@@ -44,6 +44,9 @@ In the future, this will be managed with a proper flake.
 - Set all the required environment variables in the `docker-compose.yml` file. You can find a list of what those are in the `docker-compose.yml` file, which has all the ENV's you need.
 - `docker compose up -d`
 
+## Contributing
+Please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Legalese
 - [License: BSD 3-Clause License](./LICENSE)
 - [Terms of Service](https://orangc.net/takina/tos.html)
