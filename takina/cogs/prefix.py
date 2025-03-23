@@ -21,7 +21,7 @@ class Prefix(commands.Cog):
         )
         embed = nextcord.Embed(color=EMBED_COLOR)
         embed.description = f"✅ Prefix updated to: `{new_prefix}`"
-        await interaction.response.send_message(embed=embed)
+        await interaction.send(embed=embed)
 
 
 def setup(bot):

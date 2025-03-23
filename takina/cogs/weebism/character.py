@@ -111,7 +111,7 @@ class CharacterSearch(commands.Cog):
         except Exception as e:
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
 
-        await interaction.response.send_message(embed=embed)
+        await interaction.send(embed=embed)
 
 
 def setup(bot):

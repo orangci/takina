@@ -78,7 +78,7 @@ class AFK(commands.Cog):
                 description=f"{await fetch_random_emoji()} {interaction.user.mention} is now AFK: {reason}",
                 color=EMBED_COLOR,
             )
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.send(embed=embed, ephemeral=True)
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
