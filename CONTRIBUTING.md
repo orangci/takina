@@ -2,7 +2,7 @@
 Takina does not currently follow *all* of these standards, but as of now does follow the vast majority most of the time. These standards exist because I have a terrible memory and want everything to be uniform.
 
 ### Before Contributing
-First of all, thanks for considering contributing to Takina! I appreciate it. Please make sure that what you're contributing follows Discord's Terms of Service. Please follow the standards after this section, and lastly, if it's a new feature, please contact me ([orangc](https://orangc.net)) or in the least open an issue before starting to write code; confirming that I'll approve your idea is better than wasting your time and finding out later that I can't merge your pull request because of x and y. 💖
+First of all, thanks for considering contributing to Takina! I appreciate it. Please make sure that what you're contributing follows Discord's [Terms of Service](https://discord.com/terms). Please follow the standards after this section, and lastly, if it's a new feature, please contact me ([orangc](https://orangc.net)) or in the least open an issue before starting to write code; confirming that I'll approve your idea is better than wasting your time and finding out later that I can't merge your pull request because of x and y. 💖
 
 ### Formatting & Commits
 - `black **/*.py` should be run in the `takina` folder before every commit.

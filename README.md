@@ -1,15 +1,13 @@
 # Takina
 A simple multipurpose bot for Discord. Also the very cutest Discord bot. I can prove it!
 
-For a list of features and other information please visit: https://orangc.net/takina.
+For a list of features and other information please visit: https://takina.orangc.net.
 
 ## TODO
-- (long term) document all code with comments
 - add time limits to giveaway command and other improvements
 - add server avatar support to the avatar command
 - issue refresh buttons
 - fix the weebism/character bug
-- add more dns related commands
 - add hackban command
 
 ## Selfhosting
