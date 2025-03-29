@@ -16,19 +16,33 @@ class ChannelManagement(commands.Cog):
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
     async def slowmode(
-        self, ctx: commands.Context, duration: str, channel: nextcord.TextChannel = None
+        self,
+        ctx: commands.Context,
+        duration: str = None,
+        channel: nextcord.TextChannel = None,
     ):
         channel = channel or ctx.channel
-        duration_parsed = duration_calculator(duration, slowmode=True)
-        if isinstance(duration_parsed, nextcord.Embed):
-            await ctx.reply(embed=duration_parsed, mention_author=False)
-            return
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        if duration:
+            duration = "0s" if duration.lower() in ["off", "disable"] else duration
+            duration_parsed = duration_calculator(duration, slowmode=True)
+            if isinstance(duration_parsed, nextcord.Embed):
+                await ctx.reply(embed=duration_parsed, mention_author=False)
+                return
 
-        await channel.edit(slowmode_delay=duration_parsed)
-        embed = nextcord.Embed(
-            description=f" :timer: Slowmode set to {duration} in {channel.mention}.",
-            color=EMBED_COLOR,
-        )
+            await channel.edit(slowmode_delay=duration_parsed)
+            embed.description = (
+                f":timer: Slowmode has been disabled for {channel.mention}."
+                if duration == "0s"
+                else f":timer: Slowmode set to {duration} in {channel.mention}."
+            )
+        elif channel.slowmode_delay != 0:
+            embed.description = f":timer: The slowmode of {channel.mention} is set to {reverse_duration_calculator(channel.slowmode_delay)}."
+        else:
+            embed.description = (
+                f":timer: Slowmode is not enabled for {channel.mention}."
+            )
+
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
@@ -85,23 +99,35 @@ class SlashChannelManagement(commands.Cog):
         self,
         interaction: nextcord.Interaction,
         duration: str = SlashOption(
-            description="The amount of time to set the slowmode to", required=True
+            description="The amount of time to set the slowmode to", required=False
         ),
         channel: nextcord.TextChannel = SlashOption(
             description="Channel to set slowmode", required=False
         ),
     ):
+        await interaction.response.defer()
         channel = channel or interaction.channel
-        duration_parsed = duration_calculator(duration, slowmode=True)
-        if isinstance(duration_parsed, nextcord.Embed):
-            await interaction.send(embed=duration_parsed, ephemeral=True)
-            return
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        if duration:
+            duration = "0s" if duration.lower() in ["off", "disable"] else duration
+            duration_parsed = duration_calculator(duration, slowmode=True)
+            if isinstance(duration_parsed, nextcord.Embed):
+                await interaction.send(embed=duration_parsed, ephemeral=True)
+                return
 
-        await channel.edit(slowmode_delay=duration_parsed)
-        embed = nextcord.Embed(
-            description=f":timer: Slowmode set to {duration} in {channel.mention}.",
-            color=EMBED_COLOR,
-        )
+            await channel.edit(slowmode_delay=duration_parsed)
+            embed.description = (
+                f":timer: Slowmode has been disabled for {channel.mention}."
+                if duration == "0s"
+                else f":timer: Slowmode set to {duration} in {channel.mention}."
+            )
+        elif channel.slowmode_delay != 0:
+            embed.description = f":timer: The slowmode of {channel.mention} is set to {reverse_duration_calculator(channel.slowmode_delay)}."
+        else:
+            embed.description = (
+                f":timer: Slowmode is not enabled for {channel.mention}."
+            )
+
         await interaction.send(embed=embed)
 
     @channel_group.subcommand(
@@ -115,6 +141,7 @@ class SlashChannelManagement(commands.Cog):
             description="Channel to lock", required=False
         ),
     ):
+        await interaction.response.defer()
         channel = channel or interaction.channel
         overwrite = channel.overwrites_for(interaction.guild.default_role)
         overwrite.send_messages = False
@@ -139,6 +166,7 @@ class SlashChannelManagement(commands.Cog):
             description="Channel to unlock", required=False
         ),
     ):
+        await interaction.response.defer()
         channel = channel or interaction.channel
         overwrite = channel.overwrites_for(interaction.guild.default_role)
         overwrite.send_messages = True

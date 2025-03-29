@@ -119,6 +119,26 @@ def duration_calculator(
     return time_value
 
 
+def reverse_duration_calculator(seconds) -> str:
+    if seconds < 0:
+        raise ValueError("Duration cannot be negative.")
+
+    time_units = [
+        ("w", 604800),  # weeks
+        ("d", 86400),  # days
+        ("h", 3600),  # hours
+        ("m", 60),  # minutes
+        ("s", 1),  # seconds
+    ]
+
+    for unit, value in time_units:
+        if seconds >= value:
+            time_value = seconds // value
+            return f"{time_value}{unit}"
+
+    return f"{seconds}s"  # Default to seconds if less than 1 minute
+
+
 # for checking perms of a command
 def perms_check(
     member: nextcord.Member = None,
