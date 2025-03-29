@@ -33,9 +33,7 @@ class Utils(commands.Cog):
         else:
             latency = dns_ping(ip, unit="ms")
             if latency:
-                embed.description = (
-                    f"{emoji} Success! {ip} responded with a latency of {latency}ms"
-                )
+                embed.description = f"{emoji} Success! {ip} responded with a latency of {int(latency)}ms"
             elif latency is False:
                 embed.color = ERROR_COLOR
                 embed.description = (
@@ -140,9 +138,7 @@ class UtilsSlash(commands.Cog):
         else:
             latency = dns_ping(ip, unit="ms")
             if latency:
-                embed.description = (
-                    f"{emoji} Success! {ip} responded with a latency of {latency}ms"
-                )
+                embed.description = f"{emoji} Success! {ip} responded with a latency of {int(latency)}ms"
             elif latency is False:
                 embed.color = ERROR_COLOR
                 embed.description = (
