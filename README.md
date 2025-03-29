@@ -49,3 +49,5 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 - [License: BSD 3-Clause License](./LICENSE)
 - [Terms of Service](https://orangc.net/takina/tos.html)
 - [Privacy Policy](https://orangc.net/takina/privacy.html)
+
+<!-- note to self: count takina loc with: `git ls-files | grep '\.py$' | xargs wc -l | tail -n 1`, 9,937 as of 2025.03.29 -->
