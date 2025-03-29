@@ -85,7 +85,7 @@ class RolesSlash(commands.Cog):
             description="The member to add the role to", required=True
         ),
     ):
-
+        await interaction.response.defer()
         await member.add_roles(role, reason=f"Role added by {interaction.user}")
         embed = nextcord.Embed(
             description=f"✅ Added role {role.mention} to {member.mention}.",
@@ -105,7 +105,7 @@ class RolesSlash(commands.Cog):
             description="The member to remove the role from", required=True
         ),
     ):
-
+        await interaction.response.defer()
         await member.remove_roles(role, reason=f"Role removed by {interaction.user}")
         embed = nextcord.Embed(
             description=f"✅ Removed role {role.mention} from {member.mention}.",
