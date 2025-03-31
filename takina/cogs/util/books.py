@@ -84,3 +84,4 @@ class SlashBooks(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Books(bot))
+    bot.add_cog(SlashBooks(bot))
