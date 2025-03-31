@@ -31,7 +31,8 @@ class Books(commands.Cog):
         embed.description += f"\n> **Authors**: {", ".join(author for author in book_data.authors)}" if book_data.authors else ""
         embed.description += f"\n> **Subjects**: {", ".join(subject for subject in book_data.subjects)}" if book_data.subjects else ""
         embed.description += f"\n> **Pagecount**: {book_data.page_count}" if book_data.page_count else ""
-        embed.description += f"\n> **Published**: <t:{int(datetime.strptime(book_data.published_date, "%Y-%m-%d").timestamp())}:D>" if book_data.published_date else ""
+        try: embed.description += f"\n> **Published**: <t:{int(datetime.strptime(book_data.published_date, "%Y-%m-%d").timestamp())}:D>"
+        except: embed.description += f"\n> **Published**: {book_data.published_date}" if book_data.published_date else ""
         embed.description += f"\n> **Publisher**: {book_data.publisher}" if book_data.publisher else ""
         embed.description += f"\n\n{book_data.description[:300] + "..." if len(book_data.description) > 300 else book_data.description}" if book_data.description else ""
         
@@ -74,7 +75,8 @@ class SlashBooks(commands.Cog):
         embed.description += f"\n> **Authors**: {", ".join(author for author in book_data.authors)}" if book_data.authors else ""
         embed.description += f"\n> **Subjects**: {", ".join(subject for subject in book_data.subjects)}" if book_data.subjects else ""
         embed.description += f"\n> **Pagecount**: {book_data.page_count}" if book_data.page_count else ""
-        embed.description += f"\n> **Published**: <t:{int(datetime.strptime(book_data.published_date, "%Y-%m-%d").timestamp())}:D>" if book_data.published_date else ""
+        try: embed.description += f"\n> **Published**: <t:{int(datetime.strptime(book_data.published_date, "%Y-%m-%d").timestamp())}:D>"
+        except: embed.description += f"\n> **Published**: {book_data.published_date}" if book_data.published_date else ""
         embed.description += f"\n> **Publisher**: {book_data.publisher}" if book_data.publisher else ""
         embed.description += f"\n\n{book_data.description[:300] + "..." if len(book_data.description) > 300 else book_data.description}" if book_data.description else ""
         
