@@ -12,7 +12,8 @@ audioop-lts==0.2.1
 emoji==2.14.0
 wynn-api==3.2.1
 ping3==4.0.8
- 
+google-books-api-wrapper==1.0.5
+
 ## nextcord stuff
 git+https://github.com/nextcord/nextcord.git@master
 nextcord-ext-help-commands==0.0.1
