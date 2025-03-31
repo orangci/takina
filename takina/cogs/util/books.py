@@ -27,13 +27,13 @@ class Books(commands.Cog):
 
         embed = nextcord.Embed(title=book_data.title, color=EMBED_COLOR, description="")
         # fmt: off
-        embed.description += f"-# {book_data.subtitle}\n" if book_data.subtitle else None
-        embed.description += f"\n> **Authors**: {", ".join(author for author in book_data.authors)}" if book_data.authors else None
-        embed.description += f"\n> **Subjects**: {", ".join(subject for subject in book_data.subjects)}" if book_data.subjects else None
-        embed.description += f"\n> **Pagecount**: {book_data.page_count}" if book_data.page_count else None
-        embed.description += f"\n> **Published**: <t:{int(datetime.strptime(book_data.published_date, "%Y-%m-%d").timestamp())}:D>" if book_data.published_date else None
-        embed.description += f"\n> **Publisher**: {book_data.publisher}" if book_data.publisher else None
-        embed.description += f"\n\n{book_data.description[:300] + "..." if len(book_data.description) > 300 else book_data.description}" if book_data.description else None
+        embed.description += f"-# {book_data.subtitle}\n" if book_data.subtitle else ""
+        embed.description += f"\n> **Authors**: {", ".join(author for author in book_data.authors)}" if book_data.authors else ""
+        embed.description += f"\n> **Subjects**: {", ".join(subject for subject in book_data.subjects)}" if book_data.subjects else ""
+        embed.description += f"\n> **Pagecount**: {book_data.page_count}" if book_data.page_count else ""
+        embed.description += f"\n> **Published**: <t:{int(datetime.strptime(book_data.published_date, "%Y-%m-%d").timestamp())}:D>" if book_data.published_date else ""
+        embed.description += f"\n> **Publisher**: {book_data.publisher}" if book_data.publisher else ""
+        embed.description += f"\n\n{book_data.description[:300] + "..." if len(book_data.description) > 300 else book_data.description}" if book_data.description else ""
         
         embed.set_thumbnail(book_data.small_thumbnail)
         embed.set_footer(text=f"ISBN: {book_data.ISBN_13}")
@@ -69,13 +69,13 @@ class SlashBooks(commands.Cog):
 
         embed = nextcord.Embed(title=book_data.title, color=EMBED_COLOR, description="")
         # fmt: off
-        embed.description += f"-# {book_data.subtitle}\n" if book_data.subtitle else None
-        embed.description += f"\n> **Authors**: {", ".join(author for author in book_data.authors)}" if book_data.authors else None
-        embed.description += f"\n> **Subjects**: {", ".join(subject for subject in book_data.subjects)}" if book_data.subjects else None
-        embed.description += f"\n> **Pagecount**: {book_data.page_count}" if book_data.page_count else None
-        embed.description += f"\n> **Published**: <t:{int(datetime.strptime(book_data.published_date, "%Y-%m-%d").timestamp())}:D>" if book_data.published_date else None
-        embed.description += f"\n> **Publisher**: {book_data.publisher}" if book_data.publisher else None
-        embed.description += f"\n\n{book_data.description[:300] + "..." if len(book_data.description) > 300 else book_data.description}" if book_data.description else None
+        embed.description += f"-# {book_data.subtitle}\n" if book_data.subtitle else ""
+        embed.description += f"\n> **Authors**: {", ".join(author for author in book_data.authors)}" if book_data.authors else ""
+        embed.description += f"\n> **Subjects**: {", ".join(subject for subject in book_data.subjects)}" if book_data.subjects else ""
+        embed.description += f"\n> **Pagecount**: {book_data.page_count}" if book_data.page_count else ""
+        embed.description += f"\n> **Published**: <t:{int(datetime.strptime(book_data.published_date, "%Y-%m-%d").timestamp())}:D>" if book_data.published_date else ""
+        embed.description += f"\n> **Publisher**: {book_data.publisher}" if book_data.publisher else ""
+        embed.description += f"\n\n{book_data.description[:300] + "..." if len(book_data.description) > 300 else book_data.description}" if book_data.description else ""
         
         embed.set_thumbnail(book_data.small_thumbnail)
         embed.set_footer(text=f"ISBN: {book_data.ISBN_13}")
