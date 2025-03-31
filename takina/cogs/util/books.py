@@ -36,7 +36,8 @@ class Books(commands.Cog):
         embed.description += f"\n\n{book_data.description[:300] + "..." if len(book_data.description) > 300 else book_data.description}" if book_data.description else ""
         
         embed.set_thumbnail(book_data.small_thumbnail)
-        embed.set_footer(text=f"ISBN: {book_data.ISBN_13}")
+        if book_data.ISBN_10 or book_data.ISBN_13:
+            embed.set_footer(text=f"ISBN: {book_data.ISBN_13 or book_data.ISBN_10}")
         await ctx.reply(embed=embed, mention_author=False)
         # fmt: on
 
@@ -78,7 +79,8 @@ class SlashBooks(commands.Cog):
         embed.description += f"\n\n{book_data.description[:300] + "..." if len(book_data.description) > 300 else book_data.description}" if book_data.description else ""
         
         embed.set_thumbnail(book_data.small_thumbnail)
-        embed.set_footer(text=f"ISBN: {book_data.ISBN_13}")
+        if book_data.ISBN_10 or book_data.ISBN_13:
+            embed.set_footer(text=f"ISBN: {book_data.ISBN_13 or book_data.ISBN_10}")
         await interaction.send(embed=embed, ephemeral=True)
 
 
