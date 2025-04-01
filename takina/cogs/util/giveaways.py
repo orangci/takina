@@ -123,9 +123,8 @@ class Giveaway(commands.Cog):
                 color=EMBED_COLOR,
             )
             await interaction.channel.send(embed=embed)
-            await interaction.followup.send(
-                "✅ Giveaway ended successfully.", ephemeral=True
-            )
+            embed.description = "✅ Giveaway ended successfully."
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # Choose a random winner
@@ -143,9 +142,9 @@ class Giveaway(commands.Cog):
         )
         await interaction.channel.send(winner.mention, embed=embed)
 
-        await interaction.followup.send(
-            "✅ Giveaway ended successfully.", ephemeral=True
-        )
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed.description = "✅ Giveaway ended successfully."
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     @giveaway.subcommand(name="reroll", description="Reroll the giveaway winner")
     @application_checks.has_permissions(manage_events=True)
