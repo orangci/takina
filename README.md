@@ -5,7 +5,6 @@ For a list of features and other information please visit: https://takina.orangc
 
 ## TODO
 - add time limits to giveaway command and other improvements
-- add server avatar support to the avatar command
 - issue refresh buttons
 - fix the weebism/character bug
 - add hackban command

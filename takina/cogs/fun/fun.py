@@ -114,8 +114,8 @@ class Fun(commands.Cog):
             return
 
         embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
-        if member.avatar:
-            embed.set_image(url=member.avatar.url)
+        if member.display_avatar:
+            embed.set_image(url=member.display_avatar.url)
         else:
             error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = "❌ This user does not have an avatar set."
@@ -283,8 +283,8 @@ class SlashFun(commands.Cog):
             member = interaction.user
 
         embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
-        if member.avatar:
-            embed.set_image(url=member.avatar.url)
+        if member.display_avatar:
+            embed.set_image(url=member.display_avatar.url)
         else:
             error_embed = nextcord.Embed(color=ERROR_COLOR)
             error_embed.description = "❌ This user does not have an avatar set."
