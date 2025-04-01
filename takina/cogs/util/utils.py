@@ -126,7 +126,13 @@ class UtilsSlash(commands.Cog):
         self.bot: commands.Bot = bot
 
     @nextcord.slash_command(name="ping", description="Ping the bot.")
-    async def slash_ping(self, interaction: nextcord.Interaction, ip: str = nextcord.SlashOption(description="The IP address you'd like to ping", required=False)):
+    async def slash_ping(
+        self,
+        interaction: nextcord.Interaction,
+        ip: str = nextcord.SlashOption(
+            description="The IP address you'd like to ping", required=False
+        ),
+    ):
         await interaction.response.defer()
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(color=EMBED_COLOR)
