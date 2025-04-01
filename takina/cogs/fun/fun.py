@@ -248,7 +248,7 @@ class SlashFun(commands.Cog):
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="commit", description="Order me to do something.")
-    async def commit(self, interaction: nextcord.Interaction):
+    async def commit(self, interaction: nextcord.Interaction, action: str = nextcord.SlashOption(description="The action you'd like me to commit", required=True)):
         possible_responses = [
             "Yes, sir!",
             "I don't particularly feel like it.",
