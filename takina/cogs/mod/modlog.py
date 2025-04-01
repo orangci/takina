@@ -209,7 +209,7 @@ class ModLog(commands.Cog):
             await ctx.reply(embed=embed, mention_author=False)
         else:
             embed = nextcord.Embed(color=EMBED_COLOR)
-            embed.description = f"✅ Case `{case_id}` reason has been updated."
+            embed.description = f"✅ Case `{case_id}`'s reason has been updated."
             await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
@@ -387,7 +387,7 @@ class SlashModLog(commands.Cog):
         else:
             embed = nextcord.Embed(
                 color=EMBED_COLOR,
-                description=f"✅ Case `{case_id}` reason has been updated.",
+                description=f"✅ Case `{case_id}`'s reason has been updated.",
             )
             await interaction.send(embed=embed)
 
