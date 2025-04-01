@@ -63,6 +63,7 @@ class SlashHello(commands.Cog):
 
     @nextcord.slash_command(name="hello", description="Say hello!")
     async def slash_hello(self, interaction: nextcord.Interaction):
+        # await interaction.response.defer() # since this is a very basic command that will respond instantly, we won't defer this 
         embed = nextcord.Embed(color=EMBED_COLOR)
         embed.description = f"{await fetch_random_emoji()} Hello there!"
         await interaction.send(embed=embed) # since this is a command with a very short response, we won't make it ephemeral
