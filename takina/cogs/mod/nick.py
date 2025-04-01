@@ -44,26 +44,17 @@ class Nick(commands.Cog):
             mention_author=False,
         )
 
-    @nextcord.slash_command(name="nick", description="Change a member's nickname.")
+    @nextcord.slash_command(name="nickname", description="Change a member's nickname.")
     @application_checks.has_permissions(manage_nicknames=True)
     async def slash_nick(
         self,
         interaction: nextcord.Interaction,
-        member: str = SlashOption(
+        member: nextcord.Member = SlashOption(
             description="Member to change the nickname for", required=True
         ),
-        nickname: str = SlashOption(description="New nickname"),
+        nickname: str = SlashOption(description="New nickname", required=False),
     ):
         await interaction.response.defer()
-        if member is None:
-            member = ctx.author
-        else:
-            member = extract_user_id(member, ctx)
-            if isinstance(member, nextcord.Embed):
-                await ctx.reply(embed=member, mention_author=False)
-                return
-
-        # Check permissions
         can_proceed, message = perms_check(member, ctx=interaction, author_check=False)
         if not can_proceed:
             await interaction.send(embed=message, ephemeral=True)
