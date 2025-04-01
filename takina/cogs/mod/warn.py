@@ -73,14 +73,9 @@ class SlashWarnings(commands.Cog):
     ):
         await interaction.response.defer()
 
-        member = extract_user_id(member, interaction)
-        if isinstance(member, nextcord.Embed):
-            await interaction.send(embed=member, mention_author=False)
-            return
-
         can_proceed, message = perms_check(member, ctx=interaction)
         if not can_proceed:
-            await interaction.send(embed=message, mention_author=False)
+            await interaction.send(embed=message, ephemeral=True)
             return
 
         confirmation = ConfirmationView(
@@ -103,7 +98,7 @@ class SlashWarnings(commands.Cog):
             await member.send(embed=dm_embed)
         except nextcord.Forbidden:
             embed.set_footer(text="I was unable to DM this user.")
-        await interaction.send(embed=embed, mention_author=False)
+        await interaction.send(embed=embed)
 
         modlog_cog = self.bot.get_cog("ModLog")
         if modlog_cog:
