@@ -6,7 +6,7 @@ from config import *
 
 
 async def gary_api(cat: str) -> nextcord.Embed:
-    url = f"https://garybot.dev/api/{cat}"
+    url = f"https://api.garythe.cat/{cat}"
     data = await request(url)
     image_url = data.get("url")
 
