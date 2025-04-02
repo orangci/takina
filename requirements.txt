@@ -10,9 +10,10 @@ filelock==3.16.1
 platformdirs==4.3.6
 audioop-lts==0.2.1
 emoji==2.14.0
-wynn-api==3.2.1
-ping3==4.0.8
-google-books-api-wrapper==1.0.5
+wynn-api==3.2.1 # minecraft.wynncraft
+ping3==4.0.8 # util.utils
+google-books-api-wrapper==1.0.5 # util.books
+aladhan.py==1.2.2  ## islam.salah
 
 ## nextcord stuff
 git+https://github.com/nextcord/nextcord.git@master
