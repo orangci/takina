@@ -27,7 +27,7 @@ class Salawat(commands.Cog):
                 prayer_times.maghrib,
                 prayer_times.isha,
             ]:
-                embed.description += f"\n> **{prayer.name.capitalize()}**: {prayer.time.strftime("%H:%M")} ({prayer.time.strftime("%I:%M %p")}) — <t:{int(prayer.time.timestamp())}:t> in your timezone."
+                embed.description += f"\n> **{prayer.name.capitalize()}**: {prayer.time.strftime("%H:%M")} ({prayer.time.strftime("%I:%M %p")})"
 
             embed.set_footer(
                 text="Please note that these times are in the timezone of the location specified, not your timezone."
@@ -71,7 +71,7 @@ class SlashSalawat(commands.Cog):
                 prayer_times.maghrib,
                 prayer_times.isha,
             ]:
-                embed.description += f"\n> **{prayer.name.capitalize()}**: {prayer.time.strftime("%H:%M")} ({prayer.time.strftime("%I:%M %p")}) — <t:{int(prayer.time.timestamp())}:t> in your timezone."
+                embed.description += f"\n> **{prayer.name.capitalize()}**: {prayer.time.strftime("%H:%M")} ({prayer.time.strftime("%I:%M %p")})"
 
             embed.set_footer(
                 text="Please note that these times are in the timezone of the location specified, not your timezone."
