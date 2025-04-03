@@ -27,10 +27,10 @@ class Salawat(commands.Cog):
                 prayer_times.maghrib,
                 prayer_times.isha,
             ]:
-                embed.description += f"\n> **{prayer.name.capitalize()}**: <t:{int(prayer.time.timestamp())}:t>"
+                embed.description += f"\n> **{prayer.name.capitalize()}**: {prayer.time.strftime("%H:%M")}"
 
             embed.set_footer(
-                text="Please note that these timestamps are automatically converted to your timezone."
+                text="Please note that these times are in the timezone of the location specified, not your timezone."
             )
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -71,10 +71,10 @@ class SlashSalawat(commands.Cog):
                 prayer_times.maghrib,
                 prayer_times.isha,
             ]:
-                embed.description += f"\n> **{prayer.name.capitalize()}**: <t:{int(prayer.time.timestamp())}:t>"
+                embed.description += f"\n> **{prayer.name.capitalize()}**: {prayer.time.strftime("%H:%M")}"
 
             embed.set_footer(
-                text="Please note that these timestamps are automatically converted to your timezone."
+                text="Please note that these times are in the timezone of the location specified, not your timezone."
             )
             await interaction.send(embed=embed)
 
