@@ -6,6 +6,7 @@ load_dotenv()
 BOT_NAME = getenv("BOT_NAME")
 DB_NAME = getenv("DB_NAME").lower()
 MONGO_URI = getenv("MONGO")
+GITHUB_AUTH_TOKEN = getenv("GITHUB_AUTH_TOKEN")
 ERROR_COLOR = 0xFF0037
 
 EMBED_COLOR_STR = getenv("EMBED_COLOR", "#2B2D31")
