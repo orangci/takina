@@ -17,6 +17,7 @@ aladhan.py==1.2.2  ## islam.salah
 PyGithub==2.6.1 # sesp.isadev.maintainer_stats
 pytz==2025.2 # util.time
 tzfpy==1.0.0 # util.time
+geopy==2.4.1 # util.time
 
 ## nextcord stuff
 git+https://github.com/nextcord/nextcord.git@master
