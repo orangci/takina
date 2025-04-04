@@ -14,7 +14,7 @@ async def find_time(location: str):
         local_time = datetime.datetime.now(local_tz)
         formatted_time = local_time.strftime("%H.%M (%I.%M %p)")
         
-        embed.description = f"The time in the location specified is {formatted_time}, in the timezone {timezone}."
+        embed.description = f"The time in {timezone} is {formatted_time}."
         return embed
     else:
         embed.color = ERROR_COLOR
