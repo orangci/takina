@@ -2,11 +2,17 @@ import nextcord, geopy, datetime, tzfpy, pytz
 from nextcord.ext import commands
 from config import *
 from ..libs.oclib import *
+from geopy.extra.rate_limiter import RateLimiter
 
 
 async def find_time(location: str):
-    geolocator = geopy.geocoders.Photon(user_agent="geoapiExercises")
-    location_data = geolocator.geocode(location)
+    async with geopy.geocoders.Photon(
+        user_agent="takina", adapter_factory=geopy.adapters.AioHTTPAdapter
+    ) as geolocator:
+        geocode = geopy.extra.rate_limiter.AsyncRateLimiter(
+            geolocator.geocode, min_delay_seconds=1
+        )
+        location_data = await geocode(location)
     embed = nextcord.Embed(color=EMBED_COLOR)
 
     if location_data:
