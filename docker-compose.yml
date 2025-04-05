@@ -14,14 +14,13 @@ services:
     image: ghcr.io/orangci/takina:latest
     restart: always
     environment:
-      - TOKEN= # You put your bots token here
+      - TOKEN= # You put your bot's token here
       - PREFIX=. # You can always change this to any prefix you want
       - HASDB=yes
       - MONGO=mongodb://takina:thisisapassword@mongodb:27017/?directConnection=true # Don't forget to change the password if you changed from the default one
       - BOT_NAME=Takina
       - DB_NAME=takina
       - EMBED_COLOR=0x2B2D31
-      - NO_EMOJIS=unfortunately yes # Necessary so that your bot doesn't try to use Takina's emojis
 
 volumes:
   data-volume:
