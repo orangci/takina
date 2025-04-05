@@ -1,11 +1,6 @@
-import re
-import nextcord
 from nextcord.ext import commands
-import aiohttp
-import datetime
 from nextcord.ui import View
-import os
-import random
+import os, random, re, nextcord, aiohttp, datetime
 from config import *
 from __main__ import start_time, bot
 

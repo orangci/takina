@@ -126,7 +126,7 @@ class TriggerResponses(commands.Cog):
             return await ctx.reply(embed=embed, mention_author=False)
 
         embed = Embed(
-            title=f"{await fetch_random_emoji()} Trigger List", color=EMBED_COLOR
+            title=f"{await fetch_random_emoji()}Trigger List", color=EMBED_COLOR
         )
         embed.description = ""
         for name, data in triggers.items():
@@ -264,7 +264,7 @@ class SlashTriggerResponses(commands.Cog):
             return await interaction.send(embed=embed, ephemeral=True)
 
         embed = Embed(
-            title=f"{await fetch_random_emoji()} Trigger List", color=EMBED_COLOR
+            title=f"{await fetch_random_emoji()}Trigger List", color=EMBED_COLOR
         )
         embed.description = ""
         for name, data in triggers.items():

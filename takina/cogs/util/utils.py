@@ -28,12 +28,14 @@ class Utils(commands.Cog):
         if not ip:
             latency = round(self.bot.latency * 1000)
             embed.description = (
-                f"{emoji} Success! {BOT_NAME} is awake. Ping: {latency}ms"
+                f"{emoji}Success! {BOT_NAME} is awake. Ping: {latency}ms"
             )
         else:
             latency = dns_ping(ip, unit="ms")
             if latency:
-                embed.description = f"{emoji} Success! {ip} responded with a latency of {int(latency)}ms"
+                embed.description = (
+                    f"{emoji}Success! {ip} responded with a latency of {int(latency)}ms"
+                )
             elif latency is False:
                 embed.color = ERROR_COLOR
                 embed.description = (
@@ -51,7 +53,7 @@ class Utils(commands.Cog):
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def uptime(self, ctx: commands.Context):
         embed = nextcord.Embed(
-            description=f"{await fetch_random_emoji()} {BOT_NAME} has been up for {await uptime_fetcher()}.",
+            description=f"{await fetch_random_emoji()}{BOT_NAME} has been up for {await uptime_fetcher()}.",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
@@ -139,12 +141,14 @@ class UtilsSlash(commands.Cog):
         if not ip:
             latency = round(self.bot.latency * 1000)
             embed.description = (
-                f"{emoji} Success! {BOT_NAME} is awake. Ping: {latency}ms"
+                f"{emoji}Success! {BOT_NAME} is awake. Ping: {latency}ms"
             )
         else:
             latency = dns_ping(ip, unit="ms")
             if latency:
-                embed.description = f"{emoji} Success! {ip} responded with a latency of {int(latency)}ms"
+                embed.description = (
+                    f"{emoji}Success! {ip} responded with a latency of {int(latency)}ms"
+                )
             elif latency is False:
                 embed.color = ERROR_COLOR
                 embed.description = (
@@ -161,7 +165,7 @@ class UtilsSlash(commands.Cog):
     )
     async def slash_uptime(self, interaction: nextcord.Interaction):
         embed = nextcord.Embed(
-            description=f"{await fetch_random_emoji()} {BOT_NAME} has been up for {await uptime_fetcher()}.",
+            description=f"{await fetch_random_emoji()}{BOT_NAME} has been up for {await uptime_fetcher()}.",
             color=EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)

@@ -62,7 +62,7 @@ class RemindMe(commands.Cog):
         )
 
         embed = nextcord.Embed(
-            description=f"{await fetch_random_emoji()} Reminder set for {time} from now: **{reminder}**\n-# ID: `{result.inserted_id}`",
+            description=f"{await fetch_random_emoji()}Reminder set for {time} from now: **{reminder}**\n-# ID: `{result.inserted_id}`",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
@@ -158,7 +158,7 @@ class RemindMe(commands.Cog):
         )
 
         embed = nextcord.Embed(
-            description=f"{await fetch_random_emoji()} Reminder set for {time} from now: **{reminder}**\n-# ID: `{result.inserted_id}`",
+            description=f"{await fetch_random_emoji()}Reminder set for {time} from now: **{reminder}**\n-# ID: `{result.inserted_id}`",
             color=EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=False)

@@ -49,7 +49,7 @@ class Giveaway(commands.Cog):
         if active_giveaway:
             random_emoji = await fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f"{random_emoji} There is already an active giveaway in this channel. End it before starting a new one.",
+                description=f"{random_emoji}There is already an active giveaway in this channel. End it before starting a new one.",
                 color=EMBED_COLOR,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
@@ -59,7 +59,7 @@ class Giveaway(commands.Cog):
         if not await is_valid_emoji(interaction, emoji):
             random_emoji = await fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f" {random_emoji} The emoji you entered is invalid; either it is not an emoji or it is an emoji I do not have access to.",
+                description=f"{random_emoji}The emoji you entered is invalid; either it is not an emoji or it is an emoji I do not have access to.",
                 color=EMBED_COLOR,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
@@ -99,7 +99,7 @@ class Giveaway(commands.Cog):
         if not active_giveaway:
             random_emoji = await fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f"{random_emoji} No active giveaway found in this channel.",
+                description=f"{random_emoji}No active giveaway found in this channel.",
                 color=EMBED_COLOR,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
@@ -158,7 +158,7 @@ class Giveaway(commands.Cog):
         if not giveaway:
             random_emoji = await fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f" {random_emoji} No ended giveaway found in this channel.",
+                description=f"{random_emoji}No ended giveaway found in this channel.",
                 color=EMBED_COLOR,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
@@ -175,7 +175,7 @@ class Giveaway(commands.Cog):
         if not users:
             random_emoji = await fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f" {random_emoji} No reactions found for the giveaway.",
+                description=f"{random_emoji}No reactions found for the giveaway.",
                 color=EMBED_COLOR,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
@@ -187,7 +187,7 @@ class Giveaway(commands.Cog):
         random_emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
             title="Giveaway Rerolled",
-            description=f"{random_emoji} The new winner of the giveaway is {new_winner.mention}!",
+            description=f"{random_emoji}The new winner of the giveaway is {new_winner.mention}!",
             color=EMBED_COLOR,
         )
         await interaction.channel.send(embed=embed)

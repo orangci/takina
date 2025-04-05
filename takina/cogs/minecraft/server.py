@@ -41,7 +41,7 @@ class MinecraftServerStatus(commands.Cog):
 
         title = server.get("host")
         emoji = await fetch_random_emoji()
-        title = f"{emoji} {title}"
+        title = emoji + title
         embed = nextcord.Embed(title=title, color=EMBED_COLOR)
         embed.description = ""
 
@@ -83,7 +83,7 @@ class MinecraftServerStatus(commands.Cog):
 
         title = server.get("host")
         emoji = await fetch_random_emoji()
-        title = f"{emoji} {title}"
+        title = emoji + title
         embed = nextcord.Embed(title=title, color=EMBED_COLOR)
         embed.description = ""
 

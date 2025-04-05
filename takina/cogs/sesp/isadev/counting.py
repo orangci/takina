@@ -70,9 +70,7 @@ class Counting(commands.Cog):
         count = current_count["count"]
 
         embed = nextcord.Embed(color=EMBED_COLOR)
-        embed.description = (
-            f"{await fetch_random_emoji()} The current count is: {count}"
-        )
+        embed.description = f"{await fetch_random_emoji()}The current count is: {count}"
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(

@@ -45,7 +45,7 @@ class AFK(commands.Cog):
             # Set AFK status
             await self.set_afk_status(user_id, reason)
             embed = nextcord.Embed(
-                description=f"{await fetch_random_emoji()} {ctx.author.mention} is now AFK: {reason}",
+                description=f"{await fetch_random_emoji()}{ctx.author.mention} is now AFK: {reason}",
                 color=EMBED_COLOR,
             )
         await ctx.reply(embed=embed, mention_author=False)
@@ -68,14 +68,14 @@ class AFK(commands.Cog):
             # Remove AFK status
             await self.remove_afk_status(user_id)
             embed = nextcord.Embed(
-                description=f"{await fetch_random_emoji()} You are no longer AFK.",
+                description=f"{await fetch_random_emoji()}You are no longer AFK.",
                 color=EMBED_COLOR,
             )
         else:
             # Set AFK status
             await self.set_afk_status(user_id, reason)
             embed = nextcord.Embed(
-                description=f"{await fetch_random_emoji()} {interaction.user.mention} is now AFK: {reason}",
+                description=f"{await fetch_random_emoji()}{interaction.user.mention} is now AFK: {reason}",
                 color=EMBED_COLOR,
             )
         await interaction.send(embed=embed, ephemeral=True)
@@ -90,7 +90,7 @@ class AFK(commands.Cog):
         if current_status:
             await self.remove_afk_status(message.author.id)
             embed = nextcord.Embed(
-                description=f"{await fetch_random_emoji()} You are no longer AFK.",
+                description=f"{await fetch_random_emoji()}You are no longer AFK.",
                 color=EMBED_COLOR,
             )
             await message.channel.send(embed=embed, delete_after=5)
@@ -100,7 +100,7 @@ class AFK(commands.Cog):
             afk_message = await self.get_afk_status(user.id)
             if afk_message:
                 embed = nextcord.Embed(
-                    description=f"{await fetch_random_emoji()} {user.mention} is currently AFK: {afk_message}",
+                    description=f"{await fetch_random_emoji()}{user.mention} is currently AFK: {afk_message}",
                     color=EMBED_COLOR,
                 )
                 await message.channel.send(embed=embed)

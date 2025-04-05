@@ -134,7 +134,7 @@ class Fun(commands.Cog):
         emoji = await fetch_random_emoji()
         lmgtfy_url = f"https://letmegooglethat.com/?q={query}"
         embed = nextcord.Embed(
-            title=f"{emoji} Let Me Google That For You!",
+            title=f"{emoji}Let Me Google That For You!",
             description=f"Here is your search result for: **{query_before_conversion}**",
             url=lmgtfy_url,
             color=EMBED_COLOR,
@@ -312,7 +312,7 @@ class SlashFun(commands.Cog):
         lmgtfy_url = f"https://letmegooglethat.com/?q={query}"
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title=f"{emoji} Let Me Google That For You!",
+            title=f"{emoji}Let Me Google That For You!",
             description=f"Here is your search result for: **{query_before_conversion}**",
             url=lmgtfy_url,
             color=EMBED_COLOR,

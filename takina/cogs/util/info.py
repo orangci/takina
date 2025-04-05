@@ -91,7 +91,7 @@ class Info(commands.Cog):
     async def roleinfo(self, ctx: commands.Context, *, role: str):
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title=f"{emoji} {role.name}",
+            title=f"{emoji}{role.name}",
             color=role.color,
             description=(
                 f"> **ID:** {role.id}\n"
@@ -120,7 +120,7 @@ class Info(commands.Cog):
         guild = ctx.guild
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title=f"{emoji} {guild.name}",
+            title=f"{emoji}{guild.name}",
             color=EMBED_COLOR,
             description=(
                 f"> **Server ID:** {guild.id}\n"
@@ -236,7 +236,7 @@ class SlashInfo(commands.Cog):
     ):
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title=f"{emoji} {role.name}",
+            title=f"{emoji}{role.name}",
             color=role.color,
             description=(
                 f"> **ID:** {role.id}\n"
@@ -262,7 +262,7 @@ class SlashInfo(commands.Cog):
         guild = interaction.guild
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
-            title=f"{emoji} {guild.name}",
+            title=f"{emoji}{guild.name}",
             color=EMBED_COLOR,
             description=(
                 f"> **Server ID:** {guild.id}\n"

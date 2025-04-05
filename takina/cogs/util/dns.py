@@ -65,7 +65,7 @@ class DNS(commands.Cog):
                 if records:
                     emoji = await fetch_random_emoji()
                     full_answer += (
-                        f"{emoji} **{record_type} Records**\n```{records}```\n"
+                        f"{emoji}**{record_type} Records**\n```{records}```\n"
                     )
             except _dnsresolver.NoAnswer:
                 continue

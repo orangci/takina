@@ -44,7 +44,7 @@ class Minecraft(commands.Cog):
         skin_url = await self.fetch_skin_url(uuid)
 
         embed = nextcord.Embed(
-            title=f"{await fetch_random_emoji()} {username}",
+            title=await fetch_random_emoji() + username,
             color=EMBED_COLOR,
         )
         embed.set_image(url=skin_url)
@@ -78,7 +78,7 @@ class Minecraft(commands.Cog):
         skin_url = await self.fetch_skin_url(uuid)
 
         embed = nextcord.Embed(
-            title=f"{await fetch_random_emoji()} {username}",
+            title=await fetch_random_emoji() + username,
             color=EMBED_COLOR,
         )
         embed.set_image(url=skin_url)
