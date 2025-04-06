@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Request a feature or behavorial change in Takina
-title: 'feat req.: short title here'
+title: 'fr(module.cog): short title here'
 labels: enhancement
 assignees: orangci
 
