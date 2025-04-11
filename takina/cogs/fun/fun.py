@@ -18,7 +18,6 @@ class Fun(commands.Cog):
         name="fact",
         help="Fetch a random fact. \nThis command utilizes the [uselessfacts](https://uselessfacts.jsph.pl) API.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def fact(self, ctx: commands.Context):
         data = await request("https://uselessfacts.jsph.pl/api/v2/facts/random")
         fact = data.get("text")
@@ -34,7 +33,6 @@ class Fun(commands.Cog):
         aliases=["dadjoke"],
         help="Fetch a random joke. \nThis command utlizes both the [Joke API](https://jokeapi.dev) and the [icanhazdadjoke](https://icanhazdadjoke.com) API.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def joke(self, ctx: commands.Context):
         joke_type = random.choice(["dadjoke", "regular"])
 
@@ -71,7 +69,6 @@ class Fun(commands.Cog):
         name="commit",
         help="Order Takina to do anything. Usage: `commit arson`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def commit(self, ctx: commands.Context):
         possible_responses = [
             "Yes, sir!",
@@ -97,7 +94,6 @@ class Fun(commands.Cog):
         aliases=["av", "pfp"],
         help="Fetch the Discord user avatar of any member including yourself. \nUsage: `avatar <username>` or just `avatar` to fetch your own avatar.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def avatar(self, ctx: commands.Context, *, member: str = None):
         if member is None:
             member = ctx.author
@@ -127,7 +123,6 @@ class Fun(commands.Cog):
         name="google",
         help="Google anything! \nUsage: `google shawarma restaurants near me`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def google(self, ctx: commands.Context, *, query: str):
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
@@ -146,7 +141,6 @@ class Fun(commands.Cog):
         name="roll",
         help="Roll a random number from 1-100.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def roll(self, ctx: commands.Context):
         embed = nextcord.Embed(
             title=f"What number did you roll? {await fetch_random_emoji()}",
@@ -159,7 +153,6 @@ class Fun(commands.Cog):
         name="8ball",
         help="Ask the 8ball anything. \nUsage: `8ball are you sentient`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def eight_ball(self, ctx: commands.Context, *, question: str = None):
         responses = [
             "It is certain.",

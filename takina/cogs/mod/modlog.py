@@ -161,7 +161,6 @@ class ModLog(commands.Cog):
         name="case",
         help="Fetch information on a moderation case. \nUsage: `case <case id>`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
     async def get_case(self, ctx, case_id: int):
         case = await self.db.modlog_cases.find_one(
@@ -196,7 +195,6 @@ class ModLog(commands.Cog):
         aliases=["caseedit", "editc"],
         help="Edit a moderation case. \nUsage: `editc <case id> <new reason>`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
     async def edit_case(self, ctx, case_id: int, *, new_reason: str):
         result = await self.db.modlog_cases.update_one(
@@ -216,7 +214,6 @@ class ModLog(commands.Cog):
         name="cases",
         help="List all the moderation cases in the server. \nUsage: `cases`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
     async def get_cases(self, ctx, user: nextcord.Member = None):
         query = {"guild_id": ctx.guild.id}
@@ -237,7 +234,6 @@ class ModLog(commands.Cog):
         name="modcases",
         help="Lists all moderation cases in which the user was the moderator. \nUsage: `modcases <user>`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
     async def get_mod_cases(self, ctx, user: str = None):
         if user:
@@ -267,7 +263,6 @@ class ModLog(commands.Cog):
         aliases=["ms"],
         help="Lists the moderation stats of a user. \nUsage: `modstats <user>`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
     async def get_mod_stats(self, ctx, user: nextcord.Member = None):
         if not user:

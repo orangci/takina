@@ -14,7 +14,6 @@ class Books(commands.Cog):
         help="Fetch information on a book title or ISBN. \nUsage: `book Yumi and the Nightmare Painter`.",
         aliases=["books"],
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def book(self, ctx: commands.Context, *, book: str):
         api = GoogleBooksAPI()
         book_data = api.get_book_by_title(book)

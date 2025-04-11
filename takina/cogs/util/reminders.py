@@ -68,7 +68,6 @@ class RemindMe(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @reminder.command(name="list", help="List all your active reminders.")
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def reminder_list(self, ctx: commands.Context):
         user_id = ctx.author.id
         reminders = self.reminders.find({"user_id": user_id}).sort("remind_at", 1)
@@ -95,7 +94,6 @@ class RemindMe(commands.Cog):
         name="delete",
         help="Delete a reminder by its ID. Usage: `reminder delete <reminder ID>`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def reminder_delete(self, ctx: commands.Context, reminder_id: str):
         user_id = ctx.author.id
 

@@ -13,7 +13,6 @@ class Nick(commands.Cog):
         aliases=["setnick"],
         help="Change a member's nickname. \nUsage: `setnick <member> <new nickname>`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_nicknames=True)
     async def nick(
         self, ctx: commands.Context, member: str = None, *, nickname: str = None

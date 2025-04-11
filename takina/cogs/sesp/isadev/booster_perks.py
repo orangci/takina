@@ -78,7 +78,6 @@ class CustomRoleManager(commands.Cog):
                 await self.delete_custom_role(after.guild, after)
 
     @commands.group(invoke_without_command=True)
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @is_in_guild()
     async def boostrole(self, ctx: commands.Context):
         """Group of commands to manage your custom role."""
@@ -89,7 +88,6 @@ class CustomRoleManager(commands.Cog):
     @boostrole.command()
     @is_in_guild()
     @commands.has_permissions(administrator=True)
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def bypass(self, ctx: commands.Context, user: nextcord.Member, bypass: bool):
         """Grant or remove a boost bypass for a user. Usage: `boostrole bypass @member true/false`."""
         await self.set_bypass(ctx.guild.id, user.id, bypass)
@@ -102,7 +100,6 @@ class CustomRoleManager(commands.Cog):
 
     @boostrole.command(name="create")
     @is_in_guild()
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def create_custom_role_command(self, ctx: commands.Context):
         """Create a custom role for the user. Usage: `boostrole create`. Use `boostrole name`, `boostrole colour #ffffff`, and `boostrole icon icon_url` to set the name, colour, and icon respectively."""
         # Check if the user already has a custom role
@@ -133,7 +130,6 @@ class CustomRoleManager(commands.Cog):
 
     @boostrole.command(name="name")
     @is_in_guild()
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def set_custom_role_name(self, ctx: commands.Context, *, name: str):
         """Set the name of the user's custom role. Usage: `boostrole name nerd`."""
         custom_role = await self.get_custom_role(ctx.guild, ctx.author)
@@ -150,7 +146,6 @@ class CustomRoleManager(commands.Cog):
 
     @boostrole.command(name="colour", aliases=["color"])
     @is_in_guild()
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def set_custom_role_colour(
         self, ctx: commands.Context, colour: nextcord.Colour
     ):
@@ -171,7 +166,6 @@ class CustomRoleManager(commands.Cog):
 
     @boostrole.command(name="icon")
     @is_in_guild()
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def set_custom_role_icon(self, ctx: commands.Context, icon: str = None):
         """Set the icon of the user's custom role. Usage: `boostrole icon` with an attached image."""
         custom_role = await self.get_custom_role(ctx.guild, ctx.author)

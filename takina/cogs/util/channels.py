@@ -13,7 +13,6 @@ class ChannelManagement(commands.Cog):
         name="slowmode",
         help="Sets slowmode in the current or specified channel. \nUsage: `slowmode <duration> #channel` to specify a channel to modify or `slowmode <duration>` to set the slowmode for the current cannel.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
     async def slowmode(
         self,
@@ -49,7 +48,6 @@ class ChannelManagement(commands.Cog):
         name="lock",
         help="Locks the current or specified channel. \nUsage: `lock #channel` to specify a channel to lock or `lock` to lock the current channel.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
     async def lock(self, ctx: commands.Context, channel: nextcord.TextChannel = None):
         channel = channel or ctx.channel
@@ -67,7 +65,6 @@ class ChannelManagement(commands.Cog):
         name="unlock",
         help="Locks the current or specified channel. \nUsage: `unlock #channel` to specify a channel to unlock or `unlock` to unlock the current channel.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
     async def unlock(self, ctx: commands.Context, channel: nextcord.TextChannel = None):
         channel = channel or ctx.channel

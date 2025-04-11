@@ -54,7 +54,6 @@ class Counting(commands.Cog):
         help="Fetches and displays the current count in the counting channel."
     )
     @is_in_guild()
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def count(self, ctx: commands.Context):
 
         current_count = await self.db.counting.find_one(

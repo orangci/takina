@@ -31,7 +31,6 @@ class AnimeSearch(commands.Cog):
         aliases=["ani"],
         help="Fetch anime information from MyAnimeList. \nUsage: `anime Lycoris Recoil` or `anime 50709`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def base_anime(self, ctx: commands.Context, *, anime_name: str):
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
@@ -147,7 +146,6 @@ class AnimeSearch(commands.Cog):
         aliases=["animeplot", "anisyn", "animesyn"],
         help="Fetch a anime's summary from MyAnimeList. \nUsage: `anisyn Lycoris Recoil` or `anisyn 50709`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def anime_synopsis(self, ctx: commands.Context, *, anime_name: str):
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:

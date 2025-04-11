@@ -41,7 +41,6 @@ class Purge(commands.Cog):
         name="user",
         help="Purges messages from a specific user. Usage: purge user <user> <number>.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def purge_user(self, ctx: commands.Context, member: str, amount: int):
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(
@@ -74,7 +73,6 @@ class Purge(commands.Cog):
         name="bots",
         help="Purges messages sent by bots. Usage: purge bots <number>.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def purge_bots(self, ctx: commands.Context, amount: int):
         if amount <= 0 or amount > 100:
             embed = nextcord.Embed(

@@ -30,7 +30,6 @@ class CharacterSearch(commands.Cog):
         aliases=["waifu", "chr"],
         help="Fetch character information from MyAnimeList. \nUsage: `chr Takina Inoue` or `chr 204620`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def character(self, ctx: commands.Context, *, character_name: str):
         try:
             character = await self.fetch_character(character_name)
