@@ -33,7 +33,6 @@ class Time(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.command(
         aliases=["timezone"],
         help="Timezone utility command. Usage: `time Riyadh Saudi Arabia`.",

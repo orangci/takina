@@ -12,7 +12,6 @@ class Dictionary(commands.Cog):
         help="Query the dictionary for a definition. \nUsage: `define grass`.",
         aliases=["dict"],
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def define(self, ctx: commands.Context, *, word: str):
         api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
         response = await request(api_url)

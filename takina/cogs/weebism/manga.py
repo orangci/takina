@@ -30,7 +30,6 @@ class MangaSearch(commands.Cog):
         name="manga",
         help="Fetch manga information from MyAnimeList. \nUsage: `manga Lycoris Recoil` or `anime 135455`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def base_manga(self, ctx: commands.Context, *, manga_name: str):
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
         try:
@@ -142,7 +141,6 @@ class MangaSearch(commands.Cog):
         aliases=["mangaplot", "mangasyn"],
         help="Fetch a manga's summary from MyAnimeList. \nUsage: `mangasyn Lycoris Recoil` or `mangasyn 50709`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def manga_synopsis(self, ctx: commands.Context, *, manga_name: str):
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
         try:

@@ -21,7 +21,6 @@ class Utils(commands.Cog):
     @commands.command(
         help="Ping the bot and check its latency. \nUsage: `ping`.", aliases=["pong"]
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def ping(self, ctx: commands.Context, ip: str = None):
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(color=EMBED_COLOR)
@@ -50,7 +49,6 @@ class Utils(commands.Cog):
     @commands.command(
         help="Check the bot's uptime since the last downtime. \nUsage: `uptime`."
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def uptime(self, ctx: commands.Context):
         embed = nextcord.Embed(
             description=f"{await fetch_random_emoji()}{BOT_NAME} has been up for {await uptime_fetcher()}.",
@@ -63,7 +61,6 @@ class Utils(commands.Cog):
         aliases=["jp", "japan"],
         help="Check a user's join position in the server. \nUsage: `jp <member>`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def join_position(self, ctx: commands.Context, *, member: str = None):
         guild = ctx.guild
         if member is None:
@@ -104,7 +101,6 @@ class Utils(commands.Cog):
         aliases=["mc", "membercount", "members", "minecraft"],
         help="Fetch the server's current member count.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def member_count(self, ctx: commands.Context):
         guild = ctx.guild
 

@@ -32,7 +32,6 @@ class AFK(commands.Cog):
         name="afk",
         help="Toggle AFK status. When AFK, Takina will notify others if they mention you. Usage: `afk <reason>`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def afk(self, ctx: commands.Context, *, reason: str = "AFK"):
         user_id = ctx.author.id
         current_status = await self.get_afk_status(user_id)

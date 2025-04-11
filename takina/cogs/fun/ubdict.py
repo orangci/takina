@@ -13,7 +13,6 @@ class UrbanDictionary(commands.Cog):
     @commands.command(
         help="Query Urban Dictionary for a definition. \nUsage: `ubdict anime`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def ubdict(self, ctx: commands.Context, *, word: str):
         params = {"term": word}
         async with aiohttp.ClientSession() as session:

@@ -11,7 +11,6 @@ class Topic(commands.Cog):
         self.bot = bot
 
     @commands.command(help="Fetch a random conversational topic. \nUsage: `topic`.")
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def topic(self, ctx: commands.Context):
         embed = nextcord.Embed(
             description=f"{random.choice(topics)} {await fetch_random_emoji()}",

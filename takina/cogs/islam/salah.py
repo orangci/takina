@@ -12,7 +12,6 @@ class Salawat(commands.Cog):
     @commands.command(
         help="Fetch a list of the Islāmic prayer times. \nUsage: `salawat Riyadh Saudi Arabia`."
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def salawat(self, ctx: commands.Context, location_name: str):
         client = aladhan.Client(is_async=True)
         try:

@@ -13,7 +13,6 @@ class Info(commands.Cog):
         help="Fetch information about a user. \nUsage: `userinfo <user>` or just `userinfo` if you want to fetch information about yourself.",
         aliases=["ui"],
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def userinfo(self, ctx: commands.Context, *, member: str = None):
         if member is None:
             member = ctx.author
@@ -87,7 +86,6 @@ class Info(commands.Cog):
         help="Fetch information about a role. \nUsage: `Usage: roleinfo <role>`.",
         aliases=["ri"],
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def roleinfo(self, ctx: commands.Context, *, role: str):
         emoji = await fetch_random_emoji()
         embed = nextcord.Embed(
@@ -115,7 +113,6 @@ class Info(commands.Cog):
         help="Fetch information about the server. \nUsage: `serverinfo`.",
         aliases=["si"],
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def serverinfo(self, ctx: commands.Context):
         guild = ctx.guild
         emoji = await fetch_random_emoji()

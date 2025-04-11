@@ -12,7 +12,6 @@ class Kick(commands.Cog):
         name="kick",
         help="Kick a member from the server. \nUsage: `kick @member`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(kick_members=True)
     async def kick(
         self,

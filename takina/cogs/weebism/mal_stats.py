@@ -64,7 +64,6 @@ class MAL_Stats(commands.Cog):
         self.bot = bot
 
     @commands.group(help="Fetch a MyAnimeList user's statistics.")
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def malstats(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             embed = nextcord.Embed(

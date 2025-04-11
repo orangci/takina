@@ -335,7 +335,6 @@ class SubdomainUtils(commands.Cog):
     @commands.command(
         help="Lookup information on a subdomain of is-a.dev. Usage: `whois cirno.is-a.dev`."
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def whois(self, ctx: commands.Context, domain: str) -> None:
         embed = await build_whois_embed(domain)
         await ctx.reply(embed=embed, mention_author=False)
@@ -344,7 +343,6 @@ class SubdomainUtils(commands.Cog):
     @commands.command(
         help="Fetch all staff-owned is-a.dev subdomains. Usage: `staff_subdomains`"
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def staff_subdomains(self, ctx: commands.Context) -> None:
         embed = await fetch_staff_subdomains()
         await ctx.reply(embed=embed, mention_author=False)
@@ -353,7 +351,6 @@ class SubdomainUtils(commands.Cog):
     @commands.command(
         help="Fetch all unregistered single-character is-a.dev subdomains. Usage: `single_character_subdomains`"
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def single_character_subdomains(self, ctx: commands.Context) -> None:
         embed = await fetch_non_existent_single_character_domains()
         await ctx.reply(embed=embed, mention_author=False)
@@ -362,7 +359,6 @@ class SubdomainUtils(commands.Cog):
     @commands.command(
         help="Check whether an is-a.dev subdomain is available for registration. Usage: `check cirno`."
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def check(self, ctx: commands.Context, domain: str):
         embed = await build_check_embed(domain)
         await ctx.reply(embed=embed, mention_author=False)
@@ -372,7 +368,6 @@ class SubdomainUtils(commands.Cog):
         help="Fetch is-a.dev statistics for either the entire service or a specific Github username. Usage: `is-a-dev orangci`.",
         aliases=["isadev", "is-a-dev"],
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def is_a_dev(self, ctx: commands.Context, username: str = None):
         if username:
             embed = await isadev_user_domain_data_overview_embed_builder(username)

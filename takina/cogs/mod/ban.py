@@ -13,7 +13,6 @@ class Ban(commands.Cog):
         aliases=["b"],
         help="Ban a member from the server. \nUsage: `ban @member`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
     async def ban(
         self,
@@ -72,7 +71,6 @@ class Unban(commands.Cog):
         aliases=["pardon", "ub"],
         help="Unban a member from the server. \nUsage: `pardon <Discord user id>.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
     async def unban(
         self, ctx: commands.Context, id: str, *, reason: str = "No reason provided"
