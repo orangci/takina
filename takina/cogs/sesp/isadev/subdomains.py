@@ -97,22 +97,52 @@ async def build_whois_embed(domain):
 
     return embed
 
+
 async def fetch_staff_subdomains():
     data = await request("https://raw.is-a.dev")
-    
+
     non_reserved_domains = [
         entry["domain"][:-9]
         for entry in data
-        if entry.get("owner", {}).get("username") == "is-a-dev" and not entry.get("reserved")
+        if entry.get("owner", {}).get("username") == "is-a-dev"
+        and not entry.get("reserved")
     ]
 
     embed = nextcord.Embed(color=EMBED_COLOR)
     embed.title = f"is-a.dev staff domains"
-    
+
     if non_reserved_domains:
-        embed.description = "\n".join(f"- [{domain}.is-a.dev](https://{domain}.is-a.dev)" for domain in non_reserved_domains)
+        embed.description = "\n".join(
+            f"- [{domain}.is-a.dev](https://{domain}.is-a.dev)"
+            for domain in non_reserved_domains
+        )
     else:
         embed.description = f":x: No staff owned subdomains of is-a.dev were found."
+
+    return embed
+
+
+async def fetch_non_existent_single_character_domains():
+    data = await request("https://raw.is-a.dev")
+    alphabet = "abcdefghijklmnopqrstuvwxyz0123456789"
+    non_existent_single_character_domains = []
+
+    for character in alphabet:
+        domain_name = f"{character}.is-a.dev"
+        exists = any(entry["domain"] == domain_name for entry in data)
+
+        if not exists:
+            non_existent_single_character_domains.append(domain_name)
+
+    embed = nextcord.Embed(color=EMBED_COLOR)
+    embed.title = "Unregistered is-a.dev single-character subdomains"
+
+    if non_existent_single_character_domains:
+        embed.description = "\n".join(
+            f"- {domain}" for domain in non_existent_single_character_domains
+        )
+    else:
+        embed.description = ":x: All single-character domains have been registered."
 
     return embed
 
@@ -308,7 +338,7 @@ class SubdomainUtils(commands.Cog):
     async def whois(self, ctx: commands.Context, domain: str) -> None:
         embed = await build_whois_embed(domain)
         await ctx.reply(embed=embed, mention_author=False)
-    
+
     @is_in_guild()
     @commands.command(
         help="Fetch all staff-owned is-a.dev subdomains. Usage: `staff_subdomains`"
@@ -316,6 +346,15 @@ class SubdomainUtils(commands.Cog):
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def staff_subdomains(self, ctx: commands.Context) -> None:
         embed = await fetch_staff_subdomains()
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @is_in_guild()
+    @commands.command(
+        help="Fetch all unregistered single-character is-a.dev subdomains. Usage: `single_character_subdomains`"
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
+    async def single_character_subdomains(self, ctx: commands.Context) -> None:
+        embed = await fetch_non_existent_single_character_domains()
         await ctx.reply(embed=embed, mention_author=False)
 
     @is_in_guild()
@@ -361,7 +400,7 @@ class SubdomainUtilsSlash(commands.Cog):
         await interaction.response.defer()
         embed = await build_whois_embed(domain)
         await interaction.send(embed=embed, ephemeral=True)
-    
+
     @nextcord.slash_command(
         name="is-a-dev-staff-subdomains",
         guild_ids=[SERVER_ID],
@@ -373,6 +412,19 @@ class SubdomainUtilsSlash(commands.Cog):
     ) -> None:
         await interaction.response.defer()
         embed = await fetch_staff_subdomains()
+        await interaction.send(embed=embed, ephemeral=True)
+
+    @nextcord.slash_command(
+        name="is-a-dev-single-character-subdomains",
+        guild_ids=[SERVER_ID],
+        description="Fetch all unregistered single-character is-a.dev subdomains.",
+    )
+    async def staff_subdomains(
+        self,
+        interaction: nextcord.Interaction,
+    ) -> None:
+        await interaction.response.defer()
+        embed = await fetch_non_existent_single_character_domains()
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(
