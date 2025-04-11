@@ -97,6 +97,25 @@ async def build_whois_embed(domain):
 
     return embed
 
+async def fetch_staff_subdomains():
+    data = await request("https://raw.is-a.dev")
+    
+    non_reserved_domains = [
+        entry["domain"][:-9]
+        for entry in data
+        if entry.get("owner", {}).get("username") == "is-a-dev" and not entry.get("reserved")
+    ]
+
+    embed = nextcord.Embed(color=EMBED_COLOR)
+    embed.title = f"is-a.dev staff domains"
+    
+    if non_reserved_domains:
+        embed.description = "\n".join(f"- [{domain}.is-a.dev](https://{domain}.is-a.dev)" for domain in non_reserved_domains)
+    else:
+        embed.description = f":x: No staff owned subdomains of is-a.dev were found."
+
+    return embed
+
 
 async def isadev_domain_data_overview_embed_builder():
     data = await request("https://raw.is-a.dev")
@@ -289,6 +308,15 @@ class SubdomainUtils(commands.Cog):
     async def whois(self, ctx: commands.Context, domain: str) -> None:
         embed = await build_whois_embed(domain)
         await ctx.reply(embed=embed, mention_author=False)
+    
+    @is_in_guild()
+    @commands.command(
+        help="Fetch all staff-owned is-a.dev subdomains. Usage: `staff_subdomains`"
+    )
+    @commands.cooldown(1, 1, commands.BucketType.user)
+    async def staff_subdomains(self, ctx: commands.Context) -> None:
+        embed = await fetch_staff_subdomains()
+        await ctx.reply(embed=embed, mention_author=False)
 
     @is_in_guild()
     @commands.command(
@@ -332,6 +360,19 @@ class SubdomainUtilsSlash(commands.Cog):
     ) -> None:
         await interaction.response.defer()
         embed = await build_whois_embed(domain)
+        await interaction.send(embed=embed, ephemeral=True)
+    
+    @nextcord.slash_command(
+        name="is-a-dev-staff-subdomains",
+        guild_ids=[SERVER_ID],
+        description="Fetch all staff-owned is-a.dev subdomains.",
+    )
+    async def staff_subdomains(
+        self,
+        interaction: nextcord.Interaction,
+    ) -> None:
+        await interaction.response.defer()
+        embed = await fetch_staff_subdomains()
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(
