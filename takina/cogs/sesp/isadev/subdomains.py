@@ -139,7 +139,8 @@ async def fetch_non_existent_single_character_domains():
 
     if non_existent_single_character_domains:
         embed.description = "\n".join(
-            f"- {domain}" for domain in non_existent_single_character_domains
+            f"- [{domain}](https://{domain})"
+            for domain in non_existent_single_character_domains
         )
     else:
         embed.description = ":x: All single-character domains have been registered."
