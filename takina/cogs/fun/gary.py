@@ -25,7 +25,6 @@ class Gary(commands.Cog):
         help="Get a random picture of gary.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def gary(self, ctx: commands.Context):
         embed = await gary_api("gary")
         await ctx.reply(embed=embed, mention_author=False)
@@ -35,7 +34,6 @@ class Gary(commands.Cog):
         help="Get a random picture of goober.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def goober(self, ctx: commands.Context):
         embed = await gary_api("goober")
         await ctx.reply(embed=embed, mention_author=False)

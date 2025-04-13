@@ -135,7 +135,6 @@ class Wynncraft(commands.Cog):
         name="player",
         help="Fetch and display a Wynncraft player's data. Usage: `wynn player <minecraft username>`.",
     )
-    @commands.cooldown(1, 3, commands.BucketType.user)
     async def player(self, ctx: commands.Context, username: str):
         embed = await self.player_information_embed_builder(username)
         await ctx.reply(embed=embed, mention_author=False)
@@ -196,7 +195,6 @@ class Wynncraft(commands.Cog):
         name="guild",
         help="Fetch and display a Wynncraft player's data. Usage: `wynn guild <guild prefix or name>`.",
     )
-    @commands.cooldown(1, 3, commands.BucketType.user)
     async def guild(self, ctx: commands.Context, *, guild: str):
         embed = await self.guild_information_embed_builder(guild)
         await ctx.reply(embed=embed, mention_author=False)

@@ -15,7 +15,6 @@ class RemindMe(commands.Cog):
         self.check_reminders.start()
 
     @commands.command(help="Deprecated alias of `reminder set`.")
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def remindme(self, ctx: commands.Context):
         embed = nextcord.Embed(
             description=f":x: The `remindme` alias has been deprecated. Use `reminder set` instead.",
@@ -39,7 +38,6 @@ class RemindMe(commands.Cog):
         name="set",
         help="Set a reminder. Minimum duration is 10 minutes. Usage: `reminder set <time> <reminder>`.",
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def reminder_set(self, ctx: commands.Context, time: str, *, reminder: str):
         user_id = ctx.author.id
         remind_time = self.parse_time(time)

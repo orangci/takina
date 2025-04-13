@@ -15,7 +15,6 @@ class Purge(commands.Cog):
         invoke_without_command=True,
     )
     @commands.has_permissions(manage_messages=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def purge(self, ctx: commands.Context, amount: int):
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(

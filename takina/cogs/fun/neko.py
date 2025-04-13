@@ -34,7 +34,6 @@ class Neko(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def neko(self, ctx: commands.Context):
         embed = await request_neko("png", "neko")
         await ctx.reply(embed=embed, mention_author=False)
@@ -44,7 +43,6 @@ class Neko(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def kitsune(self, ctx: commands.Context):
         embed = await request_neko("png", "kitsune")
         await ctx.reply(embed=embed, mention_author=False)
@@ -59,7 +57,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def lurk(self, ctx: commands.Context):
         embed = await request_neko("gif", "lurk")
         await ctx.reply(embed=embed, mention_author=False)
@@ -69,7 +66,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def shoot(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -87,7 +83,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def sleep(self, ctx: commands.Context):
         embed = await request_neko("gif", "sleep")
         await ctx.reply(embed=embed, mention_author=False)
@@ -97,7 +92,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def shrug(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -115,7 +109,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def stare(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -133,7 +126,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def wave(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -151,7 +143,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def poke(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -169,7 +160,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def smile(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -187,7 +177,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def wink(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -205,7 +194,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def blush(self, ctx: commands.Context):
         embed = await request_neko("gif", "blush")
         await ctx.reply(embed=embed, mention_author=False)
@@ -215,7 +203,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def smug(self, ctx: commands.Context):
         embed = await request_neko("gif", "smug")
         await ctx.reply(embed=embed, mention_author=False)
@@ -225,7 +212,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def yeet(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -243,7 +229,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def think(self, ctx: commands.Context):
         embed = await request_neko("gif", "think")
         await ctx.reply(embed=embed, mention_author=False)
@@ -253,7 +238,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def yawn(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -271,7 +255,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def facepalm(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -289,7 +272,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def cuddle(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -307,7 +289,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def nom(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -325,7 +306,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def feed(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -343,7 +323,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def bored(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -361,7 +340,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def kick(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -379,7 +357,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def happy(self, ctx: commands.Context):
         embed = await request_neko("gif", "happy")
         await ctx.reply(embed=embed, mention_author=False)
@@ -389,7 +366,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def hug(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -407,7 +383,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def baka(self, ctx: commands.Context, *, target=None):
         embed = await request_neko("gif", "baka")
         await ctx.reply(target, embed=embed, mention_author=False)
@@ -417,7 +392,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def pat(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -435,7 +409,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def nod(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -453,7 +426,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def nope(self, ctx: commands.Context):
         embed = await request_neko("gif", "nope")
         await ctx.reply(embed=embed, mention_author=False)
@@ -463,7 +435,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def kiss(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -481,7 +452,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def dance(self, ctx: commands.Context):
         embed = await request_neko("gif", "dance")
         await ctx.reply(embed=embed, mention_author=False)
@@ -491,7 +461,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def punch(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -509,7 +478,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def handshake(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -527,7 +495,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def slap(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -545,7 +512,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def cry(self, ctx: commands.Context):
         embed = await request_neko("gif", "cry")
         await ctx.reply(embed=embed, mention_author=False)
@@ -555,7 +521,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def pout(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -574,7 +539,6 @@ class NekoInteractions(commands.Cog):
         aliases=["lewd"],
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def handhold(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -593,7 +557,6 @@ class NekoInteractions(commands.Cog):
         aliases=["ok", "okay", "yes"],
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def thumbsup(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
@@ -611,7 +574,6 @@ class NekoInteractions(commands.Cog):
         help="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
     )
     @commands.has_permissions(embed_links=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def laugh(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
