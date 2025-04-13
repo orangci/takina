@@ -29,7 +29,6 @@ class Minecraft(commands.Cog):
         name="mcskin",
         help="Fetch and display a Minecraft player's skin. Usage: `mcskin <minecraft username>`.",
     )
-    @commands.cooldown(1, 3, commands.BucketType.user)
     async def mcskin(self, ctx: commands.Context, username: str):
         uuid = await self.fetch_uuid(username)
 
@@ -55,7 +54,6 @@ class Minecraft(commands.Cog):
         name="mcskin",
         description="Fetch and display a Minecraft player's skin.",
     )
-    @commands.cooldown(1, 3, commands.BucketType.user)
     async def slash_mcskin(
         self,
         interaction: nextcord.Interaction,
