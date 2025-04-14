@@ -20,6 +20,7 @@ pytz==2025.2 # util.time
 tzfpy==1.0.0 # util.time
 geopy==2.4.1 # util.time
 open-meteo==0.3.2 # util.weather
+humanize==4.12.2
 
 ## nextcord stuff
 git+https://github.com/nextcord/nextcord.git@master
