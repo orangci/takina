@@ -13,7 +13,7 @@ async def find_weather(location: str):
         embed.description = ":x: The location specified was not recognized."
 
     async with geopy.geocoders.Photon(
-        user_agent="takina", adapter_factory=geopy.adapters.AioHTTPAdapter
+        user_agent=BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter
     ) as geolocator:
         geocode = geopy.extra.rate_limiter.AsyncRateLimiter(
             geolocator.geocode, min_delay_seconds=1

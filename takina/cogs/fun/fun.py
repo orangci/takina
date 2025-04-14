@@ -67,7 +67,7 @@ class Fun(commands.Cog):
 
     @commands.command(
         name="commit",
-        help="Order Takina to do anything. Usage: `commit arson`.",
+        help=f"Order {BOT_NAME.lower().capitalize()} to do anything. Usage: `commit arson`.",
     )
     async def commit(self, ctx: commands.Context):
         possible_responses = [

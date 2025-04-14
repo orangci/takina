@@ -30,7 +30,7 @@ class AFK(commands.Cog):
 
     @commands.command(
         name="afk",
-        help="Toggle AFK status. When AFK, Takina will notify others if they mention you. Usage: `afk <reason>`.",
+        help=f"Toggle AFK status. When AFK, {BOT_NAME.lower().capitalize()} will notify others if they mention you. Usage: `afk <reason>`.",
     )
     async def afk(self, ctx: commands.Context, *, reason: str = "AFK"):
         user_id = ctx.author.id
@@ -51,7 +51,7 @@ class AFK(commands.Cog):
 
     @nextcord.slash_command(
         name="afk",
-        description="Toggle AFK status. When AFK, Takina will notify others if they mention you.",
+        description=f"Toggle AFK status. When AFK, {BOT_NAME.lower().capitalize()} will notify others if they mention you.",
     )
     @application_checks.has_permissions(send_messages=True)
     async def afk_slash(
