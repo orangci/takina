@@ -6,6 +6,11 @@ from geopy.extra.rate_limiter import RateLimiter
 
 
 async def find_time(location: str):
+    embed = nextcord.Embed(color=EMBED_COLOR)
+    if len(location) > 300:
+        embed.color = ERROR_COLOR
+        embed.description = ":x: The location name you specified is too long. Please enter a shorter name."
+
     async with geopy.geocoders.Photon(
         user_agent="takina", adapter_factory=geopy.adapters.AioHTTPAdapter
     ) as geolocator:
@@ -13,7 +18,6 @@ async def find_time(location: str):
             geolocator.geocode, min_delay_seconds=1
         )
         location_data = await geocode(location)
-    embed = nextcord.Embed(color=EMBED_COLOR)
 
     if location_data:
         timezone = tzfpy.get_tz(location_data.longitude, location_data.latitude)
