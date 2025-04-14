@@ -21,6 +21,9 @@ services:
       - BOT_NAME=Takina
       - DB_NAME=takina
       - EMBED_COLOR=0x2B2D31
+      - GITHUB_AUTH_TOKEN= # if you want the github command in util.socials to work, set this variable
+      - REDDIT_CLIENT_ID= # You must set the REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET environment variables if you would like the reddit command in util.socials to work. To get your own Reddit client secret and ID visit https://www.reddit.com/prefs/apps.
+      - REDDIT_CLIENT_SECRET= # see above
 
 volumes:
   data-volume:
