@@ -16,7 +16,6 @@ class SocialsGitHub(commands.Cog):
     async def github(self, ctx: commands.Context, *, username: str):
         embed = await self.fetch_user_information(username)
         await ctx.reply(embed=embed, mention_author=False)
-        pass
 
     @nextcord.slash_command(
         name="github", description="Social information command for GitHub."
@@ -139,12 +138,13 @@ class SocialsReddit(commands.Cog):
         return embed
         # fmt: on
 
+
 def setup(bot: commands.Bot):
     if GITHUB_AUTH_TOKEN:
         bot.add_cog(SocialsGitHub(bot))
     else:
         print(
-            "You must set the GITHUB_AUTH_TOKEN environment variable if you want the github command to work. Skipping loading the github command. To get your own github auth token, visit <https://github.com/settings/tokens/new>."
+            "You must set the GITHUB_AUTH_TOKEN environment variable if you want the github command to work. Skipping loading the github command. \nTo get your own github auth token, visit <https://github.com/settings/tokens/new>."
         )
     if REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET:
         bot.add_cog(SocialsReddit(bot))
