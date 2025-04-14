@@ -1,4 +1,4 @@
-# Takina
+# Takina v1.0.0
 A simple multipurpose bot for Discord. Also the very cutest Discord bot. Sakanaaa <3
 
 For a list of features and other information please visit: https://takina.orangc.net.
@@ -38,9 +38,12 @@ In the future, this will be managed with a proper flake.
 ## Contributing
 Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Legalese
-- [License: BSD 3-Clause License](./LICENSE)
+## Legal
+- [License: GNU AGPLv3](./LICENSE)
 - [Terms of Service](https://orangc.net/takina/tos.html)
 - [Privacy Policy](https://orangc.net/takina/privacy.html)
 
-<!-- note to self: count takina loc with: `git ls-files | grep '\.py$' | xargs wc -l | tail -n 1`, 9,937 as of 2025.03.29 -->
+## Specifications
+- This project follows [Semantic Versioning 2.0.0](https://semver.org/) specification as of 14.04.2025.
+- This project follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification as of 01.10.2024.
+<!-- note to self: count takina loc with: `git ls-files | grep '\.py$' | xargs wc -l | tail -n 1`, 9,839 as of 14.04.2025 -->
