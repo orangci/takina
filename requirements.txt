@@ -14,10 +14,11 @@ wynn-api==3.2.1 # minecraft.wynncraft
 ping3==4.0.8 # util.utils
 google-books-api-wrapper==1.0.5 # util.books
 aladhan.py==1.2.2  ## islam.salah
-PyGithub==2.6.1 # sesp.isadev.maintainer_stats
+PyGithub==2.6.1
 pytz==2025.2 # util.time
 tzfpy==1.0.0 # util.time
 geopy==2.4.1 # util.time
+open-meteo==0.3.2 # util.weather
 
 ## nextcord stuff
 git+https://github.com/nextcord/nextcord.git@master
