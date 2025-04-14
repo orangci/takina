@@ -1,4 +1,4 @@
-# Takina v1.0.1
+# Takina v1.1.0
 A simple multipurpose bot for Discord. Also the very cutest Discord bot. Sakanaaa <3
 
 For a list of features and other information please visit: https://takina.orangc.net.
