@@ -4,7 +4,7 @@ from config import *
 import nextcord
 
 
-class Roast(commands.Cog):
+class Roasts(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
@@ -12,7 +12,6 @@ class Roast(commands.Cog):
         name="roast",
         help="Get roasted by the bot. \nUsage: `roast <user>`.",
     )
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def roast(self, ctx: commands.Context, target: str = None):
         embed = nextcord.Embed(color=EMBED_COLOR)
         try:
@@ -52,7 +51,7 @@ class Roast(commands.Cog):
         except Exception:
             embed.description = ":x: Failed to fetch a roast. Try again later!"
 
-        target = ctx.author if not target else target
+        target = interaction.user if not target else target
         await interaction.send(target.mention, embed=embed)
 
 

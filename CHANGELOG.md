@@ -21,3 +21,6 @@ Added the reddit command to the util.socials cog.
 
 ### 1.4.0
 Added the fun.roasts cog.
+
+#### 1.4.1
+Patched fun.roasts slash commmand not calling interaction.user instead of ctx.author, and a typo in the classname. Additionally removed command cooldowns as that breaks the bot for now.
