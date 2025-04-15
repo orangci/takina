@@ -1,4 +1,5 @@
 from __future__ import annotations
+import requests  # new import for the API
 from ..libs.oclib import *
 import nextcord
 from nextcord.ext import commands
@@ -15,41 +16,16 @@ class Roast(commands.Cog):
     )
     @commands.cooldown(1, 1, commands.BucketType.user)
     async def roast(self, ctx: commands.Context):
-        roasts = [
-            "You're so slow, Internet Explorer feels bad for you.",
-            "I'd roast you, but my mom said I shouldn't burn trash.",
-            "You're the reason why shampoo has instructions.",
-            "If I had a dollar for every brain cell you have, I'd be in debt.",
-            "You're not the dumbest person on Earth, but you better hope they don't die.",
-            "I'd explain it to you, but I don't have any crayons.",
-            "You bring everyone so much joy... when you leave the room.",
-            "Light travels faster than sound, which is why you seemed bright until you spoke.",
-            "Hold still, I'm trying to imagine you with a personality.",
-            "Your secrets are safe with me, I wasn't even listening.",
-            "You're like a cloud - when you disappear, it's a beautiful day.",
-            "You're like Python's GIL - always blocking progress.",
-            "Your code is so bad, even Stack Overflow won't help you.",
-            "You're like CSS - always causing problems that didn't exist before.",
-            "You're so basic, you make HTML look complex.",
-            "Your debugging skills are like Windows Vista - fundamentally broken.",
-            "You're like a semicolon in Python - completely unnecessary.",
-            "Your code comments are like your life choices - questionable and confusing.",
-            "You're so outdated, you make COBOL look cutting-edge.",
-            "You're like a DNS error - impossible to look up and hard to resolve.",
-            "Your code has more bugs than a roach motel during a heat wave.",
-            "You're like PHP - nobody likes you, but somehow you're still around.",
-            "Your brain runs on Internet Explorer 6 - slow, buggy, and desperately needs an update.",
-            "You're so dense, black holes are taking notes.",
-            "Your pull requests are like your dating life - always rejected.",
-            "You're like a null pointer - pointless and causes everything to crash.",
-            "Your code is so spaghetti, Italy wants to hire you as a chef.",
-            "You're like a legacy codebase - full of issues and nobody wants to deal with you.",
-            "You're so basic, you make Assembly language look user-friendly.",
-            "Your existence is like a race condition - a complete mistake that should've been prevented."
-        ]
+        try:
+            response = requests.get("https://evilinsult.com/generate_insult.php?lang=en&type=json")
+            data = response.json()
+            insult = data.get("insult", "Couldn't fetch a roast right now.")
+        except Exception:
+            insult = "Couldn't fetch a roast right now. Try again later."
+
         embed = nextcord.Embed(
-            title=f"🔥 Roast Time!",
-            description=f"{ctx.author.mention} {random.choice(roasts)} {await fetch_random_emoji()}",
+            title=f"Hey {ctx.author.mention}!",
+            description=f"{ctx.author.mention} {insult}",
             color=EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
@@ -64,41 +40,16 @@ class SlashRoast(commands.Cog):
         description="Get roasted by the bot.",
     )
     async def roast(self, interaction: nextcord.Interaction):
-        roasts = [
-            "You're so slow, Internet Explorer feels bad for you.",
-            "I'd roast you, but my mom said I shouldn't burn trash.",
-            "You're the reason why shampoo has instructions.",
-            "If I had a dollar for every brain cell you have, I'd be in debt.",
-            "You're not the dumbest person on Earth, but you better hope they don't die.",
-            "I'd explain it to you, but I don't have any crayons.",
-            "You bring everyone so much joy... when you leave the room.",
-            "Light travels faster than sound, which is why you seemed bright until you spoke.",
-            "Hold still, I'm trying to imagine you with a personality.",
-            "Your secrets are safe with me, I wasn't even listening.",
-            "You're like a cloud - when you disappear, it's a beautiful day.",
-            "You're like Python's GIL - always blocking progress.",
-            "Your code is so bad, even Stack Overflow won't help you.",
-            "You're like CSS - always causing problems that didn't exist before.",
-            "You're so basic, you make HTML look complex.",
-            "Your debugging skills are like Windows Vista - fundamentally broken.",
-            "You're like a semicolon in Python - completely unnecessary.",
-            "Your code comments are like your life choices - questionable and confusing.",
-            "You're so outdated, you make COBOL look cutting-edge.",
-            "You're like a DNS error - impossible to look up and hard to resolve.",
-            "Your code has more bugs than a roach motel during a heat wave.",
-            "You're like PHP - nobody likes you, but somehow you're still around.",
-            "Your brain runs on Internet Explorer 6 - slow, buggy, and desperately needs an update.",
-            "You're so dense, black holes are taking notes.",
-            "Your pull requests are like your dating life - always rejected.",
-            "You're like a null pointer - pointless and causes everything to crash.",
-            "Your code is so spaghetti, Italy wants to hire you as a chef.",
-            "You're like a legacy codebase - full of issues and nobody wants to deal with you.",
-            "You're so basic, you make Assembly language look user-friendly.",
-            "Your existence is like a race condition - a complete mistake that should've been prevented."
-        ]
+        try:
+            response = requests.get("https://evilinsult.com/generate_insult.php?lang=en&type=json")
+            data = response.json()
+            insult = data.get("insult", "Couldn't fetch a roast right now.")
+        except Exception:
+            insult = "Couldn't fetch a roast right now. Try again later."
+
         embed = nextcord.Embed(
             title=f"Hey {interaction.user.name}!",
-            description=f"{interaction.user.mention} {random.choice(roasts)} {await fetch_random_emoji()}",
+            description=f"{interaction.user.mention} {insult}",
             color=EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
