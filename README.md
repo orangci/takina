@@ -38,10 +38,10 @@ In the future, this will be managed with a proper flake.
 ## Contributing
 Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Legal
+## License
 - [License: GNU AGPLv3](./LICENSE)
-- [Terms of Service](https://orangc.net/takina/tos.html)
-- [Privacy Policy](https://orangc.net/takina/privacy.html)
+- [Terms of Service](https://takina.orangc.net/tos.html)
+- [Privacy Policy](https://takina.orangc.net/privacy.html)
 
 ## Specifications
 - This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 14.04.2025. You may see the current version and changelog [here](./CHANGELOG.md).
