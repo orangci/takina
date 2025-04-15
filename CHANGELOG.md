@@ -18,3 +18,6 @@ Fixed the bot's name being hardcoded in some places as "Takina" instead of using
 
 ### 1.3.0
 Added the reddit command to the util.socials cog.
+
+### 1.4.0
+Added the fun.roasts cog.
