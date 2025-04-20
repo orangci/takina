@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 from nextcord.ext import commands
 from nextcord.ui import View
 import os, random, re, nextcord, aiohttp, datetime

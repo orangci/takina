@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 from nextcord.ext import application_checks, commands
 import nextcord
 from nextcord import SlashOption

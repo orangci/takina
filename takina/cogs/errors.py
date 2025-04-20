@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 from nextcord.ext import commands, application_checks
 import nextcord
 from __main__ import Bot

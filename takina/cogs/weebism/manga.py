@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 from ..libs.oclib import *
 import nextcord
 from nextcord.ext import commands

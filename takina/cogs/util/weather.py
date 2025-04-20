@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 import nextcord, geopy
 from nextcord.ext import commands
 from config import *
