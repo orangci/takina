@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: orangc
 import nextcord, geopy, datetime, tzfpy, pytz
 from nextcord.ext import commands
 from config import *

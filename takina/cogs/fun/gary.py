@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: orangc
 from __future__ import annotations
 from ..libs.oclib import *
 import nextcord
