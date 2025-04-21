@@ -1,0 +1,61 @@
+@import "tailwindcss";
+@plugin "@iconify/tailwind4";
+@plugin "flyonui";
+@source "../scripts/flyonui.js";
+@import url(https://fonts.bunny.net/css?family=lexend:500|martian-mono:500);
+
+@theme {
+  /* fonts */
+  --font-sans: "Lexend", "sans-serif";
+  --font-mono: "Martian Mono", "monospace";
+}
+
+@plugin "flyonui/theme" {
+  name: "catppuccin";
+  default: false;
+  color-scheme: "catppuccin";
+
+  --color-base-100: #1e1e2e;
+  --color-base-200: #181825;
+  --color-base-300: #11111b;
+  --color-base-content: #cdd6f4;
+  --color-primary: #cba6f7;
+  --color-primary-content: cdd6f4;
+  --color-secondary: #94e2d5;
+  --color-secondary-content: #1e1e2e;
+  --color-accent: #fab387;
+  --color-accent-content: #1e1e2e;
+  --color-neutral: #a6e3a1;
+  --color-neutral-content: #1e1e2e;
+  --color-info: #89dceb;
+  --color-info-content: #1e1e2e;
+  --color-success: #a6e3a1;
+  --color-success-content: #1e1e2e;
+  --color-warning: #f9e2af;
+  --color-warning-content: #1e1e2e;
+  --color-error: #f38ba8;
+  --color-error-content: #1e1e2e;
+
+  --radius-selector: 1rem;
+  --radius-field: 1rem;
+  --radius-box: 1rem;
+  --size-selector: 0.21875rem;
+  --size-field: 0.21875rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 1;
+}
+
+
+body {@apply p-3 text-lg bg-base-100 text-base-content;}
+b, strong { @apply font-bold; }
+i, em { @apply italic; }
+code { @apply p-1 m-1 font-mono rounded-lg bg-base-100; }
+img { @apply select-none; }
+hr { @apply border-base-content; }
+p { @apply inline; }
+fieldset { @apply p-3 rounded-lg border-2 border-accent; }
+legend { @apply px-1; }
+
+.link2 { @apply inline-block relative underline decoration-accent decoration-2 hover:no-underline; }
+.commandcard { @apply shadow hover:-translate-y-1 bg-base-200 rounded-2xl p-4; }

@@ -1,0 +1,302 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-FileCopyrightText: orangc -->
+<!DOCTYPE html>
+<html lang="en" class="bg-base-100" data-theme="catppuccin">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The cutest opensource multipurpose Discord bot.">
+    <meta property="og:title" content="Takina" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://takina.orangc.net" />
+    <meta property="og:image" content="https://cdn.discordapp.com/avatars/1287074090783604797/74b52e03b8de639d95262a885b94ae98.webp" />
+    <meta property="og:description" content="The cutest opensource multipurpose Discord bot." />
+    <meta name="theme-color" content="#fab387" />
+    <title>Takina</title>
+
+    <link rel="shortcut icon" href="takina.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="styles/output.css" />
+</head>
+
+<body class="justify-center mx-auto max-w-6xl min-h-screen flex flex-col">
+    <div class="flex-grow">
+    <header>
+        <div class="flex justify-center my-2">
+            <img src="https://cdn.discordapp.com/avatars/1287074090783604797/74b52e03b8de639d95262a885b94ae98.webp?size=60" alt="takina's avatar" id="avatar" class="mx-4 -mt-1 rounded-full size-12">
+            <span class="text-3xl align-middle text-accent">Takina</span>
+        </div>
+
+        <aside class="text-center italic">Fun fact: Takina is named after <a href="https://myanimelist.net/character/204620/Takina_Inoue">Takina Inoue</a> from <a href="https://myanimelist.net/anime/50709/Lycoris_Recoil">Lycoris Recoil</a>.</aside>
+        <div class="text-center">A simple multipurpose bot for Discord written in Python with the Nextcord library.</div>
+
+        <div class="text-sm sm:text-base flex flex-wrap gap-2 justify-center my-4">
+            <a href="https://discord.com/oauth2/authorize?client_id=1287074090783604797" class="btn btn-soft">Invite Takina</a>
+            <a href="source" class="btn btn-soft">View Source Code</a>
+            <a href="gallery" class="btn btn-soft">Gallery</a>
+        </div>
+    </header>
+
+    <section class="pt-4 my-12 border-t-2 border-accent">
+        <h3 class="text-accent" id="weeb-utils">Weeb Utilities</h3>
+        <i><aside>Takina uses the <a href="https://jikan.moe/" class="link2"> Jikan</a> API for this module.</aside></i>
+            <div class="grid gap-4 py-2 md:grid-cols-2 lg:grid-cols-3">
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Anime searching</h4>
+                    <p>Usage: <code>.anime Lycoris Recoil</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Manga searching</h4>
+                    <p>Usage: <code>.manga Lycoris Recoil</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Character searching</h4>
+                    <p>Usage: <code>.chr Takina Inoue</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">MyAnimeList user profiles</h4>
+                    <p>Usage: <code>.mal orangc</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">MyAnimeList user statistics</h4>
+                    <p>Usage: <code>.malstats anime orangc</code> or <code>.malstats manga orangc</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Seasonal anime</h4>
+                    <p>Usage: <code>.season Summer 2022</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Anime/manga synopsis commands</h4>
+                    <p>Usage: <code>.anisyn Lycoris Recoil</code> and <code>.mangasyn Lycoris Recoil</code>.</p>
+                </div>
+            </div>
+    </section>
+
+    <section class="pt-4 my-12 border-t-2 border-accent">
+        <h3 class="text-accent" id="utility">Utility</h3>
+            <div class="grid gap-4 py-2 md:grid-cols-2 lg:grid-cols-3">
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Giveaway module</h4>
+                    <p>Usage: <code>/giveaway</code>.</p>
+                    <p>An intuitive and simple to use module for managing giveaways.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Book command</h4>
+                    <p>Usage: <code>.book Yumi and the Nightmare Painter</code>.</p>
+                    <p>A simple module that displays basic information on a book from a specified title or ISBN. This cog uses the Google Books API.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Embed builder</h4>
+                    <p>Usage: <code>/embed</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Remindme module</h4>
+                    <p>Usage: <code>remindme 10m watch lycoris recoil</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Role management</h4>
+                    <p>Usage: <code>.role add role user</code>, <code>.role remove role user</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Channel management</h4>
+                    <p>Usage: <code>.slowmode seconds/minutes/hours</code>, <code>.lock</code>, <code>.unlock</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Information module</h4>
+                    <p>Usage: <code>.userinfo user</code>, <code>.serverinfo</code>, <code>.roleinfo role</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Guild member count and user join positions</h4>
+                    <p>Usage: <code>.mc</code>, <code>.jp user</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Social module</h4>
+                    <p>Usage: <code>.github orangci</code> or <code>.reddit orangc</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Weather command</h4>
+                    <p>Usage: <code>.weather Riyadh</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">AFK module</h4>
+                    <p>Usage: <code>.afk reason</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Time module</h4>
+                    <p>Usage: <code>.time Riyadh</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Ping command</h4>
+                    <p>Usage: <code>.ping orangc.net</code>.</p>
+                </div>
+            </div>
+    </section>
+
+    <section class="pt-4 my-12 border-t-2 border-accent">
+        <h3 class="text-accent" id="moderation">Moderation</h3>
+            <div class="grid gap-4 py-2 md:grid-cols-2 lg:grid-cols-3">
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Reports system</h4>
+                    <p>Usage: <code>/report user reason</code>.</p>
+                    <p>This module will only work if a reports channel is set with <code>/admin_report</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Ban/unban</h4>
+                    <p>Usage: <code>.ban user</code>, <code>.unban user_id</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Mute/unmute</h4>
+                    <p>Usage: <code>.mute user duration reason</code>, <code>.unmute user reason</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Warnings</h4>
+                    <p>Usage: <code>.warn user reason</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Kick</h4>
+                    <p>Usage: <code>.kick user reason</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Nickname changing</h4>
+                    <p>Usage: <code>.setnick user new_nickname</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Message purging</h4>
+                    <p>Usage: <code>.purge 42</code>.</p>
+                    <p>The maximum number of messages you can purge is 100. You can also purge a specific user with <code>purge user orangc 11</code> or bots with <code>purge bots 17</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Logging, casing, and moderation statistics system</h4>
+                    <p>Logs bans/unbans, mutes/unmutes, and kicks. If a modlog channel is set with <code>/modlog channel</code>.
+                    Also <code>.case caseID</code>, <code>.cases user</code>, <code>.modcases user</code>, and <code>modstats user</code>.</p>
+                </div>
+            </div>
+    </section>
+
+    <section class="pt-4 my-12 border-t-2 border-accent">
+        <h3 class="text-accent" id="fun">Fun</h3>
+            <div class="grid gap-4 py-2 md:grid-cols-2 lg:grid-cols-3">
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Random fact fetching</h4>
+                    <i><aside>Takina uses the <a href="https://uselessfacts.jsph.pl/api/v2/facts/random">uselessfacts</a> API for this.</aside></i>
+                    <p>Usage: <code>.fact</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Random joke</h4>
+                    <i><aside>Takina uses both the <a href="https://icanhazdadjoke.com">icanhazdadjoke</a> API and <a href="http://jokeapi.dev">jokeapi</a> for this.</aside></i>
+                    <p>Usage: <code>.joke</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">User avatar fetching</h4>
+                    <p>Usage: <code>.avatar user</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Nekos</h4>
+                    <i><aside>Takina uses the <a href="https://nekos.best/">nekos.best</a> API for this command.</aside></i>
+                    <p>Usage: <code>.neko</code> or <code>.kitsune</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Google</h4>
+                    <p>Usage: <code>.google search_term</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Roll</h4>
+                    <p>Usage: <code>.roll</code>.</p>
+                    <p>This will roll a random number between 1-100.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Topic</h4>
+                    <i><aside>The topics for this were taken from YAGPDB.</aside></i>
+                    <p>Usage: <code>.topic</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Urban dictionary searching</h4>
+                    <p>Usage: <code>.ubdict term</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">8ball</h4>
+                    <p>Usage: <code>.8ball question</code>.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Dictionary</h4>
+                    <p>Usage: <code>.define grass</code>.</p>
+                    <p>This provides the dictionary definition for any word you query.</p>
+                </div>
+            </div>
+    </section>
+
+    <section class="pt-4 my-12 border-t-2 border-accent">
+        <h3 class="text-accent" id="listeners">Listeners</h3>
+            <div class="grid gap-4 py-2 md:grid-cols-2 lg:grid-cols-3">
+                <div class="commandcard">
+                    <h4 class="text-large select-none">GitHub module</h4>
+                    <p>This module sends embeds for repository, pull request, and issue links.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Starboard module</h4>
+                    <p>Any message reacted with four or more of any reaction will get sent to the starboard channel.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Trigger response module</h4>
+                    <p>Set triggers that the bot will respond to, with up to 30 per server. To get started type <code>.help trigger add</code>.</p>
+                </div>
+            </div>
+    </section>
+
+    <section class="pt-4 my-12 border-t-2 border-accent">
+        <h3 class="text-accent">Islam</h3>
+            <div class="grid gap-4 py-2 md:grid-cols-2 lg:grid-cols-3">
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Prayer Times</h4>
+                    <p>Usage: <code>.salawat Riyadh</code>.</p>
+                    <p>Fetches the Islāmic prayer times of the specified location.</p>
+                </div>
+            </div>
+    </section>
+
+    <section class="pt-4 my-12 border-t-2 border-accent">
+        <h3 class="text-accent">Minecraft Things</h3>
+            <div class="grid gap-4 py-2 md:grid-cols-2 lg:grid-cols-3">
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Minecraft Server Status</h4>
+                    <p>Usage: <code>mcstatus mc.orangc.net</code>.</p>
+                    <p>Fetches the status of a Minecraft server.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Skin Fetcher</h4>
+                    <p>Usage: <code>mcskin orangci</code>.</p>
+                    <p>Fetches and displays a Minecraft user's skin.</p>
+                </div>
+                <div class="commandcard">
+                    <h4 class="text-large select-none">Wynncraft module</h4>
+                    <p>Usage: <code>wynn player orangci</code> or <code>wynn guild Lawful Good</code>.</p>
+                    <p>Fetches and displays information about a Wynncraft player or guild in a neat little embed.</p>
+                </div>
+            </div>
+    </section>
+
+    <!-- Footer -->
+    </div><footer class="footer text-center justify-center mx-auto mb-5 flex flex-wrap gap-2">
+        <a href="privacy"   class="btn p-2 pt-1 btn-info btn-soft">Privacy Policy</a>
+        <a href="tos"       class="btn p-2 pt-1 btn-info btn-soft">Terms of Service</a>
+        <a href="license"   class="btn p-2 pt-1 btn-info btn-soft">License</a>
+        <a href="source"    class="btn p-2 pt-1 btn-info btn-soft">Source Code</a>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="scripts/oneko.js"></script>
+    <div id="sakana-widget" class="hidden fixed right-0 bottom-0 z-50 sm:block" aria-label="sakanaaa"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.css"/>
+    <script>
+    function initSakanaWidget() {
+        const takina = SakanaWidget.getCharacter('takina');
+        takina.initialState = { ...takina.initialState, i: 0.007, d: 1, r: 0 };
+        SakanaWidget.registerCharacter('takina-slow', takina);
+        new SakanaWidget({ character: 'takina-slow' }).mount('#sakana-widget');
+    }
+    </script>
+    <script async onload="initSakanaWidget()" src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="catppuccin">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Takina | Gallery" />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#fab387" />
+    
+    <meta property="og:url" content="https://takina.orangc.net/gallery" />
+    <meta name="description" content="The cutest opensource multipurpose Discord bot.">
+    <meta property="og:description" content="The cutest opensource multipurpose Discord bot." />
+    
+    <title>Takina | Gallery</title>
+    <link rel="shortcut icon" href="../takina.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="styles/output.css" />
+</head>
+
+<body class="flex flex-col items-center p-4">
+    <h1 class="mb-6 text-4xl font-bold text-accent">Takina Gallery</h1>
+    <p class="mb-6 max-w-4xl text-center">This is a gallery of images that serves to work as a preview of the majority of commands that Takina has to offer.
+        These can be outdated but generally are kept up to date! Click an image to zoom in!</p>
+    
+    <div class="grid grid-cols-2 gap-4 w-full max-w-7xl sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <!-- Image List -->
+        <script>
+            const images = [
+                "anime.png", "ban.png", "book.png", "channels.png", "character.png",
+                "fun.png", "fun2.png", "github.png", "giveaways.png", "info.png",
+                "kick-purge.png", "malstats.png", "manga.png", "minecraft.png", "modlog.png",
+                "modlog2.png", "mute.png", "reports.png", "roles.png", "starboard.png",
+                "trigger.png", "utilities.png", "warn.png", "salawat.png", "time.png"
+            ];
+            document.write(images.map(img => `
+                <img src="../assets/screenshots/${img}" alt="${img.replace('.png', '')}" class="object-cover w-full h-48 rounded-lg cursor-pointer sm:h-56 md:h-64 lg:h-72 gallery-img">
+            `).join(''));
+        </script>
+    </div>
+    
+    <div id="modal" class="flex hidden fixed inset-0 justify-center items-center bg-black bg-opacity-75">
+        <button id="prev" class="absolute left-4 z-10 text-4xl text-white">&#10094;</button>
+        <div class="relative p-6 w-full max-w-3xl text-center rounded-lg bg-cmantle">
+            <span id="close-modal" class="absolute top-2 right-4 text-2xl cursor-pointer">&times;</span>
+            <h2 id="modal-title" class="mb-4 text-2xl"></h2>
+            <img id="modal-img" src="" class="w-full max-h-[80vh] object-contain rounded">
+        </div>
+        <button id="next" class="absolute right-4 z-10 text-4xl text-white">&#10095;</button>
+    </div>
+    
+    <script>
+        const modal = document.getElementById('modal');
+        const modalImg = document.getElementById('modal-img');
+        const modalTitle = document.getElementById('modal-title');
+        const closeModal = document.getElementById('close-modal');
+        const prevBtn = document.getElementById('prev');
+        const nextBtn = document.getElementById('next');
+        const galleryImages = document.querySelectorAll('.gallery-img');
+        let currentIndex = 0;
+
+        function showImage(index) {
+            if (index < 0) index = galleryImages.length - 1;
+            if (index >= galleryImages.length) index = 0;
+            currentIndex = index;
+            modalImg.src = galleryImages[index].src;
+            modalTitle.textContent = galleryImages[index].alt;
+            modal.classList.remove('hidden');
+        }
+
+        galleryImages.forEach((img, index) => {
+            img.addEventListener('click', () => showImage(index));
+        });
+
+        closeModal.addEventListener('click', () => modal.classList.add('hidden'));
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.add('hidden');
+        });
+        prevBtn.addEventListener('click', () => showImage(currentIndex - 1));
+        nextBtn.addEventListener('click', () => showImage(currentIndex + 1));
+    </script>
+</body>
+</html>
