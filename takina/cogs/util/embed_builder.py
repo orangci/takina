@@ -12,7 +12,6 @@ class EmbedBuilder(commands.Cog):
     @nextcord.slash_command(name="embed", description="Create an embed.")
     @application_checks.has_permissions(manage_channels=True)
     async def embed_command(self, interaction: nextcord.Interaction):
-        await interaction.response.defer()
         modal = EmbedModal()
         await interaction.response.send_modal(modal)
 
