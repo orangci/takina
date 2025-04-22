@@ -24,10 +24,10 @@ class CharacterSearch(commands.Cog):
             data = await request(url2)
             if data and data.get("data"):
                 character_data = data["data"]
-
-            data = await request(url1)
-            if data and data.get("data"):
-                character_data = data["data"][0]
+            else:
+                data = await request(url1)
+                if data and data.get("data"):
+                    character_data = data["data"][0]
 
         except Exception as e:
             embed.description = f":x: {e}"
@@ -41,20 +41,31 @@ class CharacterSearch(commands.Cog):
             is_error_embed = True
             return embed, is_error_embed
 
-        name = character_data.get("name")
-        cover_image = character_data.get("images", {}).get("jpg", {}).get("image_url")
-        mal_id = character_data.get("mal_id")
-        url = character_data.get("url")
-        nicknames = ", ".join(character_data.get("nicknames", []))
-        about = character_data.get("about")[:400] + "..."
-        name_kanji = character_data.get("name_kanji")
+        name = character_data.get("name", "Unknown")
+        cover_image = (
+            character_data.get("images", {}).get("jpg", {}).get("image_url", "")
+        )
+        mal_id = character_data.get("mal_id", "N/A")
+        url = character_data.get("url", "")
+        nicknames = (
+            ", ".join(character_data.get("nicknames", [])) or "No nicknames available"
+        )
+        about = (
+            (character_data.get("about")[:400] + "...")
+            if character_data.get("about")
+            else "No information available."
+        )
+        name_kanji = character_data.get("name_kanji", "")
 
         embed.title = name
         embed.url = url
-        embed.description = nicknames or name_kanji
-        embed.add_field(name="About", value=about, inline=False)
-        embed.set_thumbnail(url=cover_image)
+        embed.description = nicknames or name_kanji if name_kanji else ""
+        if about:
+            embed.add_field(name="About", value=about, inline=False)
+        if cover_image:
+            embed.set_thumbnail(url=cover_image)
         embed.set_footer(text=str(mal_id))
+
         return embed, is_error_embed
 
     @commands.command(
