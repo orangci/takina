@@ -12,60 +12,58 @@ class CharacterSearch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def fetch_character(self, character_name: str):
-        url1 = f"https://api.jikan.moe/v4/characters?q={character_name}&limit=1"
-        url2 = f"https://api.jikan.moe/v4/characters/{character_name}"
+    async def fetch_character(
+        self, character: str, embed: nextcord.Embed
+    ) -> nextcord.Embed:
+        url1 = f"https://api.jikan.moe/v4/characters?q={character}&limit=1"
+        url2 = f"https://api.jikan.moe/v4/characters/{character}"
+        character_data = None
+        is_error_embed = False
 
         try:
             data = await request(url2)
             if data and data.get("data"):
-                return data["data"]
+                character_data = data["data"]
 
             data = await request(url1)
             if data and data.get("data"):
-                return data["data"][0]
+                character_data = data["data"][0]
 
         except Exception as e:
-            raise e
+            embed.description = f":x: {e}"
+            embed.color = ERROR_COLOR
+            is_error_embed = True
+            return embed, is_error_embed
+
+        if not character_data:
+            embed.description = ":x: Character not found."
+            embed.color = ERROR_COLOR
+            is_error_embed = True
+            return embed, is_error_embed
+
+        name = character_data.get("name")
+        cover_image = character_data.get("images", {}).get("jpg", {}).get("image_url")
+        mal_id = character_data.get("mal_id")
+        url = character_data.get("url")
+        nicknames = ", ".join(character_data.get("nicknames", []))
+        about = character_data.get("about")[:400] + "..."
+        name_kanji = character_data.get("name_kanji")
+
+        embed.title = name
+        embed.url = url
+        embed.description = nicknames or name_kanji
+        embed.add_field(name="About", value=about, inline=False)
+        embed.set_thumbnail(url=cover_image)
+        embed.set_footer(text=str(mal_id))
+        return embed, is_error_embed
 
     @commands.command(
         aliases=["waifu", "chr"],
         help="Fetch character information from MyAnimeList. \nUsage: `chr Takina Inoue` or `chr 204620`.",
     )
-    async def character(self, ctx: commands.Context, *, character_name: str):
-        try:
-            character = await self.fetch_character(character_name)
-
-            if character:
-                name = character.get("name")
-                cover_image = (
-                    character.get("images", {}).get("jpg", {}).get("image_url")
-                )
-                mal_id = character.get("mal_id")
-                url = character.get("url")
-                nicknames = ", ".join(character.get("nicknames", []))
-                about = character.get("about")[:400] + "..."
-                name_kanji = character.get("name_kanji")
-
-                embed = nextcord.Embed(
-                    title=name,
-                    url=url,
-                    description=nicknames or name_kanji,
-                    color=EMBED_COLOR,
-                )
-                embed.add_field(name="About", value=about, inline=False)
-                embed.set_thumbnail(url=cover_image)
-                embed.set_footer(text=str(mal_id))
-
-            else:
-                embed = nextcord.Embed(
-                    description=":x: Character not found.",
-                    color=ERROR_COLOR,
-                )
-
-        except Exception as e:
-            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
-
+    async def character(self, ctx: commands.Context, *, character: str):
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed, is_error_embed = await self.fetch_character(character, embed)
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
@@ -74,45 +72,15 @@ class CharacterSearch(commands.Cog):
     async def slash_character(
         self,
         interaction: Interaction,
-        character_name: str = SlashOption(
-            description="Name or MAL ID of the character"
-        ),
+        character: str = SlashOption(description="Name or MAL ID of the character"),
     ):
         await interaction.response.defer()
-        try:
-            character = await self.fetch_character(character_name)
-
-            if character:
-                name = character.get("name")
-                cover_image = (
-                    character.get("images", {}).get("jpg", {}).get("image_url")
-                )
-                mal_id = character.get("mal_id")
-                url = character.get("url")
-                nicknames = ", ".join(character.get("nicknames", []))
-                about = character.get("about")[:400] + "..."
-                name_kanji = character.get("name_kanji")
-
-                embed = nextcord.Embed(
-                    title=name,
-                    url=url,
-                    description=nicknames or name_kanji,
-                    color=EMBED_COLOR,
-                )
-                embed.add_field(name="About", value=about, inline=False)
-                embed.set_thumbnail(url=cover_image)
-                embed.set_footer(text=str(mal_id))
-
-            else:
-                embed = nextcord.Embed(
-                    description=":x: Character not found.",
-                    color=ERROR_COLOR,
-                )
-
-        except Exception as e:
-            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
-
-        await interaction.send(embed=embed)
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed, is_error_embed = await self.fetch_character(character, embed)
+        if is_error_embed:
+            await interaction.send(embed=embed, ephemeral=True)
+        else:
+            await interaction.send(embed=embed)
 
 
 def setup(bot):
