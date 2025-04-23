@@ -22,7 +22,7 @@ async def fetch_subdomain_info(subdomain_name):
 
     if subdomain_name.endswith(".is-a.dev"):
         subdomain_name = subdomain_name[:-9]
-    data = await request("https://raw.is-a.dev")
+    data = await request("https://raw.is-a.dev/v2.json")
 
     for entry in data:
         if entry.get("domain")[:-9] == subdomain_name:
@@ -62,7 +62,7 @@ async def build_whois_embed(domain):
             owner_field_value += f"{platform.capitalize()}: {username}\n"
 
     records_field_value = ""
-    for record_type, record_value in domain_data["record"].items():
+    for record_type, record_value in domain_data["records"].items():
         if isinstance(record_value, str):
             records_field_value += f"{record_type}: {record_value}\n"
         elif isinstance(record_value, dict):
@@ -101,7 +101,7 @@ async def build_whois_embed(domain):
 
 
 async def fetch_staff_subdomains():
-    data = await request("https://raw.is-a.dev")
+    data = await request("https://raw.is-a.dev/v2.json")
 
     non_reserved_domains = [
         entry["domain"][:-9]
@@ -125,7 +125,7 @@ async def fetch_staff_subdomains():
 
 
 async def fetch_non_existent_single_character_domains():
-    data = await request("https://raw.is-a.dev")
+    data = await request("https://raw.is-a.dev/v2.json")
     alphabet = "abcdefghijklmnopqrstuvwxyz0123456789"
     non_existent_single_character_domains = []
 
@@ -151,7 +151,7 @@ async def fetch_non_existent_single_character_domains():
 
 
 async def isadev_domain_data_overview_embed_builder():
-    data = await request("https://raw.is-a.dev")
+    data = await request("https://raw.is-a.dev/v2.json")
 
     subdomains_count = 0
     records_count = 0
@@ -176,7 +176,7 @@ async def isadev_domain_data_overview_embed_builder():
 
         subdomains_count += 1
 
-        for record_type, record_value in entry.get("record", {}).items():
+        for record_type, record_value in entry.get("records", {}).items():
             if record_type in dns_records:
                 if isinstance(record_value, int):
                     dns_records[record_type] += record_value
@@ -227,7 +227,7 @@ async def isadev_domain_data_overview_embed_builder():
 
 
 async def isadev_user_domain_data_overview_embed_builder(username):
-    data = await request("https://raw.is-a.dev")
+    data = await request("https://raw.is-a.dev/v2.json")
 
     subdomains_count = 0
     records_count = 0
@@ -253,7 +253,7 @@ async def isadev_user_domain_data_overview_embed_builder(username):
 
         subdomains_count += 1
 
-        for record_type, record_value in entry.get("record", {}).items():
+        for record_type, record_value in entry.get("records", {}).items():
             if record_type in dns_records:
                 if isinstance(record_value, int):
                     dns_records[record_type] += record_value
@@ -343,7 +343,7 @@ class SubdomainUtils(commands.Cog):
 
     @is_in_guild()
     @commands.command(
-        help="Fetch all staff-owned is-a.dev subdomains. Usage: `staff_subdomains`"
+        help="Fetch all staff-owned is-a.dev subdomains. Usage: `staff_subdomains`", aliases=["iad-staff"]
     )
     async def staff_subdomains(self, ctx: commands.Context) -> None:
         embed = await fetch_staff_subdomains()
@@ -351,7 +351,7 @@ class SubdomainUtils(commands.Cog):
 
     @is_in_guild()
     @commands.command(
-        help="Fetch all unregistered single-character is-a.dev subdomains. Usage: `single_character_subdomains`"
+        help="Fetch all unregistered single-character is-a.dev subdomains. Usage: `single_character_subdomains`", aliases=["iad-scs"]
     )
     async def single_character_subdomains(self, ctx: commands.Context) -> None:
         embed = await fetch_non_existent_single_character_domains()
@@ -368,7 +368,7 @@ class SubdomainUtils(commands.Cog):
     @is_in_guild()
     @commands.command(
         help="Fetch is-a.dev statistics for either the entire service or a specific Github username. Usage: `is-a-dev orangci`.",
-        aliases=["isadev", "is-a-dev"],
+        aliases=["isadev", "is-a-dev", "iad"],
     )
     async def is_a_dev(self, ctx: commands.Context, username: str = None):
         if username:
@@ -400,7 +400,7 @@ class SubdomainUtilsSlash(commands.Cog):
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(
-        name="is-a-dev-staff-subdomains",
+        name="iad-staff-subdomains",
         guild_ids=[SERVER_ID],
         description="Fetch all staff-owned is-a.dev subdomains.",
     )
@@ -413,7 +413,7 @@ class SubdomainUtilsSlash(commands.Cog):
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(
-        name="is-a-dev-single-character-subdomains",
+        name="iad-single-character-subdomains",
         guild_ids=[SERVER_ID],
         description="Fetch all unregistered single-character is-a.dev subdomains.",
     )
