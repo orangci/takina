@@ -39,3 +39,6 @@ Update sesp.isadev.subdomains to use the new API schema (`record` was changed to
 
 #### 1.4.6
 Update sesp.isadev.subdomains to use the new API for reserved subdomains ~ now the `internal` key is used for staff subdomains instead of `reserved`.
+
+#### 1.4.7
+Fix the message used for internal subdomains as opposed to reserved subdomains in sesp.isadev.subdomains, and fix a bug introduced in v1.4.6.

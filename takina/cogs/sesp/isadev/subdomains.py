@@ -39,9 +39,14 @@ async def build_whois_embed(domain):
         embed.description = ":x: The domain queried does not exist."
         return embed
 
-    if domain_data.get("reserved") or domain_data.get("internal"):
+    if domain_data.get("reserved"):
         embed = nextcord.Embed(color=ERROR_COLOR)
-        embed.description = f":x: `{domain}.is-a.dev` has been reserved by the maintainers and cannot be registered."
+        embed.description = f":x: `{domain}.is-a.dev` has been reserved by our maintainers and cannot be registered."
+        return embed
+    
+    if domain_data.get("internal"):
+        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed.description = f":x: `{domain}.is-a.dev` is being used internally by our maintainers and cannot be registered."
         return embed
 
     embed = nextcord.Embed(color=EMBED_COLOR)
@@ -106,9 +111,8 @@ async def fetch_staff_subdomains():
     non_reserved_domains = [
         entry["domain"][:-9]
         for entry in data
-        if entry.get("owner", {}).get("username") == "is-a-dev"
+        if entry.get("owner", {}).get("username") == "is-a-dev" or entry.get("internal")
         and not entry.get("reserved")
-        or entry.get("internal")
     ]
 
     embed = nextcord.Embed(color=EMBED_COLOR)
@@ -308,9 +312,18 @@ async def build_check_embed(domain):
         )
         return embed
 
-    if domain_data.get("reserved") or domain_data.get("internal"):
+    if domain_data.get("reserved"):
         embed = nextcord.Embed(color=ERROR_COLOR)
-        embed.description = f":x: Sorry, `{domain}.is-a.dev` has been reserved by the maintainers and cannot be registered."
+        embed.description = f":x: Sorry, `{domain}.is-a.dev` has been reserved by our maintainers and cannot be registered."
+        embed.set_footer(
+            text="is-a.dev",
+            icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
+        )
+        return embed
+    
+    if domain_data.get("internal"):
+        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed.description = f":x: Sorry, `{domain}.is-a.dev` is being used internally by our maintainers and cannot be registered."
         embed.set_footer(
             text="is-a.dev",
             icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
