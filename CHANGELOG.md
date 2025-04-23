@@ -24,3 +24,18 @@ Added the fun.roasts cog.
 
 #### 1.4.1
 Patched fun.roasts slash commmand not calling interaction.user instead of ctx.author, and a typo in the classname. Additionally removed command cooldowns as that breaks the bot for now.
+
+#### 1.4.2
+Fix the embed command being broken (see #16.)
+
+#### 1.4.3
+Fix the longstanding error in weebism.character `'NoneType' object is not subscriptable` returned when attempting to fetch some characters (see #13).
+
+#### 1.4.4
+Fix the pagination buttons in weebism.seasonals (see #17).
+
+#### 1.4.5
+Update sesp.isadev.subdomains to use the new API schema (`record` was changed to `records`).
+
+#### 1.4.6
+Update sesp.isadev.subdomains to use the new API for reserved subdomains ~ now the `internal` key is used for staff subdomains instead of `reserved`.
