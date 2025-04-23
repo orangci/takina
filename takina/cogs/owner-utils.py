@@ -5,6 +5,7 @@ from nextcord.ext import commands, menus
 import os
 from __main__ import cogs, cogs_blacklist
 from config import *
+import config as cfg
 import subprocess
 import importlib
 from .libs import oclib
@@ -100,6 +101,7 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def reload_exts(self, ctx: commands.Context, *args):
         importlib.reload(oclib)
+        importlib.reload(cfg)
 
         if not args:
             failed_cogs = []

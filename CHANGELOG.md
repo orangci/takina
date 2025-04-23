@@ -45,3 +45,6 @@ Fix the message used for internal subdomains as opposed to reserved subdomains i
 
 #### 1.5.0
 Added the VERSION variable in the config and updated listeners.ping_response to use it. Additionally added the version command in util.utils.
+
+#### 1.5.1
+Made the maintainer only command reload_exts reload the config.
