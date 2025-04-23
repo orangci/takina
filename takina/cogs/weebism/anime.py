@@ -28,12 +28,9 @@ class AnimeSearch(commands.Cog):
         except Exception as e:
             raise e
 
-    @commands.command(
-        name="anime",
-        aliases=["ani"],
-        help="Fetch anime information from MyAnimeList. \nUsage: `anime Lycoris Recoil` or `anime 50709`.",
-    )
-    async def base_anime(self, ctx: commands.Context, *, anime_name: str):
+    async def build_anime_embed(self, anime_name):
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        is_error_embed = False
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)
@@ -69,15 +66,62 @@ class AnimeSearch(commands.Cog):
                 embed.description += f"\n> **Rating**: {rating}"
                 embed.set_thumbnail(url=cover_image)
                 embed.set_footer(text=str(mal_id))
+                return embed, is_error_embed
 
             else:
-                embed = nextcord.Embed(
-                    description=":x: Anime not found.",
-                    color=ERROR_COLOR,
-                )
+                embed.description = ":x: Anime not found."
+                embed.color = ERROR_COLOR
+                is_error_embed = True
+                return embed, is_error_embed
 
         except Exception as e:
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+            is_error_embed = True
+            return embed, is_error_embed
+
+    async def build_anisyn_embed(self, anime_name):
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        is_error_embed = False
+        url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
+        try:
+            anime = await self.fetch_anime(anime_name)
+            if anime:
+                title = anime.get("title")
+                synopsis = anime.get("synopsis")
+                if len(synopsis) > 700:
+                    synopsis = synopsis[:700] + "..."
+                english_title = anime.get("title_english")
+                cover_image = anime["images"]["jpg"]["image_url"]
+                url = anime.get("url")
+                mal_id = anime.get("mal_id")
+
+                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
+                embed.description = ""
+                if english_title and english_title != title:
+                    embed.description += f"-# {english_title}\n"
+                embed.description += f"\n{synopsis}"
+                embed.set_thumbnail(url=cover_image)
+                embed.set_footer(text=str(mal_id))
+                return embed, is_error_embed
+
+            else:
+                embed.description = ":x: Anime not found."
+                embed.color = ERROR_COLOR
+                is_error_embed = True
+                return embed, is_error_embed
+
+        except Exception as e:
+            is_error_embed = True
+            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+            return embed, is_error_embed
+
+    @commands.command(
+        name="anime",
+        aliases=["ani"],
+        help="Fetch anime information from MyAnimeList. \nUsage: `anime Lycoris Recoil` or `anime 50709`.",
+    )
+    async def base_anime(self, ctx: commands.Context, *, anime_name: str):
+        embed, is_error_embed = await self.build_anime_embed(anime_name)
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
@@ -98,86 +142,18 @@ class AnimeSearch(commands.Cog):
         anime_name: str = SlashOption(description="Name of the anime"),
     ):
         await interaction.response.defer()
-        url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
-        try:
-            anime = await self.fetch_anime(anime_name)
-            if anime:
-                title = anime.get("title")
-                episodes = anime.get("episodes")
-                score = anime.get("score")
-                synopsis = anime.get("synopsis")
-                source = anime.get("source")
-                english_title = anime.get("title_english")
-                aired = anime.get("aired", {}).get("string")
-                type = anime.get("type")
-                cover_image = anime["images"]["jpg"]["image_url"]
-                url = anime.get("url")
-                rating = anime.get("rating")
-                mal_id = anime.get("mal_id")
-                genres = ", ".join([genre["name"] for genre in anime.get("genres", [])])
-                studios = ", ".join(
-                    [studio["name"] for studio in anime.get("studios", [])]
-                )
-
-                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
-                embed.description = ""
-                if english_title and english_title != title:
-                    embed.description += f"-# {english_title}\n"
-                embed.description += f"\n> **Type**: {type}"
-                embed.description += f"\n> **Episodes**: {episodes}"
-                embed.description += f"\n> **Score**: {score}"
-                embed.description += f"\n> **Source**: {source}"
-                embed.description += f"\n> **Aired**: {aired}"
-                embed.description += f"\n> **Genres**: {genres}"
-                embed.description += f"\n> **Studios**: {studios}"
-                embed.description += f"\n> **Rating**: {rating}"
-                embed.set_thumbnail(url=cover_image)
-                embed.set_footer(text=str(mal_id))
-
-            else:
-                embed = nextcord.Embed(
-                    description=":x: Anime not found.",
-                    color=ERROR_COLOR,
-                )
-
-        except Exception as e:
-            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
-        await interaction.send(embed=embed)
+        embed, is_error_embed = await self.build_anime_embed(anime_name)
+        if is_error_embed:
+            await interaction.send(embed=embed, ephemeral=True)
+        else:
+            await interaction.send(embed=embed)
 
     @commands.command(
         aliases=["animeplot", "anisyn", "animesyn"],
         help="Fetch a anime's summary from MyAnimeList. \nUsage: `anisyn Lycoris Recoil` or `anisyn 50709`.",
     )
     async def anime_synopsis(self, ctx: commands.Context, *, anime_name: str):
-        url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
-        try:
-            anime = await self.fetch_anime(anime_name)
-            if anime:
-                title = anime.get("title")
-                synopsis = anime.get("synopsis")
-                if len(synopsis) > 700:
-                    synopsis = synopsis[:700] + "..."
-                english_title = anime.get("title_english")
-                cover_image = anime["images"]["jpg"]["image_url"]
-                url = anime.get("url")
-                mal_id = anime.get("mal_id")
-
-                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
-                embed.description = ""
-                if english_title and english_title != title:
-                    embed.description += f"-# {english_title}\n"
-                embed.description += f"\n{synopsis}"
-                embed.set_thumbnail(url=cover_image)
-                embed.set_footer(text=str(mal_id))
-
-            else:
-                embed = nextcord.Embed(
-                    description=":x: Anime not found.",
-                    color=ERROR_COLOR,
-                )
-
-        except Exception as e:
-            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+        embed, is_error_embed = await self.build_anisyn_embed(anime_name)
         await ctx.reply(embed=embed, mention_author=False)
 
     @anime.subcommand(
@@ -189,38 +165,11 @@ class AnimeSearch(commands.Cog):
         anime_name: str = SlashOption(description="Name of the anime"),
     ):
         await interaction.response.defer()
-        url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
-        try:
-            anime = await self.fetch_anime(anime_name)
-            if anime:
-                title = anime.get("title")
-                synopsis = anime.get("synopsis")
-                if len(synopsis) > 700:
-                    synopsis = synopsis[:700] + "..."
-                english_title = anime.get("title_english")
-                cover_image = anime["images"]["jpg"]["image_url"]
-                url = anime.get("url")
-                mal_id = anime.get("mal_id")
-
-                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
-                embed.description = ""
-                if english_title and english_title != title:
-                    embed.description += f"-# {english_title}\n"
-                embed.description += f"\n{synopsis}"
-                embed.set_thumbnail(url=cover_image)
-                embed.set_footer(text=str(mal_id))
-
-            else:
-                embed = nextcord.Embed(
-                    description=":x: Anime not found.",
-                    color=ERROR_COLOR,
-                )
-
-        except Exception as e:
-            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+        embed, is_error_embed = await self.build_anisyn_embed(anime_name)
+        if is_error_embed:
             await interaction.send(embed=embed, ephemeral=True)
-            return
-        await interaction.send(embed=embed)
+        else:
+            await interaction.send(embed=embed)
 
 
 def setup(bot):
