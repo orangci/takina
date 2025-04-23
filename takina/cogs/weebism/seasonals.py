@@ -15,11 +15,19 @@ class PaginatedView(View):
         self.current_page = 0
         self.author_id = author_id
 
+        if len(pages) <= 1:
+            self.previous_page.disabled = True
+            self.next_page.disabled = True
+
     async def update_embed(self, interaction: Interaction):
         embed = self.pages[self.current_page]
+
+        self.previous_page.disabled = self.current_page == 0
+        self.next_page.disabled = self.current_page == len(self.pages) - 1
+
         await interaction.response.edit_message(embed=embed, view=self)
 
-    @nextcord.ui.button(label="Previous", style=ButtonStyle.primary)
+    @nextcord.ui.button(label="Previous", style=ButtonStyle.primary, disabled=True)
     async def previous_page(self, button: Button, interaction: Interaction):
         if interaction.user.id != self.author_id:
             return
