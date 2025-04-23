@@ -42,3 +42,6 @@ Update sesp.isadev.subdomains to use the new API for reserved subdomains ~ now t
 
 #### 1.4.7
 Fix the message used for internal subdomains as opposed to reserved subdomains in sesp.isadev.subdomains, and fix a bug introduced in v1.4.6.
+
+#### 1.5.0
+Added the VERSION variable in the config and updated listeners.ping_response to use it. Additionally added the version command in util.utils.

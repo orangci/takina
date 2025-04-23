@@ -120,6 +120,18 @@ class Utils(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
+    @commands.command(
+        name="version",
+        aliases=["v"],
+        help=f"Fetch {BOT_NAME}'s current version.",
+    )
+    async def member_count(self, ctx: commands.Context):
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        BOT_VERSION_LINK = f"[**{BOT_VERSION}**](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{BOT_VERSION.replace(".", "")})"
+        embed.description = f"{BOT_NAME} is currently on version {BOT_VERSION_LINK}."
+        embed.set_footer(text="For more information, run the info command.")
+        await ctx.reply(embed=embed, mention_author=False)
+
 
 class UtilsSlash(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
@@ -229,6 +241,17 @@ class UtilsSlash(commands.Cog):
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
 
         await interaction.send(embed=embed, ephemeral=True)
+
+    @nextcord.slash_command(
+        name="version",
+        description=f"Fetch {BOT_NAME}'s current version.",
+    )
+    async def version(self, interaction: nextcord.Interaction):
+        embed = nextcord.Embed(color=EMBED_COLOR)
+        BOT_VERSION_LINK = f"[**{BOT_VERSION}**](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{BOT_VERSION.replace(".", "")})"
+        embed.description = f"{BOT_NAME} is currently on version {BOT_VERSION_LINK}."
+        embed.set_footer(text="For more information, run the info command.")
+        await interaction.send(embed=embed)
 
 
 def setup(bot: commands.Bot):

@@ -33,7 +33,7 @@ class PingResponse(commands.Cog):
         embed = nextcord.Embed(
             title=f"{await fetch_random_emoji()}Takina",
             url="https://orangc.net/takina",
-            description="-# Open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md) • Make a [feature request](https://github.com/orangci/takina/issues/new?template=feature_request.md)\n\n Takina is a multipurpose [opensource](https://github.com/orangci/takina) bot written in Python. More information is available in the [website](https://orangc.net/takina).",
+            description="-# Open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md) • Make a [feature request](https://github.com/orangci/takina/issues/new?template=feature_request.md)\n\n Takina is a multipurpose [opensource](https://github.com/orangci/takina) bot written in Python by [orangc](https://orangc.net). More information is available in the [website](https://orangc.net/takina).\n",
             color=EMBED_COLOR,
         )
 
@@ -41,13 +41,16 @@ class PingResponse(commands.Cog):
             guild_id = ctx.guild.id
             guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
             if guild_data and "prefix" in guild_data:
-                self.prefix = f"`{guild_data["prefix"]}`, `takina `, `Takina `"
+                self.prefix = f"`{guild_data["prefix"]}`, `takina`, `Takina`"
 
-        embed.add_field(name=":sparkles: Prefix", value=self.prefix, inline=True)
-        embed.add_field(name=":star: Stars", value=str(self.stars), inline=True)
-        embed.add_field(
-            name=":alarm_clock: Uptime", value=await uptime_fetcher(), inline=True
+        embed.description += f"\n**Prefix**: {self.prefix}"
+        embed.description += (
+            f"\n**Stars**: [{self.stars}](https://github.com/orangci/takina/stargazers)"
         )
+        embed.description += f"\n**Uptime**: {await uptime_fetcher()}"
+        BOT_VERSION_LINK = f"[{BOT_VERSION}](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{BOT_VERSION.replace(".", "")})"
+        embed.description += f"\n**Version**: {BOT_VERSION_LINK}"
+
         orangc = await self.bot.fetch_user(961063229168164864)
         embed.set_author(
             name="orangc",
