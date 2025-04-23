@@ -30,7 +30,6 @@ class AnimeSearch(commands.Cog):
 
     async def build_anime_embed(self, anime_name):
         embed = nextcord.Embed(color=EMBED_COLOR)
-        is_error_embed = False
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)
@@ -66,22 +65,19 @@ class AnimeSearch(commands.Cog):
                 embed.description += f"\n> **Rating**: {rating}"
                 embed.set_thumbnail(url=cover_image)
                 embed.set_footer(text=str(mal_id))
-                return embed, is_error_embed
+                return embed
 
             else:
                 embed.description = ":x: Anime not found."
                 embed.color = ERROR_COLOR
-                is_error_embed = True
-                return embed, is_error_embed
+                return embed
 
         except Exception as e:
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
-            is_error_embed = True
-            return embed, is_error_embed
+            return embed
 
     async def build_anisyn_embed(self, anime_name):
         embed = nextcord.Embed(color=EMBED_COLOR)
-        is_error_embed = False
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)
@@ -102,18 +98,16 @@ class AnimeSearch(commands.Cog):
                 embed.description += f"\n{synopsis}"
                 embed.set_thumbnail(url=cover_image)
                 embed.set_footer(text=str(mal_id))
-                return embed, is_error_embed
+                return embed
 
             else:
                 embed.description = ":x: Anime not found."
                 embed.color = ERROR_COLOR
-                is_error_embed = True
-                return embed, is_error_embed
+                return embed
 
         except Exception as e:
-            is_error_embed = True
             embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
-            return embed, is_error_embed
+            return embed
 
     @commands.command(
         name="anime",
@@ -121,7 +115,7 @@ class AnimeSearch(commands.Cog):
         help="Fetch anime information from MyAnimeList. \nUsage: `anime Lycoris Recoil` or `anime 50709`.",
     )
     async def base_anime(self, ctx: commands.Context, *, anime_name: str):
-        embed, is_error_embed = await self.build_anime_embed(anime_name)
+        embed = await self.build_anime_embed(anime_name)
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
@@ -142,18 +136,15 @@ class AnimeSearch(commands.Cog):
         anime_name: str = SlashOption(description="Name of the anime"),
     ):
         await interaction.response.defer()
-        embed, is_error_embed = await self.build_anime_embed(anime_name)
-        if is_error_embed:
-            await interaction.send(embed=embed, ephemeral=True)
-        else:
-            await interaction.send(embed=embed)
+        embed = await self.build_anime_embed(anime_name)
+        await interaction.send(embed=embed)
 
     @commands.command(
         aliases=["animeplot", "anisyn", "animesyn"],
         help="Fetch a anime's summary from MyAnimeList. \nUsage: `anisyn Lycoris Recoil` or `anisyn 50709`.",
     )
     async def anime_synopsis(self, ctx: commands.Context, *, anime_name: str):
-        embed, is_error_embed = await self.build_anisyn_embed(anime_name)
+        embed = await self.build_anisyn_embed(anime_name)
         await ctx.reply(embed=embed, mention_author=False)
 
     @anime.subcommand(
@@ -165,11 +156,8 @@ class AnimeSearch(commands.Cog):
         anime_name: str = SlashOption(description="Name of the anime"),
     ):
         await interaction.response.defer()
-        embed, is_error_embed = await self.build_anisyn_embed(anime_name)
-        if is_error_embed:
-            await interaction.send(embed=embed, ephemeral=True)
-        else:
-            await interaction.send(embed=embed)
+        embed = await self.build_anisyn_embed(anime_name)
+        await interaction.send(embed=embed)
 
 
 def setup(bot):

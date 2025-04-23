@@ -18,7 +18,6 @@ class CharacterSearch(commands.Cog):
         url1 = f"https://api.jikan.moe/v4/characters?q={character}&limit=1"
         url2 = f"https://api.jikan.moe/v4/characters/{character}"
         character_data = None
-        is_error_embed = False
 
         try:
             data = await request(url2)
@@ -32,14 +31,12 @@ class CharacterSearch(commands.Cog):
         except Exception as e:
             embed.description = f":x: {e}"
             embed.color = ERROR_COLOR
-            is_error_embed = True
-            return embed, is_error_embed
+            return embed
 
         if not character_data:
             embed.description = ":x: Character not found."
             embed.color = ERROR_COLOR
-            is_error_embed = True
-            return embed, is_error_embed
+            return embed
 
         name = character_data.get("name", "Unknown")
         cover_image = (
@@ -66,7 +63,7 @@ class CharacterSearch(commands.Cog):
             embed.set_thumbnail(url=cover_image)
         embed.set_footer(text=str(mal_id))
 
-        return embed, is_error_embed
+        return embed
 
     @commands.command(
         aliases=["waifu", "chr"],
@@ -74,7 +71,7 @@ class CharacterSearch(commands.Cog):
     )
     async def character(self, ctx: commands.Context, *, character: str):
         embed = nextcord.Embed(color=EMBED_COLOR)
-        embed, is_error_embed = await self.fetch_character(character, embed)
+        embed = await self.fetch_character(character, embed)
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
@@ -87,11 +84,8 @@ class CharacterSearch(commands.Cog):
     ):
         await interaction.response.defer()
         embed = nextcord.Embed(color=EMBED_COLOR)
-        embed, is_error_embed = await self.fetch_character(character, embed)
-        if is_error_embed:
-            await interaction.send(embed=embed, ephemeral=True)
-        else:
-            await interaction.send(embed=embed)
+        embed = await self.fetch_character(character, embed)
+        await interaction.send(embed=embed)
 
 
 def setup(bot):
