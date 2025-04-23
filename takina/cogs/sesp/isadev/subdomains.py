@@ -39,7 +39,7 @@ async def build_whois_embed(domain):
         embed.description = ":x: The domain queried does not exist."
         return embed
 
-    if domain_data.get("reserved"):
+    if domain_data.get("reserved") or domain_data.get("internal"):
         embed = nextcord.Embed(color=ERROR_COLOR)
         embed.description = f":x: `{domain}.is-a.dev` has been reserved by the maintainers and cannot be registered."
         return embed
@@ -108,6 +108,7 @@ async def fetch_staff_subdomains():
         for entry in data
         if entry.get("owner", {}).get("username") == "is-a-dev"
         and not entry.get("reserved")
+        or entry.get("internal")
     ]
 
     embed = nextcord.Embed(color=EMBED_COLOR)
@@ -171,7 +172,7 @@ async def isadev_domain_data_overview_embed_builder():
     }
 
     for entry in data:
-        if entry.get("reserved"):
+        if entry.get("reserved") or entry.get("internal"):
             continue
 
         subdomains_count += 1
@@ -248,7 +249,7 @@ async def isadev_user_domain_data_overview_embed_builder(username):
         entry_owner = entry.get("owner").get("username")
         if str(entry_owner).lower() != username.lower():
             continue
-        if entry.get("reserved"):
+        if entry.get("reserved") or entry.get("internal"):
             continue
 
         subdomains_count += 1
@@ -307,7 +308,7 @@ async def build_check_embed(domain):
         )
         return embed
 
-    if domain_data.get("reserved"):
+    if domain_data.get("reserved") or domain_data.get("internal"):
         embed = nextcord.Embed(color=ERROR_COLOR)
         embed.description = f":x: Sorry, `{domain}.is-a.dev` has been reserved by the maintainers and cannot be registered."
         embed.set_footer(
@@ -343,7 +344,8 @@ class SubdomainUtils(commands.Cog):
 
     @is_in_guild()
     @commands.command(
-        help="Fetch all staff-owned is-a.dev subdomains. Usage: `staff_subdomains`", aliases=["iad-staff"]
+        help="Fetch all staff-owned is-a.dev subdomains. Usage: `staff_subdomains`",
+        aliases=["iad-staff"],
     )
     async def staff_subdomains(self, ctx: commands.Context) -> None:
         embed = await fetch_staff_subdomains()
@@ -351,7 +353,8 @@ class SubdomainUtils(commands.Cog):
 
     @is_in_guild()
     @commands.command(
-        help="Fetch all unregistered single-character is-a.dev subdomains. Usage: `single_character_subdomains`", aliases=["iad-scs"]
+        help="Fetch all unregistered single-character is-a.dev subdomains. Usage: `single_character_subdomains`",
+        aliases=["iad-scs"],
     )
     async def single_character_subdomains(self, ctx: commands.Context) -> None:
         embed = await fetch_non_existent_single_character_domains()
