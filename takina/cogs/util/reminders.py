@@ -1,26 +1,28 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord
-from nextcord.ext import commands, tasks
-from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime, timedelta
-from config import *
+
+import nextcord
 from bson.objectid import ObjectId
-from ..libs.oclib import *
+import config
+from motor.motor_asyncio import AsyncIOMotorClient
+from nextcord.ext import commands, tasks
+
+from ..libs import oclib
 
 
 class RemindMe(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
         self.reminders = self.db.reminders
         self.check_reminders.start()
 
     @commands.command(help="Deprecated alias of `reminder set`.")
     async def remindme(self, ctx: commands.Context):
         embed = nextcord.Embed(
-            description=f":x: The `remindme` alias has been deprecated. Use `reminder set` instead.",
-            color=ERROR_COLOR,
+            description=":x: The `remindme` alias has been deprecated. Use `reminder set` instead.",
+            color=config.ERROR_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -32,7 +34,7 @@ class RemindMe(commands.Cog):
     async def reminder(self, ctx: commands.Context):
         embed = nextcord.Embed(
             description="No subcommand specified. Usage: `reminder set`, `reminder list`, or `reminder delete`.",
-            color=ERROR_COLOR,
+            color=config.ERROR_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -47,7 +49,7 @@ class RemindMe(commands.Cog):
         if remind_time is None:
             embed = nextcord.Embed(
                 description="Invalid time format. Use <number>[m|h|d].",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -62,8 +64,8 @@ class RemindMe(commands.Cog):
         )
 
         embed = nextcord.Embed(
-            description=f"{await fetch_random_emoji()}Reminder set for {time} from now: **{reminder}**\n-# ID: `{result.inserted_id}`",
-            color=EMBED_COLOR,
+            description=f"{await oclib.fetch_random_emoji()}Reminder set for {time} from now: **{reminder}**\n-# ID: `{result.inserted_id}`",
+            color=config.EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -72,7 +74,7 @@ class RemindMe(commands.Cog):
         user_id = ctx.author.id
         reminders = self.reminders.find({"user_id": user_id}).sort("remind_at", 1)
 
-        embed = nextcord.Embed(title="Your Reminders", color=EMBED_COLOR)
+        embed = nextcord.Embed(title="Your Reminders", color=config.EMBED_COLOR)
         embed.description = ""
 
         count = 0
@@ -86,7 +88,7 @@ class RemindMe(commands.Cog):
         if count == 0:
             embed.title = None
             embed.description = ":x: You have no active reminders."
-            embed.color = ERROR_COLOR
+            embed.color = config.ERROR_COLOR
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -102,7 +104,7 @@ class RemindMe(commands.Cog):
         except Exception:
             embed = nextcord.Embed(
                 description="❌ Invalid reminder ID format.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -111,12 +113,12 @@ class RemindMe(commands.Cog):
         if result.deleted_count == 0:
             embed = nextcord.Embed(
                 description="❌ No reminder found with that ID.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
         else:
             embed = nextcord.Embed(
                 description=f"✅ Reminder with ID `{reminder_id}` has been deleted.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -141,7 +143,7 @@ class RemindMe(commands.Cog):
         if remind_time is None:
             embed = nextcord.Embed(
                 description="Invalid time format. Use <number>[m|h|d].",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
             return
@@ -156,8 +158,8 @@ class RemindMe(commands.Cog):
         )
 
         embed = nextcord.Embed(
-            description=f"{await fetch_random_emoji()}Reminder set for {time} from now: **{reminder}**\n-# ID: `{result.inserted_id}`",
-            color=EMBED_COLOR,
+            description=f"{await oclib.fetch_random_emoji()}Reminder set for {time} from now: **{reminder}**\n-# ID: `{result.inserted_id}`",
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=False)
 
@@ -169,7 +171,7 @@ class RemindMe(commands.Cog):
         user_id = interaction.user.id
         reminders = self.reminders.find({"user_id": user_id}).sort("remind_at", 1)
 
-        embed = nextcord.Embed(title="Your Reminders", color=EMBED_COLOR)
+        embed = nextcord.Embed(title="Your Reminders", color=config.EMBED_COLOR)
         embed.description = ""
 
         count = 0
@@ -183,7 +185,7 @@ class RemindMe(commands.Cog):
         if count == 0:
             embed.title = None
             embed.description = ":x: You have no active reminders."
-            embed.color = ERROR_COLOR
+            embed.color = config.ERROR_COLOR
 
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -201,7 +203,7 @@ class RemindMe(commands.Cog):
         except Exception:
             embed = nextcord.Embed(
                 description="❌ Invalid reminder ID format.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
             return
@@ -210,12 +212,12 @@ class RemindMe(commands.Cog):
         if result.deleted_count == 0:
             embed = nextcord.Embed(
                 description="❌ No reminder found with that ID.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
         else:
             embed = nextcord.Embed(
                 description=f"✅ Reminder with ID `{reminder_id}` has been deleted.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -230,7 +232,7 @@ class RemindMe(commands.Cog):
                 try:
                     embed = nextcord.Embed(
                         description=f"⏰ Reminder: **{reminder['reminder']}**",
-                        color=EMBED_COLOR,
+                        color=config.EMBED_COLOR,
                     )
                     await user.send(embed=embed)
                 except nextcord.Forbidden:

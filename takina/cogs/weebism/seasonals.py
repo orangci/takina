@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from ..libs.oclib import *
 import nextcord
-from nextcord.ext import commands
+import config
 from nextcord import ButtonStyle, Interaction, SlashOption
+from nextcord.ext import commands
 from nextcord.ui import Button, View
-from config import *
+
+from ..libs import oclib
 
 
 class PaginatedView(View):
@@ -68,18 +69,18 @@ class AnimeSeasonals(commands.Cog):
             title = f"{emoji} {season.lower().capitalize()} {year} Anime"
 
         try:
-            data = await request(url)
+            data = await oclib.request(url)
             seasonals = data.get("data", [])
 
             if not seasonals:
                 return None, nextcord.Embed(
                     description="No seasonal anime available.",
-                    color=ERROR_COLOR,
+                    color=config.ERROR_COLOR,
                 )
 
             pages = []
             for i in range(0, len(seasonals), 5):
-                embed = nextcord.Embed(title=title, color=EMBED_COLOR)
+                embed = nextcord.Embed(title=title, color=config.EMBED_COLOR)
                 for anime in seasonals[i : i + 5]:
                     embed.add_field(
                         name="\u200b",
@@ -95,7 +96,7 @@ class AnimeSeasonals(commands.Cog):
             return pages, None
 
         except Exception as e:
-            return None, nextcord.Embed(description=str(e), color=ERROR_COLOR)
+            return None, nextcord.Embed(description=str(e), color=config.ERROR_COLOR)
 
     @commands.command(
         aliases=["season"],
@@ -104,7 +105,7 @@ class AnimeSeasonals(commands.Cog):
     async def seasonals(
         self, ctx: commands.Context, season: str = None, year: int = None
     ):
-        emoji = await fetch_random_emoji()
+        emoji = await oclib.fetch_random_emoji()
         pages, error_embed = await self.build_seasonal_response(season, year, emoji)
 
         if error_embed:

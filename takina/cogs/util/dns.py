@@ -6,10 +6,11 @@
 from __future__ import annotations
 
 import nextcord
+import config
 from dns import resolver as _dnsresolver
 from nextcord.ext import commands
-from config import *
-from ..libs.oclib import *
+
+from ..libs import oclib
 
 
 class DNS(commands.Cog):
@@ -35,28 +36,27 @@ class DNS(commands.Cog):
                 answers = _dnsresolver.resolve(url, record_type)
                 records = "\n".join([str(ans) for ans in answers])
                 if records:
-                    emoji = await fetch_random_emoji()
+                    emoji = await oclib.fetch_random_emoji()
                     full_answer += (
                         f"{emoji}**{record_type} Records**\n```{records}```\n"
                     )
             except _dnsresolver.NoAnswer:
                 continue
             except _dnsresolver.NXDOMAIN:
-                error_embed = nextcord.Embed(color=ERROR_COLOR)
+                error_embed = nextcord.Embed(color=config.ERROR_COLOR)
                 error_embed.description = f"❌ Domain '{url}' does not exist."
-                await ctx.reply(embed=error_embed, mention_author=False)
-                await interaction.send(embed=embed, ephemeral=True)
+                await interaction.send(embed=error_embed, ephemeral=True)
                 return
 
         if full_answer:
             embed = nextcord.Embed(
                 title=f"DNS Records for {url}",
                 description=full_answer,
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
         else:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = f":x: No records found for {url}."
             await interaction.send(embed=error_embed, ephemeral=True)
 

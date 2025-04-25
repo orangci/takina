@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from nextcord.ext import application_checks, commands
 import nextcord
 from nextcord import SlashOption
-from config import *
-from ..libs.oclib import *
+from nextcord.ext import application_checks, commands
+
+from ..libs import oclib
 
 
 class Nick(commands.Cog):
@@ -22,13 +22,13 @@ class Nick(commands.Cog):
         if member is None:
             member = ctx.author
         else:
-            member = extract_user_id(member, ctx)
+            member = oclib.extract_user_id(member, ctx)
             if isinstance(member, nextcord.Embed):
                 await ctx.reply(embed=member, mention_author=False)
                 return
 
         # Check permissions
-        can_proceed, message = perms_check(member, ctx=ctx, author_check=False)
+        can_proceed, message = oclib.perms_check(member, ctx=ctx, author_check=False)
         if not can_proceed:
             await ctx.reply(embed=message, mention_author=False)
             return
@@ -56,7 +56,9 @@ class Nick(commands.Cog):
         nickname: str = SlashOption(description="New nickname", required=False),
     ):
         await interaction.response.defer()
-        can_proceed, message = perms_check(member, ctx=interaction, author_check=False)
+        can_proceed, message = oclib.perms_check(
+            member, ctx=interaction, author_check=False
+        )
         if not can_proceed:
             await interaction.send(embed=message, ephemeral=True)
             return

@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import re
-import aiohttp
+
 import nextcord
-from nextcord.ext import application_checks as ac, commands
-from config import *
-from .libs.lib import *
-from ...libs.oclib import *
-import re
+import config
+from nextcord.ext import commands
+
+from ...libs import oclib
+from .libs import lib
 
 
 async def is_valid_domain(domain):
@@ -22,7 +22,7 @@ async def fetch_subdomain_info(subdomain_name):
 
     if subdomain_name.endswith(".is-a.dev"):
         subdomain_name = subdomain_name[:-9]
-    data = await request("https://raw.is-a.dev/v2.json")
+    data = await oclib.request("https://raw.is-a.dev/v2.json")
 
     for entry in data:
         if entry.get("domain")[:-9] == subdomain_name:
@@ -35,21 +35,21 @@ async def build_whois_embed(domain):
     domain_data = await fetch_subdomain_info(domain)
 
     if not domain_data:
-        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed = nextcord.Embed(color=config.ERROR_COLOR)
         embed.description = ":x: The domain queried does not exist."
         return embed
 
     if domain_data.get("reserved"):
-        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed = nextcord.Embed(color=config.ERROR_COLOR)
         embed.description = f":x: `{domain}.is-a.dev` has been reserved by our maintainers and cannot be registered."
         return embed
 
     if domain_data.get("internal"):
-        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed = nextcord.Embed(color=config.ERROR_COLOR)
         embed.description = f":x: `{domain}.is-a.dev` is being used internally by our maintainers and cannot be registered."
         return embed
 
-    embed = nextcord.Embed(color=EMBED_COLOR)
+    embed = nextcord.Embed(color=config.EMBED_COLOR)
     embed.url = f"https://{domain}.is-a.dev"
     embed.title = f"{domain}.is-a.dev"
     embed.set_footer(
@@ -92,7 +92,7 @@ async def build_whois_embed(domain):
             redirect_config_field_value += f"{custom_paths_items}\n"
 
         if redirect_config.get("redirect_paths"):
-            redirect_config_field_value += f"Redirect Paths: True\n"
+            redirect_config_field_value += "Redirect Paths: True\n"
 
     embed.add_field(name="Owner", value=owner_field_value, inline=True)
     embed.add_field(name="Records", value=records_field_value, inline=True)
@@ -106,7 +106,7 @@ async def build_whois_embed(domain):
 
 
 async def fetch_staff_subdomains():
-    data = await request("https://raw.is-a.dev/v2.json")
+    data = await oclib.request("https://raw.is-a.dev/v2.json")
 
     non_reserved_domains = [
         entry["domain"][:-9]
@@ -116,8 +116,8 @@ async def fetch_staff_subdomains():
         and not entry.get("reserved")
     ]
 
-    embed = nextcord.Embed(color=EMBED_COLOR)
-    embed.title = f"is-a.dev staff domains"
+    embed = nextcord.Embed(color=config.EMBED_COLOR)
+    embed.title = "is-a.dev staff domains"
 
     if non_reserved_domains:
         embed.description = "\n".join(
@@ -125,13 +125,13 @@ async def fetch_staff_subdomains():
             for domain in non_reserved_domains
         )
     else:
-        embed.description = f":x: No staff owned subdomains of is-a.dev were found."
+        embed.description = ":x: No staff owned subdomains of is-a.dev were found."
 
     return embed
 
 
 async def fetch_non_existent_single_character_domains():
-    data = await request("https://raw.is-a.dev/v2.json")
+    data = await oclib.request("https://raw.is-a.dev/v2.json")
     alphabet = "abcdefghijklmnopqrstuvwxyz0123456789"
     non_existent_single_character_domains = []
 
@@ -142,7 +142,7 @@ async def fetch_non_existent_single_character_domains():
         if not exists:
             non_existent_single_character_domains.append(domain_name)
 
-    embed = nextcord.Embed(color=EMBED_COLOR)
+    embed = nextcord.Embed(color=config.EMBED_COLOR)
     embed.title = "Unregistered is-a.dev single-character subdomains"
 
     if non_existent_single_character_domains:
@@ -157,7 +157,7 @@ async def fetch_non_existent_single_character_domains():
 
 
 async def isadev_domain_data_overview_embed_builder():
-    data = await request("https://raw.is-a.dev/v2.json")
+    data = await oclib.request("https://raw.is-a.dev/v2.json")
 
     subdomains_count = 0
     records_count = 0
@@ -219,7 +219,7 @@ async def isadev_domain_data_overview_embed_builder():
         record_statistics += f"- {record_type}: {count}\n"
 
     statistics_embed = nextcord.Embed(
-        color=EMBED_COLOR,
+        color=config.EMBED_COLOR,
         title="is-a.dev Statistics",
         url="https://data.is-a.dev",
     )
@@ -233,7 +233,7 @@ async def isadev_domain_data_overview_embed_builder():
 
 
 async def isadev_user_domain_data_overview_embed_builder(username):
-    data = await request("https://raw.is-a.dev/v2.json")
+    data = await oclib.request("https://raw.is-a.dev/v2.json")
 
     subdomains_count = 0
     records_count = 0
@@ -270,7 +270,7 @@ async def isadev_user_domain_data_overview_embed_builder(username):
 
     records_count = sum(dns_records.values())
 
-    statistics = f"- Subdomains: {subdomains_count}\n" f"- Records: {records_count}\n"
+    statistics = f"- Subdomains: {subdomains_count}\n- Records: {records_count}\n"
 
     statistics += "\n**DNS Records**:\n"
     for record_type, count in dns_records.items():
@@ -279,7 +279,7 @@ async def isadev_user_domain_data_overview_embed_builder(username):
         statistics += f"- {record_type}: {count}\n"
 
     statistics_embed = nextcord.Embed(
-        color=EMBED_COLOR,
+        color=config.EMBED_COLOR,
         title=f"is-a.dev Statistics for {username}",
         description=statistics,
         url=f"https://github.com/{username}",
@@ -296,8 +296,8 @@ async def build_check_embed(domain):
     is_valid = await is_valid_domain(domain)
 
     if not is_valid:
-        embed = nextcord.Embed(color=ERROR_COLOR)
-        embed.description = f":x: That is not a valid domain name. A valid domain may only have alphabetical, numerical, period (.), and dash (-) characters."
+        embed = nextcord.Embed(color=config.ERROR_COLOR)
+        embed.description = ":x: That is not a valid domain name. A valid domain may only have alphabetical, numerical, period (.), and dash (-) characters."
         embed.set_footer(
             text="is-a.dev",
             icon_url="https://raw.githubusercontent.com/is-a-dev/register/refs/heads/main/media/logo.png",
@@ -305,7 +305,7 @@ async def build_check_embed(domain):
         return embed
 
     if not domain_data:
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = f"✅ [{domain}.is-a.dev](https://{domain}.is-a.dev) is available for [registration](https://github.com/is-a-dev/register?tab=readme-ov-file#how-to-register)."
         embed.set_footer(
             text="is-a.dev",
@@ -314,7 +314,7 @@ async def build_check_embed(domain):
         return embed
 
     if domain_data.get("reserved"):
-        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed = nextcord.Embed(color=config.ERROR_COLOR)
         embed.description = f":x: Sorry, `{domain}.is-a.dev` has been reserved by our maintainers and cannot be registered."
         embed.set_footer(
             text="is-a.dev",
@@ -323,7 +323,7 @@ async def build_check_embed(domain):
         return embed
 
     if domain_data.get("internal"):
-        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed = nextcord.Embed(color=config.ERROR_COLOR)
         embed.description = f":x: Sorry, `{domain}.is-a.dev` is being used internally by our maintainers and cannot be registered."
         embed.set_footer(
             text="is-a.dev",
@@ -332,7 +332,7 @@ async def build_check_embed(domain):
         return embed
 
     if domain_data:
-        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed = nextcord.Embed(color=config.ERROR_COLOR)
         domain_holder = str(domain_data.get("owner").get("username"))
         embed.description = f":x: [{domain}.is-a.dev](https://{domain}.is-a.dev) has already been registered by [{domain_holder}](https://github.com/{domain_holder})."
         embed.set_footer(
@@ -348,7 +348,7 @@ class SubdomainUtils(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    @is_in_guild()
+    @lib.is_in_guild()
     @commands.command(
         help="Lookup information on a subdomain of is-a.dev. Usage: `whois cirno.is-a.dev`."
     )
@@ -356,7 +356,7 @@ class SubdomainUtils(commands.Cog):
         embed = await build_whois_embed(domain)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @is_in_guild()
+    @lib.is_in_guild()
     @commands.command(
         help="Fetch all staff-owned is-a.dev subdomains. Usage: `staff_subdomains`",
         aliases=["iad-staff"],
@@ -365,7 +365,7 @@ class SubdomainUtils(commands.Cog):
         embed = await fetch_staff_subdomains()
         await ctx.reply(embed=embed, mention_author=False)
 
-    @is_in_guild()
+    @lib.is_in_guild()
     @commands.command(
         help="Fetch all unregistered single-character is-a.dev subdomains. Usage: `single_character_subdomains`",
         aliases=["iad-scs"],
@@ -374,7 +374,7 @@ class SubdomainUtils(commands.Cog):
         embed = await fetch_non_existent_single_character_domains()
         await ctx.reply(embed=embed, mention_author=False)
 
-    @is_in_guild()
+    @lib.is_in_guild()
     @commands.command(
         help="Check whether an is-a.dev subdomain is available for registration. Usage: `check cirno`."
     )
@@ -382,7 +382,7 @@ class SubdomainUtils(commands.Cog):
         embed = await build_check_embed(domain)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @is_in_guild()
+    @lib.is_in_guild()
     @commands.command(
         help="Fetch is-a.dev statistics for either the entire service or a specific Github username. Usage: `is-a-dev orangci`.",
         aliases=["isadev", "is-a-dev", "iad"],
@@ -401,7 +401,7 @@ class SubdomainUtilsSlash(commands.Cog):
 
     @nextcord.slash_command(
         name="whois",
-        guild_ids=[SERVER_ID],
+        guild_ids=[lib.SERVER_ID],
         description="Lookup information on a subdomain of is-a.dev. Usage: `whois cirno.is-a.dev`.",
     )
     async def whois(
@@ -418,7 +418,7 @@ class SubdomainUtilsSlash(commands.Cog):
 
     @nextcord.slash_command(
         name="iad-staff-subdomains",
-        guild_ids=[SERVER_ID],
+        guild_ids=[lib.SERVER_ID],
         description="Fetch all staff-owned is-a.dev subdomains.",
     )
     async def staff_subdomains(
@@ -431,10 +431,10 @@ class SubdomainUtilsSlash(commands.Cog):
 
     @nextcord.slash_command(
         name="iad-single-character-subdomains",
-        guild_ids=[SERVER_ID],
+        guild_ids=[lib.SERVER_ID],
         description="Fetch all unregistered single-character is-a.dev subdomains.",
     )
-    async def staff_subdomains(
+    async def single_character_subdomains(
         self,
         interaction: nextcord.Interaction,
     ) -> None:
@@ -444,7 +444,7 @@ class SubdomainUtilsSlash(commands.Cog):
 
     @nextcord.slash_command(
         name="check",
-        guild_ids=[SERVER_ID],
+        guild_ids=[lib.SERVER_ID],
         description="Check whether an is-a.dev subdomain is available for registration.",
     )
     async def check(
@@ -461,7 +461,7 @@ class SubdomainUtilsSlash(commands.Cog):
 
     @nextcord.slash_command(
         name="is-a-dev",
-        guild_ids=[SERVER_ID],
+        guild_ids=[lib.SERVER_ID],
         description="Fetch is-a.dev statistics for either the entire service or a specific Github username.",
     )
     async def is_a_dev(

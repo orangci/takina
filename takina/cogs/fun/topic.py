@@ -1,11 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import random
+
 import nextcord
+import config
 from nextcord.ext import commands
+
+from ..libs import oclib
 from ..libs.topics_list import topics
-from config import *
-from ..libs.oclib import *
 
 
 class Topic(commands.Cog):
@@ -15,8 +17,8 @@ class Topic(commands.Cog):
     @commands.command(help="Fetch a random conversational topic. \nUsage: `topic`.")
     async def topic(self, ctx: commands.Context):
         embed = nextcord.Embed(
-            description=f"{random.choice(topics)} {await fetch_random_emoji()}",
-            color=EMBED_COLOR,
+            description=f"{random.choice(topics)} {await oclib.fetch_random_emoji()}",
+            color=config.EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -25,8 +27,8 @@ class Topic(commands.Cog):
     )
     async def slash_topic(self, interaction: nextcord.Interaction):
         embed = nextcord.Embed(
-            description=f"{random.choice(topics)} {await fetch_random_emoji()}",
-            color=EMBED_COLOR,
+            description=f"{random.choice(topics)} {await oclib.fetch_random_emoji()}",
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed)
 

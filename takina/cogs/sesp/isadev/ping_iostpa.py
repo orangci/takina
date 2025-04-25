@@ -1,14 +1,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from nextcord.ext import commands
 import nextcord
-from .libs.lib import *
+from nextcord.ext import commands
+
+from .libs import lib
 
 
 class PingIostpa(commands.Cog):
     @commands.Cog.listener("on_message")
     async def ping_cutedog(self, message: nextcord.Message) -> None:
-        if message.guild.id != SERVER_ID:
+        if message.guild.id != lib.SERVER_ID:
             return
         if 740117772566265876 in [pong.id for pong in message.mentions]:
             await message.channel.send(

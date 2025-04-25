@@ -1,11 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord
-from nextcord.ext import commands
-from config import *
 import os
+
+import nextcord
+import config
 from motor.motor_asyncio import AsyncIOMotorClient
-from ..libs.oclib import *
+from nextcord.ext import commands
+
+from ..libs import oclib
 
 
 class PingResponse(commands.Cog):
@@ -15,11 +17,13 @@ class PingResponse(commands.Cog):
         self.forks = 0
         self.bot.loop.create_task(self.fetch_repo_data())
         self.prefix = os.getenv("PREFIX")
-        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
 
     async def fetch_repo_data(self):
         try:
-            repo_data = await request("https://api.github.com/repos/orangci/takina")
+            repo_data = await oclib.request(
+                "https://api.github.com/repos/orangci/takina"
+            )
             if not repo_data:
                 return
             self.stars = repo_data.get("stargazers_count", 0)
@@ -31,24 +35,24 @@ class PingResponse(commands.Cog):
         self, ctx: commands.Context | nextcord.Interaction | nextcord.Message = None
     ):
         embed = nextcord.Embed(
-            title=f"{await fetch_random_emoji()}Takina",
+            title=f"{await oclib.fetch_random_emoji()}Takina",
             url="https://orangc.net/takina",
             description="-# Open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md) • Make a [feature request](https://github.com/orangci/takina/issues/new?template=feature_request.md)\n\n Takina is a multipurpose [opensource](https://github.com/orangci/takina) bot written in Python by [orangc](https://orangc.net). More information is available in the [website](https://orangc.net/takina).\n",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
 
         if ctx and hasattr(ctx, "guild"):
             guild_id = ctx.guild.id
             guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
             if guild_data and "prefix" in guild_data:
-                self.prefix = f"`{guild_data["prefix"]}`, `takina`, `Takina`"
+                self.prefix = f"`{guild_data['prefix']}`, `takina`, `Takina`"
 
         embed.description += f"\n**Prefix**: {self.prefix}"
         embed.description += (
             f"\n**Stars**: [{self.stars}](https://github.com/orangci/takina/stargazers)"
         )
-        embed.description += f"\n**Uptime**: {await uptime_fetcher()}"
-        BOT_VERSION_LINK = f"[{BOT_VERSION}](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{BOT_VERSION.replace(".", "")})"
+        embed.description += f"\n**Uptime**: {await oclib.uptime_fetcher()}"
+        BOT_VERSION_LINK = f"[{config.BOT_VERSION}](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{config.BOT_VERSION.replace('.', '')})"
         embed.description += f"\n**Version**: {BOT_VERSION_LINK}"
 
         orangc = await self.bot.fetch_user(961063229168164864)

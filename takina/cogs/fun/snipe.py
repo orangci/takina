@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import nextcord
+import config
 from nextcord.ext import commands
-from config import *
 
 
 class Snipe(commands.Cog):
@@ -36,7 +36,7 @@ class Snipe(commands.Cog):
         ):
             embed = nextcord.Embed(
                 description="There's nothing to snipe!",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -44,7 +44,7 @@ class Snipe(commands.Cog):
         # Create embed for sniped message
         embed = nextcord.Embed(
             description=sniped_message["content"] or "*No text content*",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
             timestamp=sniped_message["time"],
         )
         embed.set_author(
@@ -63,7 +63,7 @@ class Snipe(commands.Cog):
                     if not embed.image:
                         embed.set_image(url=attachment.url)
                     else:
-                        new_embed = nextcord.Embed(color=EMBED_COLOR)
+                        new_embed = nextcord.Embed(color=config.EMBED_COLOR)
                         new_embed.set_image(url=attachment.url)
                         new_embed.url = embed.url
                         embed_list.append(new_embed)
@@ -104,7 +104,7 @@ class ESnipe(commands.Cog):
         ):
             embed = nextcord.Embed(
                 description="There's no edited message to snipe!",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -112,7 +112,7 @@ class ESnipe(commands.Cog):
         # Create embed for sniped message
         embed = nextcord.Embed(
             description=f"**Before Edit:**\n{sniped_message['content'] or '*No text content*'}\n\n**After Edit:**\n{sniped_message['new_content'] or '*No new text content*'}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
             timestamp=sniped_message["time"],
         )
         embed.set_author(
@@ -130,7 +130,7 @@ class ESnipe(commands.Cog):
                     if not embed.image:
                         embed.set_image(url=attachment.url)
                     else:
-                        new_embed = nextcord.Embed(color=EMBED_COLOR)
+                        new_embed = nextcord.Embed(color=config.EMBED_COLOR)
                         new_embed.set_image(url=attachment.url)
                         embed_list.append(new_embed)
 

@@ -1,13 +1,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import re
-import nextcord
-from nextcord.ext import commands
-from nextcord import ui
-from config import *
-from typing import Optional
-from ..libs.oclib import request
 from datetime import datetime
+from typing import Optional
+
+import nextcord
+import config
+from nextcord import ui
+from nextcord.ext import commands
+from ..libs import oclib
+
 
 GITHUB_BASE_URL = "https://api.github.com"
 
@@ -33,7 +35,7 @@ class GitHubCog(commands.Cog):
     async def fetch_github_data(self, url: str) -> Optional[dict]:
         """Fetch JSON data from the GitHub API."""
         try:
-            return await request(url)
+            return await oclib.request(url)
         except Exception as e:
             print(f"Error fetching GitHub data: {e}")
             return None
@@ -44,7 +46,7 @@ class GitHubCog(commands.Cog):
             nextcord.Embed(
                 title=f"{repo_data['full_name']} - GitHub Repository",
                 description=repo_data.get("description", "No description available."),
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
                 url=repo_data["html_url"],
             )
             .add_field(name="Stars", value=repo_data["stargazers_count"])

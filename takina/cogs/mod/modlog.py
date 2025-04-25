@@ -1,12 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord
-from nextcord.ext import commands, application_checks
-from nextcord import ui
-from motor.motor_asyncio import AsyncIOMotorClient
 import datetime
-from config import *
-from ..libs.oclib import *
+
+import nextcord
+import config
+from motor.motor_asyncio import AsyncIOMotorClient
+from nextcord import ui
+from nextcord.ext import application_checks, commands
+from ..libs import oclib
 
 
 class CaseListButtonView(ui.View):
@@ -22,14 +23,14 @@ class CaseListButtonView(ui.View):
     def get_page_embed(self):
         embed = nextcord.Embed(
             title=f"Cases - Page {self.current_page + 1}/{self.max_pages}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         start = self.current_page * self.per_page
         end = start + self.per_page
         page_cases = self.cases[start:end]
         embed.description = "\n".join(
             [
-                f"{random.choice(list(emoji_dict.values()))} `{case['case_id']}`: **{case['action'].capitalize()}** <t:{int(case['timestamp'].timestamp())}:R>"
+                f"`{case['case_id']}`: **{case['action'].capitalize()}** <t:{int(case['timestamp'].timestamp())}:R>"
                 for case in page_cases
             ]
         )
@@ -77,7 +78,7 @@ class CaseListButtonView(ui.View):
 class ModLog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
 
     @nextcord.slash_command(description="Manage the modlog settings")
     async def modlog(self, interaction: nextcord.Interaction):
@@ -148,7 +149,7 @@ class ModLog(commands.Cog):
 
         await self.db.modlog_cases.insert_one(case_data)
 
-        embed = nextcord.Embed(color=EMBED_COLOR, timestamp=timestamp)
+        embed = nextcord.Embed(color=config.EMBED_COLOR, timestamp=timestamp)
         action = f"{type.capitalize()} ({duration})" if duration else type.capitalize()
         embed.add_field(name="Action", value=action, inline=True)
         embed.add_field(name="Case", value=f"#{case_id}", inline=True)
@@ -169,12 +170,12 @@ class ModLog(commands.Cog):
             {"guild_id": ctx.guild.id, "case_id": case_id}
         )
         if not case:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = "❌ Case not found."
             await ctx.reply(embed=embed, mention_author=False)
             return
 
-        embed = nextcord.Embed(color=EMBED_COLOR, timestamp=case["timestamp"])
+        embed = nextcord.Embed(color=config.EMBED_COLOR, timestamp=case["timestamp"])
         action = (
             f"{case['action'].capitalize()} ({case['duration']})"
             if case["duration"]
@@ -204,11 +205,11 @@ class ModLog(commands.Cog):
             {"$set": {"reason": new_reason}},
         )
         if result.modified_count == 0:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = "❌ Case not found or could not be updated."
             await ctx.reply(embed=embed, mention_author=False)
         else:
-            embed = nextcord.Embed(color=EMBED_COLOR)
+            embed = nextcord.Embed(color=config.EMBED_COLOR)
             embed.description = f"✅ Case `{case_id}`'s reason has been updated."
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -224,7 +225,7 @@ class ModLog(commands.Cog):
 
         cases = await self.db.modlog_cases.find(query).to_list(length=None)
         if not cases:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = "❌ No cases found."
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -239,7 +240,7 @@ class ModLog(commands.Cog):
     @commands.has_permissions(moderate_members=True)
     async def get_mod_cases(self, ctx, user: str = None):
         if user:
-            user = extract_user_id(user, ctx)
+            user = oclib.extract_user_id(user, ctx)
             if isinstance(user, nextcord.Embed):
                 await ctx.reply(embed=user, mention_author=False)
                 return
@@ -250,7 +251,7 @@ class ModLog(commands.Cog):
             {"guild_id": ctx.guild.id, "moderator_id": user.id}
         ).to_list(length=None)
         if not cases:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = (
                 f"❌ {user.mention} has not performed any moderation actions."
             )
@@ -309,7 +310,7 @@ class ModLog(commands.Cog):
 
         embed = nextcord.Embed(
             title=f"Modstats for {user.display_name}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
 
         embed.add_field(
@@ -328,7 +329,7 @@ class ModLog(commands.Cog):
 class SlashModLog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
 
     @nextcord.slash_command(description="Manage the modlog settings")
     @application_checks.has_permissions(moderate_members=True)
@@ -343,11 +344,13 @@ class SlashModLog(commands.Cog):
             {"guild_id": interaction.guild.id, "case_id": case_id}
         )
         if not case:
-            embed = nextcord.Embed(color=ERROR_COLOR, description="❌ Case not found.")
+            embed = nextcord.Embed(
+                color=config.ERROR_COLOR, description="❌ Case not found."
+            )
             await interaction.send(embed=embed, ephemeral=True)
             return
 
-        embed = nextcord.Embed(color=EMBED_COLOR, timestamp=case["timestamp"])
+        embed = nextcord.Embed(color=config.EMBED_COLOR, timestamp=case["timestamp"])
         action = (
             f"{case['action'].capitalize()} ({case['duration']})"
             if case["duration"]
@@ -377,13 +380,13 @@ class SlashModLog(commands.Cog):
         )
         if result.modified_count == 0:
             embed = nextcord.Embed(
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
                 description="❌ Case not found or could not be updated.",
             )
             await interaction.send(embed=embed, ephemeral=True)
         else:
             embed = nextcord.Embed(
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
                 description=f"✅ Case `{case_id}`'s reason has been updated.",
             )
             await interaction.send(embed=embed)
@@ -402,7 +405,9 @@ class SlashModLog(commands.Cog):
 
         cases = await self.db.modlog_cases.find(query).to_list(length=None)
         if not cases:
-            embed = nextcord.Embed(color=ERROR_COLOR, description="❌ No cases found.")
+            embed = nextcord.Embed(
+                color=config.ERROR_COLOR, description="❌ No cases found."
+            )
             await interaction.send(embed=embed, ephemeral=True)
             return
 
@@ -429,7 +434,7 @@ class SlashModLog(commands.Cog):
         ).to_list(length=None)
         if not cases:
             embed = nextcord.Embed(
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
                 description=f"❌ {user.mention} has not performed any moderation actions.",
             )
             await interaction.send(embed=embed, ephemeral=True)
@@ -492,7 +497,7 @@ class SlashModLog(commands.Cog):
 
         embed = nextcord.Embed(
             title=f"Modstats for {user.display_name}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
 
         embed.add_field(

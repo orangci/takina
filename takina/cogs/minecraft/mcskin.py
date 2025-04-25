@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord
-from nextcord.ext import commands
 import aiohttp
-from config import *
-from ..libs.oclib import *
+import nextcord
+import config
+from nextcord.ext import commands
+
+from ..libs import oclib
 
 
 class Minecraft(commands.Cog):
@@ -35,7 +36,7 @@ class Minecraft(commands.Cog):
         uuid = await self.fetch_uuid(username)
 
         if not uuid:
-            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = (
                 f":x: Could not find a Minecraft player with the username `{username}`."
             )
@@ -45,8 +46,8 @@ class Minecraft(commands.Cog):
         skin_url = await self.fetch_skin_url(uuid)
 
         embed = nextcord.Embed(
-            title=await fetch_random_emoji() + username,
-            color=EMBED_COLOR,
+            title=await oclib.fetch_random_emoji() + username,
+            color=config.EMBED_COLOR,
         )
         embed.set_image(url=skin_url)
         embed.set_footer(text=f"UUID: {uuid}")
@@ -68,7 +69,7 @@ class Minecraft(commands.Cog):
         uuid = await self.fetch_uuid(username)
 
         if not uuid:
-            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = (
                 f":x: Could not find a Minecraft player with the username `{username}`."
             )
@@ -78,8 +79,8 @@ class Minecraft(commands.Cog):
         skin_url = await self.fetch_skin_url(uuid)
 
         embed = nextcord.Embed(
-            title=await fetch_random_emoji() + username,
-            color=EMBED_COLOR,
+            title=await oclib.fetch_random_emoji() + username,
+            color=config.EMBED_COLOR,
         )
         embed.set_image(url=skin_url)
         embed.set_footer(text=f"UUID: {uuid}")

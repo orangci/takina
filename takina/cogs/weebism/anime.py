@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import nextcord
-from nextcord.ext import commands
-import nextcord
+import config
 from nextcord import Interaction, SlashOption
-from config import *
-from ..libs.oclib import *
+from nextcord.ext import commands
+
+from ..libs import oclib
 
 
 class AnimeSearch(commands.Cog):
@@ -17,11 +17,11 @@ class AnimeSearch(commands.Cog):
         url2 = f"https://api.jikan.moe/v4/anime/{anime_name}"
 
         try:
-            data = await request(url2)
+            data = await oclib.request(url2)
             if data and data.get("data"):
                 return data["data"]
 
-            data = await request(url1)
+            data = await oclib.request(url1)
             if data and data.get("data"):
                 return data["data"][0]
 
@@ -29,7 +29,7 @@ class AnimeSearch(commands.Cog):
             raise e
 
     async def build_anime_embed(self, anime_name):
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)
@@ -37,7 +37,6 @@ class AnimeSearch(commands.Cog):
                 title = anime.get("title")
                 episodes = anime.get("episodes")
                 score = anime.get("score")
-                synopsis = anime.get("synopsis")
                 source = anime.get("source")
                 english_title = anime.get("title_english")
                 aired = anime.get("aired", {}).get("string")
@@ -51,7 +50,7 @@ class AnimeSearch(commands.Cog):
                     [studio["name"] for studio in anime.get("studios", [])]
                 )
 
-                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
+                embed = nextcord.Embed(title=title, url=url, color=config.EMBED_COLOR)
                 embed.description = ""
                 if english_title and english_title != title:
                     embed.description += f"-# {english_title}\n"
@@ -69,15 +68,15 @@ class AnimeSearch(commands.Cog):
 
             else:
                 embed.description = ":x: Anime not found."
-                embed.color = ERROR_COLOR
+                embed.color = config.ERROR_COLOR
                 return embed
 
         except Exception as e:
-            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=config.ERROR_COLOR)
             return embed
 
     async def build_anisyn_embed(self, anime_name):
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         url = f"https://api.jikan.moe/v4/anime?q={anime_name}&limit=1"
         try:
             anime = await self.fetch_anime(anime_name)
@@ -91,7 +90,7 @@ class AnimeSearch(commands.Cog):
                 url = anime.get("url")
                 mal_id = anime.get("mal_id")
 
-                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
+                embed = nextcord.Embed(title=title, url=url, color=config.EMBED_COLOR)
                 embed.description = ""
                 if english_title and english_title != title:
                     embed.description += f"-# {english_title}\n"
@@ -102,11 +101,11 @@ class AnimeSearch(commands.Cog):
 
             else:
                 embed.description = ":x: Anime not found."
-                embed.color = ERROR_COLOR
+                embed.color = config.ERROR_COLOR
                 return embed
 
         except Exception as e:
-            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=config.ERROR_COLOR)
             return embed
 
     @commands.command(

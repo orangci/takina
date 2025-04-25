@@ -4,8 +4,8 @@ Takina does not currently follow *all* of these standards, but as of now does fo
 ### Before Contributing
 First of all, thanks for considering contributing to Takina! I appreciate it. Please make sure that what you're contributing follows Discord's [Terms of Service](https://discord.com/terms). Please follow the standards after this section, and lastly, if it's a new feature, please contact me ([orangc](https://orangc.net)) or in the least open an issue before starting to write code; confirming that I'll approve your idea is better than wasting your time and finding out later that I can't merge your pull request because of x and y. 💖
 
-### Formatting & Commits
-- `black **/*.py` should be run in the `takina` folder before every commit.
+### Formatting/Linting & Commits
+- `ruff format .` and `ruff check .` should be run before committing. If `ruff check` raises any errors, they must be addressed.
 - Each commit should follow the Conventional Commits standard, for example: `fix(mod): mute command did not check for perms`. The scope should be the subfolder affected in the cogs dir, and if there is none, use (core) as a scope.
 - Every command should have a description and help information.
 
@@ -31,9 +31,9 @@ For slash commands, generally `interaction.send(ephemeral=True)` should be used,
 ### Slash Commands
 `await interaction.response.defer()` should be used in all complex slash commands.
 
-### Cooldowns
+<!-- ### Cooldowns
 Generally commands should have at least a one second cooldown.
-`@commands.cooldown(1, 1, commands.BucketType.user)`
+`@commands.cooldown(1, 1, commands.BucketType.user)` -->
 
 ### Documentation
 Every command must have sufficient documentation for help commands.
@@ -43,18 +43,17 @@ Every command must have sufficient documentation for help commands.
 # takina/cogs/fun/hello.py
 import nextcord
 from nextcord.ext import commands
-from config import * # EMBED_COLOR and other variables are imported from here
-from ..libs.oclib import * # various helper functions like fetch_random_emoji() or request() are imported from here
+import config # EMBED_COLOR and other variables are imported from here
+from ..libs import oclib # various helper functions like fetch_random_emoji() or request() are imported from here
 
 class Hello(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.command(name="hello", aliases=["hi", "hey"], help="Say hello! \nUsage: `hello`.")
-    @commands.cooldown(1, 1, commands.BucketType.user)
     async def hello(self, ctx: commands.Context):
-        embed = nextcord.Embed(color=EMBED_COLOR)
-        embed.description = f"{await fetch_random_emoji()} Hello there!"
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
+        embed.description = f"{await oclib.fetch_random_emoji()} Hello there!"
         await ctx.reply(embed=embed, mention_author=False)
 
 class SlashHello(commands.Cog):
@@ -64,8 +63,8 @@ class SlashHello(commands.Cog):
     @nextcord.slash_command(name="hello", description="Say hello!")
     async def slash_hello(self, interaction: nextcord.Interaction):
         # await interaction.response.defer() # since this is a very basic command that will respond instantly, we won't defer this 
-        embed = nextcord.Embed(color=EMBED_COLOR)
-        embed.description = f"{await fetch_random_emoji()} Hello there!"
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
+        embed.description = f"{await oclib.fetch_random_emoji()} Hello there!"
         await interaction.send(embed=embed) # since this is a command with a very short response, we won't make it ephemeral
 
 

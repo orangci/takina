@@ -2,18 +2,18 @@
 pkgs.mkShell {
   buildInputs = with pkgs; [
     python313
-    python313Packages.virtualenv
+    uv
   ];
 
   shellHook = ''
     if [ ! -d "venv" ]; then
-      python -m venv venv
+      uv venv venv
       source venv/bin/activate
-      pip install --upgrade pip
-      pip install -r requirements.txt
+      uv pip install -r requirements.txt
     else
       source venv/bin/activate
-    python3 takina
     fi
+
+    python3 takina
   '';
 }

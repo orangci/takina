@@ -1,13 +1,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord
-from nextcord.ext import commands, application_checks
-from nextcord import SlashOption
-from motor.motor_asyncio import AsyncIOMotorClient
 import random
-from config import *
+
 import emoji as emotelib
-from ..libs.oclib import *
+import nextcord
+import config
+from motor.motor_asyncio import AsyncIOMotorClient
+from nextcord import SlashOption
+from nextcord.ext import application_checks, commands
+
+from ..libs import oclib
 
 
 async def is_valid_emoji(interaction, emoji: str) -> bool:
@@ -23,7 +25,7 @@ async def is_valid_emoji(interaction, emoji: str) -> bool:
 class Giveaway(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
 
     @nextcord.slash_command(name="giveaway", description="Giveaway management commands")
     async def giveaway(self, interaction: nextcord.Interaction):
@@ -49,27 +51,29 @@ class Giveaway(commands.Cog):
             {"channel_id": interaction.channel.id, "active": True}
         )
         if active_giveaway:
-            random_emoji = await fetch_random_emoji()
+            random_emoji = await oclib.fetch_random_emoji()
             embed = nextcord.Embed(
                 description=f"{random_emoji}There is already an active giveaway in this channel. End it before starting a new one.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # Check if the emoji is a valid standard or custom emoji
         if not await is_valid_emoji(interaction, emoji):
-            random_emoji = await fetch_random_emoji()
+            random_emoji = await oclib.fetch_random_emoji()
             embed = nextcord.Embed(
                 description=f"{random_emoji}The emoji you entered is invalid; either it is not an emoji or it is an emoji I do not have access to.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # Create and send the giveaway embed
         description += f"\n\nReact with {emoji} to join!"
-        embed = nextcord.Embed(title=title, description=description, color=EMBED_COLOR)
+        embed = nextcord.Embed(
+            title=title, description=description, color=config.EMBED_COLOR
+        )
         giveaway_message = await interaction.channel.send(embed=embed)
         await giveaway_message.add_reaction(emoji)
 
@@ -85,7 +89,7 @@ class Giveaway(commands.Cog):
         )
 
         embed = nextcord.Embed(
-            description=f"✅ Giveaway successfully started.", color=EMBED_COLOR
+            description="✅ Giveaway successfully started.", color=config.EMBED_COLOR
         )
         await interaction.followup.send(embed=embed, ephemeral=True)
 
@@ -99,10 +103,10 @@ class Giveaway(commands.Cog):
             {"channel_id": interaction.channel.id, "active": True}
         )
         if not active_giveaway:
-            random_emoji = await fetch_random_emoji()
+            random_emoji = await oclib.fetch_random_emoji()
             embed = nextcord.Embed(
                 description=f"{random_emoji}No active giveaway found in this channel.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
@@ -119,10 +123,10 @@ class Giveaway(commands.Cog):
             await self.db.giveaways.update_one(
                 {"_id": active_giveaway["_id"]}, {"$set": {"active": False}}
             )
-            random_emoji = await fetch_random_emoji()
+            random_emoji = await oclib.fetch_random_emoji()
             embed = nextcord.Embed(
-                description=f"✅ Ended giveaway without a winner; no participants detected.",
-                color=EMBED_COLOR,
+                description="✅ Ended giveaway without a winner; no participants detected.",
+                color=config.EMBED_COLOR,
             )
             await interaction.channel.send(embed=embed)
             embed.description = "✅ Giveaway ended successfully."
@@ -140,11 +144,11 @@ class Giveaway(commands.Cog):
         embed = nextcord.Embed(
             title="Giveaway Ended",
             description=f"The winner of the giveaway is {winner.mention}!",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.channel.send(winner.mention, embed=embed)
 
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = "✅ Giveaway ended successfully."
         await interaction.followup.send(embed=embed, ephemeral=True)
 
@@ -158,10 +162,10 @@ class Giveaway(commands.Cog):
             {"channel_id": interaction.channel.id, "active": False}
         )
         if not giveaway:
-            random_emoji = await fetch_random_emoji()
+            random_emoji = await oclib.fetch_random_emoji()
             embed = nextcord.Embed(
                 description=f"{random_emoji}No ended giveaway found in this channel.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
@@ -175,10 +179,10 @@ class Giveaway(commands.Cog):
             user async for user in giveaway_message.reactions[0].users() if not user.bot
         ]
         if not users:
-            random_emoji = await fetch_random_emoji()
+            random_emoji = await oclib.fetch_random_emoji()
             embed = nextcord.Embed(
                 description=f"{random_emoji}No reactions found for the giveaway.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
@@ -186,11 +190,11 @@ class Giveaway(commands.Cog):
         # Choose a new random winner
         new_winner = random.choice(users)
 
-        random_emoji = await fetch_random_emoji()
+        random_emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
             title="Giveaway Rerolled",
             description=f"{random_emoji}The new winner of the giveaway is {new_winner.mention}!",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.channel.send(embed=embed)
 

@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from ..libs.oclib import *
 import nextcord
-from nextcord.ext import commands
-import nextcord
+import config
 from nextcord import Interaction, SlashOption
-from config import *
+from nextcord.ext import commands
+
+from ..libs import oclib
 
 
 class CharacterSearch(commands.Cog):
@@ -20,22 +20,22 @@ class CharacterSearch(commands.Cog):
         character_data = None
 
         try:
-            data = await request(url2)
+            data = await oclib.request(url2)
             if data and data.get("data"):
                 character_data = data["data"]
             else:
-                data = await request(url1)
+                data = await oclib.request(url1)
                 if data and data.get("data"):
                     character_data = data["data"][0]
 
         except Exception as e:
             embed.description = f":x: {e}"
-            embed.color = ERROR_COLOR
+            embed.color = config.ERROR_COLOR
             return embed
 
         if not character_data:
             embed.description = ":x: Character not found."
-            embed.color = ERROR_COLOR
+            embed.color = config.ERROR_COLOR
             return embed
 
         name = character_data.get("name", "Unknown")
@@ -70,7 +70,7 @@ class CharacterSearch(commands.Cog):
         help="Fetch character information from MyAnimeList. \nUsage: `chr Takina Inoue` or `chr 204620`.",
     )
     async def character(self, ctx: commands.Context, *, character: str):
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed = await self.fetch_character(character, embed)
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -83,7 +83,7 @@ class CharacterSearch(commands.Cog):
         character: str = SlashOption(description="Name or MAL ID of the character"),
     ):
         await interaction.response.defer()
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed = await self.fetch_character(character, embed)
         await interaction.send(embed=embed)
 

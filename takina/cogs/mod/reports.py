@@ -1,17 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import nextcord
-from nextcord.ext import application_checks, commands
-from nextcord import Interaction, SlashOption
+import config
 from motor.motor_asyncio import AsyncIOMotorClient
-from config import *
-from ..libs.oclib import *
+from nextcord import Interaction, SlashOption
+from nextcord.ext import application_checks, commands
 
 
 class Reports(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
 
     async def get_server_config(self, guild_id: int):
         """Retrieve the report settings for a server from the database."""
@@ -52,7 +51,7 @@ class Reports(commands.Cog):
         config = await self.get_server_config(guild_id)
 
         if not config:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = (
                 ":x: Reports system is not set up. Please contact an admin."
             )
@@ -64,7 +63,7 @@ class Reports(commands.Cog):
 
         reports_channel = self.bot.get_channel(reports_channel_id)
         if not reports_channel:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = ":x: Reports channel not found."
             await interaction.send(embed=embed, ephemeral=True)
             return
@@ -72,7 +71,7 @@ class Reports(commands.Cog):
         embed = nextcord.Embed(
             title="New Report",
             description=f"Issue reported in {interaction.channel.mention}",
-            color=ERROR_COLOR,
+            color=config.ERROR_COLOR,
         )
         embed.add_field(name="Reason", value=reason, inline=False)
 
@@ -92,7 +91,7 @@ class Reports(commands.Cog):
             allowed_mentions=nextcord.AllowedMentions(roles=True),
         )
         submitted_embed = nextcord.Embed(
-            description=f"✅ Report successfully submitted. Thank you for helping to keep our server safe!",
+            description="✅ Report successfully submitted. Thank you for helping to keep our server safe!",
             color=nextcord.Color.green(),
         )
         await interaction.send(embed=submitted_embed, ephemeral=True)
@@ -115,7 +114,7 @@ class Reports(commands.Cog):
 
         await self.set_server_config(guild_id, mod_role.id, reports_channel.id)
 
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = f"✅ Successfully set up the report system. Moderator role: {mod_role.mention}, reports channel: {reports_channel.mention}"
 
         await interaction.send(

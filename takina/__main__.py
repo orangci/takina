@@ -1,12 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from __future__ import annotations
+
+import datetime
 import os
+
 import nextcord
+import config
 from motor.motor_asyncio import AsyncIOMotorClient
 from nextcord.ext import commands, help_commands
-from config import *
-import datetime
 
 start_time = datetime.datetime.now(datetime.UTC)
 
@@ -14,7 +16,7 @@ start_time = datetime.datetime.now(datetime.UTC)
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
 
     async def setup_database(self) -> None:
         """Setup MongoDB connection and collections"""
@@ -22,8 +24,8 @@ class Bot(commands.Bot):
             raise Exception(
                 "No Mongo found. Set the HASDB variable in case you do have a Mongo instance runnin'."
             )
-        self.db_client = AsyncIOMotorClient(MONGO_URI)
-        self.db = self.db_client.get_database(DB_NAME)
+        self.db_client = AsyncIOMotorClient(config.MONGO_URI)
+        self.db = self.db_client.get_database(config.DB_NAME)
 
     async def get_prefix(self, message):
         if message.guild:
@@ -42,7 +44,7 @@ class Bot(commands.Bot):
 
 # help command stuff
 helpcmd = help_commands.PaginatedHelpCommand
-helpcmd.COLOUR = EMBED_COLOR
+helpcmd.COLOUR = config.EMBED_COLOR
 
 bot = Bot(
     intents=nextcord.Intents.all(),

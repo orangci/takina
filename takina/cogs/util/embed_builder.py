@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import nextcord
-from nextcord.ext import commands, application_checks
-from config import *
+import config
+from nextcord.ext import application_checks, commands
 
 
 class EmbedBuilder(commands.Cog):
@@ -53,7 +53,7 @@ class EmbedModal(nextcord.ui.Modal):
             color=(
                 int(self.color_input.value.lstrip("#"), 16)
                 if self.color_input.value.startswith("#")
-                else EMBED_COLOR
+                else config.EMBED_COLOR
             ),
         )
 

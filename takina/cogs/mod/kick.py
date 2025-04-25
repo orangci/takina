@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import nextcord
+import config
 from nextcord.ext import application_checks, commands
-from config import *
-from ..libs.oclib import *
+
+from ..libs import oclib
 
 
 class Kick(commands.Cog):
@@ -22,25 +23,25 @@ class Kick(commands.Cog):
         *,
         reason: str = "No reason provided",
     ):
-        member = extract_user_id(member, ctx)
+        member = oclib.extract_user_id(member, ctx)
         if isinstance(member, nextcord.Embed):
             await ctx.reply(embed=member, mention_author=False)
             return
 
-        can_proceed, message = perms_check(member, ctx=ctx)
+        can_proceed, message = oclib.perms_check(member, ctx=ctx)
         if not can_proceed:
             await ctx.reply(embed=message, mention_author=False)
             return
 
         embed = nextcord.Embed(
             description=f"✅ Successfully kicked **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
             description=f"You were banned in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
-        confirmation = ConfirmationView(
+        confirmation = oclib.ConfirmationView(
             ctx=ctx, member=member, action="kick", reason=reason
         )
         confirmed = await confirmation.prompt()
@@ -48,7 +49,7 @@ class Kick(commands.Cog):
             return
         try:
             await member.send(embed=dm_embed)
-        except Exception as e:
+        except Exception:
             embed.set_footer(text="I was unable to DM this user.")
         await member.kick(
             reason=f"Kicked by {ctx.author} for: {reason}",
@@ -75,21 +76,21 @@ class KickSlash(commands.Cog):
         reason: str = "No reason provided",
     ):
         await interaction.response.defer()
-        can_proceed, message = perms_check(member, ctx=interaction)
+        can_proceed, message = oclib.perms_check(member, ctx=interaction)
         if not can_proceed:
             await interaction.send(embed=message, ephemeral=True)
             return
 
         embed = nextcord.Embed(
             description=f"✅ Successfully kicked **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
             description=f"You were banned in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
 
-        confirmation = ConfirmationView(
+        confirmation = oclib.ConfirmationView(
             ctx=interaction, member=member, action="kick", reason=reason
         )
         confirmed = await confirmation.prompt()
@@ -97,7 +98,7 @@ class KickSlash(commands.Cog):
             return
         try:
             await member.send(embed=dm_embed)
-        except Exception as e:
+        except Exception:
             embed.set_footer(text="I was unable to DM this user.")
         await member.kick(
             reason=f"Kicked by {interaction.user} for: {reason}",

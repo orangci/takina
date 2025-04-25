@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import nextcord
+import config
 from nextcord.ext import application_checks, commands
-from ..libs.oclib import *
-from config import *
+
+from ..libs import oclib
 
 
 class Roles(commands.Cog):
@@ -18,7 +19,7 @@ class Roles(commands.Cog):
     async def role(self, ctx: commands.Context):
         embed = nextcord.Embed(
             description="Please specify a subcommand: `add` or `remove`",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -31,7 +32,7 @@ class Roles(commands.Cog):
         if member is None:
             member = ctx.author
         else:
-            member = extract_user_id(member, ctx)
+            member = oclib.extract_user_id(member, ctx)
             if isinstance(member, nextcord.Embed):
                 await ctx.reply(embed=member, mention_author=False)
                 return
@@ -39,7 +40,7 @@ class Roles(commands.Cog):
         await member.add_roles(role, reason=f"Role added by {ctx.author}")
         embed = nextcord.Embed(
             description=f"✅ Added role {role.mention} to {member.mention}.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -54,7 +55,7 @@ class Roles(commands.Cog):
         if member is None:
             member = ctx.author
         else:
-            member = extract_user_id(member, ctx)
+            member = oclib.extract_user_id(member, ctx)
             if isinstance(member, nextcord.Embed):
                 await ctx.reply(embed=member, mention_author=False)
                 return
@@ -62,7 +63,7 @@ class Roles(commands.Cog):
         await member.remove_roles(role, reason=f"Role removed by {ctx.author}")
         embed = nextcord.Embed(
             description=f"✅ Removed role {role.mention} from {member.mention}.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -91,7 +92,7 @@ class RolesSlash(commands.Cog):
         await member.add_roles(role, reason=f"Role added by {interaction.user}")
         embed = nextcord.Embed(
             description=f"✅ Added role {role.mention} to {member.mention}.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed)
 
@@ -111,7 +112,7 @@ class RolesSlash(commands.Cog):
         await member.remove_roles(role, reason=f"Role removed by {interaction.user}")
         embed = nextcord.Embed(
             description=f"✅ Removed role {role.mention} from {member.mention}.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed)
 

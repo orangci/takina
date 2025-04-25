@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import nextcord
+import config
 from nextcord.ext import commands
-from config import *
-from ..libs.oclib import *
+
+from ..libs import oclib
 
 
 class Dictionary(commands.Cog):
@@ -16,14 +17,14 @@ class Dictionary(commands.Cog):
     )
     async def define(self, ctx: commands.Context, *, word: str):
         api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
-        response = await request(api_url)
+        response = await oclib.request(api_url)
 
         if (
             not response
             or isinstance(response, dict)
             and response.get("title") == "No Definitions Found"
         ):
-            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = ":x: No definition found."
             await ctx.reply(embed=error_embed, mention_author=False)
             return
@@ -34,12 +35,12 @@ class Dictionary(commands.Cog):
         meanings = data.get("meanings", [])
 
         if not meanings:
-            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = ":x: No definition found."
             await ctx.reply(embed=error_embed, mention_author=False)
             return
 
-        embed = nextcord.Embed(title=word, color=EMBED_COLOR)
+        embed = nextcord.Embed(title=word, color=config.EMBED_COLOR)
         description = f"*{phonetic}*\n\n" if phonetic else ""
 
         for meaning in meanings:
@@ -66,14 +67,14 @@ class Dictionary(commands.Cog):
     async def slash_define(self, interaction: nextcord.Interaction, *, word: str):
         await interaction.response.defer()
         api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
-        response = await request(api_url)
+        response = await oclib.request(api_url)
 
         if (
             not response
             or isinstance(response, dict)
             and response.get("title") == "No Definitions Found"
         ):
-            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = ":x: No definition found."
             await interaction.send(embed=error_embed, ephemeral=True)
             return
@@ -84,12 +85,12 @@ class Dictionary(commands.Cog):
         meanings = data.get("meanings", [])
 
         if not meanings:
-            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = ":x: No definition found."
             await interaction.send(embed=error_embed, ephemeral=True)
             return
 
-        embed = nextcord.Embed(title=word, color=EMBED_COLOR)
+        embed = nextcord.Embed(title=word, color=config.EMBED_COLOR)
         description = f"*{phonetic}*\n\n" if phonetic else ""
 
         for meaning in meanings:

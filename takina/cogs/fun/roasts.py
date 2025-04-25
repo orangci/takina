@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from nextcord.ext import commands
-from ..libs.oclib import *
-from config import *
 import nextcord
+import config
+from nextcord.ext import commands
+
+from ..libs import oclib
 
 
 class Roasts(commands.Cog):
@@ -15,18 +16,20 @@ class Roasts(commands.Cog):
         help="Get roasted by the bot. \nUsage: `roast <user>`.",
     )
     async def roast(self, ctx: commands.Context, target: str = None):
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         try:
-            response = await request(
+            response = await oclib.request(
                 "https://evilinsult.com/generate_insult.php?lang=en&type=json"
             )
-            embed.description = await fetch_random_emoji() + response.get("insult")
+            embed.description = await oclib.fetch_random_emoji() + response.get(
+                "insult"
+            )
         except Exception:
             embed.description = ":x: Failed to fetch a roast. Try again later!"
 
         target = ctx.author if not target else target
         if not isinstance(target, nextcord.Member):
-            target = extract_user_id(target, ctx)
+            target = oclib.extract_user_id(target, ctx)
             if isinstance(target, nextcord.Embed):
                 await ctx.reply(embed=target, mention_author=False)
                 return
@@ -44,12 +47,14 @@ class Roasts(commands.Cog):
             description="The user you would like to roast", required=False
         ),
     ):
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         try:
-            response = await request(
+            response = await oclib.request(
                 "https://evilinsult.com/generate_insult.php?lang=en&type=json"
             )
-            embed.description = await fetch_random_emoji() + response.get("insult")
+            embed.description = await oclib.fetch_random_emoji() + response.get(
+                "insult"
+            )
         except Exception:
             embed.description = ":x: Failed to fetch a roast. Try again later!"
 

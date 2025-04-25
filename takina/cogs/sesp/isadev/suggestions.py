@@ -3,12 +3,13 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 
-from contextlib import suppress
-from typing import Literal, cast
-from nextcord.ext import commands, application_checks
+from typing import cast
+
 import nextcord
-from config import *
-from .libs.lib import *
+import config
+from nextcord.ext import application_checks, commands
+
+from .libs import lib
 
 
 class ApproveOrDeny(nextcord.ui.Modal):
@@ -36,37 +37,37 @@ class ApproveOrDeny(nextcord.ui.Modal):
 class Suggestion(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.suggestion_channel = SUGGESTION_CHANNEL_ID
+        self.suggestion_channel = lib.SUGGESTION_CHANNEL_ID
 
-    @nextcord.message_command(name="Approve the suggestion", guild_ids=[SERVER_ID])
-    @application_checks.has_role(MAINTAINER_ROLE_ID)
+    @nextcord.message_command(name="Approve the suggestion", guild_ids=[lib.SERVER_ID])
+    @application_checks.has_role(lib.MAINTAINER_ROLE_ID)
     async def approve_suggestion_msg(
         self, interaction: nextcord.Interaction, message: nextcord.Message
     ) -> None:
         if interaction.channel.id != self.suggestion_channel:
             embed = nextcord.Embed(
                 description="You must be in the suggestions channel to use this command.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
             return
         await interaction.response.send_modal(ApproveOrDeny(True, message))
 
-    @nextcord.message_command(name="Deny the suggestion", guild_ids=[SERVER_ID])
-    @application_checks.has_role(MAINTAINER_ROLE_ID)
+    @nextcord.message_command(name="Deny the suggestion", guild_ids=[lib.SERVER_ID])
+    @application_checks.has_role(lib.MAINTAINER_ROLE_ID)
     async def deny_suggestion_msg(
         self, interaction: nextcord.Interaction, message: nextcord.Message
     ) -> None:
         if interaction.channel.id != self.suggestion_channel:
             embed = nextcord.Embed(
                 description="You must be in the suggestions channel to use this command.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
             return
         await interaction.response.send_modal(ApproveOrDeny(False, message))
 
-    @nextcord.slash_command(name="suggestion", guild_ids=[SERVER_ID])
+    @nextcord.slash_command(name="suggestion", guild_ids=[lib.SERVER_ID])
     async def _suggestion(self, interaction: nextcord.Interaction):
         pass
 
@@ -84,13 +85,13 @@ class Suggestion(commands.Cog):
         if len(suggestion) > 500:
             embed = nextcord.Embed(
                 description=":x: Your suggestion may not contain more than 500 characters.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
             return
 
         embed = nextcord.Embed(
-            description=f"### **Suggestion**:\n\n{suggestion}", color=EMBED_COLOR
+            description=f"### **Suggestion**:\n\n{suggestion}", color=config.EMBED_COLOR
         )
         embed.set_author(
             name=interaction.user.name,
@@ -111,13 +112,13 @@ class Suggestion(commands.Cog):
         await log_channel.send(
             embed=nextcord.Embed(
                 description=f"{str(interaction.user.mention)} has suggested: {suggestion}.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
         )
 
         embed = nextcord.Embed(
             description=f"You can now see your suggestion in {channel.mention}.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -142,7 +143,7 @@ class Suggestion(commands.Cog):
 
         embed = nextcord.Embed(
             description=f"Denied suggestion [here](https://discord.com/channels/{interaction.guild.id}/{self.suggestion_channel}/{messageId}).",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -168,7 +169,7 @@ class Suggestion(commands.Cog):
 
         embed = nextcord.Embed(
             description=f"Approved suggestion [here](https://discord.com/channels/{interaction.guild.id}/{self.suggestion_channel}/{messageId}).",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
 

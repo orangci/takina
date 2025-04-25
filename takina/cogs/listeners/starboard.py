@@ -1,16 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import nextcord
-from nextcord.ext import commands, application_checks
+import config
 from motor.motor_asyncio import AsyncIOMotorClient
-from config import *
+from nextcord.ext import application_checks, commands
 from nextcord.ui import Button, View
 
 
 class Starboard(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: nextcord.RawReactionActionEvent):
@@ -174,7 +174,7 @@ class Starboard(commands.Cog):
         await self.db.starboard_settings.update_one(
             {"guild_id": interaction.guild_id}, {"$set": guild_data}, upsert=True
         )
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = f"✅ Starboard channel has been set to {channel.mention} and set the minimum reaction count to **{reaction_count}**."
         await interaction.followup.send(embed=embed, ephemeral=True)
 
@@ -185,13 +185,13 @@ class Starboard(commands.Cog):
     )
     @commands.has_permissions(manage_channels=True)
     async def starboard(self, ctx: commands.Context):
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = "Please specify a subcommand: `whitelist add`, `whitelist remove`, or `whitelist list`."
         await ctx.reply(embed=embed, mention_author=False)
 
     @starboard.group(name="whitelist", invoke_without_command=True)
     async def whitelist(self, ctx: commands.Context):
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = "Please specify `add`, `remove`, or `list`."
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -221,7 +221,7 @@ class Starboard(commands.Cog):
             {"$set": {"whitelisted_channels": whitelisted_channels}},
             upsert=True,
         )
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         if channels:
             embed.description = f"Added to the whitelist: {', '.join(added_channels)}."
         else:
@@ -239,7 +239,7 @@ class Starboard(commands.Cog):
         guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
 
         if not guild_data:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = "❌ No channels are whitelisted."
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -257,7 +257,7 @@ class Starboard(commands.Cog):
             {"$set": {"whitelisted_channels": whitelisted_channels}},
             upsert=True,
         )
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         if channels:
             embed.description = (
                 f"Removed from the whitelist: {', '.join(removed_channels)}."
@@ -275,7 +275,7 @@ class Starboard(commands.Cog):
         guild_data = await self.db.starboard_settings.find_one({"guild_id": guild_id})
 
         if not guild_data or not guild_data.get("whitelisted_channels"):
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = "❌ No channels are whitelisted."
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -287,7 +287,7 @@ class Starboard(commands.Cog):
             if ctx.guild.get_channel(ch_id)
         ]
 
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = f"Whitelisted channels: {', '.join(channels_list)}."
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -297,7 +297,7 @@ class Starboard(commands.Cog):
         embed = nextcord.Embed(
             title="Starred Message",
             description=message.content if message.content else "*No text content*\n",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
 
         embed.set_author(
@@ -330,7 +330,7 @@ class Starboard(commands.Cog):
                         embed.set_image(url=attachment.url)
                     else:
                         new_embed = nextcord.Embed(
-                            color=EMBED_COLOR, url=message.jump_url
+                            color=config.EMBED_COLOR, url=message.jump_url
                         )
                         new_embed.set_image(url=attachment.url)
                         embed_list.append(new_embed)

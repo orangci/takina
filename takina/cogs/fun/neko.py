@@ -1,19 +1,21 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from __future__ import annotations
-from ..libs.oclib import *
+
 import nextcord
+import config
 from nextcord.ext import commands
-from config import *
+
+from ..libs import oclib
 
 
 async def request_neko(format: str, type: str) -> nextcord.Embed:
     url = f"https://nekos.best/api/v2/{type}"
-    data = await request(url)
+    data = await oclib.request(url)
     result = data.get("results", [])[0]
     image_url = result.get("url")
 
-    embed = nextcord.Embed(color=EMBED_COLOR)
+    embed = nextcord.Embed(color=config.EMBED_COLOR)
     embed.set_image(url=image_url)
 
     if format == "gif":
@@ -71,10 +73,10 @@ class NekoInteractions(commands.Cog):
     async def shoot(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been shot by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been shot by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "shoot")
@@ -97,10 +99,10 @@ class NekoInteractions(commands.Cog):
     async def shrug(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} shrugs at {target.mention}. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} shrugs at {target.mention}. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "shrug")
@@ -114,10 +116,10 @@ class NekoInteractions(commands.Cog):
     async def stare(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} stares at {target.mention}. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} stares at {target.mention}. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "stare")
@@ -131,10 +133,10 @@ class NekoInteractions(commands.Cog):
     async def wave(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been waved at by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been waved at by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "wave")
@@ -148,10 +150,10 @@ class NekoInteractions(commands.Cog):
     async def poke(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been poked by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been poked by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "poke")
@@ -165,10 +167,10 @@ class NekoInteractions(commands.Cog):
     async def smile(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} smiles at {target.mention}. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} smiles at {target.mention}. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "smile")
@@ -182,10 +184,10 @@ class NekoInteractions(commands.Cog):
     async def wink(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} winks at {target.mention}. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} winks at {target.mention}. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "wink")
@@ -217,10 +219,10 @@ class NekoInteractions(commands.Cog):
     async def yeet(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been yeeted by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been yeeted by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "yeet")
@@ -243,10 +245,10 @@ class NekoInteractions(commands.Cog):
     async def yawn(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} yawns at {target.mention}. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} yawns at {target.mention}. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "yawn")
@@ -260,10 +262,10 @@ class NekoInteractions(commands.Cog):
     async def facepalm(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} facepalms at {target.mention}. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} facepalms at {target.mention}. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "facepalm")
@@ -277,10 +279,10 @@ class NekoInteractions(commands.Cog):
     async def cuddle(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been cuddled by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been cuddled by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "cuddle")
@@ -294,10 +296,10 @@ class NekoInteractions(commands.Cog):
     async def nom(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been consoomed by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been consoomed by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "nom")
@@ -311,10 +313,10 @@ class NekoInteractions(commands.Cog):
     async def feed(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been fed by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been fed by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "feed")
@@ -328,10 +330,10 @@ class NekoInteractions(commands.Cog):
     async def bored(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} is bored by {target.mention}. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} is bored by {target.mention}. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "bored")
@@ -345,10 +347,10 @@ class NekoInteractions(commands.Cog):
     async def kick(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been bonked by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been bonked by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "kick")
@@ -371,10 +373,10 @@ class NekoInteractions(commands.Cog):
     async def hug(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been hugged by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been hugged by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "hug")
@@ -397,10 +399,10 @@ class NekoInteractions(commands.Cog):
     async def pat(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} pats {target.mention}. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} pats {target.mention}. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "pat")
@@ -414,10 +416,10 @@ class NekoInteractions(commands.Cog):
     async def nod(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} nods at {target.mention}. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} nods at {target.mention}. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "nod")
@@ -440,10 +442,10 @@ class NekoInteractions(commands.Cog):
     async def kiss(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been kissed by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been kissed by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "kiss")
@@ -466,10 +468,10 @@ class NekoInteractions(commands.Cog):
     async def punch(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been punched by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been punched by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "punch")
@@ -483,10 +485,10 @@ class NekoInteractions(commands.Cog):
     async def handshake(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you're given a handshake by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you're given a handshake by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "handshake")
@@ -500,10 +502,10 @@ class NekoInteractions(commands.Cog):
     async def slap(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{target.mention}, you've been slapped by {ctx.author.mention}! {await fetch_random_emoji()}"
+            target = f"{target.mention}, you've been slapped by {ctx.author.mention}! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "slap")
@@ -526,10 +528,10 @@ class NekoInteractions(commands.Cog):
     async def pout(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} pouts at {target.mention}. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} pouts at {target.mention}. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "pout")
@@ -544,10 +546,10 @@ class NekoInteractions(commands.Cog):
     async def handhold(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} holds{target.mention}'s hands. How lewd! {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} holds{target.mention}'s hands. How lewd! {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "handhold")
@@ -562,10 +564,10 @@ class NekoInteractions(commands.Cog):
     async def thumbsup(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} gives {target.mention} a thumbsup. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} gives {target.mention} a thumbsup. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "thumbsup")
@@ -579,10 +581,10 @@ class NekoInteractions(commands.Cog):
     async def laugh(self, ctx: commands.Context, *, target=None):
         if target:
             if not isinstance(target, nextcord.Member):
-                target = extract_user_id(target, ctx)
+                target = oclib.extract_user_id(target, ctx)
                 if isinstance(target, nextcord.Embed):
                     await ctx.reply(embed=target, mention_author=False)
-            target = f"{ctx.author.mention} laughs at {target.mention}. {await fetch_random_emoji()}"
+            target = f"{ctx.author.mention} laughs at {target.mention}. {await oclib.fetch_random_emoji()}"
         else:
             target = ""
         embed = await request_neko("gif", "laugh")

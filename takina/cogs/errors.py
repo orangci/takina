@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from nextcord.ext import commands, application_checks
-import nextcord
-from __main__ import Bot
-from config import *
 import logging
+
+import nextcord
+import config
+from nextcord.ext import application_checks, commands
+
+from __main__ import Bot
 
 
 class Errors(commands.Cog):
@@ -28,11 +30,11 @@ class Errors(commands.Cog):
         description = "Please try again later. If you believe this is a bug, contact the maintainer or even better, open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md)."
 
         if isinstance(error, commands.NotOwner):
-            description = f"You do not have sufficient permissions to run this command; command is restricted to {BOT_NAME}'s maintainers."
+            description = f"You do not have sufficient permissions to run this command; command is restricted to {config.BOT_NAME}'s maintainers."
             error_type = "Maintainer Only Command"
 
         elif isinstance(error, commands.errors.DisabledCommand):
-            description = f"This command has been disabled by {BOT_NAME}'s maintainers. If you believe this is an error, please contact a maintainer."
+            description = f"This command has been disabled by {config.BOT_NAME}'s maintainers. If you believe this is an error, please contact a maintainer."
             error_type = "Disabled Command"
 
         elif isinstance(error, nextcord.PrivilegedIntentsRequired):
@@ -89,7 +91,7 @@ class Errors(commands.Cog):
             description = "An unexpected error occurred. Please report this issue to a maintainer if it persists, or even better, open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md)."
             error_type = "Unknown Error"
 
-        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed = nextcord.Embed(color=config.ERROR_COLOR)
         embed.description = f":x: {error_type}: {description}"
         await ctx.send(embed=embed)
 
@@ -110,7 +112,7 @@ class Errors(commands.Cog):
             error_type = "Missing Role"
 
         elif isinstance(error, application_checks.errors.ApplicationNotOwner):
-            description = f"You do not have sufficient permissions to run this command; command is restricted to {BOT_NAME}'s maintainers."
+            description = f"You do not have sufficient permissions to run this command; command is restricted to {config.BOT_NAME}'s maintainers."
             error_type = "Maintainer Only Command"
 
         elif isinstance(error, application_checks.errors.ApplicationMissingPermissions):
@@ -122,14 +124,14 @@ class Errors(commands.Cog):
         elif isinstance(
             error, application_checks.errors.ApplicationBotMissingPermissions
         ):
-            description = f"{BOT_NAME} does not have sufficent permissions to perform this action. Please report this error to {BOT_NAME}'s maintainers."
+            description = f"{config.BOT_NAME} does not have sufficent permissions to perform this action. Please report this error to {config.BOT_NAME}'s maintainers."
             error_type = "Bot Missing Permissions"
 
         else:
-            description = f"An unexpected error occurred while processing your command. Please contact {BOT_NAME}'s maintainers if the issue persists, or even better, open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md)."
+            description = f"An unexpected error occurred while processing your command. Please contact {config.BOT_NAME}'s maintainers if the issue persists, or even better, open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md)."
             error_type = "Unknown Error"
 
-        embed = nextcord.Embed(color=ERROR_COLOR)
+        embed = nextcord.Embed(color=config.ERROR_COLOR)
         embed.description = f":x: {error_type}: {description}"
         await interaction.send(embed=embed, ephemeral=True)
 

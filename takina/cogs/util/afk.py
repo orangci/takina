@@ -1,17 +1,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import nextcord
-from nextcord.ext import commands, application_checks
-from nextcord import SlashOption
+import config
 from motor.motor_asyncio import AsyncIOMotorClient
-from config import *
-from ..libs.oclib import fetch_random_emoji
+from nextcord import SlashOption
+from nextcord.ext import application_checks, commands
+from ..libs import oclib
 
 
 class AFK(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
 
     async def set_afk_status(self, user_id: int, reason: str):
         """Sets a user's AFK status in the database."""
@@ -32,7 +32,7 @@ class AFK(commands.Cog):
 
     @commands.command(
         name="afk",
-        help=f"Toggle AFK status. When AFK, {BOT_NAME.lower().capitalize()} will notify others if they mention you. Usage: `afk <reason>`.",
+        help=f"Toggle AFK status. When AFK, {config.BOT_NAME.lower().capitalize()} will notify others if they mention you. Usage: `afk <reason>`.",
     )
     async def afk(self, ctx: commands.Context, *, reason: str = "AFK"):
         user_id = ctx.author.id
@@ -46,14 +46,14 @@ class AFK(commands.Cog):
             # Set AFK status
             await self.set_afk_status(user_id, reason)
             embed = nextcord.Embed(
-                description=f"{await fetch_random_emoji()}{ctx.author.mention} is now AFK: {reason}",
-                color=EMBED_COLOR,
+                description=f"{await oclib.fetch_random_emoji()}{ctx.author.mention} is now AFK: {reason}",
+                color=config.EMBED_COLOR,
             )
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
         name="afk",
-        description=f"Toggle AFK status. When AFK, {BOT_NAME.lower().capitalize()} will notify others if they mention you.",
+        description=f"Toggle AFK status. When AFK, {config.BOT_NAME.lower().capitalize()} will notify others if they mention you.",
     )
     @application_checks.has_permissions(send_messages=True)
     async def afk_slash(
@@ -69,15 +69,15 @@ class AFK(commands.Cog):
             # Remove AFK status
             await self.remove_afk_status(user_id)
             embed = nextcord.Embed(
-                description=f"{await fetch_random_emoji()}You are no longer AFK.",
-                color=EMBED_COLOR,
+                description=f"{await oclib.fetch_random_emoji()}You are no longer AFK.",
+                color=config.EMBED_COLOR,
             )
         else:
             # Set AFK status
             await self.set_afk_status(user_id, reason)
             embed = nextcord.Embed(
-                description=f"{await fetch_random_emoji()}{interaction.user.mention} is now AFK: {reason}",
-                color=EMBED_COLOR,
+                description=f"{await oclib.fetch_random_emoji()}{interaction.user.mention} is now AFK: {reason}",
+                color=config.EMBED_COLOR,
             )
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -91,8 +91,8 @@ class AFK(commands.Cog):
         if current_status:
             await self.remove_afk_status(message.author.id)
             embed = nextcord.Embed(
-                description=f"{await fetch_random_emoji()}You are no longer AFK.",
-                color=EMBED_COLOR,
+                description=f"{await oclib.fetch_random_emoji()}You are no longer AFK.",
+                color=config.EMBED_COLOR,
             )
             await message.channel.send(embed=embed, delete_after=5)
 
@@ -101,8 +101,8 @@ class AFK(commands.Cog):
             afk_message = await self.get_afk_status(user.id)
             if afk_message:
                 embed = nextcord.Embed(
-                    description=f"{await fetch_random_emoji()}{user.mention} is currently AFK: {afk_message}",
-                    color=EMBED_COLOR,
+                    description=f"{await oclib.fetch_random_emoji()}{user.mention} is currently AFK: {afk_message}",
+                    color=config.EMBED_COLOR,
                 )
                 await message.channel.send(embed=embed)
 

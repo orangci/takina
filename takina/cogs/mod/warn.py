@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import nextcord
-from nextcord.ext import commands, application_checks
-from ..libs.oclib import *
-from config import *
+import config
+from nextcord.ext import application_checks, commands
+
+from ..libs import oclib
 
 
 class Warnings(commands.Cog):
@@ -16,18 +17,17 @@ class Warnings(commands.Cog):
     )
     @commands.has_permissions(moderate_members=True)
     async def warn(self, ctx: commands.Context, member: str, *, reason: str):
-
-        member = extract_user_id(member, ctx)
+        member = oclib.extract_user_id(member, ctx)
         if isinstance(member, nextcord.Embed):
             await ctx.reply(embed=member, mention_author=False)
             return
 
-        can_proceed, message = perms_check(member, ctx=ctx)
+        can_proceed, message = oclib.perms_check(member, ctx=ctx)
         if not can_proceed:
             await ctx.reply(embed=message, mention_author=False)
             return
 
-        confirmation = ConfirmationView(
+        confirmation = oclib.ConfirmationView(
             ctx=ctx, member=member, action="warn", reason=reason
         )
         confirmed = await confirmation.prompt()
@@ -37,12 +37,12 @@ class Warnings(commands.Cog):
         # Send success embed
         embed = nextcord.Embed(
             description=f"✅ Successfully warned **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         try:
             dm_embed = nextcord.Embed(
                 description=f"You were warned in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             await member.send(embed=dm_embed)
         except nextcord.Forbidden:
@@ -75,12 +75,12 @@ class SlashWarnings(commands.Cog):
     ):
         await interaction.response.defer()
 
-        can_proceed, message = perms_check(member, ctx=interaction)
+        can_proceed, message = oclib.perms_check(member, ctx=interaction)
         if not can_proceed:
             await interaction.send(embed=message, ephemeral=True)
             return
 
-        confirmation = ConfirmationView(
+        confirmation = oclib.ConfirmationView(
             ctx=interaction, member=member, action="warn", reason=reason
         )
         confirmed = await confirmation.prompt()
@@ -90,12 +90,12 @@ class SlashWarnings(commands.Cog):
         # Send success embed
         embed = nextcord.Embed(
             description=f"✅ Successfully warned **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         try:
             dm_embed = nextcord.Embed(
                 description=f"You were warned in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             await member.send(embed=dm_embed)
         except nextcord.Forbidden:

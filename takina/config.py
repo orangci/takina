@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from dotenv import load_dotenv
 from os import getenv
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -12,7 +13,7 @@ GITHUB_AUTH_TOKEN = getenv("GITHUB_AUTH_TOKEN")
 REDDIT_CLIENT_ID = getenv("REDDIT_CLIENT_ID")
 REDDIT_CLIENT_SECRET = getenv("REDDIT_CLIENT_SECRET")
 ERROR_COLOR = 0xFF0037
-BOT_VERSION = "1.5.1"
+BOT_VERSION = "1.5.2"
 
 EMBED_COLOR_STR = getenv("EMBED_COLOR", "#2B2D31")
 if EMBED_COLOR_STR.startswith("#"):

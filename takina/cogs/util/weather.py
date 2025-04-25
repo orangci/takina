@@ -1,21 +1,20 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord, geopy
+import geopy
+import nextcord
+import config
 from nextcord.ext import commands
-from config import *
-from ..libs.oclib import *
-from geopy.extra.rate_limiter import RateLimiter
 from open_meteo import OpenMeteo
 
 
 async def find_weather(location: str):
-    embed = nextcord.Embed(color=EMBED_COLOR)
+    embed = nextcord.Embed(color=config.EMBED_COLOR)
     if len(location) > 300:
-        embed.color = ERROR_COLOR
+        embed.color = config.ERROR_COLOR
         embed.description = ":x: The location specified was not recognized."
 
     async with geopy.geocoders.Photon(
-        user_agent=BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter
+        user_agent=config.BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter
     ) as geolocator:
         geocode = geopy.extra.rate_limiter.AsyncRateLimiter(
             geolocator.geocode, min_delay_seconds=1
@@ -34,14 +33,14 @@ async def find_weather(location: str):
         embed.description = ""
         weather = forecast.current_weather
 
-        embed.description += f"\n**Current Temperature**: {weather.temperature}°C / {weather.temperature * (9/5) + 32}°F"
+        embed.description += f"\n**Current Temperature**: {weather.temperature}°C / {weather.temperature * (9 / 5) + 32}°F"
         embed.description += f"\n**Elevation**: {int(forecast.elevation)} metres"
         embed.description += f"\n**Wind Speed**: {weather.wind_speed} km/h"
         embed.description += f"\n**Wind Direction**: {weather.wind_direction}°"
         embed.description += f"\n**Weather Code**: {weather.weather_code}"
         return embed
     else:
-        embed.color = ERROR_COLOR
+        embed.color = config.ERROR_COLOR
         embed.description = ":x: The location specified was not recognized."
         return embed
 

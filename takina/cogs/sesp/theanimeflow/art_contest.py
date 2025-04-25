@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from nextcord.ext import commands
 import nextcord
-from .libs.lib import *
-from config import *
+import config
 from motor.motor_asyncio import AsyncIOMotorClient
+from nextcord.ext import commands
+
+from .libs import lib
 
 PARTICIPANT_ROLE_ID = 1344735937627689023
 ART_CONTEST_CHANNEL_ID = 1344733527006118010
@@ -14,7 +15,7 @@ ART_CONTEST_LOG_THREAD_ID = 1344915843640725524
 class ArtContest(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(MONGO_URI).get_database(DB_NAME)
+        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
 
     async def get_next_submission_number(self) -> int:
         """Retrieve the next submission number from the database."""
@@ -29,7 +30,7 @@ class ArtContest(commands.Cog):
     @nextcord.slash_command(
         name="art_contest",
         description="Submit your entry to the art contest!",
-        guild_ids=[SERVER_ID],
+        guild_ids=[lib.SERVER_ID],
     )
     async def art_contest(
         self,
@@ -50,7 +51,7 @@ class ArtContest(commands.Cog):
 
         # Check if the user already has the participant role
         if participant_role in interaction.user.roles:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = (
                 ":x: You have already submitted an entry to the art contest!"
             )
@@ -59,7 +60,7 @@ class ArtContest(commands.Cog):
 
         # Check if the submission is an image
         if not submission.content_type.startswith("image/"):
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = ":x: Please upload a valid image file."
             await interaction.send(embed=embed, ephemeral=True)
             return
@@ -67,7 +68,7 @@ class ArtContest(commands.Cog):
         # Generate a unique submission number
         submission_number = await self.get_next_submission_number()
 
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = f"✅ Your submission has been received! Good luck in the contest! (Submission #{submission_number})."
 
         await interaction.send(embed=embed, ephemeral=True)
@@ -82,7 +83,7 @@ class ArtContest(commands.Cog):
         if art_contest_channel:
             embed = nextcord.Embed(
                 title=f"Submission #{submission_number}: {ship_title}",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             embed.set_image(url=submission.url)
             await art_contest_channel.send(embed=embed)

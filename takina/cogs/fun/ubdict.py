@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from ..libs.oclib import *
+import urllib
+
 import aiohttp
 import nextcord
+import config
+import re
 from nextcord.ext import commands
-from config import *
-import urllib
 
 
 class UrbanDictionary(commands.Cog):
@@ -23,7 +24,7 @@ class UrbanDictionary(commands.Cog):
             ) as response:
                 data = await response.json()
         if not data["list"]:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = "❌ No results found."
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -50,7 +51,7 @@ class UrbanDictionary(commands.Cog):
             title=data["list"][0]["word"],
             description=definition,
             url=data["list"][0]["permalink"],
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         embed.add_field(name="Example", value=example, inline=False)
         embed.set_footer(
@@ -78,7 +79,7 @@ class UrbanDictionary(commands.Cog):
             ) as response:
                 data = await response.json()
         if not data["list"]:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = "❌ No results found."
             await interaction.send(embed=embed, ephemeral=True)
             return
@@ -105,7 +106,7 @@ class UrbanDictionary(commands.Cog):
             title=data["list"][0]["word"],
             description=definition,
             url=data["list"][0]["permalink"],
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         embed.add_field(name="Example", value=example, inline=False)
         embed.set_footer(

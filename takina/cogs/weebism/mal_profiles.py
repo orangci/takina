@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from ..libs.oclib import *
-import nextcord
-from nextcord.ext import commands
 from datetime import datetime
+
 import nextcord
-from config import *
+import config
+from nextcord.ext import commands
+
+from ..libs import oclib
 
 
 def format_date(date_str):
@@ -23,13 +24,15 @@ class MAL_Profiles(commands.Cog):
         self.bot = bot
 
     async def build_embed(self, username):
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         try:
-            profile_data = await request(f"https://api.jikan.moe/v4/users/{username}")
+            profile_data = await oclib.request(
+                f"https://api.jikan.moe/v4/users/{username}"
+            )
 
             if not profile_data or not profile_data.get("data"):
                 embed.description = ":x: User not found."
-                embed.color = ERROR_COLOR
+                embed.color = config.ERROR_COLOR
                 return embed
 
             user = profile_data["data"]
@@ -45,22 +48,22 @@ class MAL_Profiles(commands.Cog):
             manga_list_url = f"https://myanimelist.net/mangalist/{username}"
 
             # stats
-            profile_stats = await request(
+            profile_stats = await oclib.request(
                 f"https://api.jikan.moe/v4/users/{username}/statistics"
             )
 
             anime_stats = profile_stats["data"].get("anime")
-            days_watched = f"**{str(anime_stats.get("days_watched"))}**"
-            anime_mean = f"**{str(anime_stats.get("mean_score"))}**"
+            days_watched = f"**{str(anime_stats.get('days_watched'))}**"
+            anime_mean = f"**{str(anime_stats.get('mean_score'))}**"
 
             manga_stats = profile_stats["data"].get("manga")
-            days_read = f"**{str(manga_stats.get("days_read"))}**"
-            manga_mean = f"**{str(manga_stats.get("mean_score"))}**"
+            days_read = f"**{str(manga_stats.get('days_read'))}**"
+            manga_mean = f"**{str(manga_stats.get('mean_score'))}**"
 
             embed = nextcord.Embed(
                 title=f"{username}'s Profile",
                 url=profile_url,
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
 
             embed.description = (
@@ -80,7 +83,7 @@ class MAL_Profiles(commands.Cog):
 
         except Exception as e:
             embed.description = str(e)
-            embed.color = ERROR_COLOR
+            embed.color = config.ERROR_COLOR
             return embed
 
     @commands.command(

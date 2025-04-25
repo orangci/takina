@@ -1,18 +1,20 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord
-from nextcord.ext import commands
-from config import *
-from ..libs.oclib import *
-from wynn_api import (
-    getPlayer as get_player,
-    getPlayerCharacter as get_character,
-    getPlayerCharacterList as get_character_list,
-    getGuild as get_guild,
-    getItemMetadata as get_item,
-)
 from datetime import datetime
 from urllib.parse import quote
+
+import nextcord
+import config
+from nextcord.ext import commands
+from wynn_api import (
+    getGuild as get_guild,
+)
+from wynn_api import (
+    getPlayer as get_player,
+)
+from wynn_api import (
+    getPlayerCharacterList as get_character_list,
+)
 
 
 def parse_iso8601(date_str):
@@ -34,12 +36,12 @@ class Wynncraft(commands.Cog):
         self.bot = bot
 
     async def player_information_embed_builder(self, username):
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = ""
         player = get_player(username)
 
         if player.get("Error"):
-            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = ":x: No player found with that username."
             return error_embed
 
@@ -53,12 +55,9 @@ class Wynncraft(commands.Cog):
             result.append(f"Lvl {char['level']} {char_type}")
         characters = ", ".join(result)
 
-        username = player.get("username")
         uuid = player.get("uuid")
         rank = player.get("rank")
-        server = player.get("server")
         online = player.get("online")
-        playtime = player.get("playtime")
         join_date = player.get("firstJoin")
         last_join = player.get("lastJoin")
         guild = player.get("guild")
@@ -75,11 +74,11 @@ class Wynncraft(commands.Cog):
         chests = gd.get("chestsFound")
 
         embed.url = f"https://wynncraft.com/stats/player/{uuid}"
-        embed.title = username
+        embed.title = player.get("username")
         embed.set_thumbnail(f"https://visage.surgeplay.com/bust/256/{uuid}.webp")
 
         if online:
-            embed.description += f"-# Currently online on {server}."
+            embed.description += f"-# Currently online on {player.get('server')}."
         else:
             last_join = f"<t:{parse_iso8601(last_join)}:R>"
             embed.description += f"-# Last seen {last_join}"
@@ -96,7 +95,7 @@ class Wynncraft(commands.Cog):
         if rank != "Player":
             embed.description += f"\n> **Rank**: {rank}"
 
-        embed.description += f"\n> **Playtime**: {playtime} hours"
+        embed.description += f"\n> **Playtime**: {player.get('playtime')} hours"
 
         join_date = f"<t:{parse_iso8601(join_date)}> (<t:{parse_iso8601(join_date)}:R>)"
         embed.description += f"\n> **Joined**: {join_date}"
@@ -118,6 +117,9 @@ class Wynncraft(commands.Cog):
         if pvp_deaths and pvp_kills:
             embed.description += f"\n> **PVP**: {pvp_kills} kills / {pvp_deaths} deaths"
 
+        if veteran:
+            embed.set_footer(text="This user is a veteran.")
+
         return embed
 
     @commands.group(
@@ -129,7 +131,7 @@ class Wynncraft(commands.Cog):
     async def wynn(self, ctx: commands.Context):
         embed = nextcord.Embed(
             description=":x: Please specify a subcommand: `player` or `guild`",
-            color=ERROR_COLOR,
+            color=config.ERROR_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -160,7 +162,7 @@ class Wynncraft(commands.Cog):
         await interaction.send(embed=embed)
 
     async def guild_information_embed_builder(self, guild_identifier):
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = ""
         encoded_identifier = quote(guild_identifier)
         guild = get_guild(encoded_identifier)
@@ -168,7 +170,7 @@ class Wynncraft(commands.Cog):
         if guild.get("Error"):
             guild = get_guild(prefix=guild_identifier.upper())
             if guild.get("Error"):
-                error_embed = nextcord.Embed(color=ERROR_COLOR)
+                error_embed = nextcord.Embed(color=config.ERROR_COLOR)
                 error_embed.description = ":x: No guild found with that identifier."
                 return error_embed
 

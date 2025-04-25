@@ -1,13 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from __future__ import annotations
-from ..libs.oclib import *
+
+import random
+import urllib
+
 import dotenv
 import nextcord
+import config
 from nextcord.ext import commands
-from config import *
-import urllib
-import random
+
+from ..libs import oclib
 
 dotenv.load_dotenv()
 
@@ -21,12 +24,12 @@ class Fun(commands.Cog):
         help="Fetch a random fact. \nThis command utilizes the [uselessfacts](https://uselessfacts.jsph.pl) API.",
     )
     async def fact(self, ctx: commands.Context):
-        data = await request("https://uselessfacts.jsph.pl/api/v2/facts/random")
+        data = await oclib.request("https://uselessfacts.jsph.pl/api/v2/facts/random")
         fact = data.get("text")
-        emoji = await fetch_random_emoji()
+        emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
             description=f"{fact} {emoji}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -39,19 +42,14 @@ class Fun(commands.Cog):
         joke_type = random.choice(["dadjoke", "regular"])
 
         if joke_type == "dadjoke":
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    "https://icanhazdadjoke.com/",
-                    headers={"Accept": "application/json"},
-                ) as response:
-                    data = await response.json()
-
+            headers = {"Accept": "application/json"}
+            data = await oclib.request("https://icanhazdadjoke.com/", headers=headers)
             joke = data.get("joke")
 
         else:
-            data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+            data = await oclib.request("https://v2.jokeapi.dev/joke/Any?safe-mode")
             while data.get("category") == "Christmas":
-                data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+                data = await oclib.request("https://v2.jokeapi.dev/joke/Any?safe-mode")
 
             joke = data.get("joke")
             if not joke:
@@ -59,17 +57,17 @@ class Fun(commands.Cog):
                 delivery = data.get("delivery")
                 joke = f"{setup}\n{delivery}"
 
-        emoji = await fetch_random_emoji()
+        emoji = await oclib.fetch_random_emoji()
 
         embed = nextcord.Embed(
             description=f"{joke} {emoji}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="commit",
-        help=f"Order {BOT_NAME.lower().capitalize()} to do anything. Usage: `commit arson`.",
+        help=f"Order {config.BOT_NAME.lower().capitalize()} to do anything. Usage: `commit arson`.",
     )
     async def commit(self, ctx: commands.Context):
         possible_responses = [
@@ -84,10 +82,10 @@ class Fun(commands.Cog):
         ]
 
         embed = nextcord.Embed(
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         embed.description = (
-            f"{random.choice(possible_responses)} {await fetch_random_emoji()}"
+            f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -100,22 +98,24 @@ class Fun(commands.Cog):
         if member is None:
             member = ctx.author
         else:
-            member = extract_user_id(member, ctx)
+            member = oclib.extract_user_id(member, ctx)
             if isinstance(member, nextcord.Embed):
                 await ctx.reply(embed=member, mention_author=False)
                 return
 
         if not isinstance(member, nextcord.Member):
-            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = ":x: I do not have access to this user's avatar."
             await ctx.reply(embed=error_embed, mention_author=False)
             return
 
-        embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
+        embed = nextcord.Embed(
+            title=f"{member.name}'s Avatar", color=config.EMBED_COLOR
+        )
         if member.display_avatar:
             embed.set_image(url=member.display_avatar.url)
         else:
-            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = "❌ This user does not have an avatar set."
             await ctx.reply(embed=error_embed, mention_author=False)
             return
@@ -128,13 +128,13 @@ class Fun(commands.Cog):
     async def google(self, ctx: commands.Context, *, query: str):
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
-        emoji = await fetch_random_emoji()
+        emoji = await oclib.fetch_random_emoji()
         lmgtfy_url = f"https://letmegooglethat.com/?q={query}"
         embed = nextcord.Embed(
             title=f"{emoji}Let Me Google That For You!",
             description=f"Here is your search result for: **{query_before_conversion}**",
             url=lmgtfy_url,
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         embed.add_field(name="Click here:", value=lmgtfy_url, inline=False)
         await ctx.reply(embed=embed, mention_author=False)
@@ -145,9 +145,9 @@ class Fun(commands.Cog):
     )
     async def roll(self, ctx: commands.Context):
         embed = nextcord.Embed(
-            title=f"What number did you roll? {await fetch_random_emoji()}",
+            title=f"What number did you roll? {await oclib.fetch_random_emoji()}",
             description=f"You rolled {random.randint(1, 100)}!",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -179,7 +179,7 @@ class Fun(commands.Cog):
             "Very doubtful.",
         ]
         if not question:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = (
                 "You need to ask a question to the 8ball for this command to work!"
             )
@@ -189,7 +189,7 @@ class Fun(commands.Cog):
         embed = nextcord.Embed(
             title="🎱 The 8ball",
             description=f"**Question:** {question}\n**Answer:** {response}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -200,12 +200,12 @@ class SlashFun(commands.Cog):
 
     @nextcord.slash_command(name="fact", description="Fetch a random fact.")
     async def fact(self, interaction: nextcord.Interaction):
-        data = await request("https://uselessfacts.jsph.pl/api/v2/facts/random")
+        data = await oclib.request("https://uselessfacts.jsph.pl/api/v2/facts/random")
         fact = data.get("text")
-        emoji = await fetch_random_emoji()
+        emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
             description=f"{fact} {emoji}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed)
 
@@ -214,19 +214,14 @@ class SlashFun(commands.Cog):
         joke_type = random.choice(["dadjoke", "regular"])
 
         if joke_type == "dadjoke":
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    "https://icanhazdadjoke.com/",
-                    headers={"Accept": "application/json"},
-                ) as response:
-                    data = await response.json()
-
+            headers = {"Accept": "application/json"}
+            data = await oclib.request("https://icanhazdadjoke.com/", headers=headers)
             joke = data.get("joke")
 
         else:
-            data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+            data = await oclib.request("https://v2.jokeapi.dev/joke/Any?safe-mode")
             while data.get("category") == "Christmas":
-                data = await request("https://v2.jokeapi.dev/joke/Any?safe-mode")
+                data = await oclib.request("https://v2.jokeapi.dev/joke/Any?safe-mode")
 
             joke = data.get("joke")
             if not joke:
@@ -234,11 +229,11 @@ class SlashFun(commands.Cog):
                 delivery = data.get("delivery")
                 joke = f"{setup}\n{delivery}"
 
-        emoji = await fetch_random_emoji()
+        emoji = await oclib.fetch_random_emoji()
 
         embed = nextcord.Embed(
             description=f"{joke} {emoji}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed)
 
@@ -262,10 +257,10 @@ class SlashFun(commands.Cog):
         ]
 
         embed = nextcord.Embed(
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         embed.description = (
-            f"{random.choice(possible_responses)} {await fetch_random_emoji()}"
+            f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
         )
         await interaction.send(embed=embed)
 
@@ -283,11 +278,13 @@ class SlashFun(commands.Cog):
         if member is None:
             member = interaction.user
 
-        embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=EMBED_COLOR)
+        embed = nextcord.Embed(
+            title=f"{member.name}'s Avatar", color=config.EMBED_COLOR
+        )
         if member.display_avatar:
             embed.set_image(url=member.display_avatar.url)
         else:
-            error_embed = nextcord.Embed(color=ERROR_COLOR)
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = "❌ This user does not have an avatar set."
             await interaction.send(embed=error_embed, ephemeral=True)
             return
@@ -305,12 +302,12 @@ class SlashFun(commands.Cog):
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
         lmgtfy_url = f"https://letmegooglethat.com/?q={query}"
-        emoji = await fetch_random_emoji()
+        emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
             title=f"{emoji}Let Me Google That For You!",
             description=f"Here is your search result for: **{query_before_conversion}**",
             url=lmgtfy_url,
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         embed.add_field(name="Click here:", value=lmgtfy_url, inline=False)
         await interaction.send(embed=embed, ephemeral=True)
@@ -321,9 +318,9 @@ class SlashFun(commands.Cog):
     )
     async def roll(self, interaction: nextcord.Interaction):
         embed = nextcord.Embed(
-            title=f"What number did you roll? {await fetch_random_emoji()}",
+            title=f"What number did you roll? {await oclib.fetch_random_emoji()}",
             description=f"You rolled {random.randint(1, 100)}!",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -365,7 +362,7 @@ class SlashFun(commands.Cog):
         embed = nextcord.Embed(
             title="🎱 The 8ball",
             description=f"**Question:** {question}\n**Answer:** {response}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
 

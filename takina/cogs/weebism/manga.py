@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from ..libs.oclib import *
 import nextcord
-from nextcord.ext import commands
+import config
 from nextcord import Interaction, SlashOption
-import nextcord
-from config import *
+from nextcord.ext import commands
+
+from ..libs import oclib
 
 
 class MangaSearch(commands.Cog):
@@ -17,11 +17,11 @@ class MangaSearch(commands.Cog):
         url2 = f"https://api.jikan.moe/v4/manga/{manga_name}"
 
         try:
-            data = await request(url2)
+            data = await oclib.request(url2)
             if data and data.get("data"):
                 return data["data"]
 
-            data = await request(url1)
+            data = await oclib.request(url1)
             if data and data.get("data"):
                 return data["data"][0]
 
@@ -30,7 +30,7 @@ class MangaSearch(commands.Cog):
 
     async def build_manga_embed(self, manga_name):
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         try:
             manga = await self.fetch_manga(manga_name)
             if manga:
@@ -49,7 +49,7 @@ class MangaSearch(commands.Cog):
                     [author["name"] for author in manga.get("authors", [])]
                 )
 
-                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
+                embed = nextcord.Embed(title=title, url=url, color=config.EMBED_COLOR)
                 embed.description = ""
                 if english_title and english_title != title:
                     embed.description += f"-# {english_title}\n"
@@ -67,15 +67,15 @@ class MangaSearch(commands.Cog):
 
             else:
                 embed.description = ":x: Manga not found."
-                embed.color = ERROR_COLOR
+                embed.color = config.ERROR_COLOR
 
         except Exception as e:
-            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=config.ERROR_COLOR)
             return embed
 
     async def build_mangasyn_embed(self, manga_name):
         url = f"https://api.jikan.moe/v4/manga?q={manga_name}&limit=1"
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         try:
             manga = await self.fetch_manga(manga_name)
             if manga:
@@ -88,7 +88,7 @@ class MangaSearch(commands.Cog):
                 if len(synopsis) > 700:
                     synopsis = synopsis[:700] + "..."
 
-                embed = nextcord.Embed(title=title, url=url, color=EMBED_COLOR)
+                embed = nextcord.Embed(title=title, url=url, color=config.EMBED_COLOR)
                 embed.description = ""
                 if english_title and english_title != title:
                     embed.description += f"-# {english_title}\n"
@@ -99,11 +99,11 @@ class MangaSearch(commands.Cog):
 
             else:
                 embed.description = ":x: Manga not found."
-                embed.color = ERROR_COLOR
+                embed.color = config.ERROR_COLOR
                 return embed
 
         except Exception as e:
-            embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+            embed = nextcord.Embed(description=str(e), color=config.ERROR_COLOR)
             return embed
 
     @commands.command(

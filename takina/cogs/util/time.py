@@ -1,20 +1,23 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord, geopy, datetime, tzfpy, pytz
+import datetime
+
+import geopy
+import nextcord
+import pytz
+import tzfpy
+import config
 from nextcord.ext import commands
-from config import *
-from ..libs.oclib import *
-from geopy.extra.rate_limiter import RateLimiter
 
 
 async def find_time(location: str):
-    embed = nextcord.Embed(color=EMBED_COLOR)
+    embed = nextcord.Embed(color=config.EMBED_COLOR)
     if len(location) > 300:
-        embed.color = ERROR_COLOR
+        embed.color = config.ERROR_COLOR
         embed.description = ":x: The location name you specified is too long. Please enter a shorter name."
 
     async with geopy.geocoders.Photon(
-        user_agent=BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter
+        user_agent=config.BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter
     ) as geolocator:
         geocode = geopy.extra.rate_limiter.AsyncRateLimiter(
             geolocator.geocode, min_delay_seconds=1
@@ -30,7 +33,7 @@ async def find_time(location: str):
         embed.description = f"The current time in {timezone} is {formatted_time}."
         return embed
     else:
-        embed.color = ERROR_COLOR
+        embed.color = config.ERROR_COLOR
         embed.description = ":x: The location specified was not recognized."
         return embed
 

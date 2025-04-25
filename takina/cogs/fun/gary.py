@@ -1,18 +1,20 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from __future__ import annotations
-from ..libs.oclib import *
+
 import nextcord
+import config
 from nextcord.ext import commands
-from config import *
+
+from ..libs import oclib
 
 
 async def gary_api(cat: str) -> nextcord.Embed:
     url = f"https://api.garythe.cat/{cat}"
-    data = await request(url)
+    data = await oclib.request(url)
     image_url = data.get("url")
 
-    embed = nextcord.Embed(color=EMBED_COLOR)
+    embed = nextcord.Embed(color=config.EMBED_COLOR)
     embed.set_image(url=image_url)
 
     return embed

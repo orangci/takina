@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import nextcord
+import config
 from nextcord.ext import commands
-from ..libs.oclib import *
-from config import *
+
+from ..libs import oclib
 
 
 class Info(commands.Cog):
@@ -19,7 +20,7 @@ class Info(commands.Cog):
         if member is None:
             member = ctx.author
         else:
-            member = extract_user_id(member, ctx)
+            member = oclib.extract_user_id(member, ctx)
             if isinstance(member, nextcord.Embed):
                 await ctx.reply(embed=member, mention_author=False)
                 return
@@ -50,7 +51,7 @@ class Info(commands.Cog):
         permissions_str = ", ".join(dangerous_perms) if dangerous_perms else None
 
         embed = nextcord.Embed(
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
             description=(
                 f"> **Username:** {member.name}\n"
                 f"> **Display Name:** {member.display_name}\n"
@@ -89,7 +90,7 @@ class Info(commands.Cog):
         aliases=["ri"],
     )
     async def roleinfo(self, ctx: commands.Context, *, role: str):
-        emoji = await fetch_random_emoji()
+        emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
             title=f"{emoji}{role.name}",
             color=role.color,
@@ -117,10 +118,10 @@ class Info(commands.Cog):
     )
     async def serverinfo(self, ctx: commands.Context):
         guild = ctx.guild
-        emoji = await fetch_random_emoji()
+        emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
             title=f"{emoji}{guild.name}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
             description=(
                 f"> **Server ID:** {guild.id}\n"
                 f"> **Server Name:** {guild.name}\n"
@@ -189,7 +190,7 @@ class SlashInfo(commands.Cog):
         permissions_str = ", ".join(dangerous_perms) if dangerous_perms else None
 
         embed = nextcord.Embed(
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
             description=(
                 f"> **Username:** {member.name}\n"
                 f"> **Display Name:** {member.display_name}\n"
@@ -233,7 +234,7 @@ class SlashInfo(commands.Cog):
             description="The role to fetch information on", required=True
         ),
     ):
-        emoji = await fetch_random_emoji()
+        emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
             title=f"{emoji}{role.name}",
             color=role.color,
@@ -259,10 +260,10 @@ class SlashInfo(commands.Cog):
     )
     async def serverinfo(self, interaction: nextcord.Interaction):
         guild = interaction.guild
-        emoji = await fetch_random_emoji()
+        emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
             title=f"{emoji}{guild.name}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
             description=(
                 f"> **Server ID:** {guild.id}\n"
                 f"> **Server Name:** {guild.name}\n"

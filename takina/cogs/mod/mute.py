@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord
-from nextcord.ext import application_checks, commands
 from datetime import timedelta
-from config import *
-from ..libs.oclib import *
+
+import nextcord
+import config
+from nextcord.ext import application_checks, commands
+
+from ..libs import oclib
 
 
 class Mute(commands.Cog):
@@ -20,22 +22,22 @@ class Mute(commands.Cog):
     async def mute(
         self, ctx, member: str, duration: str, *, reason: str = "No reason provided"
     ):
-        timeout_duration = duration_calculator(duration, timeout=True)
+        timeout_duration = oclib.duration_calculator(duration, timeout=True)
         if isinstance(timeout_duration, nextcord.Embed):
             await ctx.reply(embed=timeout_duration, mention_author=False)
             return
 
-        member = extract_user_id(member, ctx)
+        member = oclib.extract_user_id(member, ctx)
         if isinstance(member, nextcord.Embed):
             await ctx.reply(embed=member, mention_author=False)
             return
 
-        can_proceed, message = perms_check(member, ctx=ctx)
+        can_proceed, message = oclib.perms_check(member, ctx=ctx)
         if not can_proceed:
             await ctx.reply(embed=message, mention_author=False)
             return
 
-        confirmation = ConfirmationView(
+        confirmation = oclib.ConfirmationView(
             ctx=ctx, member=member, action="mute", reason=reason, duration=duration
         )
         confirmed = await confirmation.prompt()
@@ -51,12 +53,12 @@ class Mute(commands.Cog):
         # Send success embed
         embed = nextcord.Embed(
             description=f"✅ Successfully muted **{member.mention}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         try:
             dm_embed = nextcord.Embed(
                 description=f"You were muted in **{ctx.guild}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
             await member.send(embed=dm_embed)
         except nextcord.Forbidden:
@@ -80,12 +82,12 @@ class Unmute(commands.Cog):
     async def unmute(
         self, ctx: commands.Context, member: str, *, reason: str = "No reason provided"
     ):
-        member = extract_user_id(member, ctx)
+        member = oclib.extract_user_id(member, ctx)
         if isinstance(member, nextcord.Embed):
             await ctx.reply(embed=member, mention_author=False)
             return
 
-        can_proceed, message = perms_check(member, ctx=ctx)
+        can_proceed, message = oclib.perms_check(member, ctx=ctx)
         if not can_proceed:
             await ctx.reply(embed=message, mention_author=False)
             return
@@ -93,15 +95,15 @@ class Unmute(commands.Cog):
         await member.timeout(None, reason=f"Unmuted by {ctx.author} for: {reason}")
         embed = nextcord.Embed(
             description=f"✅ Successfully unmuted **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
             description=f"You were unmuted in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         try:
             await member.send(embed=dm_embed)
-        except Exception as e:
+        except Exception:
             embed.set_footer(text="I was unable to DM this user.")
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -130,13 +132,13 @@ class MuteSlash(commands.Cog):
         reason: str = "No reason provided",
     ):
         await interaction.response.defer()
-        timeout_duration = duration_calculator(duration, timeout=True)
-        can_proceed, message = perms_check(member, ctx=interaction)
+        timeout_duration = oclib.duration_calculator(duration, timeout=True)
+        can_proceed, message = oclib.perms_check(member, ctx=interaction)
         if not can_proceed:
             await interaction.send(embed=message, ephemeral=True)
             return
 
-        confirmation = ConfirmationView(
+        confirmation = oclib.ConfirmationView(
             ctx=interaction,
             member=member,
             action="mute",
@@ -153,15 +155,15 @@ class MuteSlash(commands.Cog):
         )
         embed = nextcord.Embed(
             description=f"✅ Successfully muted **{member.mention}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
             description=f"You were muted in **{interaction.guild}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         try:
             await member.send(embed=dm_embed)
-        except Exception as e:
+        except Exception:
             embed.set_footer(text="I was unable to DM this user.")
         await interaction.send(embed=embed)
 
@@ -187,7 +189,7 @@ class UnmuteSlash(commands.Cog):
         reason: str = "No reason provided",
     ):
         await interaction.response.defer()
-        can_proceed, message = perms_check(member, ctx=interaction)
+        can_proceed, message = oclib.perms_check(member, ctx=interaction)
         if not can_proceed:
             await interaction.send(embed=message, ephemeral=True)
             return
@@ -197,15 +199,15 @@ class UnmuteSlash(commands.Cog):
         )
         embed = nextcord.Embed(
             description=f"✅ Successfully unmuted **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
             description=f"You were unmuted in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         try:
             await member.send(embed=dm_embed)
-        except Exception as e:
+        except Exception:
             embed.set_footer(text="I was unable to DM this user.")
         await interaction.send(embed=embed)
 

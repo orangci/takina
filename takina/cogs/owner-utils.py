@@ -1,14 +1,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord
-from nextcord.ext import commands, menus
-import os
-from __main__ import cogs, cogs_blacklist
-from config import *
-import config as cfg
-import subprocess
 import importlib
-from .libs import oclib
+import os
+import subprocess
+
+import config as cfg
+import nextcord
+import config
+from nextcord.ext import commands
+
+import cogs.libs.oclib as oclib
 
 
 class OwnerUtils(commands.Cog):
@@ -34,7 +35,7 @@ class OwnerUtils(commands.Cog):
             description = "No guilds available to display."
 
         embed = nextcord.Embed(
-            title="Guilds", description=description, color=EMBED_COLOR
+            title="Guilds", description=description, color=config.EMBED_COLOR
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -48,12 +49,12 @@ class OwnerUtils(commands.Cog):
         else:
             command = self.bot.get_command(cmd)
             if command is None:
-                embed = nextcord.Embed(color=ERROR_COLOR)
+                embed = nextcord.Embed(color=config.ERROR_COLOR)
                 embed.description = "❌ Command not found."
                 await ctx.reply(embed=embed, mention_author=False)
                 return
             command.enabled = False
-            embed = nextcord.Embed(color=EMBED_COLOR)
+            embed = nextcord.Embed(color=config.EMBED_COLOR)
             embed.description = f"✅ Successfully disabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -67,12 +68,12 @@ class OwnerUtils(commands.Cog):
         else:
             command = self.bot.get_command(cmd)
             if command is None:
-                embed = nextcord.Embed(color=ERROR_COLOR)
+                embed = nextcord.Embed(color=config.ERROR_COLOR)
                 embed.description = "❌ Command not found."
                 await ctx.reply(embed=embed, mention_author=False)
                 return
             command.enabled = True
-            embed = nextcord.Embed(color=EMBED_COLOR)
+            embed = nextcord.Embed(color=config.EMBED_COLOR)
             embed.description = f"✅ Successfully enabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -89,12 +90,12 @@ class OwnerUtils(commands.Cog):
         is_owner = await self.bot.is_owner(ctx.author)
         owner_names_str = ", ".join(owner_names)
         if is_owner:
-            embed = nextcord.Embed(color=EMBED_COLOR)
-            embed.description = f"You have maintainer level permissions when interacting with {BOT_NAME}. Current users who hold maintainer level permissions: {owner_names_str}"
+            embed = nextcord.Embed(color=config.EMBED_COLOR)
+            embed.description = f"You have maintainer level permissions when interacting with {config.BOT_NAME}. Current users who hold maintainer level permissions: {owner_names_str}"
             await ctx.reply(embed=embed, mention_author=False)
         else:
-            embed = nextcord.Embed(color=EMBED_COLOR)
-            embed.description = f"You are not a maintainer of {BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
+            embed = nextcord.Embed(color=config.EMBED_COLOR)
+            embed.description = f"You are not a maintainer of {config.BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
             await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True, aliases=["rx"])
@@ -115,14 +116,17 @@ class OwnerUtils(commands.Cog):
 
             if failed_cogs:
                 error_message = (
-                    f"❌ Reloaded all except the following cogs:\n\n"
+                    "❌ Reloaded all except the following cogs:\n\n"
                     + "\n> ".join(failed_cogs)
                 )
-                embed = nextcord.Embed(color=ERROR_COLOR, description=error_message)
+                embed = nextcord.Embed(
+                    color=config.ERROR_COLOR, description=error_message
+                )
                 await ctx.reply(embed=embed, mention_author=False)
             else:
                 embed = nextcord.Embed(
-                    color=EMBED_COLOR, description="✅ Successfully reloaded all cogs."
+                    color=config.EMBED_COLOR,
+                    description="✅ Successfully reloaded all cogs.",
                 )
                 await ctx.reply(embed=embed, mention_author=False)
 
@@ -134,19 +138,19 @@ class OwnerUtils(commands.Cog):
                 try:
                     self.bot.reload_extension(full_cog_name)
                     embed = nextcord.Embed(
-                        color=EMBED_COLOR,
+                        color=config.EMBED_COLOR,
                         description=f"✅ Successfully reloaded `{full_cog_name}`.",
                     )
                     await ctx.reply(embed=embed, mention_author=False)
                 except Exception as e:
                     embed = nextcord.Embed(
-                        color=ERROR_COLOR,
+                        color=config.ERROR_COLOR,
                         description=f"❌ Failed to reload `{full_cog_name}`: {e}",
                     )
                     await ctx.reply(embed=embed, mention_author=False)
             else:
                 embed = nextcord.Embed(
-                    color=ERROR_COLOR,
+                    color=config.ERROR_COLOR,
                     description=f"❌ Cog `{full_cog_name}` is not loaded.",
                 )
                 await ctx.reply(embed=embed, mention_author=False)
@@ -155,7 +159,7 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def reload_slash_command(self, ctx: commands.Context) -> None:
         await ctx.bot.sync_application_commands()
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = "✅ Successfully synced bot application commands."
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -165,11 +169,11 @@ class OwnerUtils(commands.Cog):
         cog = args[0]
         try:
             self.bot.unload_extension("cogs." + cog)
-            embed = nextcord.Embed(color=EMBED_COLOR)
+            embed = nextcord.Embed(color=config.EMBED_COLOR)
             embed.description = f"✅ Successfully unloaded `cogs.{cog}`."
             await ctx.reply(embed=embed, mention_author=False)
         except commands.ExtensionNotLoaded:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = f"❌ `cogs.{cog}` was already unloaded."
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -180,10 +184,10 @@ class OwnerUtils(commands.Cog):
         try:
             self.bot.load_extension("cogs." + cog)
         except commands.ExtensionNotLoaded:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = f"❌ `cogs.{cog}` was already loaded."
             await ctx.reply(embed=embed, mention_author=False)
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = f"✅ Successfully loaded `cogs.{cog}`."
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -211,7 +215,7 @@ class OwnerUtils(commands.Cog):
 
         if "Already up to date." in current_dir_result:
             # No changes
-            embed.color = ERROR_COLOR
+            embed.color = config.ERROR_COLOR
             embed.description = ":x: I'm already up to date with upstream."
         elif "Updating" in current_dir_result:
             # Successfully pulled
@@ -231,7 +235,7 @@ class OwnerUtils(commands.Cog):
                     elif "delete mode" in line:
                         deleted.append(line.split("delete mode")[1].strip())
 
-            embed.color = EMBED_COLOR
+            embed.color = config.EMBED_COLOR
             embed.description = (
                 "✅ Successfully pulled changes from upstream git repository."
             )
@@ -240,7 +244,7 @@ class OwnerUtils(commands.Cog):
                 embed.set_footer(text=f"Commit ID: {commit_id}")
         else:
             # Error occurred
-            embed.color = ERROR_COLOR
+            embed.color = config.ERROR_COLOR
             embed.description = (
                 f":x: An error occurred:\n```\n{current_dir_result.strip()}\n```"
             )
@@ -280,14 +284,14 @@ class OwnerUtils(commands.Cog):
         ),
     ) -> None:
         if interaction.user.id not in self.bot.owner_ids:
-            embed = nextcord.Embed(color=ERROR_COLOR)
+            embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = ":x: You are not authorized to use this command."
             await interaction.send(embed=embed, ephemeral=True)
             return
 
         target_channel = channel or interaction.channel
         await target_channel.send(message)
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = f"✅ Successfully sent message in {target_channel.mention}."
         await interaction.send(embed=embed, ephemeral=True)
 

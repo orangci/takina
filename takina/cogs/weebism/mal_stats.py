@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from ..libs.oclib import *
 import nextcord
+import config
 from nextcord.ext import commands
-from config import *
+
+from ..libs import oclib
 
 
 async def fetch_stats(
@@ -11,9 +12,9 @@ async def fetch_stats(
 ):
     slash_command = isinstance(ctx, nextcord.Interaction)
     try:
-        profile_data = await request(f"https://api.jikan.moe/v4/users/{username}")
+        profile_data = await oclib.request(f"https://api.jikan.moe/v4/users/{username}")
         if not profile_data or not profile_data.get("data"):
-            embed = nextcord.Embed(title="User not found.", color=EMBED_COLOR)
+            embed = nextcord.Embed(title="User not found.", color=config.EMBED_COLOR)
             (
                 await ctx.reply(embed=embed, mention_author=False)
                 if not slash_command
@@ -24,7 +25,7 @@ async def fetch_stats(
         user = profile_data["data"]
         profile_url = user.get("url")
         profile_pic = user.get("images", {}).get("jpg", {}).get("image_url", "")
-        profile_stats = await request(
+        profile_stats = await oclib.request(
             f"https://api.jikan.moe/v4/users/{username}/statistics"
         )
         category_stats = profile_stats["data"].get(category)
@@ -32,7 +33,7 @@ async def fetch_stats(
         embed = nextcord.Embed(
             title=f"{category.lower()} statistics for {username}",
             url=profile_url,
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
 
         # Add all available statistics to the embed
@@ -46,7 +47,7 @@ async def fetch_stats(
             embed.set_thumbnail(url=profile_pic)
 
     except Exception as e:
-        embed = nextcord.Embed(description=str(e), color=ERROR_COLOR)
+        embed = nextcord.Embed(description=str(e), color=config.ERROR_COLOR)
         (
             await ctx.reply(embed=embed, mention_author=False)
             if not slash_command
@@ -70,7 +71,7 @@ class MAL_Stats(commands.Cog):
         if ctx.invoked_subcommand is None:
             embed = nextcord.Embed(
                 description=":x: Please specify either `anime` or `manga`.\nUsage: `malstats <anime/manga> <username>`.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
 

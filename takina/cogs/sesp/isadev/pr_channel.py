@@ -1,12 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import re
+from typing import Optional
+
+import aiohttp
 import nextcord
 from nextcord.ext import commands
-import aiohttp
-from typing import Optional
 from nextcord.ui import Button, View
-from .libs.lib import *
+import config
+from .libs import lib
 
 GITHUB_URL_PATTERN = r"https:\/\/github.com\/([A-Za-z0-9-]+)\/([A-Za-z0-9-]+)(\/pull|\/issues)?(#|\/)(?P<pr_id>\d+)"
 SHORT_PR_PATTERN = r"##(\d+)"
@@ -18,15 +20,15 @@ class PRChannelMessageCleaner(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
-        if message.guild.id != SERVER_ID:
+        if message.guild.id != lib.SERVER_ID:
             return
         if message.author.bot:
             return
 
-        if message.channel.id != PR_CHANNEL_ID:
+        if message.channel.id != lib.PR_CHANNEL_ID:
             return
 
-        if any(role.id == STAFF_ROLE_ID for role in message.author.roles):
+        if any(role.id == lib.STAFF_ROLE_ID for role in message.author.roles):
             return
 
         if re.search(GITHUB_URL_PATTERN, message.content) or re.search(
@@ -100,7 +102,7 @@ class GitHubTwo(commands.Cog):
             await message.channel.send(
                 embed=nextcord.Embed(
                     description=f":x: Could not fetch information for {OWNER}/{REPO}#{issue_id}.",
-                    color=ERROR_COLOR,
+                    color=config.ERROR_COLOR,
                 )
             )
             return
@@ -128,7 +130,7 @@ class GitHubTwo(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
-        if message.guild.id != SERVER_ID:
+        if message.guild.id != lib.SERVER_ID:
             return
         if message.author.bot:
             return

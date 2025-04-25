@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from nextcord.ext import commands
 import nextcord
-from config import *
-from ..libs.oclib import *
+import config
+from nextcord.ext import commands
 from ping3 import ping as dns_ping
+
+from ..libs import oclib
 
 
 def get_ordinal(n: int) -> str:
@@ -24,12 +25,12 @@ class Utils(commands.Cog):
         help="Ping the bot and check its latency. \nUsage: `ping`.", aliases=["pong"]
     )
     async def ping(self, ctx: commands.Context, ip: str = None):
-        emoji = await fetch_random_emoji()
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        emoji = await oclib.fetch_random_emoji()
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         if not ip:
             latency = round(self.bot.latency * 1000)
             embed.description = (
-                f"{emoji}Success! {BOT_NAME} is awake. Ping: {latency}ms"
+                f"{emoji}Success! {config.BOT_NAME} is awake. Ping: {latency}ms"
             )
         else:
             latency = dns_ping(ip, unit="ms")
@@ -38,13 +39,13 @@ class Utils(commands.Cog):
                     f"{emoji}Success! {ip} responded with a latency of {int(latency)}ms"
                 )
             elif latency is False:
-                embed.color = ERROR_COLOR
+                embed.color = config.ERROR_COLOR
                 embed.description = (
-                    f":x: The specified hostname is unknown and could not be resolved."
+                    ":x: The specified hostname is unknown and could not be resolved."
                 )
             elif latency is None:
-                embed.color = ERROR_COLOR
-                embed.description = f":x: Timed out."
+                embed.color = config.ERROR_COLOR
+                embed.description = ":x: Timed out."
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -53,8 +54,8 @@ class Utils(commands.Cog):
     )
     async def uptime(self, ctx: commands.Context):
         embed = nextcord.Embed(
-            description=f"{await fetch_random_emoji()}{BOT_NAME} has been up for {await uptime_fetcher()}.",
-            color=EMBED_COLOR,
+            description=f"{await oclib.fetch_random_emoji()}{config.BOT_NAME} has been up for {await oclib.uptime_fetcher()}.",
+            color=config.EMBED_COLOR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -68,7 +69,7 @@ class Utils(commands.Cog):
         if member is None:
             member = ctx.author
         else:
-            member = extract_user_id(member, ctx)
+            member = oclib.extract_user_id(member, ctx)
             if isinstance(member, nextcord.Embed):
                 await ctx.reply(embed=member, mention_author=False)
                 return
@@ -81,12 +82,12 @@ class Utils(commands.Cog):
         if not member == ctx.author:
             embed = nextcord.Embed(
                 description=f"**{member.mention}** was the {ordinal_position} to join **{guild.name}**.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
         else:
             embed = nextcord.Embed(
                 description=f"You were the {ordinal_position} to join **{guild.name}**.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
         embed.add_field(
             name="Joined",
@@ -113,7 +114,7 @@ class Utils(commands.Cog):
         embed = nextcord.Embed(
             title="👥 Members",
             description=f"There are currently **{total_members}** members and **{total_bots}** bots in this guild.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         embed.set_footer(text=f"Total (members and bots): {total_count}.")
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
@@ -123,12 +124,14 @@ class Utils(commands.Cog):
     @commands.command(
         name="version",
         aliases=["v"],
-        help=f"Fetch {BOT_NAME}'s current version.",
+        help=f"Fetch {config.BOT_NAME}'s current version.",
     )
-    async def member_count(self, ctx: commands.Context):
-        embed = nextcord.Embed(color=EMBED_COLOR)
-        BOT_VERSION_LINK = f"[**{BOT_VERSION}**](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{BOT_VERSION.replace(".", "")})"
-        embed.description = f"{BOT_NAME} is currently on version {BOT_VERSION_LINK}."
+    async def version(self, ctx: commands.Context):
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
+        BOT_VERSION_LINK = f"[**{config.BOT_VERSION}**](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{config.BOT_VERSION.replace('.', '')})"
+        embed.description = (
+            f"{config.BOT_NAME} is currently on version {BOT_VERSION_LINK}."
+        )
         embed.set_footer(text="For more information, run the info command.")
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -146,12 +149,12 @@ class UtilsSlash(commands.Cog):
         ),
     ):
         await interaction.response.defer()
-        emoji = await fetch_random_emoji()
-        embed = nextcord.Embed(color=EMBED_COLOR)
+        emoji = await oclib.fetch_random_emoji()
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
         if not ip:
             latency = round(self.bot.latency * 1000)
             embed.description = (
-                f"{emoji}Success! {BOT_NAME} is awake. Ping: {latency}ms"
+                f"{emoji}Success! {config.BOT_NAME} is awake. Ping: {latency}ms"
             )
         else:
             latency = dns_ping(ip, unit="ms")
@@ -160,13 +163,13 @@ class UtilsSlash(commands.Cog):
                     f"{emoji}Success! {ip} responded with a latency of {int(latency)}ms"
                 )
             elif latency is False:
-                embed.color = ERROR_COLOR
+                embed.color = config.ERROR_COLOR
                 embed.description = (
-                    f":x: The specified hostname is unknown and could not be resolved."
+                    ":x: The specified hostname is unknown and could not be resolved."
                 )
             elif latency is None:
-                embed.color = ERROR_COLOR
-                embed.description = f":x: Timed out."
+                embed.color = config.ERROR_COLOR
+                embed.description = ":x: Timed out."
 
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -175,8 +178,8 @@ class UtilsSlash(commands.Cog):
     )
     async def slash_uptime(self, interaction: nextcord.Interaction):
         embed = nextcord.Embed(
-            description=f"{await fetch_random_emoji()}{BOT_NAME} has been up for {await uptime_fetcher()}.",
-            color=EMBED_COLOR,
+            description=f"{await oclib.fetch_random_emoji()}{config.BOT_NAME} has been up for {await oclib.uptime_fetcher()}.",
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -204,12 +207,12 @@ class UtilsSlash(commands.Cog):
         if not member == interaction.user:
             embed = nextcord.Embed(
                 description=f"**{member.mention}** was the {ordinal_position} to join **{guild.name}**.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
         else:
             embed = nextcord.Embed(
                 description=f"You were the {ordinal_position} to join **{guild.name}**.",
-                color=EMBED_COLOR,
+                color=config.EMBED_COLOR,
             )
         embed.add_field(
             name="Joined",
@@ -235,7 +238,7 @@ class UtilsSlash(commands.Cog):
         embed = nextcord.Embed(
             title="👥 Members",
             description=f"There are currently **{total_members}** members and **{total_bots}** bots in this guild.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         embed.set_footer(text=f"Total (members and bots): {total_count}.")
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
@@ -244,12 +247,14 @@ class UtilsSlash(commands.Cog):
 
     @nextcord.slash_command(
         name="version",
-        description=f"Fetch {BOT_NAME}'s current version.",
+        description=f"Fetch {config.BOT_NAME}'s current version.",
     )
     async def version(self, interaction: nextcord.Interaction):
-        embed = nextcord.Embed(color=EMBED_COLOR)
-        BOT_VERSION_LINK = f"[**{BOT_VERSION}**](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{BOT_VERSION.replace(".", "")})"
-        embed.description = f"{BOT_NAME} is currently on version {BOT_VERSION_LINK}."
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
+        BOT_VERSION_LINK = f"[**{config.BOT_VERSION}**](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{config.BOT_VERSION.replace('.', '')})"
+        embed.description = (
+            f"{config.BOT_NAME} is currently on version {BOT_VERSION_LINK}."
+        )
         embed.set_footer(text="For more information, run the info command.")
         await interaction.send(embed=embed)
 

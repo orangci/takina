@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from datetime import timedelta
+
 import nextcord
-from nextcord.ext import commands, application_checks
-import re
-from datetime import datetime, timedelta
-from config import *
-from ..libs.oclib import *
+import config
+from nextcord.ext import application_checks, commands
+
+from ..libs import oclib
 
 
 class Purge(commands.Cog):
@@ -21,7 +22,7 @@ class Purge(commands.Cog):
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(
                 description=":x: Please specify a number between 1 and 200.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -34,7 +35,7 @@ class Purge(commands.Cog):
 
         embed = nextcord.Embed(
             description=f"✅ Successfully purged {len(deleted) - 1} messages.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await ctx.send(embed=embed, delete_after=2)
 
@@ -46,12 +47,12 @@ class Purge(commands.Cog):
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(
                 description=":x: Please specify a number between 1 and 200.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
             return
 
-        member = extract_user_id(member, ctx)
+        member = oclib.extract_user_id(member, ctx)
         if isinstance(member, nextcord.Embed):
             await ctx.reply(embed=member, mention_author=False)
             return
@@ -66,7 +67,7 @@ class Purge(commands.Cog):
 
         embed = nextcord.Embed(
             description=f"✅ Successfully purged {len(deleted)} messages from {member.mention}.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await ctx.send(embed=embed, delete_after=2)
 
@@ -78,7 +79,7 @@ class Purge(commands.Cog):
         if amount <= 0 or amount > 100:
             embed = nextcord.Embed(
                 description=":x: Please specify a number between 1 and 200.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await ctx.reply(embed=embed, mention_author=False)
             return
@@ -93,7 +94,7 @@ class Purge(commands.Cog):
 
         embed = nextcord.Embed(
             description=f"✅ Successfully purged {len(deleted)} messages sent by bots.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await ctx.send(embed=embed, delete_after=2)
 
@@ -114,7 +115,7 @@ class SlashPurge(commands.Cog):
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(
                 description=":x: Please specify a number between 1 and 200.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
             return
@@ -127,7 +128,7 @@ class SlashPurge(commands.Cog):
 
         embed = nextcord.Embed(
             description=f"✅ Successfully purged {len(deleted) - 1} messages.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -140,7 +141,7 @@ class SlashPurge(commands.Cog):
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(
                 description=":x: Please specify a number between 1 and 200.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
             return
@@ -155,7 +156,7 @@ class SlashPurge(commands.Cog):
 
         embed = nextcord.Embed(
             description=f"✅ Successfully purged {len(deleted)} messages from {user.mention}.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -166,7 +167,7 @@ class SlashPurge(commands.Cog):
         if amount <= 0 or amount > 100:
             embed = nextcord.Embed(
                 description=":x: Please specify a number between 1 and 200.",
-                color=ERROR_COLOR,
+                color=config.ERROR_COLOR,
             )
             await interaction.send(embed=embed, ephemeral=True)
             return
@@ -181,7 +182,7 @@ class SlashPurge(commands.Cog):
 
         embed = nextcord.Embed(
             description=f"✅ Successfully purged {len(deleted)} messages sent by bots.",
-            color=EMBED_COLOR,
+            color=config.EMBED_COLOR,
         )
         await interaction.send(embed=embed, ephemeral=True)
 
