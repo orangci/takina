@@ -54,3 +54,6 @@ As I started using ruff and uv here, I also formatted everything and addressed t
 
 #### 1.6.1
 Fixes various bugs introduced in 1.6.0, and also see #24.
+
+#### 1.6.2
+Time and weather commands were broken because of some importing issues.

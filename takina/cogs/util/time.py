@@ -7,7 +7,7 @@ import pytz
 import tzfpy
 import config
 from nextcord.ext import commands
-import geopy.extra
+from geopy.extra import rate_limiter
 
 
 async def find_time(location: str):
@@ -19,9 +19,7 @@ async def find_time(location: str):
     async with geopy.geocoders.Nominatim(
         user_agent=config.BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter
     ) as geolocator:
-        geocode = geopy.extra.rate_limiter.AsyncRateLimiter(
-            geolocator.geocode, min_delay_seconds=1
-        )
+        geocode = rate_limiter.AsyncRateLimiter(geolocator.geocode, min_delay_seconds=1)
         location_data = await geocode(location)
 
     if location_data:
