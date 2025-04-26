@@ -14,7 +14,7 @@ from ..libs import oclib
 GITHUB_BASE_URL = "https://api.github.com"
 
 REPO_PATTERN = re.compile(r"repo:([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)")
-PR_ISSUE_PATTERN = re.compile(r"([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)#(\d+)")
+PR_ISSUE_PATTERN = re.compile(r"^[a-zA-Z0-9-]+/[a-zA-Z0-9-]+#[0-9]+$")
 
 
 def format_timestamp(iso_timestamp: str) -> str:

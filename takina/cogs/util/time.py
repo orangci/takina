@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 import datetime
-
 import geopy
 import nextcord
 import pytz
 import tzfpy
 import config
 from nextcord.ext import commands
+import geopy.extra
 
 
 async def find_time(location: str):
@@ -16,7 +16,7 @@ async def find_time(location: str):
         embed.color = config.ERROR_COLOR
         embed.description = ":x: The location name you specified is too long. Please enter a shorter name."
 
-    async with geopy.geocoders.Photon(
+    async with geopy.geocoders.Nominatim(
         user_agent=config.BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter
     ) as geolocator:
         geocode = geopy.extra.rate_limiter.AsyncRateLimiter(

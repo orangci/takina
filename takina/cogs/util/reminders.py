@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from datetime import datetime, timedelta
-
+from datetime import timedelta
+import datetime
 import nextcord
 from bson.objectid import ObjectId
 import config
@@ -30,6 +30,7 @@ class RemindMe(commands.Cog):
         name="reminder",
         invoke_without_command=True,
         help="Manage your reminders. Use `reminder set`, `reminder list`, or `reminder delete`.",
+        aliases=["reminders"],
     )
     async def reminder(self, ctx: commands.Context):
         embed = nextcord.Embed(

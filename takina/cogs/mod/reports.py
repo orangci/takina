@@ -48,18 +48,16 @@ class Reports(commands.Cog):
     ):
         await interaction.response.defer()
         guild_id = interaction.guild.id
-        config = await self.get_server_config(guild_id)
+        guild_config = await self.get_server_config(guild_id)
 
-        if not config:
+        if not guild_config:
             embed = nextcord.Embed(color=config.ERROR_COLOR)
-            embed.description = (
-                ":x: Reports system is not set up. Please contact an admin."
-            )
+            embed.description = ":x: The reports system has not been configured for this server. In order to set it up, run `/admin_report`."
             await interaction.send(embed=embed, ephemeral=True)
             return
 
-        moderator_role_id = config.get("moderator_role_id")
-        reports_channel_id = config.get("reports_channel_id")
+        moderator_role_id = guild_config.get("moderator_role_id")
+        reports_channel_id = guild_config.get("reports_channel_id")
 
         reports_channel = self.bot.get_channel(reports_channel_id)
         if not reports_channel:
@@ -115,7 +113,9 @@ class Reports(commands.Cog):
         await self.set_server_config(guild_id, mod_role.id, reports_channel.id)
 
         embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = f"✅ Successfully set up the report system. Moderator role: {mod_role.mention}, reports channel: {reports_channel.mention}"
+        embed.description = "✅ Successfully set up the report system.\n"
+        embed.description += f"\n**Moderator role**: {mod_role.mention}"
+        embed.description += f"\n**Reports channel**: {reports_channel.mention}"
 
         await interaction.send(
             embed=embed,

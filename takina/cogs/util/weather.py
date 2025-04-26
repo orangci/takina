@@ -5,6 +5,7 @@ import nextcord
 import config
 from nextcord.ext import commands
 from open_meteo import OpenMeteo
+import geopy.extra
 
 
 async def find_weather(location: str):
@@ -13,7 +14,7 @@ async def find_weather(location: str):
         embed.color = config.ERROR_COLOR
         embed.description = ":x: The location specified was not recognized."
 
-    async with geopy.geocoders.Photon(
+    async with geopy.geocoders.Nominatim(
         user_agent=config.BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter
     ) as geolocator:
         geocode = geopy.extra.rate_limiter.AsyncRateLimiter(

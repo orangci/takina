@@ -49,5 +49,8 @@ Added the VERSION variable in the config and updated listeners.ping_response to 
 #### 1.5.1
 Made the maintainer only command reload_exts reload the config.
 
-#### 1.6.0
+### 1.6.0
 As I started using ruff and uv here, I also formatted everything and addressed the hundreds and hundreds of errors ruff so joyfully raised.
+
+#### 1.6.1
+Fixes various bugs introduced in 1.6.0, and also see #24.

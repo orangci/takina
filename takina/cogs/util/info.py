@@ -86,10 +86,10 @@ class Info(commands.Cog):
 
     @commands.command(
         name="roleinfo",
-        help="Fetch information about a role. \nUsage: `Usage: roleinfo <role>`.",
+        help="Fetch information about a role. \nUsage: `Usage: roleinfo <role>`. Note that this command is ***case-sensitive***.",
         aliases=["ri"],
     )
-    async def roleinfo(self, ctx: commands.Context, *, role: str):
+    async def roleinfo(self, ctx: commands.Context, *, role: nextcord.Role):
         emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
             title=f"{emoji}{role.name}",
