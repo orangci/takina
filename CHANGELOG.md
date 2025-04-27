@@ -60,3 +60,6 @@ Time and weather commands were broken because of some importing issues.
 
 #### 1.6.3
 Fix the staff subdomains command in sesp.isadev.subdomains being broken due to filtering out the wrong domains.
+
+#### 1.6.4
+Once again update sesp.isadev.subdomains staff subdomains filtering logic.
