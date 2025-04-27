@@ -57,3 +57,6 @@ Fixes various bugs introduced in 1.6.0, and also see #24.
 
 #### 1.6.2
 Time and weather commands were broken because of some importing issues.
+
+#### 1.6.3
+Fix the staff subdomains command in sesp.isadev.subdomains being broken due to filtering out the wrong domains.

@@ -111,9 +111,7 @@ async def fetch_staff_subdomains():
     non_reserved_domains = [
         entry["domain"][:-9]
         for entry in data
-        if entry.get("owner", {}).get("username") == "is-a-dev"
-        or entry.get("internal")
-        and not entry.get("reserved")
+        if entry.get("internal") is True and not entry.get("reserved")
     ]
 
     embed = nextcord.Embed(color=config.EMBED_COLOR)
