@@ -66,3 +66,6 @@ Once again update sesp.isadev.subdomains staff subdomains filtering logic.
 
 ### 1.7.0
 Added weebism.mal_updates — a command for fetching a MyAnimeList user's latest anime/manga list updates.
+
+#### 1.7.1
+Fixed checking for an incorrect status in weebism.mal_updates: the function should check for `on-hold`, not `on hold`.

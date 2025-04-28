@@ -76,7 +76,7 @@ class MAL_Updates(commands.Cog):
                 line = f"Watching **[{title}]({url})**{progress_text}."
             elif status == "plan to watch":
                 line = f"Planning to watch **[{title}]({url})**."
-            elif status == "on hold":
+            elif status == "on-hold":
                 line = f"Placed **[{title}]({url})** on hold{progress_text}."
             elif status == "dropped":
                 line = f"Dropped **[{title}]({url})**{progress_text}."
@@ -110,7 +110,7 @@ class MAL_Updates(commands.Cog):
                 line = f"Reading **[{title}]({url})**{progress_text}."
             elif status == "plan to read":
                 line = f"Planning to read **[{title}]({url})**."
-            elif status == "on hold":
+            elif status == "on-hold":
                 line = f"Placed **[{title}]({url})** on hold{progress_text}."
             elif status == "dropped":
                 line = f"Dropped **[{title}]({url})**{progress_text}."
