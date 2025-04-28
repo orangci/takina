@@ -63,3 +63,6 @@ Fix the staff subdomains command in sesp.isadev.subdomains being broken due to f
 
 #### 1.6.4
 Once again update sesp.isadev.subdomains staff subdomains filtering logic.
+
+### 1.7.0
+Added weebism.mal_updates — a command for fetching a MyAnimeList user's latest anime/manga list updates.
