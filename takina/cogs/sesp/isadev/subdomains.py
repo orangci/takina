@@ -33,6 +33,9 @@ async def fetch_subdomain_info(subdomain_name):
 
 
 async def build_whois_embed(domain):
+    if domain.endswith(".is-a.dev"):
+        domain = domain[:-9]
+
     domain_data = await fetch_subdomain_info(domain)
 
     if not domain_data:
@@ -294,6 +297,9 @@ async def isadev_user_domain_data_overview_embed_builder(username):
 
 
 async def build_check_embed(domain):
+    if domain.endswith(".is-a.dev"):
+        domain = domain[:-9]
+
     domain_data = await fetch_subdomain_info(domain)
     is_valid = await is_valid_domain(domain)
 

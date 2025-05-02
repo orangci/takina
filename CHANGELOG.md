@@ -69,3 +69,6 @@ Added weebism.mal_updates — a command for fetching a MyAnimeList user's latest
 
 #### 1.7.1
 Fixed checking for an incorrect status in weebism.mal_updates: the function should check for `on-hold`, not `on hold`.
+
+#### 1.7.2
+In sesp.isadev.subdomains, a bug was found where commands didn't support queries that ended with `.is-a.dev`. This was patched in this update.
