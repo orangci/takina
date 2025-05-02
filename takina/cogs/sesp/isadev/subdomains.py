@@ -51,6 +51,8 @@ async def build_whois_embed(domain):
         return embed
 
     embed = nextcord.Embed(color=config.EMBED_COLOR)
+    if domain.endswith(".is-a.dev"):
+        domain = domain[:-9]
     embed.url = f"https://{domain}.is-a.dev"
     embed.title = f"{domain}.is-a.dev"
     embed.set_footer(
