@@ -16,12 +16,13 @@ async def is_valid_domain(domain):
 
 
 async def fetch_subdomain_info(subdomain_name):
+    if subdomain_name.endswith(".is-a.dev"):
+        subdomain_name = subdomain_name[:-9]
+
     is_valid = await is_valid_domain(subdomain_name)
     if not is_valid:
         return None
 
-    if subdomain_name.endswith(".is-a.dev"):
-        subdomain_name = subdomain_name[:-9]
     data = await oclib.request("https://raw.is-a.dev/v2.json")
 
     for entry in data:
