@@ -13,18 +13,14 @@ class MAL_Updates(commands.Cog):
     async def build_embed(self, username):
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         try:
-            profile_data = await oclib.request(
-                f"https://api.jikan.moe/v4/users/{username}"
-            )
+            profile_data = await oclib.request(f"https://api.jikan.moe/v4/users/{username}")
 
             if not profile_data or not profile_data.get("data"):
                 embed.description = ":x: User not found."
                 embed.color = config.ERROR_COLOR
                 return embed
 
-            list_updates = await oclib.request(
-                f"https://api.jikan.moe/v4/users/{username}/userupdates"
-            )
+            list_updates = await oclib.request(f"https://api.jikan.moe/v4/users/{username}/userupdates")
 
             if not list_updates or not list_updates.get("data"):
                 embed.description = ":x: User not found."
@@ -42,9 +38,7 @@ class MAL_Updates(commands.Cog):
 
         embed.url = user.get("url")
 
-        embed.set_footer(
-            text=f"For more information on this user, run the mal {username} command."
-        )
+        embed.set_footer(text=f"For more information on this user, run the mal {username} command.")
 
         profile_pic = user.get("images", {}).get("jpg", {}).get("image_url", "")
         if profile_pic:
@@ -130,24 +124,14 @@ class MAL_Updates(commands.Cog):
 
         return embed
 
-    @commands.command(
-        help="Fetch a MyAnimeList user's latest list updates. \nUsage: `mal <username>`.",
-    )
+    @commands.command(help="Fetch a MyAnimeList user's latest list updates. \nUsage: `mal <username>`.")
     async def malupdates(self, ctx: commands.Context, *, username: str):
         embed = await self.build_embed(username)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="mal_updates",
-        description="Fetch a MyAnimeList user's latest list updates.",
-    )
+    @nextcord.slash_command(name="mal_updates", description="Fetch a MyAnimeList user's latest list updates.")
     async def malupdates_slash(
-        self,
-        interaction: nextcord.Interaction,
-        *,
-        username: str = nextcord.SlashOption(
-            description="Username of the user to fetch"
-        ),
+        self, interaction: nextcord.Interaction, *, username: str = nextcord.SlashOption(description="Username of the user to fetch")
     ):
         await interaction.response.defer()
         embed = await self.build_embed(username)

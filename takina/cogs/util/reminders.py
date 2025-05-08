@@ -20,10 +20,7 @@ class RemindMe(commands.Cog):
 
     @commands.command(help="Deprecated alias of `reminder set`.")
     async def remindme(self, ctx: commands.Context):
-        embed = nextcord.Embed(
-            description=":x: The `remindme` alias has been deprecated. Use `reminder set` instead.",
-            color=config.ERROR_COLOR,
-        )
+        embed = nextcord.Embed(description=":x: The `remindme` alias has been deprecated. Use `reminder set` instead.", color=config.ERROR_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.group(
@@ -34,35 +31,22 @@ class RemindMe(commands.Cog):
     )
     async def reminder(self, ctx: commands.Context):
         embed = nextcord.Embed(
-            description="No subcommand specified. Usage: `reminder set`, `reminder list`, or `reminder delete`.",
-            color=config.ERROR_COLOR,
+            description="No subcommand specified. Usage: `reminder set`, `reminder list`, or `reminder delete`.", color=config.ERROR_COLOR
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @reminder.command(
-        name="set",
-        help="Set a reminder. Minimum duration is 10 minutes. Usage: `reminder set <time> <reminder>`.",
-    )
+    @reminder.command(name="set", help="Set a reminder. Minimum duration is 10 minutes. Usage: `reminder set <time> <reminder>`.")
     async def reminder_set(self, ctx: commands.Context, time: str, *, reminder: str):
         user_id = ctx.author.id
         remind_time = self.parse_time(time)
 
         if remind_time is None:
-            embed = nextcord.Embed(
-                description="Invalid time format. Use <number>[m|h|d].",
-                color=config.ERROR_COLOR,
-            )
+            embed = nextcord.Embed(description="Invalid time format. Use <number>[m|h|d].", color=config.ERROR_COLOR)
             await ctx.reply(embed=embed, mention_author=False)
             return
 
         remind_at = datetime.datetime.now(datetime.UTC) + remind_time
-        result = await self.reminders.insert_one(
-            {
-                "user_id": user_id,
-                "reminder": reminder,
-                "remind_at": remind_at,
-            }
-        )
+        result = await self.reminders.insert_one({"user_id": user_id, "reminder": reminder, "remind_at": remind_at})
 
         embed = nextcord.Embed(
             description=f"{await oclib.fetch_random_emoji()}Reminder set for {time} from now: **{reminder}**\n-# ID: `{result.inserted_id}`",
@@ -93,70 +77,42 @@ class RemindMe(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @reminder.command(
-        name="delete",
-        help="Delete a reminder by its ID. Usage: `reminder delete <reminder ID>`.",
-    )
+    @reminder.command(name="delete", help="Delete a reminder by its ID. Usage: `reminder delete <reminder ID>`.")
     async def reminder_delete(self, ctx: commands.Context, reminder_id: str):
         user_id = ctx.author.id
 
         try:
             object_id = ObjectId(reminder_id)
         except Exception:
-            embed = nextcord.Embed(
-                description="❌ Invalid reminder ID format.",
-                color=config.ERROR_COLOR,
-            )
+            embed = nextcord.Embed(description="❌ Invalid reminder ID format.", color=config.ERROR_COLOR)
             await ctx.reply(embed=embed, mention_author=False)
             return
 
         result = await self.reminders.delete_one({"_id": object_id, "user_id": user_id})
         if result.deleted_count == 0:
-            embed = nextcord.Embed(
-                description="❌ No reminder found with that ID.",
-                color=config.ERROR_COLOR,
-            )
+            embed = nextcord.Embed(description="❌ No reminder found with that ID.", color=config.ERROR_COLOR)
         else:
-            embed = nextcord.Embed(
-                description=f"✅ Reminder with ID `{reminder_id}` has been deleted.",
-                color=config.EMBED_COLOR,
-            )
+            embed = nextcord.Embed(description=f"✅ Reminder with ID `{reminder_id}` has been deleted.", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
     # slash commands
-    @nextcord.slash_command(
-        name="reminder", description="Reminder management commands."
-    )
+    @nextcord.slash_command(name="reminder", description="Reminder management commands.")
     async def slash_reminder(self, interaction: nextcord.Interaction):
         pass
 
-    @slash_reminder.subcommand(
-        name="set",
-        description="Set a reminder for yourself.",
-    )
-    async def slash_reminder_set(
-        self, interaction: nextcord.Interaction, time: str, *, reminder: str
-    ):
+    @slash_reminder.subcommand(name="set", description="Set a reminder for yourself.")
+    async def slash_reminder_set(self, interaction: nextcord.Interaction, time: str, *, reminder: str):
         await interaction.response.defer()
         user_id = interaction.user.id
         remind_time = self.parse_time(time)
 
         if remind_time is None:
-            embed = nextcord.Embed(
-                description="Invalid time format. Use <number>[m|h|d].",
-                color=config.ERROR_COLOR,
-            )
+            embed = nextcord.Embed(description="Invalid time format. Use <number>[m|h|d].", color=config.ERROR_COLOR)
             await interaction.send(embed=embed, ephemeral=True)
             return
 
         remind_at = datetime.datetime.now(datetime.UTC) + remind_time
-        result = await self.reminders.insert_one(
-            {
-                "user_id": user_id,
-                "reminder": reminder,
-                "remind_at": remind_at,
-            }
-        )
+        result = await self.reminders.insert_one({"user_id": user_id, "reminder": reminder, "remind_at": remind_at})
 
         embed = nextcord.Embed(
             description=f"{await oclib.fetch_random_emoji()}Reminder set for {time} from now: **{reminder}**\n-# ID: `{result.inserted_id}`",
@@ -164,9 +120,7 @@ class RemindMe(commands.Cog):
         )
         await interaction.send(embed=embed, ephemeral=False)
 
-    @slash_reminder.subcommand(
-        name="list", description="List all your active reminders."
-    )
+    @slash_reminder.subcommand(name="list", description="List all your active reminders.")
     async def slash_reminder_list(self, interaction: nextcord.Interaction):
         await interaction.response.defer()
         user_id = interaction.user.id
@@ -190,36 +144,23 @@ class RemindMe(commands.Cog):
 
         await interaction.send(embed=embed, ephemeral=True)
 
-    @slash_reminder.subcommand(
-        name="delete", description="Delete a reminder by its ID."
-    )
-    async def slash_reminder_delete(
-        self, interaction: nextcord.Interaction, reminder_id: str
-    ):
+    @slash_reminder.subcommand(name="delete", description="Delete a reminder by its ID.")
+    async def slash_reminder_delete(self, interaction: nextcord.Interaction, reminder_id: str):
         await interaction.response.defer()
         user_id = interaction.user.id
 
         try:
             object_id = ObjectId(reminder_id)
         except Exception:
-            embed = nextcord.Embed(
-                description="❌ Invalid reminder ID format.",
-                color=config.ERROR_COLOR,
-            )
+            embed = nextcord.Embed(description="❌ Invalid reminder ID format.", color=config.ERROR_COLOR)
             await interaction.send(embed=embed, ephemeral=True)
             return
 
         result = await self.reminders.delete_one({"_id": object_id, "user_id": user_id})
         if result.deleted_count == 0:
-            embed = nextcord.Embed(
-                description="❌ No reminder found with that ID.",
-                color=config.ERROR_COLOR,
-            )
+            embed = nextcord.Embed(description="❌ No reminder found with that ID.", color=config.ERROR_COLOR)
         else:
-            embed = nextcord.Embed(
-                description=f"✅ Reminder with ID `{reminder_id}` has been deleted.",
-                color=config.EMBED_COLOR,
-            )
+            embed = nextcord.Embed(description=f"✅ Reminder with ID `{reminder_id}` has been deleted.", color=config.EMBED_COLOR)
         await interaction.send(embed=embed, ephemeral=True)
 
     @tasks.loop(seconds=600)
@@ -231,10 +172,7 @@ class RemindMe(commands.Cog):
             user = self.bot.get_user(reminder["user_id"])
             if user:
                 try:
-                    embed = nextcord.Embed(
-                        description=f"⏰ Reminder: **{reminder['reminder']}**",
-                        color=config.EMBED_COLOR,
-                    )
+                    embed = nextcord.Embed(description=f"⏰ Reminder: **{reminder['reminder']}**", color=config.EMBED_COLOR)
                     await user.send(embed=embed)
                 except nextcord.Forbidden:
                     pass

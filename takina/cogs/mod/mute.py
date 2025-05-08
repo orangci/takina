@@ -13,15 +13,9 @@ class Mute(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        name="mute",
-        help="Timeout a member. \nUsage: `mute <member> <duration> <reason>`.",
-        aliases=["timeout"],
-    )
+    @commands.command(name="mute", help="Timeout a member. \nUsage: `mute <member> <duration> <reason>`.", aliases=["timeout"])
     @commands.has_permissions(moderate_members=True)
-    async def mute(
-        self, ctx, member: str, duration: str, *, reason: str = "No reason provided"
-    ):
+    async def mute(self, ctx, member: str, duration: str, *, reason: str = "No reason provided"):
         timeout_duration = oclib.duration_calculator(duration, timeout=True)
         if isinstance(timeout_duration, nextcord.Embed):
             await ctx.reply(embed=timeout_duration, mention_author=False)
@@ -37,18 +31,13 @@ class Mute(commands.Cog):
             await ctx.reply(embed=message, mention_author=False)
             return
 
-        confirmation = oclib.ConfirmationView(
-            ctx=ctx, member=member, action="mute", reason=reason, duration=duration
-        )
+        confirmation = oclib.ConfirmationView(ctx=ctx, member=member, action="mute", reason=reason, duration=duration)
         confirmed = await confirmation.prompt()
         if not confirmed:
             return
 
         # Apply the timeout
-        await member.timeout(
-            timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
-            reason=f"Muted by {ctx.author} for: {reason}",
-        )
+        await member.timeout(timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration), reason=f"Muted by {ctx.author} for: {reason}")
 
         # Send success embed
         embed = nextcord.Embed(
@@ -74,14 +63,9 @@ class Unmute(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        name="unmute",
-        help="Unmute a member. \nUsage: `unmute <member> <reason>`.",
-    )
+    @commands.command(name="unmute", help="Unmute a member. \nUsage: `unmute <member> <reason>`.")
     @commands.has_permissions(moderate_members=True)
-    async def unmute(
-        self, ctx: commands.Context, member: str, *, reason: str = "No reason provided"
-    ):
+    async def unmute(self, ctx: commands.Context, member: str, *, reason: str = "No reason provided"):
         member = oclib.extract_user_id(member, ctx)
         if isinstance(member, nextcord.Embed):
             await ctx.reply(embed=member, mention_author=False)
@@ -98,8 +82,7 @@ class Unmute(commands.Cog):
             color=config.EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were unmuted in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-            color=config.EMBED_COLOR,
+            description=f"You were unmuted in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}", color=config.EMBED_COLOR
         )
         try:
             await member.send(embed=dm_embed)
@@ -116,19 +99,13 @@ class MuteSlash(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @nextcord.slash_command(
-        name="mute", description="Timeout a member for a specified duration."
-    )
+    @nextcord.slash_command(name="mute", description="Timeout a member for a specified duration.")
     @application_checks.has_permissions(moderate_members=True)
     async def mute(
         self,
         interaction: nextcord.Interaction,
-        member: nextcord.Member = nextcord.SlashOption(
-            description="The user to mute", required=True
-        ),
-        duration: str = nextcord.SlashOption(
-            description="The duration of time to mute the user for", required=True
-        ),
+        member: nextcord.Member = nextcord.SlashOption(description="The user to mute", required=True),
+        duration: str = nextcord.SlashOption(description="The duration of time to mute the user for", required=True),
         reason: str = "No reason provided",
     ):
         await interaction.response.defer()
@@ -138,20 +115,13 @@ class MuteSlash(commands.Cog):
             await interaction.send(embed=message, ephemeral=True)
             return
 
-        confirmation = oclib.ConfirmationView(
-            ctx=interaction,
-            member=member,
-            action="mute",
-            reason=reason,
-            duration=duration,
-        )
+        confirmation = oclib.ConfirmationView(ctx=interaction, member=member, action="mute", reason=reason, duration=duration)
         confirmed = await confirmation.prompt()
         if not confirmed:
             return
 
         await member.timeout(
-            timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration),
-            reason=f"Muted by {interaction.user} for: {reason}",
+            timeout=nextcord.utils.utcnow() + timedelta(seconds=timeout_duration), reason=f"Muted by {interaction.user} for: {reason}"
         )
         embed = nextcord.Embed(
             description=f"✅ Successfully muted **{member.mention}** for {duration}. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
@@ -169,9 +139,7 @@ class MuteSlash(commands.Cog):
 
         modlog_cog = self.bot.get_cog("ModLog")
         if modlog_cog:
-            await modlog_cog.log_action(
-                "mute", member, reason, interaction.user, duration
-            )
+            await modlog_cog.log_action("mute", member, reason, interaction.user, duration)
 
 
 class UnmuteSlash(commands.Cog):
@@ -183,9 +151,7 @@ class UnmuteSlash(commands.Cog):
     async def unmute(
         self,
         interaction: nextcord.Interaction,
-        member: nextcord.Member = nextcord.SlashOption(
-            description="The user to unmute", required=True
-        ),
+        member: nextcord.Member = nextcord.SlashOption(description="The user to unmute", required=True),
         reason: str = "No reason provided",
     ):
         await interaction.response.defer()
@@ -194,16 +160,13 @@ class UnmuteSlash(commands.Cog):
             await interaction.send(embed=message, ephemeral=True)
             return
 
-        await member.timeout(
-            None, reason=f"Unmuted by {interaction.user} for: {reason}"
-        )
+        await member.timeout(None, reason=f"Unmuted by {interaction.user} for: {reason}")
         embed = nextcord.Embed(
             description=f"✅ Successfully unmuted **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {interaction.user}",
             color=config.EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were unmuted in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-            color=config.EMBED_COLOR,
+            description=f"You were unmuted in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}", color=config.EMBED_COLOR
         )
         try:
             await member.send(embed=dm_embed)

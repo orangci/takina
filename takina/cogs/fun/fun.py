@@ -19,18 +19,12 @@ class Fun(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @commands.command(
-        name="fact",
-        help="Fetch a random fact. \nThis command utilizes the [uselessfacts](https://uselessfacts.jsph.pl) API.",
-    )
+    @commands.command(name="fact", help="Fetch a random fact. \nThis command utilizes the [uselessfacts](https://uselessfacts.jsph.pl) API.")
     async def fact(self, ctx: commands.Context):
         data = await oclib.request("https://uselessfacts.jsph.pl/api/v2/facts/random")
         fact = data.get("text")
         emoji = await oclib.fetch_random_emoji()
-        embed = nextcord.Embed(
-            description=f"{fact} {emoji}",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"{fact} {emoji}", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
@@ -59,16 +53,10 @@ class Fun(commands.Cog):
 
         emoji = await oclib.fetch_random_emoji()
 
-        embed = nextcord.Embed(
-            description=f"{joke} {emoji}",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"{joke} {emoji}", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="commit",
-        help=f"Order {config.BOT_NAME.lower().capitalize()} to do anything. Usage: `commit arson`.",
-    )
+    @commands.command(name="commit", help=f"Order {config.BOT_NAME.lower().capitalize()} to do anything. Usage: `commit arson`.")
     async def commit(self, ctx: commands.Context):
         possible_responses = [
             "Yes, sir!",
@@ -81,12 +69,8 @@ class Fun(commands.Cog):
             "I don't want to, get lost.",
         ]
 
-        embed = nextcord.Embed(
-            color=config.EMBED_COLOR,
-        )
-        embed.description = (
-            f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
-        )
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
+        embed.description = f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
@@ -109,9 +93,7 @@ class Fun(commands.Cog):
             await ctx.reply(embed=error_embed, mention_author=False)
             return
 
-        embed = nextcord.Embed(
-            title=f"{member.name}'s Avatar", color=config.EMBED_COLOR
-        )
+        embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=config.EMBED_COLOR)
         if member.display_avatar:
             embed.set_image(url=member.display_avatar.url)
         else:
@@ -121,10 +103,7 @@ class Fun(commands.Cog):
             return
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="google",
-        help="Google anything! \nUsage: `google shawarma restaurants near me`.",
-    )
+    @commands.command(name="google", help="Google anything! \nUsage: `google shawarma restaurants near me`.")
     async def google(self, ctx: commands.Context, *, query: str):
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
@@ -139,10 +118,7 @@ class Fun(commands.Cog):
         embed.add_field(name="Click here:", value=lmgtfy_url, inline=False)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="roll",
-        help="Roll a random number from 1-100.",
-    )
+    @commands.command(name="roll", help="Roll a random number from 1-100.")
     async def roll(self, ctx: commands.Context):
         embed = nextcord.Embed(
             title=f"What number did you roll? {await oclib.fetch_random_emoji()}",
@@ -151,10 +127,7 @@ class Fun(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="8ball",
-        help="Ask the 8ball anything. \nUsage: `8ball are you sentient`.",
-    )
+    @commands.command(name="8ball", help="Ask the 8ball anything. \nUsage: `8ball are you sentient`.")
     async def eight_ball(self, ctx: commands.Context, *, question: str = None):
         responses = [
             "It is certain.",
@@ -180,17 +153,11 @@ class Fun(commands.Cog):
         ]
         if not question:
             embed = nextcord.Embed(color=config.ERROR_COLOR)
-            embed.description = (
-                "You need to ask a question to the 8ball for this command to work!"
-            )
+            embed.description = "You need to ask a question to the 8ball for this command to work!"
             await ctx.reply(embed=embed, mention_author=False)
             return
         response = random.choice(responses)
-        embed = nextcord.Embed(
-            title="🎱 The 8ball",
-            description=f"**Question:** {question}\n**Answer:** {response}",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(title="🎱 The 8ball", description=f"**Question:** {question}\n**Answer:** {response}", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -203,10 +170,7 @@ class SlashFun(commands.Cog):
         data = await oclib.request("https://uselessfacts.jsph.pl/api/v2/facts/random")
         fact = data.get("text")
         emoji = await oclib.fetch_random_emoji()
-        embed = nextcord.Embed(
-            description=f"{fact} {emoji}",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"{fact} {emoji}", color=config.EMBED_COLOR)
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="joke", description="Fetch a random joke.")
@@ -231,19 +195,12 @@ class SlashFun(commands.Cog):
 
         emoji = await oclib.fetch_random_emoji()
 
-        embed = nextcord.Embed(
-            description=f"{joke} {emoji}",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"{joke} {emoji}", color=config.EMBED_COLOR)
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="commit", description="Order me to do something.")
     async def commit(
-        self,
-        interaction: nextcord.Interaction,
-        action: str = nextcord.SlashOption(
-            description="The action you'd like me to commit", required=True
-        ),
+        self, interaction: nextcord.Interaction, action: str = nextcord.SlashOption(description="The action you'd like me to commit", required=True)
     ):
         possible_responses = [
             "Yes, sir!",
@@ -256,31 +213,20 @@ class SlashFun(commands.Cog):
             "I don't want to, get lost.",
         ]
 
-        embed = nextcord.Embed(
-            color=config.EMBED_COLOR,
-        )
-        embed.description = (
-            f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
-        )
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
+        embed.description = f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
         await interaction.send(embed=embed)
 
-    @nextcord.slash_command(
-        name="avatar",
-        description="Fetch the Discord user avatar of any member including yourself.",
-    )
+    @nextcord.slash_command(name="avatar", description="Fetch the Discord user avatar of any member including yourself.")
     async def avatar(
         self,
         interaction: nextcord.Interaction,
-        member: nextcord.Member = nextcord.SlashOption(
-            description="The user whose avatar you would like to fetch", required=False
-        ),
+        member: nextcord.Member = nextcord.SlashOption(description="The user whose avatar you would like to fetch", required=False),
     ):
         if member is None:
             member = interaction.user
 
-        embed = nextcord.Embed(
-            title=f"{member.name}'s Avatar", color=config.EMBED_COLOR
-        )
+        embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=config.EMBED_COLOR)
         if member.display_avatar:
             embed.set_image(url=member.display_avatar.url)
         else:
@@ -291,14 +237,7 @@ class SlashFun(commands.Cog):
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="google", description="Google anything!")
-    async def google(
-        self,
-        interaction: nextcord.Interaction,
-        *,
-        query: str = nextcord.SlashOption(
-            description="Your search query", required=True
-        ),
-    ):
+    async def google(self, interaction: nextcord.Interaction, *, query: str = nextcord.SlashOption(description="Your search query", required=True)):
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
         lmgtfy_url = f"https://letmegooglethat.com/?q={query}"
@@ -312,10 +251,7 @@ class SlashFun(commands.Cog):
         embed.add_field(name="Click here:", value=lmgtfy_url, inline=False)
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(
-        name="roll",
-        description="Roll a random number from 1-100.",
-    )
+    @nextcord.slash_command(name="roll", description="Roll a random number from 1-100.")
     async def roll(self, interaction: nextcord.Interaction):
         embed = nextcord.Embed(
             title=f"What number did you roll? {await oclib.fetch_random_emoji()}",
@@ -324,17 +260,9 @@ class SlashFun(commands.Cog):
         )
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(
-        name="8ball",
-        description="Ask the 8ball anything.",
-    )
+    @nextcord.slash_command(name="8ball", description="Ask the 8ball anything.")
     async def eight_ball(
-        self,
-        interaction: nextcord.Interaction,
-        *,
-        question: str = nextcord.SlashOption(
-            description="Ask the 8ball a question!", required=True
-        ),
+        self, interaction: nextcord.Interaction, *, question: str = nextcord.SlashOption(description="Ask the 8ball a question!", required=True)
     ):
         responses = [
             "It is certain.",
@@ -359,11 +287,7 @@ class SlashFun(commands.Cog):
             "Very doubtful.",
         ]
         response = random.choice(responses)
-        embed = nextcord.Embed(
-            title="🎱 The 8ball",
-            description=f"**Question:** {question}\n**Answer:** {response}",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(title="🎱 The 8ball", description=f"**Question:** {question}\n**Answer:** {response}", color=config.EMBED_COLOR)
         await interaction.send(embed=embed, ephemeral=True)
 
 

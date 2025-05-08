@@ -11,22 +11,12 @@ class Roles(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.group(
-        name="role",
-        description="Base role command, if no subcommand is passed.",
-        invoke_without_command=True,
-    )
+    @commands.group(name="role", description="Base role command, if no subcommand is passed.", invoke_without_command=True)
     async def role(self, ctx: commands.Context):
-        embed = nextcord.Embed(
-            description="Please specify a subcommand: `add` or `remove`",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description="Please specify a subcommand: `add` or `remove`", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @role.command(
-        name="add",
-        help="Add a role to a member. \nUsage: `role add <role> <member>`.",
-    )
+    @role.command(name="add", help="Add a role to a member. \nUsage: `role add <role> <member>`.")
     @commands.has_permissions(manage_roles=True)
     async def add(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
         if member is None:
@@ -38,20 +28,12 @@ class Roles(commands.Cog):
                 return
 
         await member.add_roles(role, reason=f"Role added by {ctx.author}")
-        embed = nextcord.Embed(
-            description=f"✅ Added role {role.mention} to {member.mention}.",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"✅ Added role {role.mention} to {member.mention}.", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @role.command(
-        name="remove",
-        help="Remove a role from member. \nUsage: `role remove <role> <member>`.",
-    )
+    @role.command(name="remove", help="Remove a role from member. \nUsage: `role remove <role> <member>`.")
     @commands.has_permissions(manage_roles=True)
-    async def remove(
-        self, ctx: commands.Context, role: nextcord.Role, member: str = None
-    ):
+    async def remove(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
         if member is None:
             member = ctx.author
         else:
@@ -61,10 +43,7 @@ class Roles(commands.Cog):
                 return
 
         await member.remove_roles(role, reason=f"Role removed by {ctx.author}")
-        embed = nextcord.Embed(
-            description=f"✅ Removed role {role.mention} from {member.mention}.",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"✅ Removed role {role.mention} from {member.mention}.", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -81,19 +60,12 @@ class RolesSlash(commands.Cog):
     async def add(
         self,
         interaction: nextcord.Interaction,
-        role: nextcord.Role = nextcord.SlashOption(
-            description="The role to add", required=True
-        ),
-        member: nextcord.Member = nextcord.SlashOption(
-            description="The member to add the role to", required=True
-        ),
+        role: nextcord.Role = nextcord.SlashOption(description="The role to add", required=True),
+        member: nextcord.Member = nextcord.SlashOption(description="The member to add the role to", required=True),
     ):
         await interaction.response.defer()
         await member.add_roles(role, reason=f"Role added by {interaction.user}")
-        embed = nextcord.Embed(
-            description=f"✅ Added role {role.mention} to {member.mention}.",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"✅ Added role {role.mention} to {member.mention}.", color=config.EMBED_COLOR)
         await interaction.send(embed=embed)
 
     @role.subcommand(name="remove", description="Remove a role from member.")
@@ -101,19 +73,12 @@ class RolesSlash(commands.Cog):
     async def remove(
         self,
         interaction: nextcord.Interaction,
-        role: nextcord.Role = nextcord.SlashOption(
-            description="The role to remove", required=True
-        ),
-        member: nextcord.Member = nextcord.SlashOption(
-            description="The member to remove the role from", required=True
-        ),
+        role: nextcord.Role = nextcord.SlashOption(description="The role to remove", required=True),
+        member: nextcord.Member = nextcord.SlashOption(description="The member to remove the role from", required=True),
     ):
         await interaction.response.defer()
         await member.remove_roles(role, reason=f"Role removed by {interaction.user}")
-        embed = nextcord.Embed(
-            description=f"✅ Removed role {role.mention} from {member.mention}.",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"✅ Removed role {role.mention} from {member.mention}.", color=config.EMBED_COLOR)
         await interaction.send(embed=embed)
 
 

@@ -26,9 +26,7 @@ class MAL_Profiles(commands.Cog):
     async def build_embed(self, username):
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         try:
-            profile_data = await oclib.request(
-                f"https://api.jikan.moe/v4/users/{username}"
-            )
+            profile_data = await oclib.request(f"https://api.jikan.moe/v4/users/{username}")
 
             if not profile_data or not profile_data.get("data"):
                 embed.description = ":x: User not found."
@@ -48,9 +46,7 @@ class MAL_Profiles(commands.Cog):
             manga_list_url = f"https://myanimelist.net/mangalist/{username}"
 
             # stats
-            profile_stats = await oclib.request(
-                f"https://api.jikan.moe/v4/users/{username}/statistics"
-            )
+            profile_stats = await oclib.request(f"https://api.jikan.moe/v4/users/{username}/statistics")
 
             anime_stats = profile_stats["data"].get("anime")
             days_watched = f"**{str(anime_stats.get('days_watched'))}**"
@@ -60,15 +56,9 @@ class MAL_Profiles(commands.Cog):
             days_read = f"**{str(manga_stats.get('days_read'))}**"
             manga_mean = f"**{str(manga_stats.get('mean_score'))}**"
 
-            embed = nextcord.Embed(
-                title=f"{username}'s Profile",
-                url=profile_url,
-                color=config.EMBED_COLOR,
-            )
+            embed = nextcord.Embed(title=f"{username}'s Profile", url=profile_url, color=config.EMBED_COLOR)
 
-            embed.description = (
-                f"-# [Anime List]({anime_list_url}) • [Manga List]({manga_list_url})\n"
-            )
+            embed.description = f"-# [Anime List]({anime_list_url}) • [Manga List]({manga_list_url})\n"
             embed.description += f"\n> **Gender**: {gender}"
             embed.description += f"\n> **Last Seen**: {last_online}"
             embed.description += f"\n> **Joined**: {joined}"
@@ -86,23 +76,14 @@ class MAL_Profiles(commands.Cog):
             embed.color = config.ERROR_COLOR
             return embed
 
-    @commands.command(
-        help="Fetch information about a MyAnimeList user. \nUsage: `mal <username>`.",
-    )
+    @commands.command(help="Fetch information about a MyAnimeList user. \nUsage: `mal <username>`.")
     async def mal(self, ctx: commands.Context, *, username: str):
         embed = await self.build_embed(username)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="mal", description="Fetch information about a MyAnimeList user."
-    )
+    @nextcord.slash_command(name="mal", description="Fetch information about a MyAnimeList user.")
     async def mal_slash(
-        self,
-        interaction: nextcord.Interaction,
-        *,
-        username: str = nextcord.SlashOption(
-            description="Username of the user to fetch"
-        ),
+        self, interaction: nextcord.Interaction, *, username: str = nextcord.SlashOption(description="Username of the user to fetch")
     ):
         await interaction.response.defer()
         embed = await self.build_embed(username)

@@ -19,11 +19,7 @@ PR_ISSUE_PATTERN = re.compile(r"^[a-zA-Z0-9-]+/[a-zA-Z0-9-]+#[0-9]+$")
 
 def format_timestamp(iso_timestamp: str) -> str:
     dt = datetime.strptime(iso_timestamp, "%Y-%m-%dT%H:%M:%SZ")
-    day_suffix = (
-        "th"
-        if 11 <= dt.day <= 13
-        else {1: "st", 2: "nd", 3: "rd"}.get(dt.day % 10, "th")
-    )
+    day_suffix = "th" if 11 <= dt.day <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(dt.day % 10, "th")
     formatted_time = dt.strftime(f"%B {dt.day}{day_suffix}, %Y at %H:%M")
     return formatted_time
 
@@ -56,16 +52,8 @@ class GitHubCog(commands.Cog):
 
     def build_pr_issue_embed(self, pr_data: dict, is_issue: bool) -> nextcord.Embed:
         """Build an embed for PR/Issue details."""
-        color = (
-            nextcord.Color.green()
-            if pr_data["state"] == "open"
-            else nextcord.Color.red()
-        )
-        color = (
-            nextcord.Color.purple()
-            if pr_data.get("pull_request", {}).get("merged_at")
-            else color
-        )
+        color = nextcord.Color.green() if pr_data["state"] == "open" else nextcord.Color.red()
+        color = nextcord.Color.purple() if pr_data.get("pull_request", {}).get("merged_at") else color
         updated_at_formatted = format_timestamp(pr_data["updated_at"])
         return (
             nextcord.Embed(
@@ -92,9 +80,7 @@ class GitHubCog(commands.Cog):
         if repo_match:
             await message.edit(suppress=True)
             owner, repo_name = repo_match.groups()
-            repo_data = await self.fetch_github_data(
-                f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}"
-            )
+            repo_data = await self.fetch_github_data(f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}")
             if repo_data:
                 await message.channel.send(embed=self.build_repo_embed(repo_data))
             return  # Only process the first match in the message
@@ -103,9 +89,7 @@ class GitHubCog(commands.Cog):
         pr_issue_match = PR_ISSUE_PATTERN.search(content)
         if pr_issue_match:
             owner, repo_name, pr_issue_number = pr_issue_match.groups()
-            url = (
-                f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}/issues/{pr_issue_number}"
-            )
+            url = f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}/issues/{pr_issue_number}"
             pr_issue_data = await self.fetch_github_data(url)
             if pr_issue_data:
                 is_issue = "pull_request" not in pr_issue_data

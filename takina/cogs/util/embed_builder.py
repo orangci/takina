@@ -20,24 +20,14 @@ class EmbedModal(nextcord.ui.Modal):
     def __init__(self):
         super().__init__(title="Embed Builder")
 
-        self.title_input = nextcord.ui.TextInput(
-            label="Title", placeholder="Enter embed title", required=False
-        )
+        self.title_input = nextcord.ui.TextInput(label="Title", placeholder="Enter embed title", required=False)
         self.description_input = nextcord.ui.TextInput(
-            label="Description",
-            placeholder="Enter embed description",
-            style=nextcord.TextInputStyle.paragraph,
+            label="Description", placeholder="Enter embed description", style=nextcord.TextInputStyle.paragraph
         )
-        self.color_input = nextcord.ui.TextInput(
-            label="Color (Hex)", placeholder="#FFFFFF", required=False
-        )
-        self.footer_input = nextcord.ui.TextInput(
-            label="Footer", placeholder="Enter footer text", required=False
-        )
+        self.color_input = nextcord.ui.TextInput(label="Color (Hex)", placeholder="#FFFFFF", required=False)
+        self.footer_input = nextcord.ui.TextInput(label="Footer", placeholder="Enter footer text", required=False)
         self.fields_input = nextcord.ui.TextInput(
-            label="Fields (key:value; key:value)",
-            placeholder="Enter fields in key:value format, separated by semicolons",
-            required=False,
+            label="Fields (key:value; key:value)", placeholder="Enter fields in key:value format, separated by semicolons", required=False
         )
 
         self.add_item(self.title_input)
@@ -50,11 +40,7 @@ class EmbedModal(nextcord.ui.Modal):
         embed = nextcord.Embed(
             title=self.title_input.value,
             description=self.description_input.value,
-            color=(
-                int(self.color_input.value.lstrip("#"), 16)
-                if self.color_input.value.startswith("#")
-                else config.EMBED_COLOR
-            ),
+            color=(int(self.color_input.value.lstrip("#"), 16) if self.color_input.value.startswith("#") else config.EMBED_COLOR),
         )
 
         if self.footer_input.value:

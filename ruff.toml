@@ -1,0 +1,15 @@
+line-length = 150
+fix = true
+show-fixes = true
+target-version = "py313"
+indent-width = 4
+
+[format]
+docstring-code-format = true
+docstring-code-line-length = 79
+indent-style = "space"
+line-ending = "lf"
+skip-magic-trailing-comma = true
+
+[analyze]
+detect-string-imports = true

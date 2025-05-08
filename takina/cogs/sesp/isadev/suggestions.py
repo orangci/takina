@@ -18,19 +18,12 @@ class ApproveOrDeny(nextcord.ui.Modal):
         self._mode: bool = mode
         title = "Approve the suggestion" if mode else "Deny the suggestion"
         super().__init__(title=title, timeout=180)
-        self.reas = nextcord.ui.TextInput(
-            label="Provide a reason.",
-            style=nextcord.TextInputStyle.paragraph,
-            required=True,
-        )
+        self.reas = nextcord.ui.TextInput(label="Provide a reason.", style=nextcord.TextInputStyle.paragraph, required=True)
         self.add_item(self.reas)
 
     async def callback(self, interaction: nextcord.Interaction) -> None:
         embed = self._suggestion_msg.embeds[0]
-        embed.add_field(
-            name=f"{'Approved by' if self._mode else 'Denied by'} {str(interaction.user)}",
-            value=self.reas.value,
-        )
+        embed.add_field(name=f"{'Approved by' if self._mode else 'Denied by'} {str(interaction.user)}", value=self.reas.value)
         await self._suggestion_msg.edit(embed=embed)
 
 
@@ -41,28 +34,18 @@ class Suggestion(commands.Cog):
 
     @nextcord.message_command(name="Approve the suggestion", guild_ids=[lib.SERVER_ID])
     @application_checks.has_role(lib.MAINTAINER_ROLE_ID)
-    async def approve_suggestion_msg(
-        self, interaction: nextcord.Interaction, message: nextcord.Message
-    ) -> None:
+    async def approve_suggestion_msg(self, interaction: nextcord.Interaction, message: nextcord.Message) -> None:
         if interaction.channel.id != self.suggestion_channel:
-            embed = nextcord.Embed(
-                description="You must be in the suggestions channel to use this command.",
-                color=config.ERROR_COLOR,
-            )
+            embed = nextcord.Embed(description="You must be in the suggestions channel to use this command.", color=config.ERROR_COLOR)
             await interaction.send(embed=embed, ephemeral=True)
             return
         await interaction.response.send_modal(ApproveOrDeny(True, message))
 
     @nextcord.message_command(name="Deny the suggestion", guild_ids=[lib.SERVER_ID])
     @application_checks.has_role(lib.MAINTAINER_ROLE_ID)
-    async def deny_suggestion_msg(
-        self, interaction: nextcord.Interaction, message: nextcord.Message
-    ) -> None:
+    async def deny_suggestion_msg(self, interaction: nextcord.Interaction, message: nextcord.Message) -> None:
         if interaction.channel.id != self.suggestion_channel:
-            embed = nextcord.Embed(
-                description="You must be in the suggestions channel to use this command.",
-                color=config.ERROR_COLOR,
-            )
+            embed = nextcord.Embed(description="You must be in the suggestions channel to use this command.", color=config.ERROR_COLOR)
             await interaction.send(embed=embed, ephemeral=True)
             return
         await interaction.response.send_modal(ApproveOrDeny(False, message))
@@ -71,33 +54,19 @@ class Suggestion(commands.Cog):
     async def _suggestion(self, interaction: nextcord.Interaction):
         pass
 
-    @_suggestion.subcommand(
-        name="suggest",
-        description="We'd love to hear your suggestions!",
-    )
+    @_suggestion.subcommand(name="suggest", description="We'd love to hear your suggestions!")
     async def _suggest(
         self,
         interaction: nextcord.Interaction,
-        suggestion: str = nextcord.SlashOption(
-            name="suggestion", description="Write your suggestion here.", required=True
-        ),
+        suggestion: str = nextcord.SlashOption(name="suggestion", description="Write your suggestion here.", required=True),
     ):
         if len(suggestion) > 500:
-            embed = nextcord.Embed(
-                description=":x: Your suggestion may not contain more than 500 characters.",
-                color=config.ERROR_COLOR,
-            )
+            embed = nextcord.Embed(description=":x: Your suggestion may not contain more than 500 characters.", color=config.ERROR_COLOR)
             await interaction.send(embed=embed, ephemeral=True)
             return
 
-        embed = nextcord.Embed(
-            description=f"### **Suggestion**:\n\n{suggestion}", color=config.EMBED_COLOR
-        )
-        embed.set_author(
-            name=interaction.user.name,
-            icon_url=interaction.user.avatar.url,
-            url=f"https://discord.com/users/{interaction.user.id}",
-        )
+        embed = nextcord.Embed(description=f"### **Suggestion**:\n\n{suggestion}", color=config.EMBED_COLOR)
+        embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar.url, url=f"https://discord.com/users/{interaction.user.id}")
 
         channel = interaction.guild.get_channel(self.suggestion_channel)
         channel = cast(nextcord.TextChannel, channel)
@@ -110,16 +79,10 @@ class Suggestion(commands.Cog):
         log_channel = self.bot.get_channel(955105139461607444)
         log_channel = cast(nextcord.TextChannel, log_channel)
         await log_channel.send(
-            embed=nextcord.Embed(
-                description=f"{str(interaction.user.mention)} has suggested: {suggestion}.",
-                color=config.EMBED_COLOR,
-            )
+            embed=nextcord.Embed(description=f"{str(interaction.user.mention)} has suggested: {suggestion}.", color=config.EMBED_COLOR)
         )
 
-        embed = nextcord.Embed(
-            description=f"You can now see your suggestion in {channel.mention}.",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"You can now see your suggestion in {channel.mention}.", color=config.EMBED_COLOR)
         await interaction.send(embed=embed, ephemeral=True)
 
     @_suggestion.subcommand(name="deny", description="Deny suggestion")
@@ -127,12 +90,8 @@ class Suggestion(commands.Cog):
     async def _deny(
         self,
         interaction: nextcord.Interaction,
-        messageId: str = nextcord.SlashOption(
-            name="message_id", description="Message to deny", required=True
-        ),
-        why: str = nextcord.SlashOption(
-            name="why", description="Why did you deny this suggestion?", required=True
-        ),
+        messageId: str = nextcord.SlashOption(name="message_id", description="Message to deny", required=True),
+        why: str = nextcord.SlashOption(name="why", description="Why did you deny this suggestion?", required=True),
     ):
         channel = interaction.guild.get_channel(self.suggestion_channel)
         channel = cast(nextcord.TextChannel, channel)
@@ -152,12 +111,8 @@ class Suggestion(commands.Cog):
     async def _approve(
         self,
         interaction: nextcord.Interaction,
-        messageId: str = nextcord.SlashOption(
-            name="message_id", description="Message to approve", required=True
-        ),
-        why: str = nextcord.SlashOption(
-            name="why", description="Why did you approve this request?", required=False
-        ),
+        messageId: str = nextcord.SlashOption(name="message_id", description="Message to approve", required=True),
+        why: str = nextcord.SlashOption(name="why", description="Why did you approve this request?", required=False),
     ):
         why = why or "No reason provided"
         channel = self.bot.get_channel(self.suggestion_channel)

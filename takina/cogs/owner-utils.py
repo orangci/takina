@@ -20,9 +20,7 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def guilds(self, ctx: commands.Context):
         """Lists all guilds the bot is in, ranked from most members to least."""
-        guilds_sorted = sorted(
-            self.bot.guilds, key=lambda g: g.member_count, reverse=True
-        )
+        guilds_sorted = sorted(self.bot.guilds, key=lambda g: g.member_count, reverse=True)
         description = ""
         for guild in guilds_sorted:
             entry = f"\n**{guild.name}**"
@@ -34,18 +32,14 @@ class OwnerUtils(commands.Cog):
         if not description:
             description = "No guilds available to display."
 
-        embed = nextcord.Embed(
-            title="Guilds", description=description, color=config.EMBED_COLOR
-        )
+        embed = nextcord.Embed(title="Guilds", description=description, color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def disable(self, ctx: commands.Context, cmd: str):
         if cmd == "disable":
-            await ctx.reply(
-                "You cannot disable the disable command.", mention_author=False
-            )
+            await ctx.reply("You cannot disable the disable command.", mention_author=False)
         else:
             command = self.bot.get_command(cmd)
             if command is None:
@@ -62,9 +56,7 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def enable(self, ctx: commands.Context, cmd: str):
         if cmd == "disable":
-            await ctx.reply(
-                "You cannot enable the enable command.", mention_author=False
-            )
+            await ctx.reply("You cannot enable the enable command.", mention_author=False)
         else:
             command = self.bot.get_command(cmd)
             if command is None:
@@ -95,7 +87,9 @@ class OwnerUtils(commands.Cog):
             await ctx.reply(embed=embed, mention_author=False)
         else:
             embed = nextcord.Embed(color=config.EMBED_COLOR)
-            embed.description = f"You are not a maintainer of {config.BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
+            embed.description = (
+                f"You are not a maintainer of {config.BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
+            )
             await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True, aliases=["rx"])
@@ -106,28 +100,18 @@ class OwnerUtils(commands.Cog):
 
         if not args:
             failed_cogs = []
-            for cog in list(
-                self.bot.extensions.keys()
-            ):  # Iterate over loaded extensions
+            for cog in list(self.bot.extensions.keys()):  # Iterate over loaded extensions
                 try:
                     self.bot.reload_extension(cog)
                 except Exception as e:
                     failed_cogs.append(f"{cog}: {e}")
 
             if failed_cogs:
-                error_message = (
-                    "❌ Reloaded all except the following cogs:\n\n"
-                    + "\n> ".join(failed_cogs)
-                )
-                embed = nextcord.Embed(
-                    color=config.ERROR_COLOR, description=error_message
-                )
+                error_message = "❌ Reloaded all except the following cogs:\n\n" + "\n> ".join(failed_cogs)
+                embed = nextcord.Embed(color=config.ERROR_COLOR, description=error_message)
                 await ctx.reply(embed=embed, mention_author=False)
             else:
-                embed = nextcord.Embed(
-                    color=config.EMBED_COLOR,
-                    description="✅ Successfully reloaded all cogs.",
-                )
+                embed = nextcord.Embed(color=config.EMBED_COLOR, description="✅ Successfully reloaded all cogs.")
                 await ctx.reply(embed=embed, mention_author=False)
 
         else:
@@ -137,22 +121,13 @@ class OwnerUtils(commands.Cog):
             if full_cog_name in self.bot.extensions:
                 try:
                     self.bot.reload_extension(full_cog_name)
-                    embed = nextcord.Embed(
-                        color=config.EMBED_COLOR,
-                        description=f"✅ Successfully reloaded `{full_cog_name}`.",
-                    )
+                    embed = nextcord.Embed(color=config.EMBED_COLOR, description=f"✅ Successfully reloaded `{full_cog_name}`.")
                     await ctx.reply(embed=embed, mention_author=False)
                 except Exception as e:
-                    embed = nextcord.Embed(
-                        color=config.ERROR_COLOR,
-                        description=f"❌ Failed to reload `{full_cog_name}`: {e}",
-                    )
+                    embed = nextcord.Embed(color=config.ERROR_COLOR, description=f"❌ Failed to reload `{full_cog_name}`: {e}")
                     await ctx.reply(embed=embed, mention_author=False)
             else:
-                embed = nextcord.Embed(
-                    color=config.ERROR_COLOR,
-                    description=f"❌ Cog `{full_cog_name}` is not loaded.",
-                )
+                embed = nextcord.Embed(color=config.ERROR_COLOR, description=f"❌ Cog `{full_cog_name}` is not loaded.")
                 await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True, aliases=["rsc"])
@@ -198,13 +173,7 @@ class OwnerUtils(commands.Cog):
 
         def run_git_pull(directory):
             try:
-                result = subprocess.run(
-                    ["git", "pull"],
-                    cwd=directory,
-                    capture_output=True,
-                    text=True,
-                    check=True,
-                )
+                result = subprocess.run(["git", "pull"], cwd=directory, capture_output=True, text=True, check=True)
                 return result.stdout
             except subprocess.CalledProcessError as e:
                 return e.stderr
@@ -236,31 +205,21 @@ class OwnerUtils(commands.Cog):
                         deleted.append(line.split("delete mode")[1].strip())
 
             embed.color = config.EMBED_COLOR
-            embed.description = (
-                "✅ Successfully pulled changes from upstream git repository."
-            )
+            embed.description = "✅ Successfully pulled changes from upstream git repository."
 
             if commit_id:
                 embed.set_footer(text=f"Commit ID: {commit_id}")
         else:
             # Error occurred
             embed.color = config.ERROR_COLOR
-            embed.description = (
-                f":x: An error occurred:\n```\n{current_dir_result.strip()}\n```"
-            )
+            embed.description = f":x: An error occurred:\n```\n{current_dir_result.strip()}\n```"
 
         # Send the embed
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True)
     @commands.is_owner()
-    async def send(
-        self,
-        ctx: commands.Context,
-        channel: nextcord.TextChannel = None,
-        *,
-        message: str,
-    ):
+    async def send(self, ctx: commands.Context, channel: nextcord.TextChannel = None, *, message: str):
         if channel and message:
             await channel.send(message)
         elif message:
@@ -272,15 +231,9 @@ class OwnerUtils(commands.Cog):
     async def slash_send(
         self,
         interaction: nextcord.Interaction,
-        message: str = nextcord.SlashOption(
-            name="message",
-            description="The message to send.",
-            required=True,
-        ),
+        message: str = nextcord.SlashOption(name="message", description="The message to send.", required=True),
         channel: nextcord.TextChannel = nextcord.SlashOption(
-            name="channel",
-            description="The channel to send the message to (optional).",
-            required=False,
+            name="channel", description="The channel to send the message to (optional).", required=False
         ),
     ) -> None:
         if interaction.user.id not in self.bot.owner_ids:

@@ -14,9 +14,7 @@ from __main__ import bot, start_time
 
 
 # for those commands where you can mention a user either by mentioning them, using their ID, their username, or displayname
-def extract_user_id(
-    member_str: str, ctx: commands.Context | nextcord.Interaction
-) -> nextcord.Member:
+def extract_user_id(member_str: str, ctx: commands.Context | nextcord.Interaction) -> nextcord.Member:
     match = re.match(r"<@!?(\d+)>", member_str)
     if match:
         user_id = int(match.group(1))
@@ -26,18 +24,14 @@ def extract_user_id(
         user_id = int(member_str)
         return ctx.guild.get_member(user_id)
 
-    member = nextcord.utils.get(
-        ctx.guild.members,
-        name=member_str,
-    ) or nextcord.utils.get(ctx.guild.members, display_name=member_str)
+    member = nextcord.utils.get(ctx.guild.members, name=member_str) or nextcord.utils.get(ctx.guild.members, display_name=member_str)
     if member:
         return member
 
     partial_matches = [
         member
         for member in ctx.guild.members
-        if member.display_name.lower().startswith(member_str.lower())
-        or member.display_name.lower().find(member_str.lower()) != -1
+        if member.display_name.lower().startswith(member_str.lower()) or member.display_name.lower().find(member_str.lower()) != -1
     ]
     if partial_matches:
         if len(partial_matches) == 1:
@@ -46,9 +40,7 @@ def extract_user_id(
             member = None
 
     if not member:
-        error_embed = nextcord.Embed(
-            color=config.ERROR_COLOR,
-        )
+        error_embed = nextcord.Embed(color=config.ERROR_COLOR)
         error_embed.description = ":x: User not found. Please provide a valid username, display name, mention, or user ID."
         return error_embed
 
@@ -64,18 +56,12 @@ async def request(url, headers=None, *args, **kwargs):
 
 
 # for calculating durations, e.g. 1d, 2h, 5s, 34m
-def duration_calculator(
-    duration: str, slowmode=False, timeout=False, purge=False
-) -> int:
+def duration_calculator(duration: str, slowmode=False, timeout=False, purge=False) -> int:
     pattern = r"(\d+)([s|m|h|d|w])"
     match = re.fullmatch(pattern, duration)
-    error_embed = nextcord.Embed(
-        color=config.ERROR_COLOR,
-    )
+    error_embed = nextcord.Embed(color=config.ERROR_COLOR)
     if timeout:
-        error_embed.description = (
-            ":x: Invalid duration format. Use <number>[s|m|h|d|w]."
-        )
+        error_embed.description = ":x: Invalid duration format. Use <number>[s|m|h|d|w]."
     if slowmode:
         error_embed.description = ":x: Invalid duration format. Use <number>[s|m|h]."
 
@@ -100,27 +86,19 @@ def duration_calculator(
 
     if timeout and time_value > 2419200:
         return nextcord.Embed(
-            description=":x: The duration you've specified is too long. The maximum timeout length you may set is 28 days.",
-            color=config.ERROR_COLOR,
+            description=":x: The duration you've specified is too long. The maximum timeout length you may set is 28 days.", color=config.ERROR_COLOR
         )
 
     if slowmode and time_value > 21600:
         return nextcord.Embed(
-            description=":x: The duration you've specified is too long. The maximum slowmode you may set is six hours.",
-            color=config.ERROR_COLOR,
+            description=":x: The duration you've specified is too long. The maximum slowmode you may set is six hours.", color=config.ERROR_COLOR
         )
 
     if purge and time_value > 1209600:
-        return nextcord.Embed(
-            description=":x: You may only purge messages within the last two weeks.",
-            color=config.ERROR_COLOR,
-        )
+        return nextcord.Embed(description=":x: You may only purge messages within the last two weeks.", color=config.ERROR_COLOR)
 
     if purge and time_value < 0:
-        return nextcord.Embed(
-            description=":x: You must specify a time period within which to purge messages.",
-            color=config.ERROR_COLOR,
-        )
+        return nextcord.Embed(description=":x: You must specify a time period within which to purge messages.", color=config.ERROR_COLOR)
 
     return time_value
 
@@ -156,32 +134,22 @@ def perms_check(
 ):
     # Check if member is valid
     if not isinstance(member, nextcord.Member) or member is None:
-        return False, nextcord.Embed(
-            description=":x: Member not found.", color=config.ERROR_COLOR
-        )
+        return False, nextcord.Embed(description=":x: Member not found.", color=config.ERROR_COLOR)
 
     if isinstance(ctx, commands.Context):
         author = ctx.author
     elif isinstance(ctx, nextcord.Interaction):
         author = ctx.user
     else:
-        return False, nextcord.Embed(
-            description=":x: Invalid context.", color=config.ERROR_COLOR
-        )
+        return False, nextcord.Embed(description=":x: Invalid context.", color=config.ERROR_COLOR)
 
     # Toggle for self-action check
     if author_check and member == author:
-        return False, nextcord.Embed(
-            description=":x: You cannot perform this action on yourself.",
-            color=config.ERROR_COLOR,
-        )
+        return False, nextcord.Embed(description=":x: You cannot perform this action on yourself.", color=config.ERROR_COLOR)
 
     # Toggle for server owner check
     if owner_check and member == ctx.guild.owner:
-        return False, nextcord.Embed(
-            description=":x: You cannot perform this action on the server owner.",
-            color=config.ERROR_COLOR,
-        )
+        return False, nextcord.Embed(description=":x: You cannot perform this action on the server owner.", color=config.ERROR_COLOR)
 
     # Toggle for role hierarchy checks
     if role_check:
@@ -189,8 +157,7 @@ def perms_check(
             return (
                 False,
                 nextcord.Embed(
-                    description=":x: You cannot perform this action on someone with a higher or equal role than yours.",
-                    color=config.ERROR_COLOR,
+                    description=":x: You cannot perform this action on someone with a higher or equal role than yours.", color=config.ERROR_COLOR
                 ),
             )
 
@@ -198,8 +165,7 @@ def perms_check(
             return (
                 False,
                 nextcord.Embed(
-                    description=":x: I cannot perform this action on someone with a higher or equal role than mine.",
-                    color=config.ERROR_COLOR,
+                    description=":x: I cannot perform this action on someone with a higher or equal role than mine.", color=config.ERROR_COLOR
                 ),
             )
 
@@ -224,14 +190,7 @@ async def uptime_fetcher():
 
 
 class ConfirmationView(View):
-    def __init__(
-        self,
-        ctx: commands.Context | nextcord.Interaction,
-        member: nextcord.Member,
-        action: str,
-        reason: str,
-        duration: str = None,
-    ):
+    def __init__(self, ctx: commands.Context | nextcord.Interaction, member: nextcord.Member, action: str, reason: str, duration: str = None):
         super().__init__(timeout=30)
         self.ctx = ctx
         self.member = member
@@ -240,14 +199,10 @@ class ConfirmationView(View):
         self.duration = duration
         self.result = None
         self.message = None
-        self.initiating_user = (
-            ctx.author if isinstance(ctx, commands.Context) else ctx.user
-        )
+        self.initiating_user = ctx.author if isinstance(ctx, commands.Context) else ctx.user
 
     @nextcord.ui.button(label="Confirm", style=nextcord.ButtonStyle.green)
-    async def confirm(
-        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
-    ):
+    async def confirm(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         if interaction.user != self.initiating_user:
             return
 
@@ -256,9 +211,7 @@ class ConfirmationView(View):
         self.stop()
 
     @nextcord.ui.button(label="Cancel", style=nextcord.ButtonStyle.red)
-    async def cancel(
-        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
-    ):
+    async def cancel(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         if interaction.user != self.initiating_user:
             return
 
@@ -268,15 +221,9 @@ class ConfirmationView(View):
 
     async def disable_buttons(self, interaction: nextcord.Interaction):
         if self.result:
-            new_embed = nextcord.Embed(
-                description=f"{self.action.capitalize()} confirmed.",
-                color=config.EMBED_COLOR,
-            )
+            new_embed = nextcord.Embed(description=f"{self.action.capitalize()} confirmed.", color=config.EMBED_COLOR)
         else:
-            new_embed = nextcord.Embed(
-                description=f"{self.action.capitalize()} cancelled.",
-                color=config.EMBED_COLOR,
-            )
+            new_embed = nextcord.Embed(description=f"{self.action.capitalize()} cancelled.", color=config.EMBED_COLOR)
 
         await interaction.message.edit(embed=new_embed, view=None)
 
@@ -287,9 +234,7 @@ class ConfirmationView(View):
             color=config.EMBED_COLOR,
         )
         if isinstance(self.ctx, commands.Context):
-            self.message = await self.ctx.reply(
-                embed=embed, view=self, mention_author=False
-            )
+            self.message = await self.ctx.reply(embed=embed, view=self, mention_author=False)
         elif isinstance(self.ctx, nextcord.Interaction):
             self.message = await self.ctx.send(embed=embed, view=self)
         else:
@@ -300,10 +245,7 @@ class ConfirmationView(View):
         if self.result is None:
             for child in self.children:
                 child.disabled = True
-            timeout_embed = nextcord.Embed(
-                description=f"{self.action.capitalize()} cancelled; timed out.",
-                color=config.EMBED_COLOR,
-            )
+            timeout_embed = nextcord.Embed(description=f"{self.action.capitalize()} cancelled; timed out.", color=config.EMBED_COLOR)
             self.result = False
             await self.message.edit(embed=timeout_embed, view=None)
 

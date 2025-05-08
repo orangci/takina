@@ -16,39 +16,27 @@ class CaseListButtonView(ui.View):
         self.cases = cases
         self.per_page = per_page
         self.current_page = 0
-        self.max_pages = len(self.cases) // per_page + (
-            1 if len(self.cases) % per_page > 0 else 0
-        )
+        self.max_pages = len(self.cases) // per_page + (1 if len(self.cases) % per_page > 0 else 0)
 
     def get_page_embed(self):
-        embed = nextcord.Embed(
-            title=f"Cases - Page {self.current_page + 1}/{self.max_pages}",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(title=f"Cases - Page {self.current_page + 1}/{self.max_pages}", color=config.EMBED_COLOR)
         start = self.current_page * self.per_page
         end = start + self.per_page
         page_cases = self.cases[start:end]
         embed.description = "\n".join(
-            [
-                f"`{case['case_id']}`: **{case['action'].capitalize()}** <t:{int(case['timestamp'].timestamp())}:R>"
-                for case in page_cases
-            ]
+            [f"`{case['case_id']}`: **{case['action'].capitalize()}** <t:{int(case['timestamp'].timestamp())}:R>" for case in page_cases]
         )
         return embed
 
     @ui.button(label="«", style=nextcord.ButtonStyle.grey)
-    async def first_button(
-        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
-    ):
+    async def first_button(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         self.current_page = 0
         self.next_button.disabled = False
         self.previous_button.disabled = True
         await interaction.response.edit_message(embed=self.get_page_embed(), view=self)
 
     @ui.button(label="<", style=nextcord.ButtonStyle.grey, disabled=True)
-    async def previous_button(
-        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
-    ):
+    async def previous_button(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         self.current_page -= 1
         if self.current_page == 0:
             button.disabled = True
@@ -56,9 +44,7 @@ class CaseListButtonView(ui.View):
         await interaction.response.edit_message(embed=self.get_page_embed(), view=self)
 
     @ui.button(label=">", style=nextcord.ButtonStyle.grey)
-    async def next_button(
-        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
-    ):
+    async def next_button(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         self.current_page += 1
         if self.current_page == self.max_pages - 1:
             button.disabled = True
@@ -66,9 +52,7 @@ class CaseListButtonView(ui.View):
         await interaction.response.edit_message(embed=self.get_page_embed(), view=self)
 
     @ui.button(label="»", style=nextcord.ButtonStyle.grey)
-    async def last_button(
-        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
-    ):
+    async def last_button(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         self.current_page = self.max_pages - 1
         self.next_button.disabled = True
         self.previous_button.disabled = False
@@ -86,9 +70,7 @@ class ModLog(commands.Cog):
 
     @modlog.subcommand(description="Set the modlog channel")
     @application_checks.has_permissions(manage_guild=True)
-    async def channel(
-        self, interaction: nextcord.Interaction, channel: nextcord.TextChannel
-    ):
+    async def channel(self, interaction: nextcord.Interaction, channel: nextcord.TextChannel):
         guild_id = interaction.guild_id
 
         guild_data = await self.db.modlog_settings.find_one({"guild_id": guild_id})
@@ -97,13 +79,9 @@ class ModLog(commands.Cog):
 
         guild_data["modlog_channel_id"] = channel.id
 
-        await self.db.modlog_settings.update_one(
-            {"guild_id": guild_id}, {"$set": guild_data}, upsert=True
-        )
+        await self.db.modlog_settings.update_one({"guild_id": guild_id}, {"$set": guild_data}, upsert=True)
 
-        await interaction.send(
-            f"Modlog channel has been set to {channel.mention}.", ephemeral=True
-        )
+        await interaction.send(f"Modlog channel has been set to {channel.mention}.", ephemeral=True)
 
     async def log_action(
         self,
@@ -114,9 +92,7 @@ class ModLog(commands.Cog):
         duration: str = None,
         ctx: commands.Context or nextcord.Interaction = None,
     ):
-        guild_id = (
-            member.guild.id if isinstance(member, nextcord.Member) else ctx.guild.id
-        )
+        guild_id = member.guild.id if isinstance(member, nextcord.Member) else ctx.guild.id
         guild_data = await self.db.modlog_settings.find_one({"guild_id": guild_id})
         if not guild_data:
             return
@@ -129,9 +105,7 @@ class ModLog(commands.Cog):
         if not modlog_channel:
             return
 
-        case_id = (
-            await self.db.modlog_cases.count_documents({"guild_id": guild_id})
-        ) + 1
+        case_id = (await self.db.modlog_cases.count_documents({"guild_id": guild_id})) + 1
         timestamp = datetime.datetime.now(datetime.UTC)
 
         case_data = {
@@ -160,15 +134,10 @@ class ModLog(commands.Cog):
             embed.set_thumbnail(url=member.avatar.url)
         await modlog_channel.send(embed=embed)
 
-    @commands.command(
-        name="case",
-        help="Fetch information on a moderation case. \nUsage: `case <case id>`.",
-    )
+    @commands.command(name="case", help="Fetch information on a moderation case. \nUsage: `case <case id>`.")
     @commands.has_permissions(moderate_members=True)
     async def get_case(self, ctx, case_id: int):
-        case = await self.db.modlog_cases.find_one(
-            {"guild_id": ctx.guild.id, "case_id": case_id}
-        )
+        case = await self.db.modlog_cases.find_one({"guild_id": ctx.guild.id, "case_id": case_id})
         if not case:
             embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = "❌ Case not found."
@@ -176,16 +145,10 @@ class ModLog(commands.Cog):
             return
 
         embed = nextcord.Embed(color=config.EMBED_COLOR, timestamp=case["timestamp"])
-        action = (
-            f"{case['action'].capitalize()} ({case['duration']})"
-            if case["duration"]
-            else case["action"].capitalize()
-        )
+        action = f"{case['action'].capitalize()} ({case['duration']})" if case["duration"] else case["action"].capitalize()
         embed.add_field(name="Action", value=action, inline=True)
         embed.add_field(name="Case", value=f"#{case['case_id']}", inline=True)
-        embed.add_field(
-            name="Moderator", value=f"<@{case['moderator_id']}>", inline=True
-        )
+        embed.add_field(name="Moderator", value=f"<@{case['moderator_id']}>", inline=True)
         embed.add_field(name="Target", value=f"<@{case['member_id']}>", inline=False)
         target = await self.bot.fetch_user(case["member_id"])
         if target.avatar:
@@ -193,17 +156,10 @@ class ModLog(commands.Cog):
         embed.add_field(name="Reason", value=case["reason"], inline=False)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="case_edit",
-        aliases=["caseedit", "editc"],
-        help="Edit a moderation case. \nUsage: `editc <case id> <new reason>`.",
-    )
+    @commands.command(name="case_edit", aliases=["caseedit", "editc"], help="Edit a moderation case. \nUsage: `editc <case id> <new reason>`.")
     @commands.has_permissions(moderate_members=True)
     async def edit_case(self, ctx, case_id: int, *, new_reason: str):
-        result = await self.db.modlog_cases.update_one(
-            {"guild_id": ctx.guild.id, "case_id": case_id},
-            {"$set": {"reason": new_reason}},
-        )
+        result = await self.db.modlog_cases.update_one({"guild_id": ctx.guild.id, "case_id": case_id}, {"$set": {"reason": new_reason}})
         if result.modified_count == 0:
             embed = nextcord.Embed(color=config.ERROR_COLOR)
             embed.description = "❌ Case not found or could not be updated."
@@ -213,10 +169,7 @@ class ModLog(commands.Cog):
             embed.description = f"✅ Case `{case_id}`'s reason has been updated."
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="cases",
-        help="List all the moderation cases in the server. \nUsage: `cases`.",
-    )
+    @commands.command(name="cases", help="List all the moderation cases in the server. \nUsage: `cases`.")
     @commands.has_permissions(moderate_members=True)
     async def get_cases(self, ctx, user: nextcord.Member = None):
         query = {"guild_id": ctx.guild.id}
@@ -233,10 +186,7 @@ class ModLog(commands.Cog):
         view = CaseListButtonView(cases)
         await ctx.reply(embed=view.get_page_embed(), view=view, mention_author=False)
 
-    @commands.command(
-        name="modcases",
-        help="Lists all moderation cases in which the user was the moderator. \nUsage: `modcases <user>`.",
-    )
+    @commands.command(name="modcases", help="Lists all moderation cases in which the user was the moderator. \nUsage: `modcases <user>`.")
     @commands.has_permissions(moderate_members=True)
     async def get_mod_cases(self, ctx, user: str = None):
         if user:
@@ -247,25 +197,17 @@ class ModLog(commands.Cog):
         else:
             user = ctx.author
 
-        cases = await self.db.modlog_cases.find(
-            {"guild_id": ctx.guild.id, "moderator_id": user.id}
-        ).to_list(length=None)
+        cases = await self.db.modlog_cases.find({"guild_id": ctx.guild.id, "moderator_id": user.id}).to_list(length=None)
         if not cases:
             embed = nextcord.Embed(color=config.ERROR_COLOR)
-            embed.description = (
-                f"❌ {user.mention} has not performed any moderation actions."
-            )
+            embed.description = f"❌ {user.mention} has not performed any moderation actions."
             await ctx.reply(embed=embed, mention_author=False)
             return
 
         view = CaseListButtonView(cases)
         await ctx.reply(embed=view.get_page_embed(), view=view, mention_author=False)
 
-    @commands.command(
-        name="modstats",
-        aliases=["ms"],
-        help="Lists the moderation stats of a user. \nUsage: `modstats <user>`.",
-    )
+    @commands.command(name="modstats", aliases=["ms"], help="Lists the moderation stats of a user. \nUsage: `modstats <user>`.")
     @commands.has_permissions(moderate_members=True)
     async def get_mod_stats(self, ctx, user: nextcord.Member = None):
         if not user:
@@ -282,17 +224,9 @@ class ModLog(commands.Cog):
             {"$match": {"guild_id": guild_id, "moderator_id": user.id}},
             {
                 "$facet": {
-                    "last_7_days": [
-                        {"$match": {"timestamp": {"$gte": past_7_days}}},
-                        {"$group": {"_id": "$action", "count": {"$sum": 1}}},
-                    ],
-                    "last_30_days": [
-                        {"$match": {"timestamp": {"$gte": past_30_days}}},
-                        {"$group": {"_id": "$action", "count": {"$sum": 1}}},
-                    ],
-                    "all_time": [
-                        {"$group": {"_id": "$action", "count": {"$sum": 1}}},
-                    ],
+                    "last_7_days": [{"$match": {"timestamp": {"$gte": past_7_days}}}, {"$group": {"_id": "$action", "count": {"$sum": 1}}}],
+                    "last_30_days": [{"$match": {"timestamp": {"$gte": past_30_days}}}, {"$group": {"_id": "$action", "count": {"$sum": 1}}}],
+                    "all_time": [{"$group": {"_id": "$action", "count": {"$sum": 1}}}],
                 }
             },
         ]
@@ -308,20 +242,11 @@ class ModLog(commands.Cog):
                 ]
             )
 
-        embed = nextcord.Embed(
-            title=f"Modstats for {user.display_name}",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(title=f"Modstats for {user.display_name}", color=config.EMBED_COLOR)
 
-        embed.add_field(
-            name="Last 7 Days", value=f"{format_stats(stats.get('last_7_days', []))}"
-        )
-        embed.add_field(
-            name="Last 30 Days", value=f"{format_stats(stats.get('last_30_days', []))}"
-        )
-        embed.add_field(
-            name="All Time", value=f"{format_stats(stats.get('all_time', []))}"
-        )
+        embed.add_field(name="Last 7 Days", value=f"{format_stats(stats.get('last_7_days', []))}")
+        embed.add_field(name="Last 30 Days", value=f"{format_stats(stats.get('last_30_days', []))}")
+        embed.add_field(name="All Time", value=f"{format_stats(stats.get('all_time', []))}")
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -340,27 +265,17 @@ class SlashModLog(commands.Cog):
     @application_checks.has_permissions(moderate_members=True)
     async def case_fetch(self, interaction: nextcord.Interaction, case_id: int):
         await interaction.response.defer()
-        case = await self.db.modlog_cases.find_one(
-            {"guild_id": interaction.guild.id, "case_id": case_id}
-        )
+        case = await self.db.modlog_cases.find_one({"guild_id": interaction.guild.id, "case_id": case_id})
         if not case:
-            embed = nextcord.Embed(
-                color=config.ERROR_COLOR, description="❌ Case not found."
-            )
+            embed = nextcord.Embed(color=config.ERROR_COLOR, description="❌ Case not found.")
             await interaction.send(embed=embed, ephemeral=True)
             return
 
         embed = nextcord.Embed(color=config.EMBED_COLOR, timestamp=case["timestamp"])
-        action = (
-            f"{case['action'].capitalize()} ({case['duration']})"
-            if case["duration"]
-            else case["action"].capitalize()
-        )
+        action = f"{case['action'].capitalize()} ({case['duration']})" if case["duration"] else case["action"].capitalize()
         embed.add_field(name="Action", value=action, inline=True)
         embed.add_field(name="Case", value=f"#{case['case_id']}", inline=True)
-        embed.add_field(
-            name="Moderator", value=f"<@{case['moderator_id']}>", inline=True
-        )
+        embed.add_field(name="Moderator", value=f"<@{case['moderator_id']}>", inline=True)
         embed.add_field(name="Target", value=f"<@{case['member_id']}>", inline=False)
         target = await self.bot.fetch_user(case["member_id"])
         if target.avatar:
@@ -370,34 +285,19 @@ class SlashModLog(commands.Cog):
 
     @case.subcommand(name="edit", description="Edit the reason for a case.")
     @application_checks.has_permissions(moderate_members=True)
-    async def case_edit(
-        self, interaction: nextcord.Interaction, case_id: int, new_reason: str
-    ):
+    async def case_edit(self, interaction: nextcord.Interaction, case_id: int, new_reason: str):
         await interaction.response.defer()
-        result = await self.db.modlog_cases.update_one(
-            {"guild_id": interaction.guild.id, "case_id": case_id},
-            {"$set": {"reason": new_reason}},
-        )
+        result = await self.db.modlog_cases.update_one({"guild_id": interaction.guild.id, "case_id": case_id}, {"$set": {"reason": new_reason}})
         if result.modified_count == 0:
-            embed = nextcord.Embed(
-                color=config.ERROR_COLOR,
-                description="❌ Case not found or could not be updated.",
-            )
+            embed = nextcord.Embed(color=config.ERROR_COLOR, description="❌ Case not found or could not be updated.")
             await interaction.send(embed=embed, ephemeral=True)
         else:
-            embed = nextcord.Embed(
-                color=config.EMBED_COLOR,
-                description=f"✅ Case `{case_id}`'s reason has been updated.",
-            )
+            embed = nextcord.Embed(color=config.EMBED_COLOR, description=f"✅ Case `{case_id}`'s reason has been updated.")
             await interaction.send(embed=embed)
 
-    @nextcord.slash_command(
-        name="cases", description="View all cases or cases for a user."
-    )
+    @nextcord.slash_command(name="cases", description="View all cases or cases for a user.")
     @application_checks.has_permissions(moderate_members=True)
-    async def cases(
-        self, interaction: nextcord.Interaction, user: nextcord.Member = None
-    ):
+    async def cases(self, interaction: nextcord.Interaction, user: nextcord.Member = None):
         await interaction.response.defer()
         query = {"guild_id": interaction.guild.id}
         if user:
@@ -405,54 +305,36 @@ class SlashModLog(commands.Cog):
 
         cases = await self.db.modlog_cases.find(query).to_list(length=None)
         if not cases:
-            embed = nextcord.Embed(
-                color=config.ERROR_COLOR, description="❌ No cases found."
-            )
+            embed = nextcord.Embed(color=config.ERROR_COLOR, description="❌ No cases found.")
             await interaction.send(embed=embed, ephemeral=True)
             return
 
         view = CaseListButtonView(cases)
         await interaction.send(embed=view.get_page_embed(), view=view)
 
-    @nextcord.slash_command(
-        name="modcases", description="View a moderator's involved cases."
-    )
+    @nextcord.slash_command(name="modcases", description="View a moderator's involved cases.")
     @application_checks.has_permissions(moderate_members=True)
     async def modcases(
         self,
         interaction: nextcord.Interaction,
-        user: nextcord.Member = nextcord.SlashOption(
-            description="The user whose moderation cases you want to fetch.",
-            required=False,
-        ),
+        user: nextcord.Member = nextcord.SlashOption(description="The user whose moderation cases you want to fetch.", required=False),
     ):
         await interaction.response.defer()
         if not user:
             user = interaction.user
-        cases = await self.db.modlog_cases.find(
-            {"guild_id": interaction.guild.id, "moderator_id": user.id}
-        ).to_list(length=None)
+        cases = await self.db.modlog_cases.find({"guild_id": interaction.guild.id, "moderator_id": user.id}).to_list(length=None)
         if not cases:
-            embed = nextcord.Embed(
-                color=config.ERROR_COLOR,
-                description=f"❌ {user.mention} has not performed any moderation actions.",
-            )
+            embed = nextcord.Embed(color=config.ERROR_COLOR, description=f"❌ {user.mention} has not performed any moderation actions.")
             await interaction.send(embed=embed, ephemeral=True)
             return
 
         view = CaseListButtonView(cases)
         await interaction.send(embed=view.get_page_embed(), view=view)
 
-    @nextcord.slash_command(
-        name="modstats", description="Fetch moderation statistics on a user."
-    )
+    @nextcord.slash_command(name="modstats", description="Fetch moderation statistics on a user.")
     @application_checks.has_permissions(moderate_members=True)
     async def get_mod_stats(
-        self,
-        interaction: nextcord.Interaction,
-        user: nextcord.Member = nextcord.SlashOption(
-            description="User to fetch modstats on", required=False
-        ),
+        self, interaction: nextcord.Interaction, user: nextcord.Member = nextcord.SlashOption(description="User to fetch modstats on", required=False)
     ):
         await interaction.response.defer()
         if not user:
@@ -469,17 +351,9 @@ class SlashModLog(commands.Cog):
             {"$match": {"guild_id": guild_id, "moderator_id": user.id}},
             {
                 "$facet": {
-                    "last_7_days": [
-                        {"$match": {"timestamp": {"$gte": past_7_days}}},
-                        {"$group": {"_id": "$action", "count": {"$sum": 1}}},
-                    ],
-                    "last_30_days": [
-                        {"$match": {"timestamp": {"$gte": past_30_days}}},
-                        {"$group": {"_id": "$action", "count": {"$sum": 1}}},
-                    ],
-                    "all_time": [
-                        {"$group": {"_id": "$action", "count": {"$sum": 1}}},
-                    ],
+                    "last_7_days": [{"$match": {"timestamp": {"$gte": past_7_days}}}, {"$group": {"_id": "$action", "count": {"$sum": 1}}}],
+                    "last_30_days": [{"$match": {"timestamp": {"$gte": past_30_days}}}, {"$group": {"_id": "$action", "count": {"$sum": 1}}}],
+                    "all_time": [{"$group": {"_id": "$action", "count": {"$sum": 1}}}],
                 }
             },
         ]
@@ -495,20 +369,11 @@ class SlashModLog(commands.Cog):
                 ]
             )
 
-        embed = nextcord.Embed(
-            title=f"Modstats for {user.display_name}",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(title=f"Modstats for {user.display_name}", color=config.EMBED_COLOR)
 
-        embed.add_field(
-            name="Last 7 Days", value=f"{format_stats(stats.get('last_7_days', []))}"
-        )
-        embed.add_field(
-            name="Last 30 Days", value=f"{format_stats(stats.get('last_30_days', []))}"
-        )
-        embed.add_field(
-            name="All Time", value=f"{format_stats(stats.get('all_time', []))}"
-        )
+        embed.add_field(name="Last 7 Days", value=f"{format_stats(stats.get('last_7_days', []))}")
+        embed.add_field(name="Last 30 Days", value=f"{format_stats(stats.get('last_30_days', []))}")
+        embed.add_field(name="All Time", value=f"{format_stats(stats.get('all_time', []))}")
 
         await interaction.send(embed=embed)
 

@@ -16,27 +16,19 @@ class CustomRoleManager(commands.Cog):
 
     async def user_has_bypass(self, guild_id: int, user_id: int):
         """Check if a user has been granted a boost bypass by an admin."""
-        result = await self.db.bypass.find_one(
-            {"guild_id": guild_id, "user_id": user_id}
-        )
+        result = await self.db.bypass.find_one({"guild_id": guild_id, "user_id": user_id})
         return bool(result)
 
     async def set_bypass(self, guild_id: int, user_id: int, bypass: bool):
         """Set or remove bypass for a user."""
         if bypass:
-            await self.db.bypass.update_one(
-                {"guild_id": guild_id, "user_id": user_id},
-                {"$set": {"bypass": True}},
-                upsert=True,
-            )
+            await self.db.bypass.update_one({"guild_id": guild_id, "user_id": user_id}, {"$set": {"bypass": True}}, upsert=True)
         else:
             await self.db.bypass.delete_one({"guild_id": guild_id, "user_id": user_id})
 
     async def get_custom_role(self, guild: nextcord.Guild, user: nextcord.Member):
         """Retrieve the user's custom role if they have one."""
-        result = await self.db.custom_roles.find_one(
-            {"guild_id": guild.id, "user_id": user.id}
-        )
+        result = await self.db.custom_roles.find_one({"guild_id": guild.id, "user_id": user.id})
         if result:
             return guild.get_role(result["role_id"])
         return None
@@ -53,11 +45,7 @@ class CustomRoleManager(commands.Cog):
             await new_role.edit(position=position_role.position - 1)
 
         # Save the role in the database
-        await self.db.custom_roles.update_one(
-            {"guild_id": guild.id, "user_id": user.id},
-            {"$set": {"role_id": new_role.id}},
-            upsert=True,
-        )
+        await self.db.custom_roles.update_one({"guild_id": guild.id, "user_id": user.id}, {"$set": {"role_id": new_role.id}}, upsert=True)
         return new_role
 
     async def delete_custom_role(self, guild: nextcord.Guild, user: nextcord.Member):
@@ -65,9 +53,7 @@ class CustomRoleManager(commands.Cog):
         custom_role = await self.get_custom_role(guild, user)
         if custom_role:
             await custom_role.delete()
-            await self.db.custom_roles.delete_one(
-                {"guild_id": guild.id, "user_id": user.id}
-            )
+            await self.db.custom_roles.delete_one({"guild_id": guild.id, "user_id": user.id})
 
     @commands.Cog.listener()
     async def on_member_update(self, before: nextcord.Member, after: nextcord.Member):
@@ -96,9 +82,7 @@ class CustomRoleManager(commands.Cog):
         await self.set_bypass(ctx.guild.id, user.id, bypass)
         status = "granted" if bypass else "revoked"
         embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = (
-            f"✅ Booster role requirement bypass {status} for {user.mention}."
-        )
+        embed.description = f"✅ Booster role requirement bypass {status} for {user.mention}."
         await ctx.reply(embed=embed, mention_author=False)
 
     @boostrole.command(name="create")
@@ -114,21 +98,15 @@ class CustomRoleManager(commands.Cog):
 
         # Check if the user is a booster or has bypass
         booster_role = nextcord.utils.get(ctx.guild.roles, id=lib.BOOSTER_ROLE_ID)
-        if booster_role not in ctx.author.roles and not await self.user_has_bypass(
-            ctx.guild.id, ctx.author.id
-        ):
+        if booster_role not in ctx.author.roles and not await self.user_has_bypass(ctx.guild.id, ctx.author.id):
             embed = nextcord.Embed(color=config.ERROR_COLOR)
-            embed.description = (
-                ":x: You must be boosting the server to create a custom role."
-            )
+            embed.description = ":x: You must be boosting the server to create a custom role."
             await ctx.reply(embed=embed, mention_author=False)
             return
 
         new_role = await self.create_custom_role(ctx.guild, ctx.author)
         embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = (
-            f":white_check_mark: Your custom role {new_role.mention} has been created!"
-        )
+        embed.description = f":white_check_mark: Your custom role {new_role.mention} has been created!"
         await ctx.reply(embed=embed, mention_author=False)
 
     @boostrole.command(name="name")
@@ -149,9 +127,7 @@ class CustomRoleManager(commands.Cog):
 
     @boostrole.command(name="colour", aliases=["color"])
     @lib.is_in_guild()
-    async def set_custom_role_colour(
-        self, ctx: commands.Context, colour: nextcord.Colour
-    ):
+    async def set_custom_role_colour(self, ctx: commands.Context, colour: nextcord.Colour):
         """Set the colour of the user's custom role. Usage: `boostrole colour #ffaa00`."""
         custom_role = await self.get_custom_role(ctx.guild, ctx.author)
         if custom_role is None:
@@ -162,9 +138,7 @@ class CustomRoleManager(commands.Cog):
 
         await custom_role.edit(colour=colour)
         embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = (
-            f"✅ Your custom role colour has been changed to **{colour}**."
-        )
+        embed.description = f"✅ Your custom role colour has been changed to **{colour}**."
         await ctx.reply(embed=embed, mention_author=False)
 
     @boostrole.command(name="icon")
@@ -189,9 +163,7 @@ class CustomRoleManager(commands.Cog):
 
         if not icon:
             embed = nextcord.Embed(color=config.ERROR_COLOR)
-            embed.description = (
-                ":x: You need to provide a valid URL or an image attachment."
-            )
+            embed.description = ":x: You need to provide a valid URL or an image attachment."
             await ctx.reply(embed=embed, mention_author=False)
             return
 

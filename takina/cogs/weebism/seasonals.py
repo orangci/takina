@@ -73,10 +73,7 @@ class AnimeSeasonals(commands.Cog):
             seasonals = data.get("data", [])
 
             if not seasonals:
-                return None, nextcord.Embed(
-                    description="No seasonal anime available.",
-                    color=config.ERROR_COLOR,
-                )
+                return None, nextcord.Embed(description="No seasonal anime available.", color=config.ERROR_COLOR)
 
             pages = []
             for i in range(0, len(seasonals), 5):
@@ -99,12 +96,9 @@ class AnimeSeasonals(commands.Cog):
             return None, nextcord.Embed(description=str(e), color=config.ERROR_COLOR)
 
     @commands.command(
-        aliases=["season"],
-        help="Fetch a season's airing anime.\nUsage: `season <season> <year>` or `season` to fetch the current season.",
+        aliases=["season"], help="Fetch a season's airing anime.\nUsage: `season <season> <year>` or `season` to fetch the current season."
     )
-    async def seasonals(
-        self, ctx: commands.Context, season: str = None, year: int = None
-    ):
+    async def seasonals(self, ctx: commands.Context, season: str = None, year: int = None):
         emoji = await oclib.fetch_random_emoji()
         pages, error_embed = await self.build_seasonal_response(season, year, emoji)
 
@@ -114,23 +108,12 @@ class AnimeSeasonals(commands.Cog):
             view = PaginatedView(pages, ctx.author.id)
             await ctx.reply(embed=pages[0], view=view, mention_author=False)
 
-    @nextcord.slash_command(
-        name="seasonals",
-        description="Fetch a season's airing anime.",
-    )
+    @nextcord.slash_command(name="seasonals", description="Fetch a season's airing anime.")
     async def seasonals_slash(
         self,
         interaction: Interaction,
-        season: str = SlashOption(
-            name="season",
-            description="The anime season (winter, spring, summer, fall)",
-            required=False,
-        ),
-        year: int = SlashOption(
-            name="year",
-            description="The anime year",
-            required=False,
-        ),
+        season: str = SlashOption(name="season", description="The anime season (winter, spring, summer, fall)", required=False),
+        year: int = SlashOption(name="year", description="The anime year", required=False),
     ):
         await interaction.response.defer()
         pages, error_embed = await self.build_seasonal_response(season, year)

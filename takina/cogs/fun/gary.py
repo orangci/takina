@@ -24,19 +24,13 @@ class Gary(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @commands.command(
-        name="gary",
-        help="Get a random picture of gary.",
-    )
+    @commands.command(name="gary", help="Get a random picture of gary.")
     @commands.has_permissions(embed_links=True)
     async def gary(self, ctx: commands.Context):
         embed = await gary_api("gary")
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="goober",
-        help="Get a random picture of goober.",
-    )
+    @commands.command(name="goober", help="Get a random picture of goober.")
     @commands.has_permissions(embed_links=True)
     async def goober(self, ctx: commands.Context):
         embed = await gary_api("goober")

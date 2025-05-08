@@ -12,10 +12,7 @@ class Books(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(
-        help="Fetch information on a book title or ISBN. \nUsage: `book Yumi and the Nightmare Painter`.",
-        aliases=["books"],
-    )
+    @commands.command(help="Fetch information on a book title or ISBN. \nUsage: `book Yumi and the Nightmare Painter`.", aliases=["books"])
     async def book(self, ctx: commands.Context, *, book: str):
         api = GoogleBooksAPI()
         book_data = api.get_book_by_title(book)
@@ -26,35 +23,17 @@ class Books(commands.Cog):
             await ctx.reply(embed=embed, mention_author=False)
             return
 
-        embed = nextcord.Embed(
-            title=book_data.title, color=config.EMBED_COLOR, description=""
-        )
+        embed = nextcord.Embed(title=book_data.title, color=config.EMBED_COLOR, description="")
 
         embed.description += f"-# {book_data.subtitle}\n" if book_data.subtitle else ""
-        embed.description += (
-            f"\n> **Authors**: {', '.join(author for author in book_data.authors)}"
-            if book_data.authors
-            else ""
-        )
-        embed.description += (
-            f"\n> **Subjects**: {', '.join(subject for subject in book_data.subjects)}"
-            if book_data.subjects
-            else ""
-        )
-        embed.description += (
-            f"\n> **Pagecount**: {book_data.page_count}" if book_data.page_count else ""
-        )
+        embed.description += f"\n> **Authors**: {', '.join(author for author in book_data.authors)}" if book_data.authors else ""
+        embed.description += f"\n> **Subjects**: {', '.join(subject for subject in book_data.subjects)}" if book_data.subjects else ""
+        embed.description += f"\n> **Pagecount**: {book_data.page_count}" if book_data.page_count else ""
         try:
             embed.description += f"\n> **Published**: <t:{int(datetime.strptime(book_data.published_date, '%Y-%m-%d').timestamp())}:D>"
         except Exception:
-            embed.description += (
-                f"\n> **Published**: {book_data.published_date}"
-                if book_data.published_date
-                else ""
-            )
-        embed.description += (
-            f"\n> **Publisher**: {book_data.publisher}" if book_data.publisher else ""
-        )
+            embed.description += f"\n> **Published**: {book_data.published_date}" if book_data.published_date else ""
+        embed.description += f"\n> **Publisher**: {book_data.publisher}" if book_data.publisher else ""
         embed.description += (
             f"\n\n{book_data.description[:300] + '...' if len(book_data.description) > 300 else book_data.description}"
             if book_data.description
@@ -71,17 +50,12 @@ class SlashBooks(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @nextcord.slash_command(
-        name="book", description="Fetch information on a book title or ISBN."
-    )
+    @nextcord.slash_command(name="book", description="Fetch information on a book title or ISBN.")
     async def slash_book(
         self,
         interaction: nextcord.Interaction,
         *,
-        book: str = nextcord.SlashOption(
-            description="The book title or ISBN to display information on",
-            required=True,
-        ),
+        book: str = nextcord.SlashOption(description="The book title or ISBN to display information on", required=True),
     ):
         await interaction.response.defer()
         api = GoogleBooksAPI()
@@ -93,35 +67,17 @@ class SlashBooks(commands.Cog):
             await interaction.send(embed=embed, ephemeral=True)
             return
 
-        embed = nextcord.Embed(
-            title=book_data.title, color=config.EMBED_COLOR, description=""
-        )
+        embed = nextcord.Embed(title=book_data.title, color=config.EMBED_COLOR, description="")
 
         embed.description += f"-# {book_data.subtitle}\n" if book_data.subtitle else ""
-        embed.description += (
-            f"\n> **Authors**: {', '.join(author for author in book_data.authors)}"
-            if book_data.authors
-            else ""
-        )
-        embed.description += (
-            f"\n> **Subjects**: {', '.join(subject for subject in book_data.subjects)}"
-            if book_data.subjects
-            else ""
-        )
-        embed.description += (
-            f"\n> **Pagecount**: {book_data.page_count}" if book_data.page_count else ""
-        )
+        embed.description += f"\n> **Authors**: {', '.join(author for author in book_data.authors)}" if book_data.authors else ""
+        embed.description += f"\n> **Subjects**: {', '.join(subject for subject in book_data.subjects)}" if book_data.subjects else ""
+        embed.description += f"\n> **Pagecount**: {book_data.page_count}" if book_data.page_count else ""
         try:
             embed.description += f"\n> **Published**: <t:{int(datetime.strptime(book_data.published_date, '%Y-%m-%d').timestamp())}:D>"
         except Exception:
-            embed.description += (
-                f"\n> **Published**: {book_data.published_date}"
-                if book_data.published_date
-                else ""
-            )
-        embed.description += (
-            f"\n> **Publisher**: {book_data.publisher}" if book_data.publisher else ""
-        )
+            embed.description += f"\n> **Published**: {book_data.published_date}" if book_data.published_date else ""
+        embed.description += f"\n> **Publisher**: {book_data.publisher}" if book_data.publisher else ""
         embed.description += (
             f"\n\n{book_data.description[:300] + '...' if len(book_data.description) > 300 else book_data.description}"
             if book_data.description

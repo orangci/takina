@@ -14,19 +14,13 @@ async def find_weather(location: str):
         embed.color = config.ERROR_COLOR
         embed.description = ":x: The location specified was not recognized."
 
-    async with geopy.geocoders.Nominatim(
-        user_agent=config.BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter
-    ) as geolocator:
+    async with geopy.geocoders.Nominatim(user_agent=config.BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter) as geolocator:
         geocode = rate_limiter.AsyncRateLimiter(geolocator.geocode, min_delay_seconds=1)
         location_data = await geocode(location)
 
     if location_data:
         async with OpenMeteo() as open_meteo:
-            forecast = await open_meteo.forecast(
-                latitude=location_data.latitude,
-                longitude=location_data.longitude,
-                current_weather=True,
-            )
+            forecast = await open_meteo.forecast(latitude=location_data.latitude, longitude=location_data.longitude, current_weather=True)
 
         embed.title = f"Weather Report for {location.capitalize()}"
         embed.description = ""
@@ -48,9 +42,7 @@ class Weather(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        help="Weather information command. Usage: `weather Riyadh Saudi Arabia`.",
-    )
+    @commands.command(help="Weather information command. Usage: `weather Riyadh Saudi Arabia`.")
     async def weather(self, ctx: commands.Context, *, location: str):
         embed = await find_weather(location)
         await ctx.reply(embed=embed, mention_author=False)
@@ -66,9 +58,7 @@ class SlashWeather(commands.Cog):
         self,
         interaction: nextcord.Interaction,
         *,
-        location: str = nextcord.SlashOption(
-            description="The location to fetch weather information on.", required=True
-        ),
+        location: str = nextcord.SlashOption(description="The location to fetch weather information on.", required=True),
     ):
         await interaction.response.defer()
         embed = await find_weather(location)

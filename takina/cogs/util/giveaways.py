@@ -15,9 +15,7 @@ from ..libs import oclib
 async def is_valid_emoji(interaction, emoji: str) -> bool:
     if emoji.startswith("<:") and emoji.endswith(">"):
         emoji_id = emoji.split(":")[2][:-1]
-        return (
-            nextcord.utils.get(interaction.guild.emojis, id=int(emoji_id)) is not None
-        )
+        return nextcord.utils.get(interaction.guild.emojis, id=int(emoji_id)) is not None
 
     return emoji in emotelib.EMOJI_DATA
 
@@ -37,19 +35,13 @@ class Giveaway(commands.Cog):
         self,
         interaction: nextcord.Interaction,
         title: str = SlashOption(description="Title of the giveaway", required=True),
-        description: str = SlashOption(
-            description="Description of the giveaway", required=True
-        ),
-        emoji: str = SlashOption(
-            description="Reaction emoji for the giveaway", required=True
-        ),
+        description: str = SlashOption(description="Description of the giveaway", required=True),
+        emoji: str = SlashOption(description="Reaction emoji for the giveaway", required=True),
     ):
         await interaction.response.defer(ephemeral=True)
 
         # Check if there's an active giveaway in the current channel
-        active_giveaway = await self.db.giveaways.find_one(
-            {"channel_id": interaction.channel.id, "active": True}
-        )
+        active_giveaway = await self.db.giveaways.find_one({"channel_id": interaction.channel.id, "active": True})
         if active_giveaway:
             random_emoji = await oclib.fetch_random_emoji()
             embed = nextcord.Embed(
@@ -71,9 +63,7 @@ class Giveaway(commands.Cog):
 
         # Create and send the giveaway embed
         description += f"\n\nReact with {emoji} to join!"
-        embed = nextcord.Embed(
-            title=title, description=description, color=config.EMBED_COLOR
-        )
+        embed = nextcord.Embed(title=title, description=description, color=config.EMBED_COLOR)
         giveaway_message = await interaction.channel.send(embed=embed)
         await giveaway_message.add_reaction(emoji)
 
@@ -88,9 +78,7 @@ class Giveaway(commands.Cog):
             }
         )
 
-        embed = nextcord.Embed(
-            description="✅ Giveaway successfully started.", color=config.EMBED_COLOR
-        )
+        embed = nextcord.Embed(description="✅ Giveaway successfully started.", color=config.EMBED_COLOR)
         await interaction.followup.send(embed=embed, ephemeral=True)
 
     @giveaway.subcommand(name="end", description="End the current giveaway")
@@ -99,15 +87,10 @@ class Giveaway(commands.Cog):
         await interaction.response.defer(ephemeral=True)
 
         # Fetch the active giveaway in the current channel
-        active_giveaway = await self.db.giveaways.find_one(
-            {"channel_id": interaction.channel.id, "active": True}
-        )
+        active_giveaway = await self.db.giveaways.find_one({"channel_id": interaction.channel.id, "active": True})
         if not active_giveaway:
             random_emoji = await oclib.fetch_random_emoji()
-            embed = nextcord.Embed(
-                description=f"{random_emoji}No active giveaway found in this channel.",
-                color=config.EMBED_COLOR,
-            )
+            embed = nextcord.Embed(description=f"{random_emoji}No active giveaway found in this channel.", color=config.EMBED_COLOR)
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
@@ -116,18 +99,11 @@ class Giveaway(commands.Cog):
         giveaway_message = await channel.fetch_message(active_giveaway["message_id"])
 
         # Find users who reacted with the correct emoji
-        users = [
-            user async for user in giveaway_message.reactions[0].users() if not user.bot
-        ]
+        users = [user async for user in giveaway_message.reactions[0].users() if not user.bot]
         if not users:
-            await self.db.giveaways.update_one(
-                {"_id": active_giveaway["_id"]}, {"$set": {"active": False}}
-            )
+            await self.db.giveaways.update_one({"_id": active_giveaway["_id"]}, {"$set": {"active": False}})
             random_emoji = await oclib.fetch_random_emoji()
-            embed = nextcord.Embed(
-                description="✅ Ended giveaway without a winner; no participants detected.",
-                color=config.EMBED_COLOR,
-            )
+            embed = nextcord.Embed(description="✅ Ended giveaway without a winner; no participants detected.", color=config.EMBED_COLOR)
             await interaction.channel.send(embed=embed)
             embed.description = "✅ Giveaway ended successfully."
             await interaction.followup.send(embed=embed, ephemeral=True)
@@ -137,15 +113,9 @@ class Giveaway(commands.Cog):
         winner = random.choice(users)
 
         # Mark giveaway as ended in the database
-        await self.db.giveaways.update_one(
-            {"_id": active_giveaway["_id"]}, {"$set": {"active": False}}
-        )
+        await self.db.giveaways.update_one({"_id": active_giveaway["_id"]}, {"$set": {"active": False}})
 
-        embed = nextcord.Embed(
-            title="Giveaway Ended",
-            description=f"The winner of the giveaway is {winner.mention}!",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(title="Giveaway Ended", description=f"The winner of the giveaway is {winner.mention}!", color=config.EMBED_COLOR)
         await interaction.channel.send(winner.mention, embed=embed)
 
         embed = nextcord.Embed(color=config.EMBED_COLOR)
@@ -158,15 +128,10 @@ class Giveaway(commands.Cog):
         await interaction.response.defer(ephemeral=True)
 
         # Fetch the ended giveaway in the current channel
-        giveaway = await self.db.giveaways.find_one(
-            {"channel_id": interaction.channel.id, "active": False}
-        )
+        giveaway = await self.db.giveaways.find_one({"channel_id": interaction.channel.id, "active": False})
         if not giveaway:
             random_emoji = await oclib.fetch_random_emoji()
-            embed = nextcord.Embed(
-                description=f"{random_emoji}No ended giveaway found in this channel.",
-                color=config.EMBED_COLOR,
-            )
+            embed = nextcord.Embed(description=f"{random_emoji}No ended giveaway found in this channel.", color=config.EMBED_COLOR)
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
@@ -175,15 +140,10 @@ class Giveaway(commands.Cog):
         giveaway_message = await channel.fetch_message(giveaway["message_id"])
 
         # Find users who reacted with the correct emoji
-        users = [
-            user async for user in giveaway_message.reactions[0].users() if not user.bot
-        ]
+        users = [user async for user in giveaway_message.reactions[0].users() if not user.bot]
         if not users:
             random_emoji = await oclib.fetch_random_emoji()
-            embed = nextcord.Embed(
-                description=f"{random_emoji}No reactions found for the giveaway.",
-                color=config.EMBED_COLOR,
-            )
+            embed = nextcord.Embed(description=f"{random_emoji}No reactions found for the giveaway.", color=config.EMBED_COLOR)
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
@@ -192,15 +152,11 @@ class Giveaway(commands.Cog):
 
         random_emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
-            title="Giveaway Rerolled",
-            description=f"{random_emoji}The new winner of the giveaway is {new_winner.mention}!",
-            color=config.EMBED_COLOR,
+            title="Giveaway Rerolled", description=f"{random_emoji}The new winner of the giveaway is {new_winner.mention}!", color=config.EMBED_COLOR
         )
         await interaction.channel.send(embed=embed)
 
-        await interaction.followup.send(
-            "✅ Giveaway rerolled successfully.", ephemeral=True
-        )
+        await interaction.followup.send("✅ Giveaway rerolled successfully.", ephemeral=True)
 
 
 def setup(bot):

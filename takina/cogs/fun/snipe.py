@@ -22,35 +22,22 @@ class Snipe(commands.Cog):
             "attachments": message.attachments,
         }
 
-    @commands.command(
-        name="snipe",
-        help="Snipe the last deleted message in a channel. \nUsage: `snipe`.",
-    )
+    @commands.command(name="snipe", help="Snipe the last deleted message in a channel. \nUsage: `snipe`.")
     @commands.has_permissions(manage_messages=True)
     async def snipe(self, ctx: commands.Context):
         sniped_message = self.sniped_messages.get(ctx.channel.id)
 
         # Handle if there's neither text nor attachments
-        if not sniped_message or (
-            not sniped_message["content"] and not sniped_message["attachments"]
-        ):
-            embed = nextcord.Embed(
-                description="There's nothing to snipe!",
-                color=config.EMBED_COLOR,
-            )
+        if not sniped_message or (not sniped_message["content"] and not sniped_message["attachments"]):
+            embed = nextcord.Embed(description="There's nothing to snipe!", color=config.EMBED_COLOR)
             await ctx.reply(embed=embed, mention_author=False)
             return
 
         # Create embed for sniped message
         embed = nextcord.Embed(
-            description=sniped_message["content"] or "*No text content*",
-            color=config.EMBED_COLOR,
-            timestamp=sniped_message["time"],
+            description=sniped_message["content"] or "*No text content*", color=config.EMBED_COLOR, timestamp=sniped_message["time"]
         )
-        embed.set_author(
-            name=f"{sniped_message['author'].display_name}",
-            icon_url=sniped_message["author"].avatar.url,
-        )
+        embed.set_author(name=f"{sniped_message['author'].display_name}", icon_url=sniped_message["author"].avatar.url)
         embed.set_footer(text=f"Deleted in #{ctx.channel.name}")
 
         embed_list = [embed]
@@ -90,22 +77,14 @@ class ESnipe(commands.Cog):
             "new_content": after.content,  # Store the new content after the edit
         }
 
-    @commands.command(
-        name="esnipe",
-        help="Snipe the last edited message in a channel. \nUsage: `esnipe`.",
-    )
+    @commands.command(name="esnipe", help="Snipe the last edited message in a channel. \nUsage: `esnipe`.")
     @commands.has_permissions(manage_messages=True)
     async def editsnipe(self, ctx: commands.Context):
         sniped_message = self.sniped_messages.get(ctx.channel.id)
 
         # Handle if there's neither text nor attachments
-        if not sniped_message or (
-            not sniped_message["content"] and not sniped_message["attachments"]
-        ):
-            embed = nextcord.Embed(
-                description="There's no edited message to snipe!",
-                color=config.EMBED_COLOR,
-            )
+        if not sniped_message or (not sniped_message["content"] and not sniped_message["attachments"]):
+            embed = nextcord.Embed(description="There's no edited message to snipe!", color=config.EMBED_COLOR)
             await ctx.reply(embed=embed, mention_author=False)
             return
 
@@ -115,10 +94,7 @@ class ESnipe(commands.Cog):
             color=config.EMBED_COLOR,
             timestamp=sniped_message["time"],
         )
-        embed.set_author(
-            name=f"{sniped_message['author'].display_name}",
-            icon_url=sniped_message["author"].avatar.url,
-        )
+        embed.set_author(name=f"{sniped_message['author'].display_name}", icon_url=sniped_message["author"].avatar.url)
         embed.set_footer(text=f"Edited in #{ctx.channel.name}")
 
         embed_list = [embed]

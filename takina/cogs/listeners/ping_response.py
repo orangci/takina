@@ -21,9 +21,7 @@ class PingResponse(commands.Cog):
 
     async def fetch_repo_data(self):
         try:
-            repo_data = await oclib.request(
-                "https://api.github.com/repos/orangci/takina"
-            )
+            repo_data = await oclib.request("https://api.github.com/repos/orangci/takina")
             if not repo_data:
                 return
             self.stars = repo_data.get("stargazers_count", 0)
@@ -31,9 +29,7 @@ class PingResponse(commands.Cog):
         except Exception as e:
             print(f"Error fetching repository data: {e}")
 
-    async def construct_info_embed(
-        self, ctx: commands.Context | nextcord.Interaction | nextcord.Message = None
-    ):
+    async def construct_info_embed(self, ctx: commands.Context | nextcord.Interaction | nextcord.Message = None):
         embed = nextcord.Embed(
             title=f"{await oclib.fetch_random_emoji()}Takina",
             url="https://orangc.net/takina",
@@ -48,9 +44,7 @@ class PingResponse(commands.Cog):
                 self.prefix = f"`{guild_data['prefix']}`, `takina`, `Takina`"
 
         embed.description += f"\n**Prefix**: {self.prefix}"
-        embed.description += (
-            f"\n**Stars**: [{self.stars}](https://github.com/orangci/takina/stargazers)"
-        )
+        embed.description += f"\n**Stars**: [{self.stars}](https://github.com/orangci/takina/stargazers)"
         embed.description += f"\n**Uptime**: {await oclib.uptime_fetcher()}"
         BOT_VERSION_LINK = f"[{config.BOT_VERSION}](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{config.BOT_VERSION.replace('.', '')})"
         embed.description += f"\n**Version**: {BOT_VERSION_LINK}"
@@ -59,8 +53,7 @@ class PingResponse(commands.Cog):
         embed.set_author(
             name="orangc",
             url="https://orangc.net",
-            icon_url=orangc.avatar.url
-            or "https://cdn.discordapp.com/avatars/961063229168164864/4bfbf378514a9dcc7a619b5ce5e7e57c.webp",
+            icon_url=orangc.avatar.url or "https://cdn.discordapp.com/avatars/961063229168164864/4bfbf378514a9dcc7a619b5ce5e7e57c.webp",
         )
         return embed
 
@@ -68,22 +61,16 @@ class PingResponse(commands.Cog):
     async def on_message(self, message: nextcord.Message):
         if self.bot.user.mentioned_in(message) and not message.author.bot:
             if message.content.strip() == message.guild.me.mention:
-                await message.reply(
-                    embed=await self.construct_info_embed(message), mention_author=False
-                )
+                await message.reply(embed=await self.construct_info_embed(message), mention_author=False)
 
     @commands.command(name="info", help="Information about the bot.")
     async def info(self, ctx: commands.Context):
-        await ctx.reply(
-            embed=await self.construct_info_embed(ctx), mention_author=False
-        )
+        await ctx.reply(embed=await self.construct_info_embed(ctx), mention_author=False)
 
     @nextcord.slash_command(name="info", description="Information about the bot.")
     async def slash_info(self, interaction: nextcord.Interaction):
         await interaction.response.defer()
-        await interaction.send(
-            embed=await self.construct_info_embed(interaction), ephemeral=True
-        )
+        await interaction.send(embed=await self.construct_info_embed(interaction), ephemeral=True)
 
 
 def setup(bot: commands.Bot):

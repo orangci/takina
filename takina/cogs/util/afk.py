@@ -15,11 +15,7 @@ class AFK(commands.Cog):
 
     async def set_afk_status(self, user_id: int, reason: str):
         """Sets a user's AFK status in the database."""
-        await self.db.afk.update_one(
-            {"user_id": user_id},
-            {"$set": {"reason": reason}},
-            upsert=True,
-        )
+        await self.db.afk.update_one({"user_id": user_id}, {"$set": {"reason": reason}}, upsert=True)
 
     async def remove_afk_status(self, user_id: int):
         """Removes a user's AFK status from the database."""
@@ -46,21 +42,15 @@ class AFK(commands.Cog):
             # Set AFK status
             await self.set_afk_status(user_id, reason)
             embed = nextcord.Embed(
-                description=f"{await oclib.fetch_random_emoji()}{ctx.author.mention} is now AFK: {reason}",
-                color=config.EMBED_COLOR,
+                description=f"{await oclib.fetch_random_emoji()}{ctx.author.mention} is now AFK: {reason}", color=config.EMBED_COLOR
             )
         await ctx.reply(embed=embed, mention_author=False)
 
     @nextcord.slash_command(
-        name="afk",
-        description=f"Toggle AFK status. When AFK, {config.BOT_NAME.lower().capitalize()} will notify others if they mention you.",
+        name="afk", description=f"Toggle AFK status. When AFK, {config.BOT_NAME.lower().capitalize()} will notify others if they mention you."
     )
     @application_checks.has_permissions(send_messages=True)
-    async def afk_slash(
-        self,
-        interaction: nextcord.Interaction,
-        reason: str = SlashOption(description="Reason for going AFK", required=False),
-    ):
+    async def afk_slash(self, interaction: nextcord.Interaction, reason: str = SlashOption(description="Reason for going AFK", required=False)):
         await interaction.response.defer()
         user_id = interaction.user.id
         current_status = await self.get_afk_status(user_id)
@@ -68,16 +58,12 @@ class AFK(commands.Cog):
         if current_status:
             # Remove AFK status
             await self.remove_afk_status(user_id)
-            embed = nextcord.Embed(
-                description=f"{await oclib.fetch_random_emoji()}You are no longer AFK.",
-                color=config.EMBED_COLOR,
-            )
+            embed = nextcord.Embed(description=f"{await oclib.fetch_random_emoji()}You are no longer AFK.", color=config.EMBED_COLOR)
         else:
             # Set AFK status
             await self.set_afk_status(user_id, reason)
             embed = nextcord.Embed(
-                description=f"{await oclib.fetch_random_emoji()}{interaction.user.mention} is now AFK: {reason}",
-                color=config.EMBED_COLOR,
+                description=f"{await oclib.fetch_random_emoji()}{interaction.user.mention} is now AFK: {reason}", color=config.EMBED_COLOR
             )
         await interaction.send(embed=embed, ephemeral=True)
 
@@ -90,10 +76,7 @@ class AFK(commands.Cog):
         current_status = await self.get_afk_status(message.author.id)
         if current_status:
             await self.remove_afk_status(message.author.id)
-            embed = nextcord.Embed(
-                description=f"{await oclib.fetch_random_emoji()}You are no longer AFK.",
-                color=config.EMBED_COLOR,
-            )
+            embed = nextcord.Embed(description=f"{await oclib.fetch_random_emoji()}You are no longer AFK.", color=config.EMBED_COLOR)
             await message.channel.send(embed=embed, delete_after=5)
 
         # Notify mentions about AFK users
@@ -101,8 +84,7 @@ class AFK(commands.Cog):
             afk_message = await self.get_afk_status(user.id)
             if afk_message:
                 embed = nextcord.Embed(
-                    description=f"{await oclib.fetch_random_emoji()}{user.mention} is currently AFK: {afk_message}",
-                    color=config.EMBED_COLOR,
+                    description=f"{await oclib.fetch_random_emoji()}{user.mention} is currently AFK: {afk_message}", color=config.EMBED_COLOR
                 )
                 await message.channel.send(embed=embed)
 

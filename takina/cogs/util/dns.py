@@ -23,10 +23,7 @@ class DNS(commands.Cog):
     async def dig_slash(
         self,
         interaction: nextcord.Interaction,
-        url: str = nextcord.SlashOption(
-            description="The URL to dig for DNS records. Be sure to remove http or https://",
-            required=True,
-        ),
+        url: str = nextcord.SlashOption(description="The URL to dig for DNS records. Be sure to remove http or https://", required=True),
     ) -> None:
         record_types = ["A", "CNAME", "AAAA", "MX", "TXT", "SRV", "NS"]
         full_answer = ""
@@ -37,9 +34,7 @@ class DNS(commands.Cog):
                 records = "\n".join([str(ans) for ans in answers])
                 if records:
                     emoji = await oclib.fetch_random_emoji()
-                    full_answer += (
-                        f"{emoji}**{record_type} Records**\n```{records}```\n"
-                    )
+                    full_answer += f"{emoji}**{record_type} Records**\n```{records}```\n"
             except _dnsresolver.NoAnswer:
                 continue
             except _dnsresolver.NXDOMAIN:
@@ -49,11 +44,7 @@ class DNS(commands.Cog):
                 return
 
         if full_answer:
-            embed = nextcord.Embed(
-                title=f"DNS Records for {url}",
-                description=full_answer,
-                color=config.EMBED_COLOR,
-            )
+            embed = nextcord.Embed(title=f"DNS Records for {url}", description=full_answer, color=config.EMBED_COLOR)
             await interaction.send(embed=embed, ephemeral=True)
         else:
             embed = nextcord.Embed(color=config.ERROR_COLOR)

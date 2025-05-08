@@ -11,18 +11,9 @@ class Kick(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        name="kick",
-        help="Kick a member from the server. \nUsage: `kick @member`.",
-    )
+    @commands.command(name="kick", help="Kick a member from the server. \nUsage: `kick @member`.")
     @commands.has_permissions(kick_members=True)
-    async def kick(
-        self,
-        ctx: commands.Context,
-        member: str = None,
-        *,
-        reason: str = "No reason provided",
-    ):
+    async def kick(self, ctx: commands.Context, member: str = None, *, reason: str = "No reason provided"):
         member = oclib.extract_user_id(member, ctx)
         if isinstance(member, nextcord.Embed):
             await ctx.reply(embed=member, mention_author=False)
@@ -38,12 +29,9 @@ class Kick(commands.Cog):
             color=config.EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were banned in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-            color=config.EMBED_COLOR,
+            description=f"You were banned in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}", color=config.EMBED_COLOR
         )
-        confirmation = oclib.ConfirmationView(
-            ctx=ctx, member=member, action="kick", reason=reason
-        )
+        confirmation = oclib.ConfirmationView(ctx=ctx, member=member, action="kick", reason=reason)
         confirmed = await confirmation.prompt()
         if not confirmed:
             return
@@ -51,9 +39,7 @@ class Kick(commands.Cog):
             await member.send(embed=dm_embed)
         except Exception:
             embed.set_footer(text="I was unable to DM this user.")
-        await member.kick(
-            reason=f"Kicked by {ctx.author} for: {reason}",
-        )
+        await member.kick(reason=f"Kicked by {ctx.author} for: {reason}")
         await ctx.reply(embed=embed, mention_author=False)
 
         modlog_cog = self.bot.get_cog("ModLog")
@@ -70,9 +56,7 @@ class KickSlash(commands.Cog):
     async def kick(
         self,
         interaction: nextcord.Interaction,
-        member: nextcord.Member = nextcord.SlashOption(
-            description="The user to kick", required=True
-        ),
+        member: nextcord.Member = nextcord.SlashOption(description="The user to kick", required=True),
         reason: str = "No reason provided",
     ):
         await interaction.response.defer()
@@ -86,13 +70,10 @@ class KickSlash(commands.Cog):
             color=config.EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were banned in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}",
-            color=config.EMBED_COLOR,
+            description=f"You were banned in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}", color=config.EMBED_COLOR
         )
 
-        confirmation = oclib.ConfirmationView(
-            ctx=interaction, member=member, action="kick", reason=reason
-        )
+        confirmation = oclib.ConfirmationView(ctx=interaction, member=member, action="kick", reason=reason)
         confirmed = await confirmation.prompt()
         if not confirmed:
             return
@@ -100,19 +81,12 @@ class KickSlash(commands.Cog):
             await member.send(embed=dm_embed)
         except Exception:
             embed.set_footer(text="I was unable to DM this user.")
-        await member.kick(
-            reason=f"Kicked by {interaction.user} for: {reason}",
-        )
+        await member.kick(reason=f"Kicked by {interaction.user} for: {reason}")
         await interaction.send(embed=embed)
 
         modlog_cog = self.bot.get_cog("ModLog")
         if modlog_cog:
-            await modlog_cog.log_action(
-                "kick",
-                member,
-                reason,
-                interaction.user,
-            )
+            await modlog_cog.log_action("kick", member, reason, interaction.user)
 
 
 def setup(bot):

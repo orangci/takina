@@ -21,9 +21,7 @@ class Bot(commands.Bot):
     async def setup_database(self) -> None:
         """Setup MongoDB connection and collections"""
         if not os.getenv("HASDB"):
-            raise Exception(
-                "No Mongo found. Set the HASDB variable in case you do have a Mongo instance runnin'."
-            )
+            raise Exception("No Mongo found. Set the HASDB variable in case you do have a Mongo instance runnin'.")
         self.db_client = AsyncIOMotorClient(config.MONGO_URI)
         self.db = self.db_client.get_database(config.DB_NAME)
 
@@ -52,9 +50,7 @@ bot = Bot(
     case_insensitive=True,
     help_command=helpcmd(),
     owner_ids=[961063229168164864, 716306888492318790],  # orangc, iostpa
-    allowed_mentions=nextcord.AllowedMentions(
-        everyone=False, roles=False, users=True, replied_user=True
-    ),
+    allowed_mentions=nextcord.AllowedMentions(everyone=False, roles=False, users=True, replied_user=True),
     activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="the stars"),
 )
 
@@ -75,22 +71,13 @@ def load_exts(directory):
     return cogs
 
 
-REQUIRED_ENV_VARS = [
-    "TOKEN",
-    "HASDB",
-    "MONGO",
-    "BOT_NAME",
-    "DB_NAME",
-    "EMBED_COLOR",
-]
+REQUIRED_ENV_VARS = ["TOKEN", "HASDB", "MONGO", "BOT_NAME", "DB_NAME", "EMBED_COLOR"]
 
 
 def check_env_vars():
     missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
     if missing_vars:
-        raise EnvironmentError(
-            f"Missing required environment variables: {', '.join(missing_vars)}"
-        )
+        raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
 
 
 check_env_vars()

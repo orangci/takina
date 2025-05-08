@@ -11,19 +11,12 @@ class Roasts(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @commands.command(
-        name="roast",
-        help="Get roasted by the bot. \nUsage: `roast <user>`.",
-    )
+    @commands.command(name="roast", help="Get roasted by the bot. \nUsage: `roast <user>`.")
     async def roast(self, ctx: commands.Context, target: str = None):
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         try:
-            response = await oclib.request(
-                "https://evilinsult.com/generate_insult.php?lang=en&type=json"
-            )
-            embed.description = await oclib.fetch_random_emoji() + response.get(
-                "insult"
-            )
+            response = await oclib.request("https://evilinsult.com/generate_insult.php?lang=en&type=json")
+            embed.description = await oclib.fetch_random_emoji() + response.get("insult")
         except Exception:
             embed.description = ":x: Failed to fetch a roast. Try again later!"
 
@@ -36,25 +29,16 @@ class Roasts(commands.Cog):
 
         await ctx.reply(target.mention, embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="roast",
-        description="Get roasted by the bot.",
-    )
+    @nextcord.slash_command(name="roast", description="Get roasted by the bot.")
     async def slash_roast(
         self,
         interaction: nextcord.Interaction,
-        target: nextcord.Member = nextcord.SlashOption(
-            description="The user you would like to roast", required=False
-        ),
+        target: nextcord.Member = nextcord.SlashOption(description="The user you would like to roast", required=False),
     ):
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         try:
-            response = await oclib.request(
-                "https://evilinsult.com/generate_insult.php?lang=en&type=json"
-            )
-            embed.description = await oclib.fetch_random_emoji() + response.get(
-                "insult"
-            )
+            response = await oclib.request("https://evilinsult.com/generate_insult.php?lang=en&type=json")
+            embed.description = await oclib.fetch_random_emoji() + response.get("insult")
         except Exception:
             embed.description = ":x: Failed to fetch a roast. Try again later!"
 

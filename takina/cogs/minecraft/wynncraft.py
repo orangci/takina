@@ -6,15 +6,9 @@ from urllib.parse import quote
 import nextcord
 import config
 from nextcord.ext import commands
-from wynn_api import (
-    getGuild as get_guild,
-)
-from wynn_api import (
-    getPlayer as get_player,
-)
-from wynn_api import (
-    getPlayerCharacterList as get_character_list,
-)
+from wynn_api import getGuild as get_guild
+from wynn_api import getPlayer as get_player
+from wynn_api import getPlayerCharacterList as get_character_list
 
 
 def parse_iso8601(date_str):
@@ -46,9 +40,7 @@ class Wynncraft(commands.Cog):
             return error_embed
 
         characters = get_character_list(username)
-        sorted_characters = sorted(
-            characters.values(), key=lambda x: x["level"], reverse=True
-        )
+        sorted_characters = sorted(characters.values(), key=lambda x: x["level"], reverse=True)
         result = []
         for char in sorted_characters:
             char_type = char["reskin"] if char["reskin"] else char["type"].capitalize()
@@ -87,9 +79,7 @@ class Wynncraft(commands.Cog):
             guild_name = guild.get("name")
             guild_prefix = guild.get("prefix")
             guild_rank = guild.get("rank")
-            guild = (
-                f"{guild_rank.lower().capitalize()} of [{guild_prefix}] {guild_name}"
-            )
+            guild = f"{guild_rank.lower().capitalize()} of [{guild_prefix}] {guild_name}"
             embed.description += f"\n\n> **Guild**: {guild}"
 
         if rank != "Player":
@@ -123,22 +113,13 @@ class Wynncraft(commands.Cog):
         return embed
 
     @commands.group(
-        name="wynn",
-        aliases=["wynncraft"],
-        description="Base wynncraft command, if no subcommand is passed.",
-        invoke_without_command=True,
+        name="wynn", aliases=["wynncraft"], description="Base wynncraft command, if no subcommand is passed.", invoke_without_command=True
     )
     async def wynn(self, ctx: commands.Context):
-        embed = nextcord.Embed(
-            description=":x: Please specify a subcommand: `player` or `guild`",
-            color=config.ERROR_COLOR,
-        )
+        embed = nextcord.Embed(description=":x: Please specify a subcommand: `player` or `guild`", color=config.ERROR_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @wynn.command(
-        name="player",
-        help="Fetch and display a Wynncraft player's data. Usage: `wynn player <minecraft username>`.",
-    )
+    @wynn.command(name="player", help="Fetch and display a Wynncraft player's data. Usage: `wynn player <minecraft username>`.")
     async def player(self, ctx: commands.Context, username: str):
         embed = await self.player_information_embed_builder(username)
         await ctx.reply(embed=embed, mention_author=False)
@@ -147,15 +128,9 @@ class Wynncraft(commands.Cog):
     async def slash_wynn(self, interaction: nextcord.Interaction):
         pass
 
-    @slash_wynn.subcommand(
-        name="player", description="Fetch and display a Wynncraft player's data."
-    )
+    @slash_wynn.subcommand(name="player", description="Fetch and display a Wynncraft player's data.")
     async def slash_player(
-        self,
-        interaction: nextcord.Interaction,
-        username: str = nextcord.SlashOption(
-            description="The player to fetch information on", required=True
-        ),
+        self, interaction: nextcord.Interaction, username: str = nextcord.SlashOption(description="The player to fetch information on", required=True)
     ):
         await interaction.response.defer()
         embed = await self.player_information_embed_builder(username)
@@ -195,23 +170,14 @@ class Wynncraft(commands.Cog):
 
         return embed
 
-    @wynn.command(
-        name="guild",
-        help="Fetch and display a Wynncraft player's data. Usage: `wynn guild <guild prefix or name>`.",
-    )
+    @wynn.command(name="guild", help="Fetch and display a Wynncraft player's data. Usage: `wynn guild <guild prefix or name>`.")
     async def guild(self, ctx: commands.Context, *, guild: str):
         embed = await self.guild_information_embed_builder(guild)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @slash_wynn.subcommand(
-        name="guild", description="Fetch and display a Wynncraft guild's data."
-    )
+    @slash_wynn.subcommand(name="guild", description="Fetch and display a Wynncraft guild's data.")
     async def slash_guild(
-        self,
-        interaction: nextcord.Interaction,
-        guild: str = nextcord.SlashOption(
-            description="The guild to fetch information on", required=True
-        ),
+        self, interaction: nextcord.Interaction, guild: str = nextcord.SlashOption(description="The guild to fetch information on", required=True)
     ):
         await interaction.response.defer()
         embed = await self.guild_information_embed_builder(guild)

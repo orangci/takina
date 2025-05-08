@@ -23,10 +23,7 @@ class MinecraftServerStatus(commands.Cog):
         except Exception as e:
             raise e
 
-    @commands.command(
-        help="Display a Minecraft server's status. \nUsage: `mcstatus hypixel.net`.",
-        aliases=["mcserver"],
-    )
+    @commands.command(help="Display a Minecraft server's status. \nUsage: `mcstatus hypixel.net`.", aliases=["mcserver"])
     async def mcstatus(self, ctx: commands.Context, *, server_name: str):
         try:
             server = await self.fetch_server_info(server_name)
@@ -34,10 +31,7 @@ class MinecraftServerStatus(commands.Cog):
             raise commands.UserInputError
 
         if not server.get("online"):
-            error_embed = nextcord.Embed(
-                description=":x: Server not found or is offline.",
-                color=config.ERROR_COLOR,
-            )
+            error_embed = nextcord.Embed(description=":x: Server not found or is offline.", color=config.ERROR_COLOR)
             await ctx.reply(embed=error_embed, mention_author=False)
             return
 
@@ -59,16 +53,12 @@ class MinecraftServerStatus(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="mcstatus", description="Display a Minecraft server's status."
-    )
+    @nextcord.slash_command(name="mcstatus", description="Display a Minecraft server's status.")
     async def slash_mcstatus(
         self,
         interaction: nextcord.Interaction,
         *,
-        server_name: str = nextcord.SlashOption(
-            description="The Minecraft server IP to fetch information on", required=True
-        ),
+        server_name: str = nextcord.SlashOption(description="The Minecraft server IP to fetch information on", required=True),
     ):
         await interaction.response.defer()
         try:
@@ -77,10 +67,7 @@ class MinecraftServerStatus(commands.Cog):
             raise commands.UserInputError
 
         if not server.get("online"):
-            error_embed = nextcord.Embed(
-                description=":x: Server not found or is offline.",
-                color=config.ERROR_COLOR,
-            )
+            error_embed = nextcord.Embed(description=":x: Server not found or is offline.", color=config.ERROR_COLOR)
             await interaction.send(embed=error_embed, ephemeral=True)
             return
 

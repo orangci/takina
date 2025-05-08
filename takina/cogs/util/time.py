@@ -16,9 +16,7 @@ async def find_time(location: str):
         embed.color = config.ERROR_COLOR
         embed.description = ":x: The location name you specified is too long. Please enter a shorter name."
 
-    async with geopy.geocoders.Nominatim(
-        user_agent=config.BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter
-    ) as geolocator:
+    async with geopy.geocoders.Nominatim(user_agent=config.BOT_NAME, adapter_factory=geopy.adapters.AioHTTPAdapter) as geolocator:
         geocode = rate_limiter.AsyncRateLimiter(geolocator.geocode, min_delay_seconds=1)
         location_data = await geocode(location)
 
@@ -40,10 +38,7 @@ class Time(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        aliases=["timezone"],
-        help="Timezone utility command. Usage: `time Riyadh Saudi Arabia`.",
-    )
+    @commands.command(aliases=["timezone"], help="Timezone utility command. Usage: `time Riyadh Saudi Arabia`.")
     async def time(self, ctx: commands.Context, *, location: str):
         embed = await find_time(location)
         await ctx.reply(embed=embed, mention_author=False)
@@ -59,9 +54,7 @@ class SlashTime(commands.Cog):
         self,
         interaction: nextcord.Interaction,
         *,
-        location: str = nextcord.SlashOption(
-            description="The location to fetch time information on.", required=True
-        ),
+        location: str = nextcord.SlashOption(description="The location to fetch time information on.", required=True),
     ):
         await interaction.response.defer()
         embed = await find_time(location)

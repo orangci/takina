@@ -10,9 +10,7 @@ class Salawat(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        help="Fetch a list of the Islāmic prayer times. \nUsage: `salawat Riyadh Saudi Arabia`."
-    )
+    @commands.command(help="Fetch a list of the Islāmic prayer times. \nUsage: `salawat Riyadh Saudi Arabia`.")
     async def salawat(self, ctx: commands.Context, location_name: str):
         client = aladhan.Client(is_async=True)
         try:
@@ -20,18 +18,10 @@ class Salawat(commands.Cog):
             embed = nextcord.Embed(color=config.EMBED_COLOR)
             embed.description = ""
             embed.title = f"Islāmic Prayer Times for {location_name.capitalize()}"
-            for prayer in [
-                prayer_times.fajr,
-                prayer_times.dhuhr,
-                prayer_times.asr,
-                prayer_times.maghrib,
-                prayer_times.isha,
-            ]:
+            for prayer in [prayer_times.fajr, prayer_times.dhuhr, prayer_times.asr, prayer_times.maghrib, prayer_times.isha]:
                 embed.description += f"\n> **{prayer.name.capitalize()}**: {prayer.time.strftime('%H:%M')} ({prayer.time.strftime('%I:%M %p')})"
 
-            embed.set_footer(
-                text="Please note that these times are in the timezone of the location specified, not your timezone."
-            )
+            embed.set_footer(text="Please note that these times are in the timezone of the location specified, not your timezone.")
             await ctx.reply(embed=embed, mention_author=False)
 
         except Exception:
@@ -47,15 +37,11 @@ class SlashSalawat(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @nextcord.slash_command(
-        name="salawat", description="Fetch a list of the Islāmic prayer times."
-    )
+    @nextcord.slash_command(name="salawat", description="Fetch a list of the Islāmic prayer times.")
     async def slash_salawat(
         self,
         interaction: nextcord.Interaction,
-        location_name: str = nextcord.SlashOption(
-            description="The location for which to fetch prayer times", required=True
-        ),
+        location_name: str = nextcord.SlashOption(description="The location for which to fetch prayer times", required=True),
     ):
         await interaction.response.defer()
         client = aladhan.Client(is_async=True)
@@ -64,18 +50,10 @@ class SlashSalawat(commands.Cog):
             embed = nextcord.Embed(color=config.EMBED_COLOR)
             embed.description = ""
             embed.title = f"Islāmic Prayer Times for {location_name.capitalize()}"
-            for prayer in [
-                prayer_times.fajr,
-                prayer_times.dhuhr,
-                prayer_times.asr,
-                prayer_times.maghrib,
-                prayer_times.isha,
-            ]:
+            for prayer in [prayer_times.fajr, prayer_times.dhuhr, prayer_times.asr, prayer_times.maghrib, prayer_times.isha]:
                 embed.description += f"\n> **{prayer.name.capitalize()}**: {prayer.time.strftime('%H:%M')} ({prayer.time.strftime('%I:%M %p')})"
 
-            embed.set_footer(
-                text="Please note that these times are in the timezone of the location specified, not your timezone."
-            )
+            embed.set_footer(text="Please note that these times are in the timezone of the location specified, not your timezone.")
             await interaction.send(embed=embed)
 
         except Exception:

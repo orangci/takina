@@ -16,20 +16,12 @@ class Topic(commands.Cog):
 
     @commands.command(help="Fetch a random conversational topic. \nUsage: `topic`.")
     async def topic(self, ctx: commands.Context):
-        embed = nextcord.Embed(
-            description=f"{random.choice(topics)} {await oclib.fetch_random_emoji()}",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"{random.choice(topics)} {await oclib.fetch_random_emoji()}", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="topic", description="Fetch a random conversational topic."
-    )
+    @nextcord.slash_command(name="topic", description="Fetch a random conversational topic.")
     async def slash_topic(self, interaction: nextcord.Interaction):
-        embed = nextcord.Embed(
-            description=f"{random.choice(topics)} {await oclib.fetch_random_emoji()}",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"{random.choice(topics)} {await oclib.fetch_random_emoji()}", color=config.EMBED_COLOR)
         await interaction.send(embed=embed)
 
 

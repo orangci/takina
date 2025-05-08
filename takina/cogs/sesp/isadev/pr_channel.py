@@ -31,9 +31,7 @@ class PRChannelMessageCleaner(commands.Cog):
         if any(role.id == lib.STAFF_ROLE_ID for role in message.author.roles):
             return
 
-        if re.search(GITHUB_URL_PATTERN, message.content) or re.search(
-            SHORT_PR_PATTERN, message.content
-        ):
+        if re.search(GITHUB_URL_PATTERN, message.content) or re.search(SHORT_PR_PATTERN, message.content):
             return
 
         await message.delete()
@@ -78,11 +76,7 @@ class GitHubEmbedBuilder:
             state = "Merged"
             color = nextcord.Color.purple()
 
-        embed = nextcord.Embed(
-            title=f"{owner}/{repo}#{pr_id}",
-            description=f"[{title}]({html_url})",
-            color=color,
-        )
+        embed = nextcord.Embed(title=f"{owner}/{repo}#{pr_id}", description=f"[{title}]({html_url})", color=color)
         embed.add_field(name="Status", value=state, inline=True)
         return embed
 
@@ -100,10 +94,7 @@ class GitHubTwo(commands.Cog):
 
         if not data:
             await message.channel.send(
-                embed=nextcord.Embed(
-                    description=f":x: Could not fetch information for {OWNER}/{REPO}#{issue_id}.",
-                    color=config.ERROR_COLOR,
-                )
+                embed=nextcord.Embed(description=f":x: Could not fetch information for {OWNER}/{REPO}#{issue_id}.", color=config.ERROR_COLOR)
             )
             return
 
@@ -111,16 +102,12 @@ class GitHubTwo(commands.Cog):
 
         # Add a refresh button to update the PR/issue status
         view = View(timeout=None)
-        refresh_button = Button(
-            label="Refresh Status", style=nextcord.ButtonStyle.primary
-        )
+        refresh_button = Button(label="Refresh Status", style=nextcord.ButtonStyle.primary)
 
         async def refresh_callback(interaction: nextcord.Interaction):
             updated_data = await fetch_github_data(api_url)
             if updated_data:
-                new_embed = GitHubEmbedBuilder.create_pr_issue_embed(
-                    updated_data, OWNER, REPO
-                )
+                new_embed = GitHubEmbedBuilder.create_pr_issue_embed(updated_data, OWNER, REPO)
                 await interaction.response.edit_message(embed=new_embed)
 
         refresh_button.callback = refresh_callback

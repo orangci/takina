@@ -12,9 +12,7 @@ class CharacterSearch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def fetch_character(
-        self, character: str, embed: nextcord.Embed
-    ) -> nextcord.Embed:
+    async def fetch_character(self, character: str, embed: nextcord.Embed) -> nextcord.Embed:
         url1 = f"https://api.jikan.moe/v4/characters?q={character}&limit=1"
         url2 = f"https://api.jikan.moe/v4/characters/{character}"
         character_data = None
@@ -39,19 +37,11 @@ class CharacterSearch(commands.Cog):
             return embed
 
         name = character_data.get("name", "Unknown")
-        cover_image = (
-            character_data.get("images", {}).get("jpg", {}).get("image_url", "")
-        )
+        cover_image = character_data.get("images", {}).get("jpg", {}).get("image_url", "")
         mal_id = character_data.get("mal_id", "N/A")
         url = character_data.get("url", "")
-        nicknames = (
-            ", ".join(character_data.get("nicknames", [])) or "No nicknames available"
-        )
-        about = (
-            (character_data.get("about")[:400] + "...")
-            if character_data.get("about")
-            else "No information available."
-        )
+        nicknames = ", ".join(character_data.get("nicknames", [])) or "No nicknames available"
+        about = (character_data.get("about")[:400] + "...") if character_data.get("about") else "No information available."
         name_kanji = character_data.get("name_kanji", "")
 
         embed.title = name
@@ -65,23 +55,14 @@ class CharacterSearch(commands.Cog):
 
         return embed
 
-    @commands.command(
-        aliases=["waifu", "chr"],
-        help="Fetch character information from MyAnimeList. \nUsage: `chr Takina Inoue` or `chr 204620`.",
-    )
+    @commands.command(aliases=["waifu", "chr"], help="Fetch character information from MyAnimeList. \nUsage: `chr Takina Inoue` or `chr 204620`.")
     async def character(self, ctx: commands.Context, *, character: str):
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed = await self.fetch_character(character, embed)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="character", description="Fetch character information from MyAnimeList."
-    )
-    async def slash_character(
-        self,
-        interaction: Interaction,
-        character: str = SlashOption(description="Name or MAL ID of the character"),
-    ):
+    @nextcord.slash_command(name="character", description="Fetch character information from MyAnimeList.")
+    async def slash_character(self, interaction: Interaction, character: str = SlashOption(description="Name or MAL ID of the character")):
         await interaction.response.defer()
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed = await self.fetch_character(character, embed)

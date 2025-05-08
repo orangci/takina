@@ -12,9 +12,7 @@ class PingIostpa(commands.Cog):
         if message.guild.id != lib.SERVER_ID:
             return
         if 740117772566265876 in [pong.id for pong in message.mentions]:
-            await message.channel.send(
-                "<@716306888492318790>, you were pinged on your alt account."
-            )
+            await message.channel.send("<@716306888492318790>, you were pinged on your alt account.")
 
 
 def setup(bot):

@@ -24,14 +24,10 @@ class Counting(commands.Cog):
             return
 
         # Get the last message count from the database
-        current_count = await self.db.counting.find_one(
-            {"channel_id": lib.COUNTING_CHANNEL_ID}
-        )
+        current_count = await self.db.counting.find_one({"channel_id": lib.COUNTING_CHANNEL_ID})
 
         if not current_count:
-            await self.db.counting.insert_one(
-                {"channel_id": lib.COUNTING_CHANNEL_ID, "count": 0}
-            )
+            await self.db.counting.insert_one({"channel_id": lib.COUNTING_CHANNEL_ID, "count": 0})
             current_count = {"count": 0}
 
         last_number = current_count["count"]
@@ -40,10 +36,7 @@ class Counting(commands.Cog):
         try:
             next_number = int(message.content)
             if next_number == last_number + 1:
-                await self.db.counting.update_one(
-                    {"channel_id": lib.COUNTING_CHANNEL_ID},
-                    {"$set": {"count": next_number}},
-                )
+                await self.db.counting.update_one({"channel_id": lib.COUNTING_CHANNEL_ID}, {"$set": {"count": next_number}})
 
             else:
                 await message.delete()
@@ -51,14 +44,10 @@ class Counting(commands.Cog):
         except ValueError:
             await message.delete()
 
-    @commands.command(
-        help="Fetches and displays the current count in the counting channel."
-    )
+    @commands.command(help="Fetches and displays the current count in the counting channel.")
     @lib.is_in_guild()
     async def count(self, ctx: commands.Context):
-        current_count = await self.db.counting.find_one(
-            {"channel_id": lib.COUNTING_CHANNEL_ID}
-        )
+        current_count = await self.db.counting.find_one({"channel_id": lib.COUNTING_CHANNEL_ID})
 
         if not current_count:
             embed = nextcord.Embed(color=config.ERROR_COLOR)
@@ -69,23 +58,16 @@ class Counting(commands.Cog):
         count = current_count["count"]
 
         embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = (
-            f"{await oclib.fetch_random_emoji()}The current count is: {count}"
-        )
+        embed.description = f"{await oclib.fetch_random_emoji()}The current count is: {count}"
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        help="Set the count of the counting channel. Usage: `set_count <number>`.",
-        aliases=["setcount"],
-    )
+    @commands.command(help="Set the count of the counting channel. Usage: `set_count <number>`.", aliases=["setcount"])
     @lib.is_in_guild()
     @commands.is_owner()
     async def set_count(self, ctx: commands.Context, count: int):
         """Allows bot owner to set the current count in the counting channel."""
 
-        await self.db.counting.update_one(
-            {"channel_id": lib.COUNTING_CHANNEL_ID}, {"$set": {"count": count}}
-        )
+        await self.db.counting.update_one({"channel_id": lib.COUNTING_CHANNEL_ID}, {"$set": {"count": count}})
 
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = f"✅ The count has been set to {count}."

@@ -17,12 +17,7 @@ class ChannelManagement(commands.Cog):
         help="Sets slowmode in the current or specified channel. \nUsage: `slowmode <duration> #channel` to specify a channel to modify or `slowmode <duration>` to set the slowmode for the current cannel.",
     )
     @commands.has_permissions(manage_channels=True)
-    async def slowmode(
-        self,
-        ctx: commands.Context,
-        duration: str = None,
-        channel: nextcord.TextChannel = None,
-    ):
+    async def slowmode(self, ctx: commands.Context, duration: str = None, channel: nextcord.TextChannel = None):
         channel = channel or ctx.channel
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         if duration:
@@ -41,9 +36,7 @@ class ChannelManagement(commands.Cog):
         elif channel.slowmode_delay != 0:
             embed.description = f":timer: The slowmode of {channel.mention} is set to {oclib.reverse_duration_calculator(channel.slowmode_delay)}."
         else:
-            embed.description = (
-                f":timer: Slowmode is not enabled for {channel.mention}."
-            )
+            embed.description = f":timer: Slowmode is not enabled for {channel.mention}."
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -58,10 +51,7 @@ class ChannelManagement(commands.Cog):
         overwrite.send_messages = False
 
         await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
-        embed = nextcord.Embed(
-            description=f"🔒 Channel {channel.mention} has been locked.",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"🔒 Channel {channel.mention} has been locked.", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
@@ -75,10 +65,7 @@ class ChannelManagement(commands.Cog):
         overwrite.send_messages = True
 
         await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
-        embed = nextcord.Embed(
-            description=f"🔓 Channel {channel.mention} has been unlocked.",
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(description=f"🔓 Channel {channel.mention} has been unlocked.", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -90,20 +77,13 @@ class SlashChannelManagement(commands.Cog):
     async def channel_group(self, interaction: nextcord.Interaction):
         pass
 
-    @channel_group.subcommand(
-        name="slowmode",
-        description="Sets slowmode in the current or specified channel.",
-    )
+    @channel_group.subcommand(name="slowmode", description="Sets slowmode in the current or specified channel.")
     @application_checks.has_permissions(manage_channels=True)
     async def slowmode(
         self,
         interaction: nextcord.Interaction,
-        duration: str = SlashOption(
-            description="The amount of time to set the slowmode to", required=False
-        ),
-        channel: nextcord.TextChannel = SlashOption(
-            description="Channel to set slowmode", required=False
-        ),
+        duration: str = SlashOption(description="The amount of time to set the slowmode to", required=False),
+        channel: nextcord.TextChannel = SlashOption(description="Channel to set slowmode", required=False),
     ):
         await interaction.response.defer()
         channel = channel or interaction.channel
@@ -124,60 +104,36 @@ class SlashChannelManagement(commands.Cog):
         elif channel.slowmode_delay != 0:
             embed.description = f":timer: The slowmode of {channel.mention} is set to {oclib.reverse_duration_calculator(channel.slowmode_delay)}."
         else:
-            embed.description = (
-                f":timer: Slowmode is not enabled for {channel.mention}."
-            )
+            embed.description = f":timer: Slowmode is not enabled for {channel.mention}."
 
         await interaction.send(embed=embed)
 
-    @channel_group.subcommand(
-        name="lock", description="Locks the current or specified channel."
-    )
+    @channel_group.subcommand(name="lock", description="Locks the current or specified channel.")
     @application_checks.has_permissions(manage_channels=True)
     async def lock(
-        self,
-        interaction: nextcord.Interaction,
-        channel: nextcord.TextChannel = SlashOption(
-            description="Channel to lock", required=False
-        ),
+        self, interaction: nextcord.Interaction, channel: nextcord.TextChannel = SlashOption(description="Channel to lock", required=False)
     ):
         await interaction.response.defer()
         channel = channel or interaction.channel
         overwrite = channel.overwrites_for(interaction.guild.default_role)
         overwrite.send_messages = False
 
-        await channel.set_permissions(
-            interaction.guild.default_role, overwrite=overwrite
-        )
-        embed = nextcord.Embed(
-            description=f"🔒 Channel {channel.mention} has been locked.",
-            color=config.EMBED_COLOR,
-        )
+        await channel.set_permissions(interaction.guild.default_role, overwrite=overwrite)
+        embed = nextcord.Embed(description=f"🔒 Channel {channel.mention} has been locked.", color=config.EMBED_COLOR)
         await interaction.send(embed=embed)
 
-    @channel_group.subcommand(
-        name="unlock", description="Unlocks the current or specified channel."
-    )
+    @channel_group.subcommand(name="unlock", description="Unlocks the current or specified channel.")
     @application_checks.has_permissions(manage_channels=True)
     async def unlock(
-        self,
-        interaction: nextcord.Interaction,
-        channel: nextcord.TextChannel = SlashOption(
-            description="Channel to unlock", required=False
-        ),
+        self, interaction: nextcord.Interaction, channel: nextcord.TextChannel = SlashOption(description="Channel to unlock", required=False)
     ):
         await interaction.response.defer()
         channel = channel or interaction.channel
         overwrite = channel.overwrites_for(interaction.guild.default_role)
         overwrite.send_messages = True
 
-        await channel.set_permissions(
-            interaction.guild.default_role, overwrite=overwrite
-        )
-        embed = nextcord.Embed(
-            description=f"🔓 Channel {channel.mention} has been unlocked.",
-            color=config.EMBED_COLOR,
-        )
+        await channel.set_permissions(interaction.guild.default_role, overwrite=overwrite)
+        embed = nextcord.Embed(description=f"🔓 Channel {channel.mention} has been unlocked.", color=config.EMBED_COLOR)
         await interaction.send(embed=embed)
 
 

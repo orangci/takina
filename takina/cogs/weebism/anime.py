@@ -46,9 +46,7 @@ class AnimeSearch(commands.Cog):
                 rating = anime.get("rating")
                 mal_id = anime.get("mal_id")
                 genres = ", ".join([genre["name"] for genre in anime.get("genres", [])])
-                studios = ", ".join(
-                    [studio["name"] for studio in anime.get("studios", [])]
-                )
+                studios = ", ".join([studio["name"] for studio in anime.get("studios", [])])
 
                 embed = nextcord.Embed(title=title, url=url, color=config.EMBED_COLOR)
                 embed.description = ""
@@ -109,31 +107,18 @@ class AnimeSearch(commands.Cog):
             return embed
 
     @commands.command(
-        name="anime",
-        aliases=["ani"],
-        help="Fetch anime information from MyAnimeList. \nUsage: `anime Lycoris Recoil` or `anime 50709`.",
+        name="anime", aliases=["ani"], help="Fetch anime information from MyAnimeList. \nUsage: `anime Lycoris Recoil` or `anime 50709`."
     )
     async def base_anime(self, ctx: commands.Context, *, anime_name: str):
         embed = await self.build_anime_embed(anime_name)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="anime", description="MyAnimeList anime information commands."
-    )
-    async def anime(
-        self,
-        interaction: nextcord.Interaction,
-    ):
+    @nextcord.slash_command(name="anime", description="MyAnimeList anime information commands.")
+    async def anime(self, interaction: nextcord.Interaction):
         pass
 
-    @anime.subcommand(
-        name="info", description="Fetch anime information from MyAnimeList."
-    )
-    async def slash_anime_info(
-        self,
-        interaction: Interaction,
-        anime_name: str = SlashOption(description="Name of the anime"),
-    ):
+    @anime.subcommand(name="info", description="Fetch anime information from MyAnimeList.")
+    async def slash_anime_info(self, interaction: Interaction, anime_name: str = SlashOption(description="Name of the anime")):
         await interaction.response.defer()
         embed = await self.build_anime_embed(anime_name)
         await interaction.send(embed=embed)
@@ -146,14 +131,8 @@ class AnimeSearch(commands.Cog):
         embed = await self.build_anisyn_embed(anime_name)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @anime.subcommand(
-        name="synopsis", description="Fetch an anime's summary from MyAnimeList."
-    )
-    async def slash_anime_synopsis(
-        self,
-        interaction: Interaction,
-        anime_name: str = SlashOption(description="Name of the anime"),
-    ):
+    @anime.subcommand(name="synopsis", description="Fetch an anime's summary from MyAnimeList.")
+    async def slash_anime_synopsis(self, interaction: Interaction, anime_name: str = SlashOption(description="Name of the anime")):
         await interaction.response.defer()
         embed = await self.build_anisyn_embed(anime_name)
         await interaction.send(embed=embed)

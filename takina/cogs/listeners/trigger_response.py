@@ -20,48 +20,31 @@ class TriggerResponses(commands.Cog):
 
     async def get_guild_triggers(self, guild_id: int):
         """Fetch all triggers for a guild."""
-        return await self.db.triggers.find_one({"guild_id": guild_id}) or {
-            "guild_id": guild_id,
-            "triggers": {},
-        }
+        return await self.db.triggers.find_one({"guild_id": guild_id}) or {"guild_id": guild_id, "triggers": {}}
 
     async def update_guild_triggers(self, guild_id: int, triggers: dict):
         """Update triggers for a guild."""
-        await self.db.triggers.update_one(
-            {"guild_id": guild_id}, {"$set": {"triggers": triggers}}, upsert=True
-        )
+        await self.db.triggers.update_one({"guild_id": guild_id}, {"$set": {"triggers": triggers}}, upsert=True)
 
     @commands.group(name="trigger", invoke_without_command=True)
     async def trigger(self, ctx: commands.Context):
         """Manage trigger responses."""
         embed = Embed(color=config.EMBED_COLOR)
         embed.description = "Available subcommands: `add`, `remove`, `list`."
-        await ctx.reply(
-            embed=embed,
-            mention_author=False,
-        )
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.has_permissions(manage_channels=True)
-    @trigger.command(
-        name="add",
-        help='Usage: `trigger add <triggername> "trigger" "trigger response"`',
-    )
-    async def add_trigger(
-        self, ctx: commands.Context, name: str, trigger: str, response: str
-    ):
+    @trigger.command(name="add", help='Usage: `trigger add <triggername> "trigger" "trigger response"`')
+    async def add_trigger(self, ctx: commands.Context, name: str, trigger: str, response: str):
         """Add a new trigger response."""
         if len(name) > MAX_TRIGGER_NAME_LEN:
             embed = Embed(color=config.ERROR_COLOR)
-            embed.description = (
-                f":x: Trigger name cannot exceed {MAX_TRIGGER_NAME_LEN} characters."
-            )
+            embed.description = f":x: Trigger name cannot exceed {MAX_TRIGGER_NAME_LEN} characters."
             return await ctx.reply(embed=embed, mention_author=False)
 
         if len(trigger) > MAX_TRIGGER_LEN:
             embed = Embed(color=config.ERROR_COLOR)
-            embed.description = (
-                f":x: Trigger text cannot exceed {MAX_TRIGGER_LEN} characters."
-            )
+            embed.description = f":x: Trigger text cannot exceed {MAX_TRIGGER_LEN} characters."
             return await ctx.reply(embed=embed, mention_author=False)
 
         if len(response) > MAX_RESPONSE_LEN:
@@ -75,9 +58,7 @@ class TriggerResponses(commands.Cog):
         for trigger_data in triggers.values():
             if trigger_data["trigger"] == trigger:
                 embed = nextcord.Embed(color=config.ERROR_COLOR)
-                embed.description = (
-                    f":x: A trigger with the text `{trigger}` already exists."
-                )
+                embed.description = f":x: A trigger with the text `{trigger}` already exists."
                 return await ctx.reply(embed=embed, mention_author=False)
 
         if len(triggers) >= MAX_TRIGGERS:
@@ -97,9 +78,7 @@ class TriggerResponses(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.has_permissions(manage_channels=True)
-    @trigger.command(
-        name="remove", help="Usage: `trigger remove <triggername>`", aliases=["delete"]
-    )
+    @trigger.command(name="remove", help="Usage: `trigger remove <triggername>`", aliases=["delete"])
     async def remove_trigger(self, ctx: commands.Context, name: str):
         """Remove an existing trigger."""
         guild_data = await self.get_guild_triggers(ctx.guild.id)
@@ -127,10 +106,7 @@ class TriggerResponses(commands.Cog):
             embed.description = ":x: No triggers set for this server."
             return await ctx.reply(embed=embed, mention_author=False)
 
-        embed = Embed(
-            title=f"{await oclib.fetch_random_emoji()}Trigger List",
-            color=config.EMBED_COLOR,
-        )
+        embed = Embed(title=f"{await oclib.fetch_random_emoji()}Trigger List", color=config.EMBED_COLOR)
         embed.description = ""
         for name, data in triggers.items():
             embed.description += f"\n- `{name}`:\nTrigger — `{data['trigger']}`\nResponse — `{data['response']}`"
@@ -161,16 +137,11 @@ class SlashTriggerResponses(commands.Cog):
 
     async def get_guild_triggers(self, guild_id: int):
         """Fetch all triggers for a guild."""
-        return await self.db.triggers.find_one({"guild_id": guild_id}) or {
-            "guild_id": guild_id,
-            "triggers": {},
-        }
+        return await self.db.triggers.find_one({"guild_id": guild_id}) or {"guild_id": guild_id, "triggers": {}}
 
     async def update_guild_triggers(self, guild_id: int, triggers: dict):
         """Update triggers for a guild."""
-        await self.db.triggers.update_one(
-            {"guild_id": guild_id}, {"$set": {"triggers": triggers}}, upsert=True
-        )
+        await self.db.triggers.update_one({"guild_id": guild_id}, {"$set": {"triggers": triggers}}, upsert=True)
 
     @nextcord.slash_command(name="trigger", description="Manage trigger responses.")
     async def slash_trigger(self, interaction: Interaction):
@@ -189,16 +160,12 @@ class SlashTriggerResponses(commands.Cog):
         await interaction.response.defer()
         if len(name) > MAX_TRIGGER_NAME_LEN:
             embed = Embed(color=config.ERROR_COLOR)
-            embed.description = (
-                f":x: Trigger name cannot exceed {MAX_TRIGGER_NAME_LEN} characters."
-            )
+            embed.description = f":x: Trigger name cannot exceed {MAX_TRIGGER_NAME_LEN} characters."
             return await interaction.send(embed=embed, ephemeral=True)
 
         if len(trigger) > MAX_TRIGGER_LEN:
             embed = Embed(color=config.ERROR_COLOR)
-            embed.description = (
-                f":x: Trigger text cannot exceed {MAX_TRIGGER_LEN} characters."
-            )
+            embed.description = f":x: Trigger text cannot exceed {MAX_TRIGGER_LEN} characters."
             return await interaction.send(embed=embed, ephemeral=True)
 
         if len(response) > MAX_RESPONSE_LEN:
@@ -212,9 +179,7 @@ class SlashTriggerResponses(commands.Cog):
         for trigger_data in triggers.values():
             if trigger_data["trigger"] == trigger:
                 embed = nextcord.Embed(color=config.ERROR_COLOR)
-                embed.description = (
-                    f":x: A trigger with the text `{trigger}` already exists."
-                )
+                embed.description = f":x: A trigger with the text `{trigger}` already exists."
                 return await interaction.send(embed=embed, ephemeral=True)
 
         if len(triggers) >= MAX_TRIGGERS:
@@ -235,11 +200,7 @@ class SlashTriggerResponses(commands.Cog):
 
     @application_checks.has_permissions(manage_channels=True)
     @slash_trigger.subcommand(name="remove")
-    async def slash_remove_trigger(
-        self,
-        interaction: Interaction,
-        name: str = SlashOption(description="The name of the trigger to remove."),
-    ):
+    async def slash_remove_trigger(self, interaction: Interaction, name: str = SlashOption(description="The name of the trigger to remove.")):
         await interaction.response.defer()
         guild_data = await self.get_guild_triggers(interaction.guild.id)
         triggers = guild_data["triggers"]
@@ -266,10 +227,7 @@ class SlashTriggerResponses(commands.Cog):
             embed.description = ":x: No triggers set for this server."
             return await interaction.send(embed=embed, ephemeral=True)
 
-        embed = Embed(
-            title=f"{await oclib.fetch_random_emoji()}Trigger List",
-            color=config.EMBED_COLOR,
-        )
+        embed = Embed(title=f"{await oclib.fetch_random_emoji()}Trigger List", color=config.EMBED_COLOR)
         embed.description = ""
         for name, data in triggers.items():
             embed.description += f"\n- `{name}`:\nTrigger — `{data['trigger']}`\nResponse — `{data['response']}`"

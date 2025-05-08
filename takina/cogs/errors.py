@@ -16,16 +16,12 @@ class Errors(commands.Cog):
 
         if not self.logger.handlers:
             console_handler = logging.StreamHandler()
-            console_handler.setFormatter(
-                logging.Formatter("%(levelname)s: %(name)s: %(message)s")
-            )
+            console_handler.setFormatter(logging.Formatter("%(levelname)s: %(name)s: %(message)s"))
             self.logger.addHandler(console_handler)
             self.logger.setLevel(logging.ERROR)
 
     @commands.Cog.listener()
-    async def on_command_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
         error_type = "Unknown Error"
         description = "Please try again later. If you believe this is a bug, contact the maintainer or even better, open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md)."
 
@@ -34,7 +30,9 @@ class Errors(commands.Cog):
             error_type = "Maintainer Only Command"
 
         elif isinstance(error, commands.errors.DisabledCommand):
-            description = f"This command has been disabled by {config.BOT_NAME}'s maintainers. If you believe this is an error, please contact a maintainer."
+            description = (
+                f"This command has been disabled by {config.BOT_NAME}'s maintainers. If you believe this is an error, please contact a maintainer."
+            )
             error_type = "Disabled Command"
 
         elif isinstance(error, nextcord.PrivilegedIntentsRequired):
@@ -42,36 +40,23 @@ class Errors(commands.Cog):
             error_type = "Privileged Intents Required"
 
         elif isinstance(error, commands.MissingPermissions):
-            description = (
-                "You do not have sufficent permissions to perform this action."
-            )
+            description = "You do not have sufficent permissions to perform this action."
             error_type = "Missing Permissions"
 
         elif isinstance(error, nextcord.Forbidden):
-            description = (
-                "You do not have sufficent permissions to perform this action."
-            )
+            description = "You do not have sufficent permissions to perform this action."
             error_type = "Forbidden"
 
         elif isinstance(error, nextcord.HTTPException):
-            description = (
-                f"An HTTP error occurred: `{error.text}` (Status Code: {error.status})."
-            )
+            description = f"An HTTP error occurred: `{error.text}` (Status Code: {error.status})."
             error_type = "HTTP Exception"
 
-        elif isinstance(error, commands.UserInputError) or isinstance(
-            error, commands.BadArgument
-        ):
-            description = (
-                "It seems that you've made a mistake while entering the command."
-            )
+        elif isinstance(error, commands.UserInputError) or isinstance(error, commands.BadArgument):
+            description = "It seems that you've made a mistake while entering the command."
             command = ctx.command
             if command and command.help:
                 help_lines = command.help.split("\n")
-                usage_line = next(
-                    (line for line in help_lines if line.strip().startswith("Usage:")),
-                    None,
-                )
+                usage_line = next((line for line in help_lines if line.strip().startswith("Usage:")), None)
                 if usage_line:
                     description += f"\n\n{usage_line}"
             error_type = "User Input Error"
@@ -99,16 +84,12 @@ class Errors(commands.Cog):
         self.logger.exception("Full error traceback:")
 
     @commands.Cog.listener()
-    async def on_application_command_error(
-        self, interaction: nextcord.Interaction, error: Exception
-    ):
+    async def on_application_command_error(self, interaction: nextcord.Interaction, error: Exception):
         error_type = "Unknown Error"
         error = getattr(error, "original", error)
 
         if isinstance(error, application_checks.errors.ApplicationMissingRole):
-            description = (
-                "You do not have the required role necessary to execute this command."
-            )
+            description = "You do not have the required role necessary to execute this command."
             error_type = "Missing Role"
 
         elif isinstance(error, application_checks.errors.ApplicationNotOwner):
@@ -116,14 +97,10 @@ class Errors(commands.Cog):
             error_type = "Maintainer Only Command"
 
         elif isinstance(error, application_checks.errors.ApplicationMissingPermissions):
-            description = (
-                "You do not have sufficent permissions to perform this action."
-            )
+            description = "You do not have sufficent permissions to perform this action."
             error_type = "Missing Permissions"
 
-        elif isinstance(
-            error, application_checks.errors.ApplicationBotMissingPermissions
-        ):
+        elif isinstance(error, application_checks.errors.ApplicationBotMissingPermissions):
             description = f"{config.BOT_NAME} does not have sufficent permissions to perform this action. Please report this error to {config.BOT_NAME}'s maintainers."
             error_type = "Bot Missing Permissions"
 

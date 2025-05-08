@@ -42,11 +42,7 @@ class Info(commands.Cog):
             "moderate_members",
         ]
 
-        dangerous_perms = [
-            perm[0].replace("_", " ").title()
-            for perm in member.guild_permissions
-            if perm[1] and perm[0] in dangerous_permissions
-        ]
+        dangerous_perms = [perm[0].replace("_", " ").title() for perm in member.guild_permissions if perm[1] and perm[0] in dangerous_permissions]
 
         permissions_str = ", ".join(dangerous_perms) if dangerous_perms else None
 
@@ -62,11 +58,7 @@ class Info(commands.Cog):
             ),
         )
 
-        embed.set_author(
-            name=member.name,
-            icon_url=member.avatar.url if member.avatar.url else None,
-            url=f"https://discord.com/users/{member.id}",
-        )
+        embed.set_author(name=member.name, icon_url=member.avatar.url if member.avatar.url else None, url=f"https://discord.com/users/{member.id}")
 
         if permissions_str:
             embed.description += f"\n> **Dangerous Permissions:** {permissions_str}"
@@ -111,11 +103,7 @@ class Info(commands.Cog):
         embed.set_thumbnail(url=role.icon.url if role.icon else None)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="serverinfo",
-        help="Fetch information about the server. \nUsage: `serverinfo`.",
-        aliases=["si"],
-    )
+    @commands.command(name="serverinfo", help="Fetch information about the server. \nUsage: `serverinfo`.", aliases=["si"])
     async def serverinfo(self, ctx: commands.Context):
         guild = ctx.guild
         emoji = await oclib.fetch_random_emoji()
@@ -149,22 +137,16 @@ class SlashInfo(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @nextcord.slash_command(
-        name="userinfo", description="Fetch information about a user."
-    )
+    @nextcord.slash_command(name="userinfo", description="Fetch information about a user.")
     async def userinfo(
         self,
         interaction: nextcord.Interaction,
-        member: nextcord.Member = nextcord.SlashOption(
-            description="The user to fetch information on", required=False
-        ),
+        member: nextcord.Member = nextcord.SlashOption(description="The user to fetch information on", required=False),
     ):
         if member is None:
             member = interaction.user
 
-        roles = [
-            role for role in member.roles if role != interaction.guild.default_role
-        ]
+        roles = [role for role in member.roles if role != interaction.guild.default_role]
 
         dangerous_permissions = [
             "manage_events",
@@ -181,11 +163,7 @@ class SlashInfo(commands.Cog):
             "moderate_members",
         ]
 
-        dangerous_perms = [
-            perm[0].replace("_", " ").title()
-            for perm in member.guild_permissions
-            if perm[1] and perm[0] in dangerous_permissions
-        ]
+        dangerous_perms = [perm[0].replace("_", " ").title() for perm in member.guild_permissions if perm[1] and perm[0] in dangerous_permissions]
 
         permissions_str = ", ".join(dangerous_perms) if dangerous_perms else None
 
@@ -201,11 +179,7 @@ class SlashInfo(commands.Cog):
             ),
         )
 
-        embed.set_author(
-            name=member.name,
-            icon_url=member.avatar.url if member.avatar.url else None,
-            url=f"https://discord.com/users/{member.id}",
-        )
+        embed.set_author(name=member.name, icon_url=member.avatar.url if member.avatar.url else None, url=f"https://discord.com/users/{member.id}")
 
         if permissions_str:
             embed.description += f"\n> **Dangerous Permissions:** {permissions_str}"
@@ -224,15 +198,11 @@ class SlashInfo(commands.Cog):
 
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(
-        name="roleinfo", description="Fetch information about a role."
-    )
+    @nextcord.slash_command(name="roleinfo", description="Fetch information about a role.")
     async def roleinfo(
         self,
         interaction: nextcord.Interaction,
-        role: nextcord.Role = nextcord.SlashOption(
-            description="The role to fetch information on", required=True
-        ),
+        role: nextcord.Role = nextcord.SlashOption(description="The role to fetch information on", required=True),
     ):
         emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
@@ -255,9 +225,7 @@ class SlashInfo(commands.Cog):
         embed.set_thumbnail(url=role.icon.url if role.icon else None)
         await interaction.send(embed=embed, ephemeral=True)
 
-    @nextcord.slash_command(
-        name="serverinfo", description="Fetch information about the server."
-    )
+    @nextcord.slash_command(name="serverinfo", description="Fetch information about the server.")
     async def serverinfo(self, interaction: nextcord.Interaction):
         guild = interaction.guild
         emoji = await oclib.fetch_random_emoji()

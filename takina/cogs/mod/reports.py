@@ -16,35 +16,19 @@ class Reports(commands.Cog):
         """Retrieve the report settings for a server from the database."""
         return await self.db.report_settings.find_one({"guild_id": guild_id})
 
-    async def set_server_config(
-        self, guild_id: int, mod_role_id: int, reports_channel_id: int
-    ):
+    async def set_server_config(self, guild_id: int, mod_role_id: int, reports_channel_id: int):
         """Set or update the report settings for a server."""
         await self.db.report_settings.update_one(
-            {"guild_id": guild_id},
-            {
-                "$set": {
-                    "moderator_role_id": mod_role_id,
-                    "reports_channel_id": reports_channel_id,
-                }
-            },
-            upsert=True,
+            {"guild_id": guild_id}, {"$set": {"moderator_role_id": mod_role_id, "reports_channel_id": reports_channel_id}}, upsert=True
         )
 
-    @nextcord.slash_command(
-        name="report",
-        description="Report something to server's moderation team.",
-    )
+    @nextcord.slash_command(name="report", description="Report something to server's moderation team.")
     async def report(
         self,
         interaction: Interaction,
-        user: nextcord.Member = SlashOption(
-            description="User being reported.", required=True
-        ),
+        user: nextcord.Member = SlashOption(description="User being reported.", required=True),
         reason: str = SlashOption(description="Reason for the report."),
-        channel: nextcord.TextChannel = SlashOption(
-            description="The channel where the incident occured.", required=False
-        ),
+        channel: nextcord.TextChannel = SlashOption(description="The channel where the incident occured.", required=False),
     ):
         await interaction.response.defer()
         guild_id = interaction.guild.id
@@ -66,47 +50,29 @@ class Reports(commands.Cog):
             await interaction.send(embed=embed, ephemeral=True)
             return
 
-        embed = nextcord.Embed(
-            title="New Report",
-            description=f"Issue reported in {interaction.channel.mention}",
-            color=config.ERROR_COLOR,
-        )
+        embed = nextcord.Embed(title="New Report", description=f"Issue reported in {interaction.channel.mention}", color=config.ERROR_COLOR)
         embed.add_field(name="Reason", value=reason, inline=False)
 
         embed.add_field(name="Reported User", value=user.mention, inline=False)
         if user.avatar:
             embed.set_thumbnail(url=user.avatar.url)
 
-        embed.set_footer(
-            text=f"Reported by {interaction.user}",
-            icon_url=interaction.user.display_avatar.url,
-        )
+        embed.set_footer(text=f"Reported by {interaction.user}", icon_url=interaction.user.display_avatar.url)
 
         # Send the embed to the reports channel, pinging the moderator role
-        await reports_channel.send(
-            content=f"<@&{moderator_role_id}>",
-            embed=embed,
-            allowed_mentions=nextcord.AllowedMentions(roles=True),
-        )
+        await reports_channel.send(content=f"<@&{moderator_role_id}>", embed=embed, allowed_mentions=nextcord.AllowedMentions(roles=True))
         submitted_embed = nextcord.Embed(
-            description="✅ Report successfully submitted. Thank you for helping to keep our server safe!",
-            color=nextcord.Color.green(),
+            description="✅ Report successfully submitted. Thank you for helping to keep our server safe!", color=nextcord.Color.green()
         )
         await interaction.send(embed=submitted_embed, ephemeral=True)
 
-    @nextcord.slash_command(
-        name="admin_report", description="Set up the report system for this server."
-    )
+    @nextcord.slash_command(name="admin_report", description="Set up the report system for this server.")
     @application_checks.has_permissions(administrator=True)
     async def admin_report(
         self,
         interaction: Interaction,
-        mod_role: nextcord.Role = SlashOption(
-            description="The moderator role to ping."
-        ),
-        reports_channel: nextcord.TextChannel = SlashOption(
-            description="The channel where reports will be sent."
-        ),
+        mod_role: nextcord.Role = SlashOption(description="The moderator role to ping."),
+        reports_channel: nextcord.TextChannel = SlashOption(description="The channel where reports will be sent."),
     ):
         guild_id = interaction.guild.id
 
@@ -117,10 +83,7 @@ class Reports(commands.Cog):
         embed.description += f"\n**Moderator role**: {mod_role.mention}"
         embed.description += f"\n**Reports channel**: {reports_channel.mention}"
 
-        await interaction.send(
-            embed=embed,
-            ephemeral=True,
-        )
+        await interaction.send(embed=embed, ephemeral=True)
 
 
 def setup(bot):

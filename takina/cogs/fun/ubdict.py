@@ -13,15 +13,11 @@ class UrbanDictionary(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @commands.command(
-        help="Query Urban Dictionary for a definition. \nUsage: `ubdict anime`.",
-    )
+    @commands.command(help="Query Urban Dictionary for a definition. \nUsage: `ubdict anime`.")
     async def ubdict(self, ctx: commands.Context, *, word: str):
         params = {"term": word}
         async with aiohttp.ClientSession() as session:
-            async with session.get(
-                "https://api.urbandictionary.com/v0/define", params=params
-            ) as response:
+            async with session.get("https://api.urbandictionary.com/v0/define", params=params) as response:
                 data = await response.json()
         if not data["list"]:
             embed = nextcord.Embed(color=config.ERROR_COLOR)
@@ -41,42 +37,22 @@ class UrbanDictionary(commands.Cog):
             return text[:300] + "..." if len(text) > 300 else text
 
         definition = format_text(data["list"][0]["definition"])
-        example = (
-            format_text(data["list"][0]["example"])
-            if data["list"][0]["example"]
-            else "No examples provided."
-        )
+        example = format_text(data["list"][0]["example"]) if data["list"][0]["example"] else "No examples provided."
 
-        embed = nextcord.Embed(
-            title=data["list"][0]["word"],
-            description=definition,
-            url=data["list"][0]["permalink"],
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(title=data["list"][0]["word"], description=definition, url=data["list"][0]["permalink"], color=config.EMBED_COLOR)
         embed.add_field(name="Example", value=example, inline=False)
-        embed.set_footer(
-            text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by Urban Dictionary"
-        )
+        embed.set_footer(text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by Urban Dictionary")
         embed.set_thumbnail(url="https://www.urbandictionary.com/favicon-32x32.png")
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="ubdict",
-        description="Query Urban Dictionary for a definition.",
-    )
+    @nextcord.slash_command(name="ubdict", description="Query Urban Dictionary for a definition.")
     async def slash_ubdict(
-        self,
-        interaction: nextcord.Interaction,
-        word: str = nextcord.SlashOption(
-            description="The word to define", required=True
-        ),
+        self, interaction: nextcord.Interaction, word: str = nextcord.SlashOption(description="The word to define", required=True)
     ) -> None:
         await interaction.response.defer()
         params = {"term": word}
         async with aiohttp.ClientSession() as session:
-            async with session.get(
-                "https://api.urbandictionary.com/v0/define", params=params
-            ) as response:
+            async with session.get("https://api.urbandictionary.com/v0/define", params=params) as response:
                 data = await response.json()
         if not data["list"]:
             embed = nextcord.Embed(color=config.ERROR_COLOR)
@@ -96,22 +72,11 @@ class UrbanDictionary(commands.Cog):
             return text[:300] + "..." if len(text) > 300 else text
 
         definition = format_text(data["list"][0]["definition"])
-        example = (
-            format_text(data["list"][0]["example"])
-            if data["list"][0]["example"]
-            else "No examples provided."
-        )
+        example = format_text(data["list"][0]["example"]) if data["list"][0]["example"] else "No examples provided."
 
-        embed = nextcord.Embed(
-            title=data["list"][0]["word"],
-            description=definition,
-            url=data["list"][0]["permalink"],
-            color=config.EMBED_COLOR,
-        )
+        embed = nextcord.Embed(title=data["list"][0]["word"], description=definition, url=data["list"][0]["permalink"], color=config.EMBED_COLOR)
         embed.add_field(name="Example", value=example, inline=False)
-        embed.set_footer(
-            text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by Urban Dictionary"
-        )
+        embed.set_footer(text=f"👍 {data['list'][0]['thumbs_up']} | 👎 {data['list'][0]['thumbs_down']} | Powered by Urban Dictionary")
         embed.set_thumbnail(url="https://www.urbandictionary.com/favicon-32x32.png")
         await interaction.send(embed=embed)
 

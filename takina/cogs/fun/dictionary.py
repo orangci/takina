@@ -11,19 +11,12 @@ class Dictionary(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(
-        help="Query the dictionary for a definition. \nUsage: `define grass`.",
-        aliases=["dict"],
-    )
+    @commands.command(help="Query the dictionary for a definition. \nUsage: `define grass`.", aliases=["dict"])
     async def define(self, ctx: commands.Context, *, word: str):
         api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
         response = await oclib.request(api_url)
 
-        if (
-            not response
-            or isinstance(response, dict)
-            and response.get("title") == "No Definitions Found"
-        ):
+        if not response or isinstance(response, dict) and response.get("title") == "No Definitions Found":
             error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = ":x: No definition found."
             await ctx.reply(embed=error_embed, mention_author=False)
@@ -61,19 +54,13 @@ class Dictionary(commands.Cog):
         embed.description = description.strip()
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="define", description="Fetch a dictionary definition for a word."
-    )
+    @nextcord.slash_command(name="define", description="Fetch a dictionary definition for a word.")
     async def slash_define(self, interaction: nextcord.Interaction, *, word: str):
         await interaction.response.defer()
         api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
         response = await oclib.request(api_url)
 
-        if (
-            not response
-            or isinstance(response, dict)
-            and response.get("title") == "No Definitions Found"
-        ):
+        if not response or isinstance(response, dict) and response.get("title") == "No Definitions Found":
             error_embed = nextcord.Embed(color=config.ERROR_COLOR)
             error_embed.description = ":x: No definition found."
             await interaction.send(embed=error_embed, ephemeral=True)
