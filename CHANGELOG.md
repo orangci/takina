@@ -72,3 +72,6 @@ Fixed checking for an incorrect status in weebism.mal_updates: the function shou
 
 #### 1.7.2
 In sesp.isadev.subdomains, a bug was found where commands didn't support queries that ended with `.is-a.dev`. This was patched in this update.
+
+#### 1.7.3
+The embeds in the util.socials cog were missing the quote border which all other embeds of this type in Takina have. This was fixed in this update.

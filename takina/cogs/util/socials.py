@@ -51,16 +51,16 @@ class SocialsGitHub(commands.Cog):
 
         embed.url = user.html_url
         embed.description += f"{user.bio}\n" if user.bio else ""
-        embed.description += f"\n**Website**: [{website}]({user.blog})" if user.blog else ""
-        embed.description += f"\n**Email**: [{user.email}](mailto:{user.email})" if user.email else ""
-        embed.description += f"\n**Location**: {user.location}" if user.location else ""
-        embed.description += "\n**Hireable**: This user is available for hire." if user.hireable else ""
-        embed.description += f"\n**Company**: {user.company}" if user.company else ""
-        embed.description += f"\n**Followers**: {user.followers}" if user.followers else ""
-        embed.description += f"\n**Following**: {user.following}" if user.following else ""
-        embed.description += f"\n**Joined GitHub**: <t:{int(user.created_at.timestamp())}:D>" if user.created_at else ""
-        embed.description += f"\n**Public Repositories**: {user.public_repos}" if user.public_repos else ""
-        embed.description += f"\n**Public Gists**: {user.public_gists}" if user.public_gists else ""
+        embed.description += f"\n> **Website**: [{website}]({user.blog})" if user.blog else ""
+        embed.description += f"\n> **Email**: [{user.email}](mailto:{user.email})" if user.email else ""
+        embed.description += f"\n> **Location**: {user.location}" if user.location else ""
+        embed.description += "\n> **Hireable**: This user is available for hire." if user.hireable else ""
+        embed.description += f"\n> **Company**: {user.company}" if user.company else ""
+        embed.description += f"\n> **Followers**: {user.followers}" if user.followers else ""
+        embed.description += f"\n> **Following**: {user.following}" if user.following else ""
+        embed.description += f"\n> **Joined GitHub**: <t:{int(user.created_at.timestamp())}:D>" if user.created_at else ""
+        embed.description += f"\n> **Public Repositories**: {user.public_repos}" if user.public_repos else ""
+        embed.description += f"\n> **Public Gists**: {user.public_gists}" if user.public_gists else ""
         embed.description += "\n\nThis user has set their profile as private." if user.user_view_type != "public" else ""
         embed.description += "\n\n**This user is a GitHub site administrator.**" if user.site_admin else ""
 
@@ -108,14 +108,14 @@ class SocialsReddit(commands.Cog):
         embed.set_thumbnail(url=user.icon_img)
         embed.title = f"u/{user.name}"
         embed.description += f"{user.subreddit.public_description}\n" if user.subreddit.public_description else ""
-        embed.description += f"\n**Joined Reddit**: <t:{int(user.created_utc)}:D>"
-        embed.description += f"\n**Post Karma**: {user.link_karma}"
-        embed.description += f"\n**Comment Karma**: {user.comment_karma}"
-        embed.description += f"\n**Total Posts**: {user.link_karma}"
-        embed.description += f"\n**Total Comments**: {user.comment_karma}"
+        embed.description += f"\n> **Joined Reddit**: <t:{int(user.created_utc)}:D>"
+        embed.description += f"\n> **Post Karma**: {user.link_karma}"
+        embed.description += f"\n> **Comment Karma**: {user.comment_karma}"
+        embed.description += f"\n> **Total Posts**: {user.link_karma}"
+        embed.description += f"\n> **Total Comments**: {user.comment_karma}"
         moderated_subreddits = await user.moderated()
         moderated_subreddit_names = [f"r/{sub.display_name}" for sub in moderated_subreddits]
-        embed.description += f"\n**Moderator in**: {', '.join(moderated_subreddit_names)}" if moderated_subreddit_names else ""
+        embed.description += f"\n> **Moderator in**: {', '.join(moderated_subreddit_names)}" if moderated_subreddit_names else ""
         return embed
 
 
