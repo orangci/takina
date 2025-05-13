@@ -61,7 +61,7 @@ class Counting(commands.Cog):
         embed.description = f"{await oclib.fetch_random_emoji()}The current count is: {count}"
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(help="Set the count of the counting channel. Usage: `set_count <number>`.", aliases=["setcount"])
+    @commands.command(help="Set the count of the counting channel.", aliases=["setcount"])
     @lib.is_in_guild()
     @commands.is_owner()
     async def set_count(self, ctx: commands.Context, count: int):

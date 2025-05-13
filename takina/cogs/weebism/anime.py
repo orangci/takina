@@ -107,7 +107,10 @@ class AnimeSearch(commands.Cog):
             return embed
 
     @commands.command(
-        name="anime", aliases=["ani"], help="Fetch anime information from MyAnimeList. \nUsage: `anime Lycoris Recoil` or `anime 50709`."
+        name="anime",
+        aliases=["ani"],
+        help="Fetch anime information from MyAnimeList. You may specify an anime name or its ID in the MAL database.",
+        usage="Lycoris Recoil",
     )
     async def base_anime(self, ctx: commands.Context, *, anime_name: str):
         embed = await self.build_anime_embed(anime_name)
@@ -125,7 +128,8 @@ class AnimeSearch(commands.Cog):
 
     @commands.command(
         aliases=["animeplot", "anisyn", "animesyn"],
-        help="Fetch a anime's summary from MyAnimeList. \nUsage: `anisyn Lycoris Recoil` or `anisyn 50709`.",
+        help="Fetch a anime's summary from MyAnimeList. You may specify an anime name or its ID in the MAL database.",
+        usage="Lycoris Recoil",
     )
     async def anime_synopsis(self, ctx: commands.Context, *, anime_name: str):
         embed = await self.build_anisyn_embed(anime_name)

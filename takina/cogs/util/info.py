@@ -11,11 +11,7 @@ class Info(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        name="userinfo",
-        help="Fetch information about a user. \nUsage: `userinfo <user>` or just `userinfo` if you want to fetch information about yourself.",
-        aliases=["ui"],
-    )
+    @commands.command(name="userinfo", help="Fetch information about a user.", aliases=["ui"], usage="@member")
     async def userinfo(self, ctx: commands.Context, *, member: str = None):
         if member is None:
             member = ctx.author
@@ -77,9 +73,7 @@ class Info(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
-        name="roleinfo",
-        help="Fetch information about a role. \nUsage: `Usage: roleinfo <role>`. Note that this command is ***case-sensitive***.",
-        aliases=["ri"],
+        name="roleinfo", help="Fetch information about a role. Note that this command is ***case-sensitive***.", aliases=["ri"], usage="Moderator"
     )
     async def roleinfo(self, ctx: commands.Context, *, role: nextcord.Role):
         emoji = await oclib.fetch_random_emoji()
@@ -103,7 +97,7 @@ class Info(commands.Cog):
         embed.set_thumbnail(url=role.icon.url if role.icon else None)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="serverinfo", help="Fetch information about the server. \nUsage: `serverinfo`.", aliases=["si"])
+    @commands.command(name="serverinfo", help="Fetch information about the server.", aliases=["si"])
     async def serverinfo(self, ctx: commands.Context):
         guild = ctx.guild
         emoji = await oclib.fetch_random_emoji()

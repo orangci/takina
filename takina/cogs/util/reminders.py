@@ -35,7 +35,7 @@ class RemindMe(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @reminder.command(name="set", help="Set a reminder. Minimum duration is 10 minutes. Usage: `reminder set <time> <reminder>`.")
+    @reminder.command(name="set", help="Set a reminder. Minimum duration is 10 minutes.", usage="12h take out the trash")
     async def reminder_set(self, ctx: commands.Context, time: str, *, reminder: str):
         user_id = ctx.author.id
         remind_time = self.parse_time(time)
@@ -77,7 +77,7 @@ class RemindMe(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @reminder.command(name="delete", help="Delete a reminder by its ID. Usage: `reminder delete <reminder ID>`.")
+    @reminder.command(name="delete", help="Delete a reminder by its ID.")
     async def reminder_delete(self, ctx: commands.Context, reminder_id: str):
         user_id = ctx.author.id
 

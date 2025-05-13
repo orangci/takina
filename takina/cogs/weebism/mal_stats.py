@@ -52,11 +52,11 @@ class MAL_Stats(commands.Cog):
             )
             await ctx.reply(embed=embed, mention_author=False)
 
-    @malstats.command(help="Fetch a MyAnimeList user's anime statistics. \nUsage: `malstats anime <username>`.")
+    @malstats.command(help="Fetch a MyAnimeList user's anime statistics.", usage="orangc")
     async def anime(self, ctx: commands.Context, *, username: str):
         await fetch_stats(ctx, username, category="anime")
 
-    @malstats.command(help="Fetch a MyAnimeList user's manga statistics. \nUsage: `malstats manga <username>`.")
+    @malstats.command(help="Fetch a MyAnimeList user's manga statistics.", usage="orangc")
     async def manga(self, ctx: commands.Context, *, username: str):
         await fetch_stats(ctx, username, category="manga")
 

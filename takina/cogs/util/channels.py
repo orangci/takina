@@ -12,10 +12,7 @@ class ChannelManagement(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(
-        name="slowmode",
-        help="Sets slowmode in the current or specified channel. \nUsage: `slowmode <duration> #channel` to specify a channel to modify or `slowmode <duration>` to set the slowmode for the current cannel.",
-    )
+    @commands.command(name="slowmode", help="Sets slowmode in the current or specified channel.", usage="2h #channel")
     @commands.has_permissions(manage_channels=True)
     async def slowmode(self, ctx: commands.Context, duration: str = None, channel: nextcord.TextChannel = None):
         channel = channel or ctx.channel
@@ -40,10 +37,7 @@ class ChannelManagement(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="lock",
-        help="Locks the current or specified channel. \nUsage: `lock #channel` to specify a channel to lock or `lock` to lock the current channel.",
-    )
+    @commands.command(name="lock", help="Locks the current or specified channel.", usage="#channel")
     @commands.has_permissions(manage_channels=True)
     async def lock(self, ctx: commands.Context, channel: nextcord.TextChannel = None):
         channel = channel or ctx.channel
@@ -54,10 +48,7 @@ class ChannelManagement(commands.Cog):
         embed = nextcord.Embed(description=f"🔒 Channel {channel.mention} has been locked.", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="unlock",
-        help="Locks the current or specified channel. \nUsage: `unlock #channel` to specify a channel to unlock or `unlock` to unlock the current channel.",
-    )
+    @commands.command(name="unlock", help="Locks the current or specified channel.", usage="#channel")
     @commands.has_permissions(manage_channels=True)
     async def unlock(self, ctx: commands.Context, channel: nextcord.TextChannel = None):
         channel = channel or ctx.channel

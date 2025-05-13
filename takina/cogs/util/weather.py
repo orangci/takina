@@ -42,7 +42,7 @@ class Weather(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(help="Weather information command. Usage: `weather Riyadh Saudi Arabia`.")
+    @commands.command(help="Weather information command.", usage="Riyadh Saudi Arabia")
     async def weather(self, ctx: commands.Context, *, location: str):
         embed = await find_weather(location)
         await ctx.reply(embed=embed, mention_author=False)

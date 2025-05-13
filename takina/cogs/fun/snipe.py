@@ -22,7 +22,7 @@ class Snipe(commands.Cog):
             "attachments": message.attachments,
         }
 
-    @commands.command(name="snipe", help="Snipe the last deleted message in a channel. \nUsage: `snipe`.")
+    @commands.command(name="snipe", help="Snipe the last deleted message in a channel.")
     @commands.has_permissions(manage_messages=True)
     async def snipe(self, ctx: commands.Context):
         sniped_message = self.sniped_messages.get(ctx.channel.id)
@@ -77,7 +77,7 @@ class ESnipe(commands.Cog):
             "new_content": after.content,  # Store the new content after the edit
         }
 
-    @commands.command(name="esnipe", help="Snipe the last edited message in a channel. \nUsage: `esnipe`.")
+    @commands.command(name="esnipe", help="Snipe the last edited message in a channel.")
     @commands.has_permissions(manage_messages=True)
     async def editsnipe(self, ctx: commands.Context):
         sniped_message = self.sniped_messages.get(ctx.channel.id)

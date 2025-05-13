@@ -34,7 +34,7 @@ class TriggerResponses(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.has_permissions(manage_channels=True)
-    @trigger.command(name="add", help='Usage: `trigger add <triggername> "trigger" "trigger response"`')
+    @trigger.command(name="add", usage='lycoris "lycoris recoil" "lycoris recoil is peak!"')
     async def add_trigger(self, ctx: commands.Context, name: str, trigger: str, response: str):
         """Add a new trigger response."""
         if len(name) > MAX_TRIGGER_NAME_LEN:
@@ -78,7 +78,7 @@ class TriggerResponses(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.has_permissions(manage_channels=True)
-    @trigger.command(name="remove", help="Usage: `trigger remove <triggername>`", aliases=["delete"])
+    @trigger.command(name="remove", aliases=["delete"])
     async def remove_trigger(self, ctx: commands.Context, name: str):
         """Remove an existing trigger."""
         guild_data = await self.get_guild_triggers(ctx.guild.id)

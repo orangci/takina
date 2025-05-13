@@ -4,24 +4,14 @@ import nextcord
 import config
 from nextcord.ext import commands
 from ping3 import ping as dns_ping
-
 from ..libs import oclib
-
-
-def get_ordinal(n: int) -> str:
-    """Helper function to return the ordinal representation of a number."""
-    suffix = ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"]
-    if 10 <= n % 100 <= 20:
-        return f"{n}th"
-    else:
-        return f"{n}{suffix[n % 10]}"
 
 
 class Utils(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
 
-    @commands.command(help="Ping the bot and check its latency. \nUsage: `ping`.", aliases=["pong"])
+    @commands.command(help="Ping the bot and check its latency.", aliases=["pong"], usage="orangc.net")
     async def ping(self, ctx: commands.Context, ip: str = None):
         emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(color=config.EMBED_COLOR)
@@ -41,7 +31,7 @@ class Utils(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(help="Check the bot's uptime since the last downtime. \nUsage: `uptime`.")
+    @commands.command(help="Check the bot's uptime since the last downtime.")
     async def uptime(self, ctx: commands.Context):
         embed = nextcord.Embed(
             description=f"{await oclib.fetch_random_emoji()}{config.BOT_NAME} has been up for {await oclib.uptime_fetcher()}.",
@@ -49,7 +39,7 @@ class Utils(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="join-position", aliases=["jp", "japan"], help="Check a user's join position in the server. \nUsage: `jp <member>`.")
+    @commands.command(name="join-position", aliases=["jp", "japan"], help="Check a user's join position in the server.", usage="@member")
     async def join_position(self, ctx: commands.Context, *, member: str = None):
         guild = ctx.guild
         if member is None:
@@ -63,12 +53,16 @@ class Utils(commands.Cog):
         members = sorted(guild.members, key=lambda m: m.joined_at)
         join_position = members.index(member) + 1
 
-        ordinal_position = get_ordinal(join_position)
+        ordinal_position = oclib.get_ordinal(join_position)
 
         if not member == ctx.author:
-            embed = nextcord.Embed(description=f"**{member.mention}** was the {ordinal_position} to join **{guild.name}**.", color=config.EMBED_COLOR)
+            embed = nextcord.Embed(
+                description=f"**{member.mention}** was the {join_position:,}{ordinal_position} to join **{guild.name}**.", color=config.EMBED_COLOR
+            )
         else:
-            embed = nextcord.Embed(description=f"You were the {ordinal_position} to join **{guild.name}**.", color=config.EMBED_COLOR)
+            embed = nextcord.Embed(
+                description=f"You were the {join_position:,}{ordinal_position} to join **{guild.name}**.", color=config.EMBED_COLOR
+            )
         embed.add_field(name="Joined", value=f"<t:{int(member.joined_at.timestamp())}:F> (<t:{int(member.joined_at.timestamp())}:R>)", inline=False)
         if member.avatar:
             embed.set_thumbnail(url=member.avatar.url)
@@ -85,10 +79,10 @@ class Utils(commands.Cog):
 
         embed = nextcord.Embed(
             title="👥 Members",
-            description=f"There are currently **{total_members}** members and **{total_bots}** bots in this guild.",
+            description=f"There are currently **{total_members:,}** members and **{total_bots:,}** bots in this guild.",
             color=config.EMBED_COLOR,
         )
-        embed.set_footer(text=f"Total (members and bots): {total_count}.")
+        embed.set_footer(text=f"Total (members and bots): {total_count:,}.")
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
 
         await ctx.reply(embed=embed, mention_author=False)
@@ -153,12 +147,16 @@ class UtilsSlash(commands.Cog):
         members = sorted(guild.members, key=lambda m: m.joined_at)
         join_position = members.index(member) + 1
 
-        ordinal_position = get_ordinal(join_position)
+        ordinal_position = oclib.get_ordinal(join_position)
 
         if not member == interaction.user:
-            embed = nextcord.Embed(description=f"**{member.mention}** was the {ordinal_position} to join **{guild.name}**.", color=config.EMBED_COLOR)
+            embed = nextcord.Embed(
+                description=f"**{member.mention}** was the {join_position:,}{ordinal_position} to join **{guild.name}**.", color=config.EMBED_COLOR
+            )
         else:
-            embed = nextcord.Embed(description=f"You were the {ordinal_position} to join **{guild.name}**.", color=config.EMBED_COLOR)
+            embed = nextcord.Embed(
+                description=f"You were the {join_position:,}{ordinal_position} to join **{guild.name}**.", color=config.EMBED_COLOR
+            )
         embed.add_field(name="Joined", value=f"<t:{int(member.joined_at.timestamp())}:F> (<t:{int(member.joined_at.timestamp())}:R>)", inline=False)
         if member.avatar:
             embed.set_thumbnail(url=member.avatar.url)
@@ -176,10 +174,10 @@ class UtilsSlash(commands.Cog):
 
         embed = nextcord.Embed(
             title="👥 Members",
-            description=f"There are currently **{total_members}** members and **{total_bots}** bots in this guild.",
+            description=f"There are currently **{total_members:,}** members and **{total_bots:,}** bots in this guild.",
             color=config.EMBED_COLOR,
         )
-        embed.set_footer(text=f"Total (members and bots): {total_count}.")
+        embed.set_footer(text=f"Total (members and bots): {total_count:,}.")
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
 
         await interaction.send(embed=embed, ephemeral=True)

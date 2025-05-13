@@ -28,7 +28,7 @@ class Minecraft(commands.Cog):
         skin_url = f"https://visage.surgeplay.com/full/384/{uuid}"
         return skin_url
 
-    @commands.command(name="mcskin", help="Fetch and display a Minecraft player's skin. Usage: `mcskin <minecraft username>`.")
+    @commands.command(name="mcskin", help="Fetch and display a Minecraft player's skin.", usage="orangci")
     async def mcskin(self, ctx: commands.Context, username: str):
         uuid = await self.fetch_uuid(username)
 

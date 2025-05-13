@@ -283,32 +283,33 @@ class SubdomainUtils(commands.Cog):
         self.bot = bot
 
     @lib.is_in_guild()
-    @commands.command(help="Lookup information on a subdomain of is-a.dev. Usage: `whois cirno.is-a.dev`.")
+    @commands.command(help="Lookup information on a subdomain of is-a.dev.", usage="cirno.is-a.dev")
     async def whois(self, ctx: commands.Context, domain: str) -> None:
         embed = await build_whois_embed(domain)
         await ctx.reply(embed=embed, mention_author=False)
 
     @lib.is_in_guild()
-    @commands.command(help="Fetch all staff-owned is-a.dev subdomains. Usage: `staff_subdomains`", aliases=["iad-staff"])
+    @commands.command(help="Fetch all staff-owned is-a.dev subdomains.", aliases=["iad-staff"])
     async def staff_subdomains(self, ctx: commands.Context) -> None:
         embed = await fetch_staff_subdomains()
         await ctx.reply(embed=embed, mention_author=False)
 
     @lib.is_in_guild()
-    @commands.command(help="Fetch all unregistered single-character is-a.dev subdomains. Usage: `single_character_subdomains`", aliases=["iad-scs"])
+    @commands.command(help="Fetch all unregistered single-character is-a.dev subdomains.", aliases=["iad-scs"])
     async def single_character_subdomains(self, ctx: commands.Context) -> None:
         embed = await fetch_non_existent_single_character_domains()
         await ctx.reply(embed=embed, mention_author=False)
 
     @lib.is_in_guild()
-    @commands.command(help="Check whether an is-a.dev subdomain is available for registration. Usage: `check cirno`.")
+    @commands.command(help="Check whether an is-a.dev subdomain is available for registration.", usage="cirno.is-a.dev")
     async def check(self, ctx: commands.Context, domain: str):
         embed = await build_check_embed(domain)
         await ctx.reply(embed=embed, mention_author=False)
 
     @lib.is_in_guild()
     @commands.command(
-        help="Fetch is-a.dev statistics for either the entire service or a specific Github username. Usage: `is-a-dev orangci`.",
+        help="Fetch is-a.dev statistics for either the entire service or a specific Github username.",
+        usage="orangci",
         aliases=["isadev", "is-a-dev", "iad"],
     )
     async def is_a_dev(self, ctx: commands.Context, username: str = None):
@@ -323,9 +324,7 @@ class SubdomainUtilsSlash(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    @nextcord.slash_command(
-        name="whois", guild_ids=[lib.SERVER_ID], description="Lookup information on a subdomain of is-a.dev. Usage: `whois cirno.is-a.dev`."
-    )
+    @nextcord.slash_command(name="whois", guild_ids=[lib.SERVER_ID], description="Lookup information on a subdomain of is-a.dev.")
     async def whois(
         self,
         interaction: nextcord.Interaction,

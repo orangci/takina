@@ -13,7 +13,7 @@ class Mute(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="mute", help="Timeout a member. \nUsage: `mute <member> <duration> <reason>`.", aliases=["timeout"])
+    @commands.command(name="mute", help="Timeout a member.", aliases=["timeout"], usage="@member 12h spamming in #anime")
     @commands.has_permissions(moderate_members=True)
     async def mute(self, ctx, member: str, duration: str, *, reason: str = "No reason provided"):
         timeout_duration = oclib.duration_calculator(duration, timeout=True)
@@ -63,7 +63,7 @@ class Unmute(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="unmute", help="Unmute a member. \nUsage: `unmute <member> <reason>`.")
+    @commands.command(name="unmute", help="Unmute a member.")
     @commands.has_permissions(moderate_members=True)
     async def unmute(self, ctx: commands.Context, member: str, *, reason: str = "No reason provided"):
         member = oclib.extract_user_id(member, ctx)

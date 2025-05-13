@@ -95,9 +95,7 @@ class AnimeSeasonals(commands.Cog):
         except Exception as e:
             return None, nextcord.Embed(description=str(e), color=config.ERROR_COLOR)
 
-    @commands.command(
-        aliases=["season"], help="Fetch a season's airing anime.\nUsage: `season <season> <year>` or `season` to fetch the current season."
-    )
+    @commands.command(aliases=["season"], help="Fetch a season's airing anime.")
     async def seasonals(self, ctx: commands.Context, season: str = None, year: int = None):
         emoji = await oclib.fetch_random_emoji()
         pages, error_embed = await self.build_seasonal_response(season, year, emoji)

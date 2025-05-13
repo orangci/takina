@@ -11,12 +11,18 @@ class Roles(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.group(name="role", description="Base role command, if no subcommand is passed.", invoke_without_command=True)
+    @commands.group(
+        name="role",
+        aliases=["rank"],
+        description="Base role command, if no subcommand is passed.",
+        invoke_without_command=True,
+        help="Role management. Use subcommands `add` and `remove`.",
+    )
     async def role(self, ctx: commands.Context):
         embed = nextcord.Embed(description="Please specify a subcommand: `add` or `remove`", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @role.command(name="add", help="Add a role to a member. \nUsage: `role add <role> <member>`.")
+    @role.command(name="add", help="Add a role to a member.", usage="Moderator @member")
     @commands.has_permissions(manage_roles=True)
     async def add(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
         if member is None:
@@ -31,7 +37,7 @@ class Roles(commands.Cog):
         embed = nextcord.Embed(description=f"✅ Added role {role.mention} to {member.mention}.", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @role.command(name="remove", help="Remove a role from member. \nUsage: `role remove <role> <member>`.")
+    @role.command(name="remove", help="Remove a role from member.", usage="Moderator @member")
     @commands.has_permissions(manage_roles=True)
     async def remove(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
         if member is None:

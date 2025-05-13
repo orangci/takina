@@ -11,7 +11,7 @@ class SocialsGitHub(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=["gh"], help="Social information command for GitHub. Usage: `github orangci`.")
+    @commands.command(aliases=["gh"], help="Social information command for GitHub.", usage="orangci")
     async def github(self, ctx: commands.Context, *, username: str):
         embed = await self.fetch_user_information(username)
         await ctx.reply(embed=embed, mention_author=False)
@@ -72,7 +72,7 @@ class SocialsReddit(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(help="Social information command for Reddit. Usage: `reddit orangci`.")
+    @commands.command(help="Social information command for Reddit.", usage="u/orangc")
     async def reddit(self, ctx: commands.Context, *, username: str):
         embed = await self.fetch_user_information(username)
         await ctx.reply(embed=embed, mention_author=False)

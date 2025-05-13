@@ -14,7 +14,7 @@ class Topic(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(help="Fetch a random conversational topic. \nUsage: `topic`.")
+    @commands.command(help="Fetch a random conversational topic.")
     async def topic(self, ctx: commands.Context):
         embed = nextcord.Embed(description=f"{random.choice(topics)} {await oclib.fetch_random_emoji()}", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)

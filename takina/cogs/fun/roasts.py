@@ -11,7 +11,7 @@ class Roasts(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @commands.command(name="roast", help="Get roasted by the bot. \nUsage: `roast <user>`.")
+    @commands.command(name="roast", help="Get roasted by the bot.")
     async def roast(self, ctx: commands.Context, target: str = None):
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         try:

@@ -1,14 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from __future__ import annotations
-
 import datetime
 import os
-
 import nextcord
 import config
 from motor.motor_asyncio import AsyncIOMotorClient
-from nextcord.ext import commands, help_commands
+from nextcord.ext import commands
 
 start_time = datetime.datetime.now(datetime.UTC)
 
@@ -19,7 +17,7 @@ class Bot(commands.Bot):
         self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
 
     async def setup_database(self) -> None:
-        """Setup MongoDB connection and collections"""
+        # Setup MongoDB connection and collections
         if not os.getenv("HASDB"):
             raise Exception("No Mongo found. Set the HASDB variable in case you do have a Mongo instance runnin'.")
         self.db_client = AsyncIOMotorClient(config.MONGO_URI)
@@ -35,20 +33,15 @@ class Bot(commands.Bot):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        """Event triggered when the bot is ready"""
         print(f"{self.user} is now online!")
         await self.setup_database()
 
-
-# help command stuff
-helpcmd = help_commands.PaginatedHelpCommand
-helpcmd.COLOUR = config.EMBED_COLOR
 
 bot = Bot(
     intents=nextcord.Intents.all(),
     command_prefix=Bot.get_prefix,
     case_insensitive=True,
-    help_command=helpcmd(),
+    help_command=None,
     owner_ids=[961063229168164864, 716306888492318790],  # orangc, iostpa
     allowed_mentions=nextcord.AllowedMentions(everyone=False, roles=False, users=True, replied_user=True),
     activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="the stars"),
@@ -72,17 +65,10 @@ def load_exts(directory):
 
 
 REQUIRED_ENV_VARS = ["TOKEN", "HASDB", "MONGO", "BOT_NAME", "DB_NAME", "EMBED_COLOR"]
+missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
+if missing_vars:
+    raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}.")
 
-
-def check_env_vars():
-    missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
-    if missing_vars:
-        raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
-
-
-check_env_vars()
-
-bot.load_extension("onami")
 
 cogs_blacklist = ["fun.snipe", "fun.esnipe"]
 cogs = load_exts("takina/cogs")

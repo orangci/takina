@@ -13,10 +13,7 @@ class Purge(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(
-        help="Purges messages based on specified criteria. Usage: `purge <number>`, `purge user`, `purge bots`, `purge before`, `purge after`.",
-        invoke_without_command=True,
-    )
+    @commands.group(help="Purges messages based on specified criteria.", invoke_without_command=True)
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx: commands.Context, amount: int):
         if amount <= 0 or amount > 200:
@@ -29,7 +26,7 @@ class Purge(commands.Cog):
         embed = nextcord.Embed(description=f"✅ Successfully purged {len(deleted) - 1} messages.", color=config.EMBED_COLOR)
         await ctx.send(embed=embed, delete_after=2)
 
-    @purge.command(name="user", help="Purges messages from a specific user. Usage: purge user <user> <number>.")
+    @purge.command(name="user", help="Purges messages from a specific user.", usage="@member 42")
     async def purge_user(self, ctx: commands.Context, member: str, amount: int):
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(description=":x: Please specify a number between 1 and 200.", color=config.ERROR_COLOR)
@@ -49,7 +46,7 @@ class Purge(commands.Cog):
         embed = nextcord.Embed(description=f"✅ Successfully purged {len(deleted)} messages from {member.mention}.", color=config.EMBED_COLOR)
         await ctx.send(embed=embed, delete_after=2)
 
-    @purge.command(name="bots", help="Purges messages sent by bots. Usage: purge bots <number>.")
+    @purge.command(name="bots", help="Purges messages sent by bots.", usage="@bot 42")
     async def purge_bots(self, ctx: commands.Context, amount: int):
         if amount <= 0 or amount > 100:
             embed = nextcord.Embed(description=":x: Please specify a number between 1 and 200.", color=config.ERROR_COLOR)

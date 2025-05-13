@@ -104,7 +104,11 @@ class MangaSearch(commands.Cog):
             embed = nextcord.Embed(description=str(e), color=config.ERROR_COLOR)
             return embed
 
-    @commands.command(name="manga", help="Fetch manga information from MyAnimeList. \nUsage: `manga Lycoris Recoil` or `anime 135455`.")
+    @commands.command(
+        name="manga",
+        help="Fetch manga information from MyAnimeList. You may specify a manga name or its ID in the MAL database.",
+        usage="Lycoris Recoil",
+    )
     async def base_manga(self, ctx: commands.Context, *, manga_name: str):
         embed = await self.build_manga_embed(manga_name)
         await ctx.reply(embed=embed, mention_author=False)
@@ -120,7 +124,9 @@ class MangaSearch(commands.Cog):
         await interaction.send(embed=embed)
 
     @commands.command(
-        aliases=["mangaplot", "mangasyn"], help="Fetch a manga's summary from MyAnimeList. \nUsage: `mangasyn Lycoris Recoil` or `mangasyn 50709`."
+        aliases=["mangaplot", "mangasyn"],
+        help="Fetch a manga's summary from MyAnimeList. You may specify a manga name or its ID in the MAL database.",
+        usage="Lycoris Recoil",
     )
     async def manga_synopsis(self, ctx: commands.Context, *, manga_name: str):
         embed = await self.build_mangasyn_embed(manga_name)

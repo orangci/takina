@@ -2,7 +2,6 @@
 # SPDX-FileCopyrightText: orangc
 from datetime import datetime
 from urllib.parse import quote
-
 import nextcord
 import config
 from nextcord.ext import commands
@@ -113,13 +112,17 @@ class Wynncraft(commands.Cog):
         return embed
 
     @commands.group(
-        name="wynn", aliases=["wynncraft"], description="Base wynncraft command, if no subcommand is passed.", invoke_without_command=True
+        name="wynn",
+        aliases=["wynncraft"],
+        description="Base wynncraft command, if no subcommand is passed.",
+        invoke_without_command=True,
+        help="Wynncraft information commands. Use subcommands `player`, and `guild`.",
     )
     async def wynn(self, ctx: commands.Context):
         embed = nextcord.Embed(description=":x: Please specify a subcommand: `player` or `guild`", color=config.ERROR_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @wynn.command(name="player", help="Fetch and display a Wynncraft player's data. Usage: `wynn player <minecraft username>`.")
+    @wynn.command(name="player", aliases=["member", "user"], help="Fetch and display a Wynncraft player's data.", usage="orangci")
     async def player(self, ctx: commands.Context, username: str):
         embed = await self.player_information_embed_builder(username)
         await ctx.reply(embed=embed, mention_author=False)
@@ -170,7 +173,7 @@ class Wynncraft(commands.Cog):
 
         return embed
 
-    @wynn.command(name="guild", help="Fetch and display a Wynncraft player's data. Usage: `wynn guild <guild prefix or name>`.")
+    @wynn.command(name="guild", help="Fetch and display a Wynncraft guild's data.", usage="Juniper")
     async def guild(self, ctx: commands.Context, *, guild: str):
         embed = await self.guild_information_embed_builder(guild)
         await ctx.reply(embed=embed, mention_author=False)

@@ -12,7 +12,7 @@ class Books(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(help="Fetch information on a book title or ISBN. \nUsage: `book Yumi and the Nightmare Painter`.", aliases=["books"])
+    @commands.command(help="Fetch information on a book title or ISBN.", usage="Yumi and the Nightmare Painter", aliases=["books"])
     async def book(self, ctx: commands.Context, *, book: str):
         api = GoogleBooksAPI()
         book_data = api.get_book_by_title(book)

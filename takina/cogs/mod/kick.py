@@ -11,7 +11,7 @@ class Kick(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="kick", help="Kick a member from the server. \nUsage: `kick @member`.")
+    @commands.command(name="kick", help="Kick a member from the server.", usage="@member")
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx: commands.Context, member: str = None, *, reason: str = "No reason provided"):
         member = oclib.extract_user_id(member, ctx)

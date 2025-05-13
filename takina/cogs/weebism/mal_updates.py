@@ -124,7 +124,7 @@ class MAL_Updates(commands.Cog):
 
         return embed
 
-    @commands.command(help="Fetch a MyAnimeList user's latest list updates. \nUsage: `mal <username>`.")
+    @commands.command(help="Fetch a MyAnimeList user's latest list updates.", usage="orangc")
     async def malupdates(self, ctx: commands.Context, *, username: str):
         embed = await self.build_embed(username)
         await ctx.reply(embed=embed, mention_author=False)

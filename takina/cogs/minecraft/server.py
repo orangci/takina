@@ -23,7 +23,7 @@ class MinecraftServerStatus(commands.Cog):
         except Exception as e:
             raise e
 
-    @commands.command(help="Display a Minecraft server's status. \nUsage: `mcstatus hypixel.net`.", aliases=["mcserver"])
+    @commands.command(help="Display a Minecraft server's status.", usage="hypixel.net", aliases=["mcserver"])
     async def mcstatus(self, ctx: commands.Context, *, server_name: str):
         try:
             server = await self.fetch_server_info(server_name)

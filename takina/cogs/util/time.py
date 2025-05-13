@@ -38,7 +38,7 @@ class Time(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=["timezone"], help="Timezone utility command. Usage: `time Riyadh Saudi Arabia`.")
+    @commands.command(aliases=["timezone"], help="Timezone utility command.", usage="Riyadh Saudi Arabia")
     async def time(self, ctx: commands.Context, *, location: str):
         embed = await find_time(location)
         await ctx.reply(embed=embed, mention_author=False)

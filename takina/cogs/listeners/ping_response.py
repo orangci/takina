@@ -43,11 +43,11 @@ class PingResponse(commands.Cog):
             if guild_data and "prefix" in guild_data:
                 self.prefix = f"`{guild_data['prefix']}`, `takina`, `Takina`"
 
-        embed.description += f"\n**Prefix**: {self.prefix}"
-        embed.description += f"\n**Stars**: [{self.stars}](https://github.com/orangci/takina/stargazers)"
-        embed.description += f"\n**Uptime**: {await oclib.uptime_fetcher()}"
+        embed.description += f"\n> **Prefix**: {self.prefix}"
+        embed.description += f"\n> **Stars**: [{self.stars}](https://github.com/orangci/takina/stargazers)"
+        embed.description += f"\n> **Uptime**: {await oclib.uptime_fetcher()}"
         BOT_VERSION_LINK = f"[{config.BOT_VERSION}](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{config.BOT_VERSION.replace('.', '')})"
-        embed.description += f"\n**Version**: {BOT_VERSION_LINK}"
+        embed.description += f"\n> **Version**: {BOT_VERSION_LINK}"
 
         orangc = await self.bot.fetch_user(961063229168164864)
         embed.set_author(
@@ -63,11 +63,11 @@ class PingResponse(commands.Cog):
             if message.content.strip() == message.guild.me.mention:
                 await message.reply(embed=await self.construct_info_embed(message), mention_author=False)
 
-    @commands.command(name="info", help="Information about the bot.")
+    @commands.command(name="info", help="Fetch information about the bot.")
     async def info(self, ctx: commands.Context):
         await ctx.reply(embed=await self.construct_info_embed(ctx), mention_author=False)
 
-    @nextcord.slash_command(name="info", description="Information about the bot.")
+    @nextcord.slash_command(name="info", description="Fetch information about the bot.")
     async def slash_info(self, interaction: nextcord.Interaction):
         await interaction.response.defer()
         await interaction.send(embed=await self.construct_info_embed(interaction), ephemeral=True)

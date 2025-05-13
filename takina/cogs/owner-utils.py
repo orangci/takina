@@ -3,12 +3,10 @@
 import importlib
 import os
 import subprocess
-
 import config as cfg
 import nextcord
 import config
 from nextcord.ext import commands
-
 import cogs.libs.oclib as oclib
 
 
@@ -110,9 +108,11 @@ class OwnerUtils(commands.Cog):
                 error_message = "❌ Reloaded all except the following cogs:\n\n" + "\n> ".join(failed_cogs)
                 embed = nextcord.Embed(color=config.ERROR_COLOR, description=error_message)
                 await ctx.reply(embed=embed, mention_author=False)
+                print(f"\n\n{embed.description}")
             else:
                 embed = nextcord.Embed(color=config.EMBED_COLOR, description="✅ Successfully reloaded all cogs.")
                 await ctx.reply(embed=embed, mention_author=False)
+                print(f"\n\n{embed.description}")
 
         else:
             cog = args[0]
@@ -123,6 +123,7 @@ class OwnerUtils(commands.Cog):
                     self.bot.reload_extension(full_cog_name)
                     embed = nextcord.Embed(color=config.EMBED_COLOR, description=f"✅ Successfully reloaded `{full_cog_name}`.")
                     await ctx.reply(embed=embed, mention_author=False)
+                    print(f"\n\n{embed.description}")
                 except Exception as e:
                     embed = nextcord.Embed(color=config.ERROR_COLOR, description=f"❌ Failed to reload `{full_cog_name}`: {e}")
                     await ctx.reply(embed=embed, mention_author=False)

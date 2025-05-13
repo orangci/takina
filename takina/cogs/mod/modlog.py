@@ -134,7 +134,7 @@ class ModLog(commands.Cog):
             embed.set_thumbnail(url=member.avatar.url)
         await modlog_channel.send(embed=embed)
 
-    @commands.command(name="case", help="Fetch information on a moderation case. \nUsage: `case <case id>`.")
+    @commands.command(name="case", help="Fetch information on a moderation case.")
     @commands.has_permissions(moderate_members=True)
     async def get_case(self, ctx, case_id: int):
         case = await self.db.modlog_cases.find_one({"guild_id": ctx.guild.id, "case_id": case_id})
@@ -156,7 +156,7 @@ class ModLog(commands.Cog):
         embed.add_field(name="Reason", value=case["reason"], inline=False)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="case_edit", aliases=["caseedit", "editc"], help="Edit a moderation case. \nUsage: `editc <case id> <new reason>`.")
+    @commands.command(name="case_edit", aliases=["caseedit", "editc"], help="Edit a moderation case.")
     @commands.has_permissions(moderate_members=True)
     async def edit_case(self, ctx, case_id: int, *, new_reason: str):
         result = await self.db.modlog_cases.update_one({"guild_id": ctx.guild.id, "case_id": case_id}, {"$set": {"reason": new_reason}})
@@ -169,7 +169,7 @@ class ModLog(commands.Cog):
             embed.description = f"✅ Case `{case_id}`'s reason has been updated."
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="cases", help="List all the moderation cases in the server. \nUsage: `cases`.")
+    @commands.command(name="cases", help="List all the moderation cases in the server.")
     @commands.has_permissions(moderate_members=True)
     async def get_cases(self, ctx, user: nextcord.Member = None):
         query = {"guild_id": ctx.guild.id}
@@ -186,28 +186,28 @@ class ModLog(commands.Cog):
         view = CaseListButtonView(cases)
         await ctx.reply(embed=view.get_page_embed(), view=view, mention_author=False)
 
-    @commands.command(name="modcases", help="Lists all moderation cases in which the user was the moderator. \nUsage: `modcases <user>`.")
+    @commands.command(name="modcases", help="Lists all moderation cases in which the user was the moderator.")
     @commands.has_permissions(moderate_members=True)
-    async def get_mod_cases(self, ctx, user: str = None):
-        if user:
-            user = oclib.extract_user_id(user, ctx)
-            if isinstance(user, nextcord.Embed):
-                await ctx.reply(embed=user, mention_author=False)
+    async def get_mod_cases(self, ctx, moderator: str = None):
+        if moderator:
+            moderator = oclib.extract_user_id(moderator, ctx)
+            if isinstance(moderator, nextcord.Embed):
+                await ctx.reply(embed=moderator, mention_author=False)
                 return
         else:
-            user = ctx.author
+            moderator = ctx.author
 
-        cases = await self.db.modlog_cases.find({"guild_id": ctx.guild.id, "moderator_id": user.id}).to_list(length=None)
+        cases = await self.db.modlog_cases.find({"guild_id": ctx.guild.id, "moderator_id": moderator.id}).to_list(length=None)
         if not cases:
             embed = nextcord.Embed(color=config.ERROR_COLOR)
-            embed.description = f"❌ {user.mention} has not performed any moderation actions."
+            embed.description = f"❌ {moderator.mention} has not performed any moderation actions."
             await ctx.reply(embed=embed, mention_author=False)
             return
 
         view = CaseListButtonView(cases)
         await ctx.reply(embed=view.get_page_embed(), view=view, mention_author=False)
 
-    @commands.command(name="modstats", aliases=["ms"], help="Lists the moderation stats of a user. \nUsage: `modstats <user>`.")
+    @commands.command(name="modstats", aliases=["ms"], help="Lists the moderation statistics of a user.")
     @commands.has_permissions(moderate_members=True)
     async def get_mod_stats(self, ctx, user: nextcord.Member = None):
         if not user:

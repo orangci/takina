@@ -11,7 +11,7 @@ class Dictionary(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(help="Query the dictionary for a definition. \nUsage: `define grass`.", aliases=["dict"])
+    @commands.command(help="Query the dictionary for a definition.", usage="grass", aliases=["dict"])
     async def define(self, ctx: commands.Context, *, word: str):
         api_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
         response = await oclib.request(api_url)

@@ -11,7 +11,7 @@ class Nick(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
 
-    @commands.command(aliases=["setnick"], help="Change a member's nickname. \nUsage: `setnick <member> <new nickname>`.")
+    @commands.command(aliases=["setnick"], help="Change a member's nickname.", usage='@member "new nickname"')
     @commands.has_permissions(manage_nicknames=True)
     async def nick(self, ctx: commands.Context, member: str = None, *, nickname: str = None):
         if member is None:

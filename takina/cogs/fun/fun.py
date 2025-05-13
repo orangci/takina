@@ -19,7 +19,7 @@ class Fun(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @commands.command(name="fact", help="Fetch a random fact. \nThis command utilizes the [uselessfacts](https://uselessfacts.jsph.pl) API.")
+    @commands.command(name="fact", help="Fetch a random fact.")
     async def fact(self, ctx: commands.Context):
         data = await oclib.request("https://uselessfacts.jsph.pl/api/v2/facts/random")
         fact = data.get("text")
@@ -27,11 +27,7 @@ class Fun(commands.Cog):
         embed = nextcord.Embed(description=f"{fact} {emoji}", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="joke",
-        aliases=["dadjoke"],
-        help="Fetch a random joke. \nThis command utlizes both the [Joke API](https://jokeapi.dev) and the [icanhazdadjoke](https://icanhazdadjoke.com) API.",
-    )
+    @commands.command(name="joke", aliases=["dadjoke"], help="Fetch a random joke.")
     async def joke(self, ctx: commands.Context):
         joke_type = random.choice(["dadjoke", "regular"])
 
@@ -56,7 +52,7 @@ class Fun(commands.Cog):
         embed = nextcord.Embed(description=f"{joke} {emoji}", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="commit", help=f"Order {config.BOT_NAME.lower().capitalize()} to do anything. Usage: `commit arson`.")
+    @commands.command(name="commit", help=f"Order {config.BOT_NAME.lower().capitalize()} to do anything.", usage="arson")
     async def commit(self, ctx: commands.Context):
         possible_responses = [
             "Yes, sir!",
@@ -73,11 +69,7 @@ class Fun(commands.Cog):
         embed.description = f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        name="avatar",
-        aliases=["av", "pfp"],
-        help="Fetch the Discord user avatar of any member including yourself. \nUsage: `avatar <username>` or just `avatar` to fetch your own avatar.",
-    )
+    @commands.command(name="avatar", aliases=["av", "pfp"], help="Fetch the Discord user avatar of any member including yourself.")
     async def avatar(self, ctx: commands.Context, *, member: str = None):
         if member is None:
             member = ctx.author
@@ -103,7 +95,7 @@ class Fun(commands.Cog):
             return
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="google", help="Google anything! \nUsage: `google shawarma restaurants near me`.")
+    @commands.command(name="google", help="Google anything!", usage="shawarma restaurants near me")
     async def google(self, ctx: commands.Context, *, query: str):
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
@@ -127,7 +119,7 @@ class Fun(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="8ball", help="Ask the 8ball anything. \nUsage: `8ball are you sentient`.")
+    @commands.command(name="8ball", help="Ask the 8ball anything.", usage="are you sentient")
     async def eight_ball(self, ctx: commands.Context, *, question: str = None):
         responses = [
             "It is certain.",

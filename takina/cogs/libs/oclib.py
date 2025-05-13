@@ -3,13 +3,11 @@
 import datetime
 import random
 import re
-
 import aiohttp
 import nextcord
 import config
 from nextcord.ext import commands
 from nextcord.ui import View
-
 from __main__ import bot, start_time
 
 
@@ -255,3 +253,12 @@ class ConfirmationView(View):
 async def fetch_random_emoji() -> str:
     random_emoji = random.choice(await bot.fetch_application_emojis())
     return "" if not random_emoji else str(random_emoji) + " "
+
+
+def get_ordinal(n: int) -> str:
+    """Helper function to return the ordinal representation of a number."""
+    suffix = ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"]
+    if 10 <= n % 100 <= 20:
+        return "th"
+    else:
+        return {suffix[n % 10]}

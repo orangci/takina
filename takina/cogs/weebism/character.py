@@ -55,7 +55,11 @@ class CharacterSearch(commands.Cog):
 
         return embed
 
-    @commands.command(aliases=["waifu", "chr"], help="Fetch character information from MyAnimeList. \nUsage: `chr Takina Inoue` or `chr 204620`.")
+    @commands.command(
+        aliases=["waifu", "chr"],
+        help="Fetch character information from MyAnimeList. You may specify a character name or its ID in the MAL database.",
+        usage="Takina Inoue",
+    )
     async def character(self, ctx: commands.Context, *, character: str):
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed = await self.fetch_character(character, embed)

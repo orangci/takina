@@ -11,7 +11,7 @@ class Ban(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="ban", aliases=["b"], help="Ban a member from the server. \nUsage: `ban @member`.")
+    @commands.command(name="ban", aliases=["b"], help="Ban a member from the server.", usage="@member")
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx: commands.Context, member: str = None, *, reason: str = "No reason provided"):
         if not member:
@@ -54,7 +54,7 @@ class Unban(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="unban", aliases=["pardon", "ub"], help="Unban a member from the server. \nUsage: `pardon <Discord user id>.")
+    @commands.command(name="unban", aliases=["pardon", "ub"], help="Unban a member from the server.")
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx: commands.Context, id: str, *, reason: str = "No reason provided"):
         try:

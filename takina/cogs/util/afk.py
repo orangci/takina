@@ -27,8 +27,7 @@ class AFK(commands.Cog):
         return user_data.get("reason") if user_data else None
 
     @commands.command(
-        name="afk",
-        help=f"Toggle AFK status. When AFK, {config.BOT_NAME.lower().capitalize()} will notify others if they mention you. Usage: `afk <reason>`.",
+        name="afk", help=f"Toggle AFK status. When AFK, {config.BOT_NAME} will notify others if they mention you.", usage="watching anime"
     )
     async def afk(self, ctx: commands.Context, *, reason: str = "AFK"):
         user_id = ctx.author.id
@@ -46,9 +45,7 @@ class AFK(commands.Cog):
             )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @nextcord.slash_command(
-        name="afk", description=f"Toggle AFK status. When AFK, {config.BOT_NAME.lower().capitalize()} will notify others if they mention you."
-    )
+    @nextcord.slash_command(name="afk", description=f"Toggle AFK status. When AFK, {config.BOT_NAME} will notify others if they mention you.")
     @application_checks.has_permissions(send_messages=True)
     async def afk_slash(self, interaction: nextcord.Interaction, reason: str = SlashOption(description="Reason for going AFK", required=False)):
         await interaction.response.defer()

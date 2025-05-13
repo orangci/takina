@@ -10,7 +10,7 @@ class Salawat(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(help="Fetch a list of the Islāmic prayer times. \nUsage: `salawat Riyadh Saudi Arabia`.")
+    @commands.command(help="Fetch a list of the Islāmic prayer times in the specified location.", usage="Riyadh Saudi Arabia")
     async def salawat(self, ctx: commands.Context, location_name: str):
         client = aladhan.Client(is_async=True)
         try:
@@ -37,7 +37,7 @@ class SlashSalawat(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @nextcord.slash_command(name="salawat", description="Fetch a list of the Islāmic prayer times.")
+    @nextcord.slash_command(name="salawat", description="Fetch a list of the Islāmic prayer times in the specified location.")
     async def slash_salawat(
         self,
         interaction: nextcord.Interaction,

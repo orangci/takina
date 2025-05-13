@@ -148,7 +148,7 @@ class Starboard(commands.Cog):
         await interaction.followup.send(embed=embed, ephemeral=True)
 
     @commands.group(
-        name="starboard", invoke_without_command=True, help="Starboard command group. Use subcommands: `whitelist`, `list`, `add`, `remove`."
+        name="starboard", invoke_without_command=True, help="Starboard management. Use subcommands: `whitelist`, `list`, `add`, `remove`."
     )
     @commands.has_permissions(manage_channels=True)
     async def starboard(self, ctx: commands.Context):
@@ -163,8 +163,7 @@ class Starboard(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @whitelist.command(
-        name="add",
-        help="Add channels to the list of whitelisted channels which the starboard detects messages from. \nUsage: `starboard whitelist add #channel #channel2`.",
+        name="add", help="Add channels to the list of whitelisted channels which the starboard detects messages from.", usage="channel #channel2"
     )
     async def whitelist_add(self, ctx: commands.Context, *channels: nextcord.TextChannel):
         guild_id = ctx.guild.id
@@ -193,7 +192,8 @@ class Starboard(commands.Cog):
 
     @whitelist.command(
         name="remove",
-        help="Remove channels from the list of whitelisted channels which the starboard detects messages from, \nUsage: `starboard whitelist remove #channel #channel2`.",
+        help="Remove channels from the list of whitelisted channels which the starboard detects messages from.",
+        usage="#channel #channel2",
     )
     async def whitelist_remove(self, ctx: commands.Context, *channels: nextcord.TextChannel):
         guild_id = ctx.guild.id

@@ -11,7 +11,7 @@ class Warnings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="warn", help="Warn a member. \nUsage: `warn <member> <reason>`.")
+    @commands.command(name="warn", help="Warn a member.", usage="@member spamming in #manga")
     @commands.has_permissions(moderate_members=True)
     async def warn(self, ctx: commands.Context, member: str, *, reason: str):
         member = oclib.extract_user_id(member, ctx)

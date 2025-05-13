@@ -75,3 +75,6 @@ In sesp.isadev.subdomains, a bug was found where commands didn't support queries
 
 #### 1.7.3
 The embeds in the util.socials cog were missing the quote border which all other embeds of this type in Takina have. This was fixed in this update.
+
+### 1.8.0
+Ceased using `nextcord-ext-help-commands` and created my own in cogs.help, along with improving the documentation for every command's help description. Additionally stopped using Onami.
