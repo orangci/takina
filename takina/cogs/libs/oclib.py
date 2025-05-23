@@ -261,4 +261,4 @@ def get_ordinal(n: int) -> str:
     if 10 <= n % 100 <= 20:
         return "th"
     else:
-        return {suffix[n % 10]}
+        return suffix[n % 10]

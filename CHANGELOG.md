@@ -78,3 +78,6 @@ The embeds in the util.socials cog were missing the quote border which all other
 
 ### 1.8.0
 Ceased using `nextcord-ext-help-commands` and created my own in cogs.help, along with improving the documentation for every command's help description. Additionally stopped using Onami.
+
+#### 1.8.1
+Fixed incorrect formatting in lib.oclib's get_ordinal function.
