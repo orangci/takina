@@ -42,8 +42,11 @@ class PingResponse(commands.Cog):
             guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
             if guild_data and "prefix" in guild_data:
                 self.prefix = f"`{guild_data['prefix']}`, `takina`, `Takina`"
+        
+        guildcount = len(self.bot.guilds)
 
         embed.description += f"\n> **Prefix**: {self.prefix}"
+        embed.description += f"\n> **Guilds**: Takina is in {guildcount} server{"s" if guildcount != 1 else ""}"
         embed.description += f"\n> **Stars**: [{self.stars}](https://github.com/orangci/takina/stargazers)"
         embed.description += f"\n> **Uptime**: {await oclib.uptime_fetcher()}"
         BOT_VERSION_LINK = f"[{config.BOT_VERSION}](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{config.BOT_VERSION.replace('.', '')})"

@@ -81,3 +81,6 @@ Ceased using `nextcord-ext-help-commands` and created my own in cogs.help, along
 
 #### 1.8.1
 Fixed incorrect formatting in lib.oclib's get_ordinal function.
+
+#### 1.8.2
+Added a guild count to the info command.
