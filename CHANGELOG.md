@@ -87,3 +87,6 @@ Added a guild count to the info command.
 
 #### 1.8.3
 Removed sesp.isadev.subdomains, sesp.isadev.pr_channel, sesp.isadev.suggestions, sesp.theanimeflow, and sesp.isadev.ping_iostpa.
+
+#### 1.8.4
+Removed sesp.isadev.booster_perks and sesp.isadev.counting. There are now no sesp cogs whatsoever.
