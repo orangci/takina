@@ -85,8 +85,10 @@ Fixed incorrect formatting in lib.oclib's get_ordinal function.
 #### 1.8.2
 Added a guild count to the info command.
 
-#### 1.8.3
+#### 1.9.0
 Removed sesp.isadev.subdomains, sesp.isadev.pr_channel, sesp.isadev.suggestions, sesp.theanimeflow, and sesp.isadev.ping_iostpa.
 
-#### 1.8.4
-Removed sesp.isadev.booster_perks and sesp.isadev.counting. There are now no sesp cogs whatsoever.
+Also removed sesp.isadev.booster_perks and sesp.isadev.counting. There are now no sesp cogs whatsoever.
+
+#### 1.9.1
+Fixed server info command bugging out if the server doesn't have an icon.

@@ -9,4 +9,5 @@ def is_in_guild():
 
     return commands.check(predicate)
 
+
 SERVER_ID = 1281898369236602903

@@ -14,13 +14,5 @@ RUN pip install --upgrade pip && \
 # Copy the rest of the application code to the working directory
 COPY . .
 
-# git owo
-RUN mkdir test && \
-    cd test && \
-    git clone https://github.com/orangci/takina && \
-    cp -r takina/.git ../.git && \
-    cd .. && \
-    rm -rf test
-
 # Specify the command to run the application
 CMD ["python3", "takina"]

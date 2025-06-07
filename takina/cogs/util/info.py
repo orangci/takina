@@ -123,7 +123,8 @@ class Info(commands.Cog):
         if guild.banner:
             embed.set_image(url=guild.banner.url)
 
-        embed.set_thumbnail(url=guild.icon.url)
+        if guild.icon:
+            embed.set_thumbnail(url=guild.icon.url)
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -245,7 +246,8 @@ class SlashInfo(commands.Cog):
         if guild.banner:
             embed.set_image(url=guild.banner.url)
 
-        embed.set_thumbnail(url=guild.icon.url)
+        if guild.icon:
+            embed.set_thumbnail(url=guild.icon.url)
 
         await interaction.send(embed=embed, ephemeral=True)
 
