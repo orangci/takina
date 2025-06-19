@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from nextcord.ext import commands
+from github import Github
 import asyncpraw
 import nextcord
 import config
-from github import Github
-from nextcord.ext import commands
 
 
 class SocialsGitHub(commands.Cog):

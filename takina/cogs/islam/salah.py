@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import aladhan
-import nextcord
-import config
 from nextcord.ext import commands
+import nextcord
+import aladhan
+import config
 
 
 class Salawat(commands.Cog):

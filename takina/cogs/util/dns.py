@@ -1,16 +1,11 @@
 # SPDX-FileCopyrightText: MaskDuck
 # SPDX-FileCopyrightText: orangc
 # SPDX-License-Identifier: BSD-3-Clause
-
-
-from __future__ import annotations
-
-import nextcord
-import config
 from dns import resolver as _dnsresolver
 from nextcord.ext import commands
-
 from ..libs import oclib
+import nextcord
+import config
 
 
 class DNS(commands.Cog):

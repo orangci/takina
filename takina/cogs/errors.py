@@ -1,12 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import logging
-
-import nextcord
-import config
 from nextcord.ext import application_checks, commands
-
 from __main__ import Bot
+import nextcord
+import logging
+import config
 
 
 class Errors(commands.Cog):

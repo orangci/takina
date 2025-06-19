@@ -1,11 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from nextcord.ext import application_checks, commands
+from nextcord import SlashOption
+from ..libs import oclib
 import nextcord
 import config
-from nextcord import SlashOption
-from nextcord.ext import application_checks, commands
-
-from ..libs import oclib
 
 
 class ChannelManagement(commands.Cog):

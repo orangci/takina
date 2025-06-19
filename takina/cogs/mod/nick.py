@@ -1,10 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord
-from nextcord import SlashOption
 from nextcord.ext import application_checks, commands
-
 from ..libs import oclib
+from nextcord import SlashOption
+import nextcord
 
 
 class Nick(commands.Cog):

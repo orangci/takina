@@ -1,12 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import urllib
-
-import aiohttp
+from nextcord.ext import commands
 import nextcord
+import aiohttp
+import urllib
 import config
 import re
-from nextcord.ext import commands
 
 
 class UrbanDictionary(commands.Cog):

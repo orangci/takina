@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from ping3 import ping as dns_ping
+from nextcord.ext import commands
+from ..libs import oclib
 import nextcord
 import config
-from nextcord.ext import commands
-from ping3 import ping as dns_ping
-from ..libs import oclib
 
 
 class Utils(commands.Cog):

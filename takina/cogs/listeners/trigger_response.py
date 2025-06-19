@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from nextcord.ext import application_checks, commands
+from nextcord import Embed, Interaction, SlashOption
+from motor.motor_asyncio import AsyncIOMotorClient
+from ..libs import oclib
 import nextcord
 import config
-from motor.motor_asyncio import AsyncIOMotorClient
-from nextcord import Embed, Interaction, SlashOption
-from nextcord.ext import application_checks, commands
-from ..libs import oclib
 
 MAX_TRIGGERS = 30
 MAX_TRIGGER_NAME_LEN = 20

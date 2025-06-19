@@ -1,16 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from __future__ import annotations
-
+from nextcord.ext import commands
+from ..libs import oclib
+import nextcord
 import random
 import urllib
-
 import dotenv
-import nextcord
 import config
-from nextcord.ext import commands
-
-from ..libs import oclib
 
 dotenv.load_dotenv()
 

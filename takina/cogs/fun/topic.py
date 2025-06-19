@@ -1,13 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import random
-
-import nextcord
-import config
 from nextcord.ext import commands
-
-from ..libs import oclib
 from ..libs.topics_list import topics
+from ..libs import oclib
+import nextcord
+import random
+import config
 
 
 class Topic(commands.Cog):

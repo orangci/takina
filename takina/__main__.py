@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from __future__ import annotations
-import datetime
-import os
-import nextcord
-import config
 from motor.motor_asyncio import AsyncIOMotorClient
 from nextcord.ext import commands
+import nextcord
+import datetime
+import config
+import os
+
 
 start_time = datetime.datetime.now(datetime.UTC)
 

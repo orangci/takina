@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from nextcord.ext import application_checks, commands
 import nextcord
 import config
-from nextcord.ext import application_checks, commands
 
 
 class EmbedBuilder(commands.Cog):

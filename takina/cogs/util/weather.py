@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import geopy
-import nextcord
-import config
+from geopy.extra import rate_limiter
 from nextcord.ext import commands
 from open_meteo import OpenMeteo
-from geopy.extra import rate_limiter
+import nextcord
+import config
+import geopy
 
 
 async def find_weather(location: str):

@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from nextcord.ext import application_checks, commands
+from motor.motor_asyncio import AsyncIOMotorClient
+from nextcord.ui import Button, View
 import nextcord
 import config
-from motor.motor_asyncio import AsyncIOMotorClient
-from nextcord.ext import application_checks, commands
-from nextcord.ui import Button, View
 
 
 class Starboard(commands.Cog):

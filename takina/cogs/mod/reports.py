@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-import nextcord
-import config
+from nextcord.ext import application_checks, commands
 from motor.motor_asyncio import AsyncIOMotorClient
 from nextcord import Interaction, SlashOption
-from nextcord.ext import application_checks, commands
+import nextcord
+import config
 
 
 class Reports(commands.Cog):
