@@ -29,7 +29,7 @@ class Fun(commands.Cog):
             error_embed.description = f":x: I do not have access to this user's {image_type_str.lower()}."
             return error_embed
 
-        member = await self.bot.fetch_user(member.id) if image_type == "display_banner" else member
+        member = await self.bot.fetch_user(member.id) if image_type == "banner" else member
 
         embed = nextcord.Embed(title=f"{member.name}'s {image_type_str}", color=config.EMBED_COLOR)
         image = getattr(member, image_type)
@@ -192,7 +192,7 @@ class SlashFun(commands.Cog):
         if member is None:
             member = interaction.user
 
-        member = await self.bot.fetch_user(member.id) if image_type == "display_banner" else member
+        member = await self.bot.fetch_user(member.id) if image_type == "banner" else member
         embed = nextcord.Embed(title=f"{member.name}'s {image_type_str}", color=config.EMBED_COLOR)
         image = getattr(member, image_type)
         if image:
