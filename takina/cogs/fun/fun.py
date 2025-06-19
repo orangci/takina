@@ -255,8 +255,12 @@ class SlashFun(commands.Cog):
         embed.description = f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
         await interaction.send(embed=embed)
 
-    @nextcord.slash_command(name="avatar", description="Fetch the Discord display avatar of any member including yourself.")
-    async def avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
+    @nextcord.slash_command(name="avatar", description="Fetch a Discord user's avatar.")
+    async def avatar(self, interaction: nextcord.Interaction):
+        pass
+
+    @avatar.subcommand(name="display", description="Fetch the Discord display avatar of any member including yourself.")
+    async def display_avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "display_avatar")
         await interaction.send(embed=embed, ephemeral=True)
@@ -266,9 +270,13 @@ class SlashFun(commands.Cog):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "guild_avatar")
         await interaction.send(embed=embed, ephemeral=True)
+    
+    @nextcord.slash_command(name="banner", description="Fetch a Discord user's banner.")
+    async def banner(self, interaction: nextcord.Interaction):
+        pass
 
-    @nextcord.slash_command(name="banner", description="Fetch the Discord banner of any member including yourself.")
-    async def banner(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
+    @banner.subcommand(name="banner", description="Fetch the Discord banner of any member including yourself.")
+    async def display_banner(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "banner")
         await interaction.send(embed=embed, ephemeral=True)
