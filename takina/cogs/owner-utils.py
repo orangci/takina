@@ -1,18 +1,64 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from contextlib import redirect_stdout
 from nextcord.ext import commands
 import cogs.libs.oclib as oclib
 import config as cfg
 import subprocess
 import importlib
+import traceback
+import textwrap
 import nextcord
 import config
 import os
+import io
 
 
 class OwnerUtils(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+    def cleanup_code(self, content):
+        if content.startswith("```py") and content.endswith("```"):
+            return "\n".join(content.split("\n")[1:-1])
+        return content.strip("` \n")
+
+    async def run_eval(self, ctx, body):
+        env = {"bot": self.bot, "ctx": ctx, "guild": ctx.guild, "channel": ctx.channel, "author": ctx.author, "__import__": __import__}
+
+        env.update(globals())
+        body = self.cleanup_code(body)
+        stdout = io.StringIO()
+        code = f"async def _eval():\n{textwrap.indent(body, '    ')}"
+
+        try:
+            exec(code, env)
+        except Exception as e:
+            return f"```py\n{e.__class__.__name__}: {e}\n```"
+
+        func = env["_eval"]
+        try:
+            with redirect_stdout(stdout):
+                result = await func()
+        except Exception:
+            return f"```py\n{stdout.getvalue()}{traceback.format_exc()}\n```"
+
+        value = stdout.getvalue()
+        if result is None:
+            if value:
+                return f"```py\n{value}\n```"
+            else:
+                return
+        else:
+            return f"```py\n{value}{result}\n```"
+
+    @commands.command(hidden=True, name="eval")
+    @commands.is_owner()
+    async def eval(self, ctx: commands.Context, *, code: str):
+        result = await self.run_eval(ctx, code)
+        await ctx.message.add_reaction("✅")
+        if result:
+            await ctx.reply(result, mention_author=False)
 
     @commands.command(hidden=True, name="guilds")
     @commands.is_owner()

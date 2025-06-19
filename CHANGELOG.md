@@ -98,3 +98,6 @@ Add server avatar command as well as banner/server banner commands in fun.fun. C
 
 #### 1.10.1
 A typo caused the base banner command (fun.fun) to be broken.
+
+### 1.11
+Added the `eval` command to owner-utils.

@@ -270,7 +270,7 @@ class SlashFun(commands.Cog):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "guild_avatar")
         await interaction.send(embed=embed, ephemeral=True)
-    
+
     @nextcord.slash_command(name="banner", description="Fetch a Discord user's banner.")
     async def banner(self, interaction: nextcord.Interaction):
         pass
