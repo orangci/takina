@@ -13,7 +13,33 @@ dotenv.load_dotenv()
 
 class Fun(commands.Cog):
     def __init__(self, bot):
-        self._bot = bot
+        self.bot = bot
+
+    async def fetch_user_image(self, ctx: commands.Context, member: str = None, image_type: str = "display_avatar"):
+        image_type_str = " ".join(word.capitalize() for word in image_type.split("_"))
+        if member is None:
+            member = ctx.author
+        else:
+            member = oclib.extract_user_id(member, ctx)
+            if isinstance(member, nextcord.Embed):
+                return member
+
+        if not isinstance(member, nextcord.Member):
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
+            error_embed.description = f":x: I do not have access to this user's {image_type_str.lower()}."
+            return error_embed
+
+        member = await self.bot.fetch_user(member.id) if image_type == "display_banner" else member
+
+        embed = nextcord.Embed(title=f"{member.name}'s {image_type_str}", color=config.EMBED_COLOR)
+        image = getattr(member, image_type)
+        if image:
+            embed.set_image(url=image.url)
+            return embed
+        else:
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
+            error_embed.description = f"❌ This user does not have a {image_type_str.lower()} set."
+            return error_embed
 
     @commands.command(name="fact", help="Fetch a random fact.")
     async def fact(self, ctx: commands.Context):
@@ -65,30 +91,38 @@ class Fun(commands.Cog):
         embed.description = f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="avatar", aliases=["av", "pfp"], help="Fetch the Discord user avatar of any member including yourself.")
+    @commands.command(
+        name="avatar",
+        aliases=["av", "pfp"],
+        help="Fetch the Discord display avatar of any member including yourself. Use the `sav` command to fetch the server avatar instead.",
+    )
     async def avatar(self, ctx: commands.Context, *, member: str = None):
-        if member is None:
-            member = ctx.author
-        else:
-            member = oclib.extract_user_id(member, ctx)
-            if isinstance(member, nextcord.Embed):
-                await ctx.reply(embed=member, mention_author=False)
-                return
+        embed = await self.fetch_user_image(ctx, member, "display_avatar")
+        await ctx.reply(embed=embed, mention_author=False)
 
-        if not isinstance(member, nextcord.Member):
-            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
-            error_embed.description = ":x: I do not have access to this user's avatar."
-            await ctx.reply(embed=error_embed, mention_author=False)
-            return
+    @commands.command(
+        name="server_avatar",
+        aliases=["sav", "spfp", "gav", "gpfp"],
+        help="Fetch the Discord server avatar of any member including yourself. Use the `av` command to fetch the display avatar instead.",
+    )
+    async def server_avatar(self, ctx: commands.Context, *, member: str = None):
+        embed = await self.fetch_user_image(ctx, member, "guild_avatar")
+        await ctx.reply(embed=embed, mention_author=False)
 
-        embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=config.EMBED_COLOR)
-        if member.display_avatar:
-            embed.set_image(url=member.display_avatar.url)
-        else:
-            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
-            error_embed.description = "❌ This user does not have an avatar set."
-            await ctx.reply(embed=error_embed, mention_author=False)
-            return
+    @commands.command(
+        name="banner", help="Fetch the Discord banner of any member including yourself. Use the `sbanner` command to fetch the server banner instead."
+    )
+    async def banner(self, ctx: commands.Context, *, member: str = None):
+        embed = await self.fetch_user_image(ctx, member, "banner")
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.command(
+        name="server_banner",
+        aliases=["sbanner", "gbanner"],
+        help="Fetch the Discord server banner of any member including yourself. Use the `banner` command to fetch the display banner instead.",
+    )
+    async def server_banner(self, ctx: commands.Context, *, member: str = None):
+        embed = await self.fetch_user_image(ctx, member, "guild_banner")
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="google", help="Google anything!", usage="shawarma restaurants near me")
@@ -151,7 +185,23 @@ class Fun(commands.Cog):
 
 class SlashFun(commands.Cog):
     def __init__(self, bot):
-        self._bot = bot
+        self.bot = bot
+
+    async def fetch_user_image(self, interaction: nextcord.Interaction, member: nextcord.Member = None, image_type: str = "display_avatar"):
+        image_type_str = " ".join(word.capitalize() for word in image_type.split("_"))
+        if member is None:
+            member = interaction.user
+
+        member = await self.bot.fetch_user(member.id) if image_type == "display_banner" else member
+        embed = nextcord.Embed(title=f"{member.name}'s {image_type_str}", color=config.EMBED_COLOR)
+        image = getattr(member, image_type)
+        if image:
+            embed.set_image(url=image.url)
+            return embed
+        else:
+            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
+            error_embed.description = f"❌ This user does not have a {image_type_str.lower()} set."
+            return error_embed
 
     @nextcord.slash_command(name="fact", description="Fetch a random fact.")
     async def fact(self, interaction: nextcord.Interaction):
@@ -205,23 +255,28 @@ class SlashFun(commands.Cog):
         embed.description = f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
         await interaction.send(embed=embed)
 
-    @nextcord.slash_command(name="avatar", description="Fetch the Discord user avatar of any member including yourself.")
-    async def avatar(
-        self,
-        interaction: nextcord.Interaction,
-        member: nextcord.Member = nextcord.SlashOption(description="The user whose avatar you would like to fetch", required=False),
-    ):
-        if member is None:
-            member = interaction.user
+    @nextcord.slash_command(name="avatar", description="Fetch the Discord display avatar of any member including yourself.")
+    async def avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
+        await interaction.response.defer()
+        embed = await self.fetch_user_image(interaction, member, "display_avatar")
+        await interaction.send(embed=embed, ephemeral=True)
 
-        embed = nextcord.Embed(title=f"{member.name}'s Avatar", color=config.EMBED_COLOR)
-        if member.display_avatar:
-            embed.set_image(url=member.display_avatar.url)
-        else:
-            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
-            error_embed.description = "❌ This user does not have an avatar set."
-            await interaction.send(embed=error_embed, ephemeral=True)
-            return
+    @avatar.subcommand(name="server", description="Fetch the Discord server avatar of any member including yourself.")
+    async def server_avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
+        await interaction.response.defer()
+        embed = await self.fetch_user_image(interaction, member, "guild_avatar")
+        await interaction.send(embed=embed, ephemeral=True)
+
+    @nextcord.slash_command(name="banner", description="Fetch the Discord banner of any member including yourself.")
+    async def banner(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
+        await interaction.response.defer()
+        embed = await self.fetch_user_image(interaction, member, "banner")
+        await interaction.send(embed=embed, ephemeral=True)
+
+    @banner.subcommand(name="server", description="Fetch the Discord server banner of any member including yourself.")
+    async def server_banner(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
+        await interaction.response.defer()
+        embed = await self.fetch_user_image(interaction, member, "guild_banner")
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="google", description="Google anything!")

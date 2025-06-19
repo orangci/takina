@@ -92,3 +92,6 @@ Also removed sesp.isadev.booster_perks and sesp.isadev.counting. There are now n
 
 #### 1.9.1
 Fixed server info command bugging out if the server doesn't have an icon.
+
+### 1.10
+Add server avatar command as well as banner/server banner commands in fun.fun. Closed #32.
