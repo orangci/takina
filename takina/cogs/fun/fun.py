@@ -16,7 +16,7 @@ class Fun(commands.Cog):
         self.bot = bot
 
     async def fetch_user_image(self, ctx: commands.Context, member: str = None, image_type: str = "display_avatar"):
-        image_type_str = " ".join(word.capitalize() for word in image_type.split("_"))
+        image_type_str = image_type.replace("_", " ").title()
         if member is None:
             member = ctx.author
         else:
@@ -188,7 +188,7 @@ class SlashFun(commands.Cog):
         self.bot = bot
 
     async def fetch_user_image(self, interaction: nextcord.Interaction, member: nextcord.Member = None, image_type: str = "display_avatar"):
-        image_type_str = " ".join(word.capitalize() for word in image_type.split("_"))
+        image_type_str = image_type.replace("_", " ").title()
         if member is None:
             member = interaction.user
 

@@ -99,5 +99,8 @@ Add server avatar command as well as banner/server banner commands in fun.fun. C
 #### 1.10.1
 A typo caused the base banner command (fun.fun) to be broken.
 
-### 1.11
+### 1.11.0
 Added the `eval` command to owner-utils.
+
+### 1.12.0
+Added whois command for WHOIS domain lookup in util.dns.
