@@ -28,7 +28,7 @@ class Kick(commands.Cog):
             color=config.EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were banned in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}", color=config.EMBED_COLOR
+            description=f"You were kicked in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}", color=config.EMBED_COLOR
         )
         confirmation = oclib.ConfirmationView(ctx=ctx, member=member, action="kick", reason=reason)
         confirmed = await confirmation.prompt()
@@ -69,7 +69,7 @@ class KickSlash(commands.Cog):
             color=config.EMBED_COLOR,
         )
         dm_embed = nextcord.Embed(
-            description=f"You were banned in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}", color=config.EMBED_COLOR
+            description=f"You were kicked in **{interaction.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}", color=config.EMBED_COLOR
         )
 
         confirmation = oclib.ConfirmationView(ctx=interaction, member=member, action="kick", reason=reason)

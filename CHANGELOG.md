@@ -104,3 +104,6 @@ Added the `eval` command to owner-utils.
 
 ### 1.12.0
 Added whois command for WHOIS domain lookup in util.dns.
+
+#### 1.12.1
+Fixed typo in mod.kick where the DM message said "you were banned" instead of "you were kicked".
