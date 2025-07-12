@@ -40,7 +40,6 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 - [License: GNU AGPLv3](./LICENSE)
-    - The code within the files `takina/cogs/sesp/isadev/suggestions.py` and `takina/cogs/util/dns.py` are licensed under the [BSD-3 Clause License](https://opensource.org/licenses/BSD-3-Clause) by MaskDuck, with modifications.
 - [Terms of Service](https://takina.orangc.net/tos.html)
 - [Privacy Policy](https://takina.orangc.net/privacy.html)
 

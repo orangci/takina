@@ -1,9 +1,8 @@
-# SPDX-FileCopyrightText: MaskDuck
+# SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-# SPDX-License-Identifier: BSD-3-Clause
-from dns import resolver as _dnsresolver
 from nextcord.ext import commands
 from ..libs import oclib
+from dns import resolver
 import datetime
 import nextcord
 import whodap
@@ -62,23 +61,23 @@ class DNS(commands.Cog):
 
     @nextcord.slash_command(name="dig", description="Dig an URL for its DNS records.")
     async def dig_slash(
-        self,
-        interaction: nextcord.Interaction,
-        url: str = nextcord.SlashOption(description="The URL to dig for DNS records. Be sure to remove http or https://", required=True),
+        self, interaction: nextcord.Interaction, url: str = nextcord.SlashOption(description="The URL to dig for DNS records.", required=True)
     ) -> None:
         record_types = ["A", "CNAME", "AAAA", "MX", "TXT", "SRV", "NS"]
         full_answer = ""
+        url = url.removeprefix("https://")
+        url = url.removeprefix("http://")
 
         for record_type in record_types:
             try:
-                answers = _dnsresolver.resolve(url, record_type)
-                records = "\n".join([str(ans) for ans in answers])
+                answers = resolver.resolve(url, record_type)
+                records = "\n".join([str(answer) for answer in answers])
                 if records:
                     emoji = await oclib.fetch_random_emoji()
                     full_answer += f"{emoji}**{record_type} Records**\n```{records}```\n"
-            except _dnsresolver.NoAnswer:
+            except resolver.NoAnswer:
                 continue
-            except _dnsresolver.NXDOMAIN:
+            except resolver.NXDOMAIN:
                 error_embed = nextcord.Embed(color=config.ERROR_COLOR)
                 error_embed.description = f"❌ Domain '{url}' does not exist."
                 await interaction.send(embed=error_embed, ephemeral=True)
