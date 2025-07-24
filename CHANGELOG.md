@@ -110,3 +110,6 @@ Fixed typo in mod.kick where the DM message said "you were banned" instead of "y
 
 #### 1.12.2
 Minor refactoring of util.dns.
+
+#### 1.12.3
+Fix a typo in mod.reports.

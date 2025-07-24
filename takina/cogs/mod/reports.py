@@ -22,7 +22,7 @@ class Reports(commands.Cog):
             {"guild_id": guild_id}, {"$set": {"moderator_role_id": mod_role_id, "reports_channel_id": reports_channel_id}}, upsert=True
         )
 
-    @nextcord.slash_command(name="report", description="Report something to server's moderation team.")
+    @nextcord.slash_command(name="report", description="Report something to the server's moderation team.")
     async def report(
         self,
         interaction: Interaction,
