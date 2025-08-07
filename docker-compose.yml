@@ -9,21 +9,21 @@ services:
       - data-volume:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=takina
-      - MONGO_INITDB_ROOT_PASSWORD=thisisapassword # it is highly recommended to change the password for the database
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
   takina:
     image: ghcr.io/orangci/takina:latest
     restart: always
     environment:
-      - TOKEN= # You put your bot's token here
+      - TOKEN=${TOKEN} # You put your bot's token here
       - PREFIX=. # You can always change this to any prefix you want
       - HASDB=yes
-      - MONGO=mongodb://takina:thisisapassword@mongodb:27017/?directConnection=true # Don't forget to change the password if you changed from the default one
+      - MONGO=mongodb://takina:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/?directConnection=true
       - BOT_NAME=Takina
       - DB_NAME=takina
       - EMBED_COLOR=0x2B2D31
-      - GITHUB_AUTH_TOKEN= # if you want the github command in util.socials to work, set this variable
-      - REDDIT_CLIENT_ID= # You must set this and the below environment variable if you want the reddit command in util.socials to work. To get your own Reddit client secret and ID visit https://www.reddit.com/prefs/apps.
-      - REDDIT_CLIENT_SECRET= # see above
+      - GITHUB_AUTH_TOKEN=${GITHUB_AUTH_TOKEN} # if you want the github command in util.socials to work, set this variable
+      - REDDIT_CLIENT_ID=${REDDIT_CLIENT_ID} # You must set this and the below environment variable if you want the reddit command in util.socials to work. To get your own Reddit client secret and ID visit https://www.reddit.com/prefs/apps.
+      - REDDIT_CLIENT_SECRET=${REDDIT_CLIENT_SECRET} # see above
 
 volumes:
   data-volume:
