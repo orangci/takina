@@ -32,7 +32,7 @@ In the future, this will be managed with a proper flake.
 *Assuming you have `git` and `docker` installed.*
 
 - `git clone https://github.com/orangci/takina && cd takina`
-- Set all the required environment variables in the `docker-compose.yml` file. You can find a list of what those are in the `docker-compose.yml` file, which has all the ENV's you need.
+- Set all the required environment variables in the `docker-compose.yml` file. You can find a list of what those are in the `docker-compose.yml` file, don't forget to make a `.env` file for the passwords or tokens as well! You can find out which enviroment variables need to go to the `.env` file if its for example `${TOKEN}`.
 - `docker compose up -d`
 
 ## Contributing
