@@ -91,7 +91,7 @@ class Utils(commands.Cog):
     async def version(self, ctx: commands.Context):
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         BOT_VERSION_LINK = (
-            f"[**{config.BOT_VERSION}**](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{config.BOT_VERSION.replace('.', '')})"
+            f"[**{config.BOT_VERSION}**](https://git.orangc.net/c/takina/src/branch/master/CHANGELOG.md#{config.BOT_VERSION.replace('.', '-')})"
         )
         embed.description = f"{config.BOT_NAME} is currently on version {BOT_VERSION_LINK}."
         embed.set_footer(text="For more information, run the info command.")

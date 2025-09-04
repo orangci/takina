@@ -113,3 +113,6 @@ Minor refactoring of util.dns.
 
 #### 1.12.3
 Fix a typo in mod.reports.
+
+#### 1.12.4
+Change the info, ping response, and version command embeds to link to the correct changelog.

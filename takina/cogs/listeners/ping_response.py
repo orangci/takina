@@ -47,7 +47,7 @@ class PingResponse(commands.Cog):
         embed.description += f"\n> **Guilds**: Takina is in {guildcount} server{'s' if guildcount != 1 else ''}"
         embed.description += f"\n> **Stars**: [{self.stars}](https://github.com/orangci/takina/stargazers)"
         embed.description += f"\n> **Uptime**: {await oclib.uptime_fetcher()}"
-        BOT_VERSION_LINK = f"[{config.BOT_VERSION}](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{config.BOT_VERSION.replace('.', '')})"
+        BOT_VERSION_LINK = f"[{config.BOT_VERSION}](https://git.orangc.net/c/takina/src/branch/master/CHANGELOG.md#{config.BOT_VERSION.replace('.', '-')})"
         embed.description += f"\n> **Version**: {BOT_VERSION_LINK}"
 
         orangc = await self.bot.fetch_user(961063229168164864)
