@@ -9,7 +9,7 @@ services:
       - data-volume:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=takina
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_ROOT_PASSWORD=passworr
   takina:
     image: ghcr.io/orangci/takina:latest
     restart: always
@@ -17,7 +17,7 @@ services:
       - TOKEN=${TOKEN} # You put your bot's token here
       - PREFIX=. # You can always change this to any prefix you want
       - HASDB=yes
-      - MONGO=mongodb://takina:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/?directConnection=true
+      - MONGO=mongodb://takina:password@mongodb:27017/?directConnection=true
       - BOT_NAME=Takina
       - DB_NAME=takina
       - EMBED_COLOR=0x2B2D31
