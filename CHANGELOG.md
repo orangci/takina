@@ -122,3 +122,6 @@ Switch to version 3.1.1 of Nextcord away from the development (git) version.
 
 ### 1.14
 Added the server specific cog for AWCC, which adds the hof command.
+
+#### 1.14.1
+Fixed bug where the random emoji function crashed the bot due to the bot not having any emojis registered.

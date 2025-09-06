@@ -251,7 +251,10 @@ class ConfirmationView(View):
 
 
 async def fetch_random_emoji() -> str:
-    random_emoji = random.choice(await bot.fetch_application_emojis())
+    emojis = await bot.fetch_application_emojis()
+    if not emojis:
+        return ""
+    random_emoji = random.choice(emojis)
     return "" if not random_emoji else str(random_emoji) + " "
 
 
