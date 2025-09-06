@@ -3,7 +3,7 @@ name: Deploy GHCR.io image
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   Deploy:
