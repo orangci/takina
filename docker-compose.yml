@@ -9,7 +9,7 @@ services:
       - data-volume:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=takina
-      - MONGO_INITDB_ROOT_PASSWORD=passworr
+      - MONGO_INITDB_ROOT_PASSWORD=password
   takina:
     image: ghcr.io/orangci/takina:latest
     restart: always
