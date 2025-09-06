@@ -46,4 +46,4 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 ## Specifications
 - This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 14.04.2025. You may see the current version and changelog [here](./CHANGELOG.md).
 - This project follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification as of 01.10.2024.
-<!-- note to self: count takina loc with: `git ls-files | grep '\.py$' | xargs wc -l | tail -n 1`, 8,431 as of 09.05.2025 -->
+<!-- note to self: count takina loc with: `git ls-files | grep '\.py$' | xargs wc -l | tail -n 1`, 7,687 as of 2025.09.06 -->
