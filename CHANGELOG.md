@@ -119,3 +119,6 @@ Change the info, ping response, and version command embeds to link to the correc
 
 ### 1.13
 Switch to version 3.1.1 of Nextcord away from the development (git) version.
+
+### 1.14
+Added the server specific cog for AWCC, which adds the hof command.
