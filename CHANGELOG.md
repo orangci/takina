@@ -116,3 +116,6 @@ Fix a typo in mod.reports.
 
 #### 1.12.4
 Change the info, ping response, and version command embeds to link to the correct changelog.
+
+### 1.13
+Switch to version 3.1.1 of Nextcord away from the development (git) version.

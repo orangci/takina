@@ -22,7 +22,7 @@ open-meteo==0.3.2 # util.weather
 whodap==0.1.12 # util.dns
 
 ## nextcord stuff
-git+https://github.com/nextcord/nextcord.git@master
+nextcord==3.1.1
 # apparently these make nextcord faster
 aiodns==3.2.0
 Brotli==1.1.0
