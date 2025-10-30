@@ -24,7 +24,7 @@ async def find_time(location: str):
         timezone = tzfpy.get_tz(location_data.longitude, location_data.latitude)
         local_tz = pytz.timezone(timezone)
         local_time = datetime.datetime.now(local_tz)
-        formatted_time = local_time.strftime("%H.%M (%I.%M %p)")
+        formatted_time = local_time.strftime("%H:%M (%I:%M %p)")
 
         embed.description = f"The current time in {timezone} is {formatted_time}."
         return embed
