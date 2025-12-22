@@ -3,12 +3,12 @@ from nextcord.ext import commands
 import config
 from ..libs import oclib
 
-async def request_api(type: str) -> discord.Embed:
+async def request_api(type: str) -> nextcord.Embed:
     url = f"https://api.iostpa.com/{type}"
     data = await oclib.request(url)
     image_url = data.get("image_link")
 
-    embed = discord.Embed(color=config.EMBED_COLOR)
+    embed = nextcord.Embed(color=config.EMBED_COLOR)
     embed.set_image(url=image_url)
 
     link = data.get("twitter_link")
