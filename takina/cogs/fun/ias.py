@@ -12,7 +12,7 @@ async def request_api(type: str) -> nextcord.Embed:
     embed.set_image(url=image_url)
 
     link = data.get("twitter_link")
-    embed.set_author(name=f"Link: {link}", url=link)
+    embed.set_author(name=f"Source", url=link)
 
     return embed
 
