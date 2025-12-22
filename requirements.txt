@@ -1,4 +1,4 @@
-python-dotenv==1.0.1
+python-dotenv==1.2.1
 aiohttp==3.11.9
 virtualenv==20.28.0
 pymongo
@@ -24,6 +24,6 @@ whodap==0.1.12 # util.dns
 ## nextcord stuff
 nextcord==3.1.1
 # apparently these make nextcord faster
-aiodns==3.2.0
-Brotli==1.1.0
-orjson==3.11.4
+aiodns==3.6.1
+Brotli==1.2.0
+orjson==3.11.5
