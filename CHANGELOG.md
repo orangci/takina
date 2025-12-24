@@ -125,3 +125,6 @@ Added the server specific cog for AWCC, which adds the hof command.
 
 #### 1.14.1
 Fixed bug where the random emoji function crashed the bot due to the bot not having any emojis registered.
+
+### 1.15
+Add fun.ias with `uma` and `touhou` commands, fixed sesp.awcc.hoff and util.dns while also updating the dependencies.
