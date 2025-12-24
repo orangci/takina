@@ -26,7 +26,7 @@ class DNS(commands.Cog):
             try:
                 response = await client.aio_lookup(sld, tld)
                 return response
-            except:
+            except Exception:
                 return None
 
     async def build_whois_embed(self, ctx: commands.Context | nextcord.Interaction, domain: str) -> nextcord.Embed:
