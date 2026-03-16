@@ -3,6 +3,7 @@ from nextcord.ext import commands
 import config
 from ..libs import oclib
 
+
 async def request_api(type: str) -> nextcord.Embed:
     url = f"https://api.iostpa.com/{type}"
     data = await oclib.request(url)
@@ -12,21 +13,22 @@ async def request_api(type: str) -> nextcord.Embed:
     embed.set_image(url=image_url)
 
     link = data.get("twitter_link")
-    embed.set_author(name=f"Source", url=link)
+    embed.set_author(name="Source", url=link)
 
     return embed
+
 
 class Ias(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="uma", help="Image interaction command that utilizes [iostpa's](https://api.iostpa.com) API.")
+    @commands.command(name="uma", aliases=["umamusume"], help="Image interaction command that utilizes [iostpa's](https://api.iostpa.com) API.")
     @commands.has_permissions(embed_links=True)
     async def uma(self, ctx: commands.Context):
         embed = await request_api("uma")
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="touhou", help="Image interaction command that utilizes [iostpa's](https://api.iostpa.com) API.")
+    @commands.command(name="touhou", aliases=["2hu"], help="Image interaction command that utilizes [iostpa's](https://api.iostpa.com) API.")
     @commands.has_permissions(embed_links=True)
     async def touhou(self, ctx: commands.Context):
         embed = await request_api("touhou")

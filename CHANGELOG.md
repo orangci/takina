@@ -117,14 +117,17 @@ Fix a typo in mod.reports.
 #### 1.12.4
 Change the info, ping response, and version command embeds to link to the correct changelog.
 
-### 1.13
+### 1.13.0
 Switch to version 3.1.1 of Nextcord away from the development (git) version.
 
-### 1.14
+### 1.14.0
 Added the server specific cog for AWCC, which adds the hof command.
 
 #### 1.14.1
 Fixed bug where the random emoji function crashed the bot due to the bot not having any emojis registered.
 
-## 1.15
+### 1.15.0
 Add fun.ias with `uma` and `touhou` commands, fixed some issues ruff caught with sesp.awcc.hoff and util.dns while also updating the dependencies.
+
+#### 1.15.1
+Added `2hu` alias for the `touhou` command and `umamusume` alias for the `uma` command.
