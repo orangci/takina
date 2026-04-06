@@ -74,7 +74,7 @@ class MAL_Profiles(commands.Cog):
             embed.color = config.ERROR_COLOR
             return embed
 
-    @commands.command(help="Fetch information about a MyAnimeList user.", usage="orangc")
+    @commands.command(aliases=["myanimelist"], help="Fetch information about a MyAnimeList user.", usage="orangc")
     async def mal(self, ctx: commands.Context, *, username: str):
         embed = await self.build_embed(username)
         await ctx.reply(embed=embed, mention_author=False)

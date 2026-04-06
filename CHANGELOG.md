@@ -131,3 +131,6 @@ Add fun.ias with `uma` and `touhou` commands, fixed some issues ruff caught with
 
 #### 1.15.1
 Added `2hu` alias for the `touhou` command and `umamusume` alias for the `uma` command.
+
+#### 1.15.2
+Added `myanimelist` alias for `mal` command.
