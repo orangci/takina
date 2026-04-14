@@ -29,15 +29,21 @@ class Honeypot(commands.Cog):
         timeout = dt.timedelta(weeks=4)
 
         if message.channel.id == honeypot_channel_id:
+            await member.timeout(reason=f"Muted for triggering the honeypot system.", timeout=timeout)
             embed = nextcord.Embed(
                 description=f"You were muted in **{message.guild.name}**. \n\n<:note:1289880498541297685> **Reason:** You triggered our honeypot system, which usually means that your account got hacked. Please contact the server moderators to get unmuted.",
                 color=config.EMBED_COLOR,
             )
-            await member.timeout(reason=f"Muted for triggering the honeypot system.", timeout=timeout)
             await member.send(embed=embed)
             for channel in message.guild.text_channels:
                 try:
-                    await channel.purge(before=dt.datetime.now(), after=dt.datetime.now() - dt.timedelta(hours=1), check = lambda x: x.author.id == message.author.id, oldest_first=False, bulk = True)
+                    await channel.purge(
+                        before=dt.datetime.now(),
+                        after=dt.datetime.now() - dt.timedelta(minutes=10),
+                        check=lambda x: x.author.id == message.author.id,
+                        oldest_first=False,
+                        bulk=True,
+                    )
                 except nextcord.Forbidden:
                     pass
             modlog_cog = self.bot.get_cog("ModLog")
@@ -47,7 +53,7 @@ class Honeypot(commands.Cog):
                     member,
                     reason=f"Muted for triggering the honeypot system.",
                     moderator=message.guild.get_member(self.bot.application_id),
-                    duration="4w"
+                    duration="4w",
                 )
 
     @nextcord.slash_command(name="honeypot", description="Command to setup a honeypot channel")
