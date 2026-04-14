@@ -1,7 +1,9 @@
 import nextcord
 from motor.motor_asyncio import AsyncIOMotorClient
 from nextcord.ext import application_checks, commands
+import datetime as dt
 import config
+import time
 
 
 class Honeypot(commands.Cog):
@@ -24,21 +26,28 @@ class Honeypot(commands.Cog):
         # channel = self.bot.get_channel(message.channel)
 
         member = message.author
+        timeout = dt.timedelta(weeks=4)
 
         if message.channel.id == honeypot_channel_id:
             embed = nextcord.Embed(
-                description=f"You were banned in **{message.guild.name}**. \n\n<:note:1289880498541297685> **Reason:** You triggered our honeypot system, which usually means that your account got hacked.",
+                description=f"You were muted in **{message.guild.name}**. \n\n<:note:1289880498541297685> **Reason:** You triggered our honeypot system, which usually means that your account got hacked. Please contact the server moderators to get unmuted.",
                 color=config.EMBED_COLOR,
             )
+            await member.timeout(reason=f"Muted for triggering the honeypot system.", timeout=timeout)
             await member.send(embed=embed)
-            await member.ban(reason=f"Banned for triggering the honeypot system.", delete_message_seconds=3600)
+            for channel in message.guild.text_channels:
+                try:
+                    await channel.purge(before=dt.datetime.now(), after=dt.datetime.now() - dt.timedelta(hours=1), check = lambda x: x.author.id == message.author.id, oldest_first=False, bulk = True)
+                except nextcord.Forbidden:
+                    pass
             modlog_cog = self.bot.get_cog("ModLog")
             if modlog_cog:
                 await modlog_cog.log_action(
-                    "ban",
+                    "mute",
                     member,
-                    reason=f"Banned by automod for triggering the honeypot system.",
+                    reason=f"Muted for triggering the honeypot system.",
                     moderator=message.guild.get_member(self.bot.application_id),
+                    duration="4w"
                 )
 
     @nextcord.slash_command(name="honeypot", description="Command to setup a honeypot channel")
