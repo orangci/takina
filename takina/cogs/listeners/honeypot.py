@@ -15,21 +15,21 @@ class Honeypot(commands.Cog):
         guild_id = message.guild.id
         guild_data = await self.db.honeypot_settings.find_one({"guild_id": guild_id})
         if not guild_data:
-            print(f"{guild_id}")
+            return
 
         # Fetch the honeypot channel ID and ensure it exists
         honeypot_channel_id = guild_data.get("honeypot_channel_id")
         if not honeypot_channel_id:
-            print(f"{honeypot_channel_id}")
+            return
 
         honeypot_channel = self.bot.get_channel(honeypot_channel_id)
         if not honeypot_channel:
-            print(f"{honeypot_channel}")
+            return
 
         # Fetch the message details
         channel = self.bot.get_channel(message.channel)
         if not channel:
-            print(f"{channel}")
+            return
 
         member = message.author
 
@@ -38,7 +38,7 @@ class Honeypot(commands.Cog):
                 description=f"You were banned in **{message.guild.name}**. \n\n<:note:1289880498541297685> **Reason:** You triggered our honeypot system, which usually means that your account got hacked.",
                 color=config.EMBED_COLOR,
             )
-            nextcord.Member.send(self, embed=embed)
+            await nextcord.Member.send(embed=embed)
             await member.ban(reason=f"Banned for triggering the honeypot system.")
             modlog_cog = self.bot.get_cog("ModLog")
             if modlog_cog:
