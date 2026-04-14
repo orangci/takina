@@ -1,7 +1,7 @@
-import nextcord
 from motor.motor_asyncio import AsyncIOMotorClient
 from nextcord.ext import application_checks, commands
 import datetime as dt
+import nextcord
 import config
 import time
 
@@ -31,7 +31,7 @@ class Honeypot(commands.Cog):
         if message.channel.id == honeypot_channel_id:
             await member.timeout(reason=f"Muted for triggering the honeypot system.", timeout=timeout)
             embed = nextcord.Embed(
-                description=f"You were muted in **{message.guild.name}**. \n\n<:note:1289880498541297685> **Reason:** You triggered our honeypot system, which usually means that your account got hacked. Please contact the server moderators to get unmuted.",
+                description=f"You were muted in **{message.guild.name}**. \n\n<:note:1289880498541297685> **Reason:** You triggered our honeypot system, which usually means that your account got hacked. Please contact the server moderators to appeal your mute.",
                 color=config.EMBED_COLOR,
             )
             await member.send(embed=embed)
@@ -56,12 +56,12 @@ class Honeypot(commands.Cog):
                     duration="4w",
                 )
 
-    @nextcord.slash_command(name="honeypot", description="Command to setup a honeypot channel")
+    @nextcord.slash_command(name="honeypot", description="Honeypot channel setup")
     @application_checks.has_permissions(manage_guild=True)
     async def honeypot_configure(
         self,
         interaction: nextcord.Interaction,
-        channel: nextcord.TextChannel = nextcord.SlashOption(description="The channel in which you want the bot to use for the honeypot"),
+        channel: nextcord.TextChannel = nextcord.SlashOption(description="The channel in which you want the bot to use for the honeypot", required=True),
     ):
         await interaction.response.defer(ephemeral=True)
 
