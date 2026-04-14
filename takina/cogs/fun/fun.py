@@ -91,12 +91,6 @@ class Fun(commands.Cog):
         embed.description = f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="revert", help=f"Revert an order towards {config.BOT_NAME.lower().capitalize()}.")
-    async def revert(self, ctx: commands.Context):
-        embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = f"Sorry, I won't do it! {await oclib.fetch_random_emoji()}"
-        await ctx.reply(embed=embed, mention_author=False)
-
     @commands.command(
         name="avatar",
         aliases=["av", "pfp"],
@@ -259,12 +253,6 @@ class SlashFun(commands.Cog):
 
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         embed.description = f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
-        await interaction.send(embed=embed)
-
-    @nextcord.slash_command(name="revert", description="Revert an order.")
-    async def revert(self, interaction: nextcord.Interaction):
-        embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = f"Sorry, I won't do it! {await oclib.fetch_random_emoji()}"
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="avatar", description="Fetch a Discord user's avatar.")
