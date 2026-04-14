@@ -37,10 +37,10 @@ class Honeypot(commands.Cog):
             await member.ban(reason=f"Banned by automod for triggering the honeypot system.")
             modlog_cog = self.bot.get_cog("ModLog")
             if modlog_cog:
-                await modlog_cog.log_action("ban", member, reason=f"Banned by automod for triggering the honeypot system.")
+                await modlog_cog.log_action("ban", member, reason=f"Banned by automod for triggering the honeypot system.", moderator = "Takina")
 
     @nextcord.slash_command(name="honeypot", description="Command to setup a honeypot channel")
-    @application_checks.has_permissions(manage_channels=True)
+    @application_checks.has_permissions(manage_guild=True)
     async def honeypot_configure(
         self,
         interaction: nextcord.Interaction,
