@@ -34,10 +34,15 @@ class Honeypot(commands.Cog):
         member = message.author
 
         if message.channel.id == honeypot_channel_id:
+            embed = nextcord.Embed(
+                description=f"You were banned in **{message.guild.name}**. \n\n<:note:1289880498541297685> **Reason:** You triggered our honeypot system, which usually means that your account got hacked.",
+                color=config.EMBED_COLOR,
+            )
+            nextcord.Member.send(embed=embed)
             await member.ban(reason=f"Banned for triggering the honeypot system.")
             modlog_cog = self.bot.get_cog("ModLog")
             if modlog_cog:
-                await modlog_cog.log_action("ban", member, reason=f"Banned by automod for triggering the honeypot system.", moderator = message.guild.get_member(self.bot.id))
+                await modlog_cog.log_action("ban", member, reason=f"Banned by automod for triggering the honeypot system.", moderator = message.guild.get_member(self.bot.application_id))
 
     @nextcord.slash_command(name="honeypot", description="Command to setup a honeypot channel")
     @application_checks.has_permissions(manage_guild=True)
