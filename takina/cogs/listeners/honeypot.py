@@ -31,7 +31,7 @@ class Honeypot(commands.Cog):
                 color=config.EMBED_COLOR,
             )
             await member.send(embed=embed)
-            await member.ban(reason=f"Banned for triggering the honeypot system.")
+            await member.ban(reason=f"Banned for triggering the honeypot system.", delete_message_seconds=3600)
             modlog_cog = self.bot.get_cog("ModLog")
             if modlog_cog:
                 await modlog_cog.log_action(
