@@ -134,3 +134,6 @@ Added `2hu` alias for the `touhou` command and `umamusume` alias for the `uma` c
 
 #### 1.15.2
 Added `myanimelist` alias for `mal` command.
+
+### 1.16.0
+Added `listeners.honeypot`, `revert` command to go along with the `commit` command and make Docker and the repository itself use uv.

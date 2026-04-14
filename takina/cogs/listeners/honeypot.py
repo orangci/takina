@@ -14,22 +14,14 @@ class Honeypot(commands.Cog):
         # Fetch the guild info
         guild_id = message.guild.id
         guild_data = await self.db.honeypot_settings.find_one({"guild_id": guild_id})
-        if not guild_data:
-            print(f"{guild_id}")
 
         # Fetch the honeypot channel ID and ensure it exists
         honeypot_channel_id = guild_data.get("honeypot_channel_id")
-        if not honeypot_channel_id:
-            print(f"{honeypot_channel_id}")
 
-        honeypot_channel = self.bot.get_channel(honeypot_channel_id)
-        if not honeypot_channel:
-            print(f"{honeypot_channel}")
+        # honeypot_channel = self.bot.get_channel(honeypot_channel_id)
 
         # Fetch the message details
-        channel = self.bot.get_channel(message.channel)
-        if not channel:
-            print(f"{channel}")
+        # channel = self.bot.get_channel(message.channel)
 
         member = message.author
 
@@ -42,7 +34,12 @@ class Honeypot(commands.Cog):
             await member.ban(reason=f"Banned for triggering the honeypot system.")
             modlog_cog = self.bot.get_cog("ModLog")
             if modlog_cog:
-                await modlog_cog.log_action("ban", member, reason=f"Banned by automod for triggering the honeypot system.", moderator = message.guild.get_member(self.bot.application_id))
+                await modlog_cog.log_action(
+                    "ban",
+                    member,
+                    reason=f"Banned by automod for triggering the honeypot system.",
+                    moderator=message.guild.get_member(self.bot.application_id),
+                )
 
     @nextcord.slash_command(name="honeypot", description="Command to setup a honeypot channel")
     @application_checks.has_permissions(manage_guild=True)
@@ -66,4 +63,3 @@ class Honeypot(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(Honeypot(bot))
-
