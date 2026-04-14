@@ -15,21 +15,21 @@ class Honeypot(commands.Cog):
         guild_id = message.guild.id
         guild_data = await self.db.honeypot_settings.find_one({"guild_id": guild_id})
         if not guild_data:
-            return
+            print(f"{guild_id}")
 
         # Fetch the honeypot channel ID and ensure it exists
         honeypot_channel_id = guild_data.get("honeypot_channel_id")
         if not honeypot_channel_id:
-            return
+            print(f"{honeypot_channel_id}")
 
         honeypot_channel = self.bot.get_channel(honeypot_channel_id)
         if not honeypot_channel:
-            return
+            print(f"{honeypot_channel}")
 
         # Fetch the message details
         channel = self.bot.get_channel(message.channel)
         if not channel:
-            return
+            print(f"{channel}")
 
         member = message.author
 
