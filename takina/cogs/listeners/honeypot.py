@@ -38,7 +38,7 @@ class Honeypot(commands.Cog):
                 description=f"You were banned in **{message.guild.name}**. \n\n<:note:1289880498541297685> **Reason:** You triggered our honeypot system, which usually means that your account got hacked.",
                 color=config.EMBED_COLOR,
             )
-            nextcord.Member.send(embed=embed)
+            nextcord.Member.send(self, embed=embed)
             await member.ban(reason=f"Banned for triggering the honeypot system.")
             modlog_cog = self.bot.get_cog("ModLog")
             if modlog_cog:
