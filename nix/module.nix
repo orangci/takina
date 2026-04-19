@@ -1,6 +1,6 @@
 self:
 {
-    config,
+  config,
   lib,
   pkgs,
   ...
@@ -26,6 +26,12 @@ in
       default = self.packages.${system}.default;
       description = "The Takina package to use.";
     };
+
+    dataDir = lib.mkOption {
+        type = lib.types.str;
+        default = "/var/lib/takina";
+        description = "The directory where takina stores its data files.";
+      };
 
     user = mkOption {
       type = types.str;
@@ -90,8 +96,11 @@ in
     };
 
     users.groups.${cfg.group} = { };
-
     services.mongodb.enable = mkIf cfg.database.createLocally true;
+    systemd.tmpfiles.settings."10-takina".${cfg.dataDir}.d = {
+      inherit (cfg) user group;
+      mode = "0744";
+    };
 
     systemd.services.takina = {
       description = "Takina Discord bot";
@@ -105,7 +114,7 @@ in
       serviceConfig = {
         User = cfg.user;
         Group = cfg.group;
-        WorkingDirectory = "/var/lib/takina";
+        WorkingDirectory = cfg.dataDir;
         ExecStart = getExe cfg.package;
         Restart = "always";
         RestartSec = 5;
