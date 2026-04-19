@@ -50,8 +50,8 @@
     in
     {
       nixosModules = {
-        default = import ./nix/module.nix inputs;
-        takina = import ./nix/module.nix inputs;
+        default = import ./nix/module.nix self;
+        takina = import ./nix/module.nix self;
       };
 
       devShells.${system}.default = pkgs.mkShell {

@@ -1,14 +1,14 @@
-inputs:
+self:
 {
     config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 
 let
   cfg = config.services.takina;
+  inherit (pkgs.stdenv.hostPlatform) system;
   inherit (lib)
     mkIf
     mkOption
@@ -23,7 +23,7 @@ in
 
     package = mkOption {
       type = types.package;
-      default = inputs.self.packages.${pkgs.system}.default;
+      default = self.packages.${system}.default;
       description = "The Takina package to use.";
     };
 
