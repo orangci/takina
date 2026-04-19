@@ -132,6 +132,8 @@ in
         Restart = "always";
         RestartSec = 5;
         DynamicUser = false;
+        StandardOutput = "inherit";
+        StandardError = "inherit";
         EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
       };
     };
