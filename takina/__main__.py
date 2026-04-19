@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from nextcord.ext import commands
 import nextcord
 import datetime
@@ -14,13 +14,13 @@ start_time = datetime.datetime.now(datetime.UTC)
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
+        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
 
     async def setup_database(self) -> None:
         # Setup MongoDB connection and collections
         if not os.getenv("HASDB"):
             raise Exception("No Mongo found. Set the HASDB variable in case you do have a Mongo instance runnin'.")
-        self.db_client = AsyncIOMotorClient(config.MONGO_URI)
+        self.db_client = AsyncMongoClient(host=config.MONGO_URI)
         self.db = self.db_client.get_database(config.DB_NAME)
 
     async def get_prefix(self, message):

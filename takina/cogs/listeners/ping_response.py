@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from nextcord.ext import commands
 from ..libs import oclib
 import nextcord
@@ -15,7 +15,7 @@ class PingResponse(commands.Cog):
         self.forks = 0
         self.bot.loop.create_task(self.fetch_repo_data())
         self.prefix = os.getenv("PREFIX")
-        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
+        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
 
     async def fetch_repo_data(self):
         try:

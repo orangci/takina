@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from nextcord.ext import commands, tasks
 from bson.objectid import ObjectId
 from datetime import timedelta
@@ -13,7 +13,7 @@ import config
 class RemindMe(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
+        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
         self.reminders = self.db.reminders
         self.check_reminders.start()
 

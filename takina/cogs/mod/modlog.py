@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from nextcord.ext import application_checks, commands
 from ..libs import oclib
 from nextcord import ui
@@ -61,7 +61,7 @@ class CaseListButtonView(ui.View):
 class ModLog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
+        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
 
     @nextcord.slash_command(description="Manage the modlog settings")
     async def modlog(self, interaction: nextcord.Interaction):
@@ -253,7 +253,7 @@ class ModLog(commands.Cog):
 class SlashModLog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
+        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
 
     @nextcord.slash_command(description="Manage the modlog settings")
     @application_checks.has_permissions(moderate_members=True)
