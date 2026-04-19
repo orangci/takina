@@ -110,7 +110,7 @@ in
         Restart = "always";
         RestartSec = 5;
         DynamicUser = false;
-        EnvironmentFile = mkIf cfg.environmentFile cfg.environmentFile;
+        EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
       };
     };
   };
