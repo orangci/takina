@@ -65,6 +65,7 @@
       packages.${system}.default = pkgs.stdenv.mkDerivation {
         pname = takina.pname;
         version = takina.version;
+        meta.mainProgram = "takina";
         src = ./.;
 
         nativeBuildInputs = with pkgs; [
