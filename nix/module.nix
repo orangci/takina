@@ -51,14 +51,22 @@ in
       description = "Path to a environment file, usually used for passing sensitive environment variables to Takina such as the Discord bot token.";
     };
 
-    config = mkOption {
-      type = types.attrsOf types.str;
-      default = {
-        BOT_NAME = "Takina";
-        PREFIX = ".";
-        EMBED_COLOR = "0xFAB387";
+    config = {
+      prefix = mkOption {
+        type = types.str;
+        default = ".";
+        description = "The command prefix for Takina to listen for.";
       };
-      description = "Configuration options for Takina passed as environment variables.";
+      botName = mkOption {
+        type = types.str;
+        default = "Takina";
+        description = "The name of the bot used throughout the bot's commands.";
+      };
+      embedColor = mkOption {
+        type = types.str;
+        default = "0x2B2D31";
+        description = "The colour of embed responses.";
+      };
     };
 
     database = {
@@ -114,7 +122,10 @@ in
       description = "Takina Discord bot";
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
-      environment = cfg.config // {
+      environment = {
+        BOT_NAME = cfg.config.botName;
+        PREFIX = cfg.config.prefix;
+        EMBED_COLOR = cfg.config.embedColor;
         HASDB = mkIf cfg.database.createLocally "yes";
         DB_NAME = mkIf cfg.database.createLocally cfg.database.name;
         MONGO = mkIf cfg.database.createLocally "mongodb://${cfg.database.user}:password@${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}";
