@@ -64,7 +64,7 @@ in
       };
       embedColor = mkOption {
         type = types.str;
-        default = "0x2B2D31";
+        default = "#2B2D31";
         description = "The colour of embed responses.";
       };
     };
