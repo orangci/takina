@@ -28,10 +28,10 @@ in
     };
 
     dataDir = lib.mkOption {
-        type = lib.types.str;
-        default = "/var/lib/takina";
-        description = "The directory where takina stores its data files.";
-      };
+      type = lib.types.str;
+      default = "/var/lib/takina";
+      description = "The directory where takina stores its data files.";
+    };
 
     user = mkOption {
       type = types.str;
@@ -62,7 +62,12 @@ in
     };
 
     database = {
-      createLocally = mkEnableOption "Create the database and database user locally.";
+      createLocally = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Create the database and database user locally.";
+      };
+
       user = mkOption {
         type = types.str;
         default = "takina";
