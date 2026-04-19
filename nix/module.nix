@@ -76,12 +76,6 @@ in
         description = "Create the database and database user locally.";
       };
 
-      user = mkOption {
-        type = types.str;
-        default = "takina";
-        description = "Database user";
-      };
-
       hostname = mkOption {
         type = types.str;
         default = "localhost";
@@ -128,7 +122,7 @@ in
         EMBED_COLOR = cfg.config.embedColor;
         HASDB = mkIf cfg.database.createLocally "yes";
         DB_NAME = mkIf cfg.database.createLocally cfg.database.name;
-        MONGO = mkIf cfg.database.createLocally "mongodb://${cfg.database.user}:password@${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}";
+        MONGO = mkIf cfg.database.createLocally "mongodb://${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}";
       };
       serviceConfig = {
         User = cfg.user;
