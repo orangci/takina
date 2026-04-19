@@ -14,7 +14,7 @@ REDDIT_CLIENT_SECRET = getenv("REDDIT_CLIENT_SECRET")
 ERROR_COLOR = 0xFF0037
 BOT_VERSION = "1.16.0"
 
-EMBED_COLOR_STR = getenv("EMBED_COLOR", "#2B2D31")
+EMBED_COLOR_STR = getenv("EMBED_COLOR", "#2B2D31").strip().strip('"').strip("'")
 if EMBED_COLOR_STR.startswith("#"):
     EMBED_COLOR = int(EMBED_COLOR_STR[1:], 16)  # Remove "#" and convert hex to int
 elif EMBED_COLOR_STR.startswith("0x"):
