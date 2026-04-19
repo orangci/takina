@@ -61,7 +61,9 @@ class Honeypot(commands.Cog):
     async def honeypot_configure(
         self,
         interaction: nextcord.Interaction,
-        channel: nextcord.TextChannel = nextcord.SlashOption(description="The channel in which you want the bot to use for the honeypot", required=True),
+        channel: nextcord.TextChannel = nextcord.SlashOption(
+            description="The channel in which you want the bot to use for the honeypot", required=True
+        ),
     ):
         await interaction.response.defer(ephemeral=True)
 
