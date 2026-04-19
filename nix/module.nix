@@ -101,10 +101,13 @@ in
     };
 
     users.groups.${cfg.group} = { };
-    services.mongodb.enable = mkIf cfg.database.createLocally true;
     systemd.tmpfiles.settings."10-takina".${cfg.dataDir}.d = {
       inherit (cfg) user group;
       mode = "0744";
+    };
+    services.mongodb = mkIf cfg.database.createLocally {
+      enable = true;
+      package = pkgs.mongodb-ce;
     };
 
     systemd.services.takina = {
