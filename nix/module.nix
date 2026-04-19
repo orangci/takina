@@ -114,7 +114,7 @@ in
       environment = cfg.config // {
         HASDB = mkIf cfg.database.createLocally "yes";
         DB_NAME = mkIf cfg.database.createLocally cfg.database.name;
-        MONGO = mkIf cfg.database.createLocally "mongodb://${cfg.database.user}@${cfg.database.hostname}:${cfg.database.port}/${cfg.database.name}";
+        MONGO = mkIf cfg.database.createLocally "mongodb://${cfg.database.user}@${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}";
       };
       serviceConfig = {
         User = cfg.user;
