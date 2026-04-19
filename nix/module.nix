@@ -122,7 +122,7 @@ in
         EMBED_COLOR = cfg.config.embedColor;
         HASDB = mkIf cfg.database.createLocally "yes";
         DB_NAME = mkIf cfg.database.createLocally cfg.database.name;
-        MONGO = mkIf cfg.database.createLocally "mongodb://${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}";
+        MONGO = mkIf cfg.database.createLocally "mongodb://${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}?directConnection=true&appName=takina";
       };
       serviceConfig = {
         User = cfg.user;
