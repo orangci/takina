@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: orangc
 from nextcord.ext import application_checks, commands
 from nextcord import Embed, Interaction, SlashOption
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from ..libs import oclib
 import nextcord
 import config
@@ -16,7 +16,7 @@ MAX_RESPONSE_LEN = 200
 class TriggerResponses(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
+        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
 
     async def get_guild_triggers(self, guild_id: int):
         """Fetch all triggers for a guild."""
@@ -133,7 +133,7 @@ class TriggerResponses(commands.Cog):
 class SlashTriggerResponses(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
+        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
 
     async def get_guild_triggers(self, guild_id: int):
         """Fetch all triggers for a guild."""

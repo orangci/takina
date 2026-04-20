@@ -137,3 +137,6 @@ Added `myanimelist` alias for `mal` command.
 
 ### 1.16.0
 Added `listeners.honeypot` and make Docker and the repository itself use uv.
+
+### 1.17.0
+Added a NixOS flake, with packaging and a NixOS module.Migrated from AsyncIOMotorClient to AsyncMongoClient (from Motor to pymongo).

@@ -1,7 +1,7 @@
 [project]
 name = "takina"
-version = "1.16.0"
-description = "Add your description here"
+version = "1.17.0"
+description = "The cutest multipurpose Discord bot."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -32,3 +32,7 @@ dependencies = [
     "whodap==0.1.12",
     "wynn-api==3.2.1",
 ]
+
+[tool.setuptools]
+packages = ["takina"]
+

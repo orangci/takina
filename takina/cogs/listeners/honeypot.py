@@ -1,4 +1,4 @@
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from nextcord.ext import application_checks, commands
 import datetime as dt
 import nextcord
@@ -9,7 +9,7 @@ import time
 class Honeypot(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
+        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -61,7 +61,9 @@ class Honeypot(commands.Cog):
     async def honeypot_configure(
         self,
         interaction: nextcord.Interaction,
-        channel: nextcord.TextChannel = nextcord.SlashOption(description="The channel in which you want the bot to use for the honeypot", required=True),
+        channel: nextcord.TextChannel = nextcord.SlashOption(
+            description="The channel in which you want the bot to use for the honeypot", required=True
+        ),
     ):
         await interaction.response.defer(ephemeral=True)
 

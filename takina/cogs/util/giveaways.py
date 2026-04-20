@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from nextcord.ext import application_checks, commands
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from nextcord import SlashOption
 from ..libs import oclib
 import emoji as emotelib
@@ -21,7 +21,7 @@ async def is_valid_emoji(interaction, emoji: str) -> bool:
 class Giveaway(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
+        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
 
     @nextcord.slash_command(name="giveaway", description="Giveaway management commands")
     async def giveaway(self, interaction: nextcord.Interaction):

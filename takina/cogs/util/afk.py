@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from nextcord.ext import application_checks, commands
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from nextcord import SlashOption
 from ..libs import oclib
 import nextcord
@@ -11,7 +11,7 @@ import config
 class AFK(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = AsyncIOMotorClient(config.MONGO_URI).get_database(config.DB_NAME)
+        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
 
     async def set_afk_status(self, user_id: int, reason: str):
         """Sets a user's AFK status in the database."""

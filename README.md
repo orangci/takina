@@ -8,13 +8,43 @@ Before proceeding, I am assuming that you have a running MongoDB database. The m
 
 #### On NixOS
 
-*Assuming that you have `git` installed.*
+We will assume that you have flakes enabled.
 
-- `git clone https://github.com/orangci/takina && cd takina`
-- Set all the required environment variables in the `.env` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the `TOKEN` (Discord bot token), `HASDB=yes`, and  `MONGO` (your MongoDB URI.)
-- Run `nix-shell`; You may need to run `nix-shell` twice if the first time doesn't start the bot up.
+Add Takina to your inputs like so:
 
-In the future, this will be managed with a proper flake.
+```nix
+inputs.takina = {
+    url = "git+https://git.orangc.net/c/takina";
+    # optionally make takina follow your nixpkgs input (recommended)
+    inputs.nixpkgs.follows = "nixpkgs";
+};
+```
+
+You may now use our NixOS module:
+
+```nix
+services.takina = {
+    enable = true;
+    config = {
+        PREFIX = "?";
+        EMBED_COLOR = "0x2B2D31";
+        # you may also set TOKEN here, but we ***highly*** advise you not to
+        # as that would make your bot token publicly readable in the Nix store
+        # you can instead set it via services.takina.environmentFile
+        # which you set with a a path to a file
+        # containing TOKEN=abc
+        # we recommend using sops-nix/agenix for this
+    };
+};
+```
+
+Or even install the Takina package directly:
+
+```
+environment.systemPackages = [ inputs.takina."x86_64-linux".default ];
+```
+
+Happy nixxing!
 
 #### With Docker
 
