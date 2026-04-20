@@ -76,13 +76,15 @@
         meta.mainProgram = "takina";
         src = ./.;
 
-        nativeBuildInputs = with pkgs; [
-          makeWrapper
-          gcc
-        ];
+        nativeBuildInputs = singleton pkgs.makeWrapper;
         buildInputs = singleton appPythonEnv;
         installPhase = ''
+          mkdir -p $out/app
+          cp -r ./* $out/app/
+
+          mkdir -p $out/bin
           makeWrapper ${appPythonEnv}/bin/python $out/bin/takina \
+            --chdir $out/app \
             --set PYTHONPATH ${./takina} \
             --add-flags "-m takina"
         '';

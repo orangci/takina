@@ -27,12 +27,6 @@ in
       description = "The Takina package to use.";
     };
 
-    dataDir = lib.mkOption {
-      type = lib.types.str;
-      default = "/var/lib/takina";
-      description = "The directory where takina stores its data files.";
-    };
-
     user = mkOption {
       type = types.str;
       default = "takina";
@@ -103,10 +97,6 @@ in
     };
 
     users.groups.${cfg.group} = { };
-    systemd.tmpfiles.settings."10-takina".${cfg.dataDir}.d = {
-      inherit (cfg) user group;
-      mode = "0744";
-    };
     services.mongodb = mkIf cfg.database.createLocally {
       enable = true;
       package = pkgs.mongodb-ce;
@@ -128,7 +118,6 @@ in
       serviceConfig = {
         User = cfg.user;
         Group = cfg.group;
-        WorkingDirectory = cfg.dataDir;
         ExecStart = getExe cfg.package;
         Restart = "always";
         RestartSec = 5;

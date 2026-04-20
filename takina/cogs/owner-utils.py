@@ -219,8 +219,10 @@ class OwnerUtils(commands.Cog):
         if os.getenv("NIXOS_INSTANCE"):
             embed = nextcord.Embed()
             embed.color = config.ERROR_COLOR
-            embed.description = ":x: The pull command is not available on instances of {config.BOT_NAME} run on NixOS."
+            embed.description = f":x: The pull command is not available on instances of {config.BOT_NAME} run on NixOS."
             await ctx.reply(embed=embed, mention_author=False)
+            return
+
         current_dir = os.getcwd()
 
         def run_git_pull(directory):

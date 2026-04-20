@@ -140,3 +140,6 @@ Added `listeners.honeypot` and make Docker and the repository itself use uv.
 
 ### 1.17.0
 Added a NixOS flake, with packaging and a NixOS module.Migrated from AsyncIOMotorClient to AsyncMongoClient (from Motor to pymongo).
+
+#### 1.17.1
+Fixed Nix packaging requiring you git clone the repo and remove the need for a `/var/lib/takina`. Added a shellHook for the devShell to load .env variables in.
