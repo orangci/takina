@@ -117,7 +117,7 @@ in
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
       environment = {
-        NIXOS_INSTANCE = true;
+        NIXOS_INSTANCE = "yes";
         BOT_NAME = cfg.config.botName;
         PREFIX = cfg.config.prefix;
         EMBED_COLOR = cfg.config.embedColor;
