@@ -60,6 +60,14 @@
           pkgs.ruff
           pkgs.uv
         ];
+
+        shellHook = ''
+          if [ -f .env ]; then
+            set -a
+            . .env
+            set +a
+          fi
+        '';
       };
 
       packages.${system}.default = pkgs.stdenv.mkDerivation {
