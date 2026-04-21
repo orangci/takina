@@ -150,3 +150,6 @@ Usage is now `takina neko category`.
 
 ### 1.19.0
 Added `util.translate` for translating text from one language to another.
+
+#### 1.19.1
+Fixed a bug in util.translate that didn't allow passing languages in this format: `en-de`, or `ar-en`, et cetera as "unsupported translations".

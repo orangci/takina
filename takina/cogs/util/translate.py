@@ -13,7 +13,8 @@ class Translate(commands.Cog):
 
     async def translate_text(self, lang: str, text: str) -> nextcord.Embed:
         embed = nextcord.Embed(color=config.EMBED_COLOR)
-        source, target = lang.split("-", 1) if "-" in lang else "auto", lang
+        print(lang[:2], lang[2:])
+        source, target = ("auto", lang) if "-" not in lang else lang.split("-", 1)
         payload = {"q": text, "source": source, "target": target, "api_key": config.LIBRETRANSLATE_API_KEY}
         async with aiohttp.ClientSession() as session:
             async with session.post(f"{config.LIBRETRANSLATE_API_URL}/translate", json=payload) as resp:
