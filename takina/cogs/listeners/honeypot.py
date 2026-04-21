@@ -3,7 +3,6 @@ from nextcord.ext import application_checks, commands
 import datetime as dt
 import nextcord
 import config
-import time
 
 
 class Honeypot(commands.Cog):
@@ -29,7 +28,7 @@ class Honeypot(commands.Cog):
         timeout = dt.timedelta(weeks=4)
 
         if message.channel.id == honeypot_channel_id:
-            await member.timeout(reason=f"Muted for triggering the honeypot system.", timeout=timeout)
+            await member.timeout(reason="Muted for triggering the honeypot system.", timeout=timeout)
             embed = nextcord.Embed(
                 description=f"You were muted in **{message.guild.name}**. \n\n<:note:1289880498541297685> **Reason:** You triggered our honeypot system, which usually means that your account got hacked. Please contact the server moderators to appeal your mute.",
                 color=config.EMBED_COLOR,
@@ -51,7 +50,7 @@ class Honeypot(commands.Cog):
                 await modlog_cog.log_action(
                     "mute",
                     member,
-                    reason=f"Muted for triggering the honeypot system.",
+                    reason="Muted for triggering the honeypot system.",
                     moderator=message.guild.get_member(self.bot.application_id),
                     duration="4w",
                 )
