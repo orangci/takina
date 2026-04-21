@@ -1,5 +1,5 @@
 # Takina Code Standards & Contributing Guidelines
-Takina does not currently follow *all* of these standards, but as of now does follow the vast majority most of the time. These standards exist because I have a terrible memory and want everything to be uniform.
+Takina does not currently follow *all* of these standards, but as of now does follow them the vast majority most of the time. These standards exist because I have a terrible memory and want everything to be uniform.
 
 ### Before Contributing
 First of all, thanks for considering contributing to Takina! I appreciate it. Please make sure that what you're contributing follows Discord's [Terms of Service](https://discord.com/terms). Please follow the standards after this section, and lastly, if it's a new feature, please contact me ([orangc](https://orangc.net)) or in the least open an issue before starting to write code; confirming that I'll approve your idea is better than wasting your time and finding out later that I can't merge your pull request because of x and y. 💖
@@ -10,19 +10,20 @@ First of all, thanks for considering contributing to Takina! I appreciate it. Pl
 - Every command should have a description and help information.
 
 ### Embeds
-- all embeds must use the EMBED_COLOR env var as it's color, with the exception of it being an error embed; in which case it should be 0xFF0037
-- all mentions of a user should generally be user.mention, not user.name or anything else
-- generally field names should be prefixed with an emoji, preferrably a cute one
+- All embeds must use the config.EMBED_COLOR variable as its color, with the exception of it being an error embed; in which case it should be config.ERROR_COLOR
+- All mentions of a user should generally be user.mention, not user.name or anything else
+- Generally field names should be prefixed with an emoji, preferrably a cute one
 
-### Categorization
-- the `fun` folder is for fun related commands and cogs
-- the `libs` folder is for libraries; all functions that might be used over and over again should be put in here, generally placed in libs/oclib.py
-- the `listeners` folder is for listener cogs; ones that are not commands but instead listen for events and respond, like the github or starboard modules
-- the `mod` folder is for moderation related commands and cogs
-- the `util` folder is for utility related commands and cogs
-- the `weebism` folder is for anime/manga related commands and cogs
-- the `sesp` folder is for *server specific* cogs, cogs dedicated to a specific Discord server (such as the subdomain utility commands for the [is-a.dev](https://is-a.dev) Discord server.)
-- if a cog is not palced in a subfolder, it can be considered a core cog, vital to the functionality of bot
+### Categorisation
+- The `fun` folder is for fun related commands and cogs
+` The `islam` folder is for Islamic related cogs, such as the prayer times' command cog 
+- The `libs` folder is for libraries; all functions that might be used over and over again should be put in here, generally placed in libs/oclib.py
+- The `listeners` folder is for listener cogs; ones that are not commands but instead listen for events and respond, like the github or starboard modules
+- The `mod` folder is for moderation related commands and cogs
+- The `sesp` folder is for *server specific* cogs, cogs dedicated to a specific Discord server.
+- The `util` folder is for utility related commands and cogs
+- The `weebism` folder is for anime/manga related commands and cogs
+- If a cog is not palced in a subfolder, it can be considered a core cog, vital to the functionality of bot
 
 ### Responses
 For base commands, `ctx.reply(mention_author=False)` should always be used, save for special scenarios.
@@ -38,7 +39,7 @@ Generally commands should have at least a one second cooldown.
 ### Documentation
 Every command must have sufficient documentation for help commands.
 
-### Example cog
+### Example cog that hooks into the database
 ```py
 # takina/cogs/fun/hello.py
 from nextcord.ext import commands
