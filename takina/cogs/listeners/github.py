@@ -2,9 +2,7 @@
 # SPDX-FileCopyrightText: orangc
 from nextcord.ext import commands
 from datetime import datetime
-from typing import Optional
 from ..libs import oclib
-from nextcord import ui
 import nextcord
 import config
 import re
@@ -12,7 +10,7 @@ import re
 GITHUB_BASE_URL = "https://api.github.com"
 
 REPO_PATTERN = re.compile(r"repo:([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)")
-PR_ISSUE_PATTERN = re.compile(r"^[a-zA-Z0-9-]+/[a-zA-Z0-9-]+#[0-9]+$")
+PR_ISSUE_PATTERN = re.compile(r"^[a-zA-Z0-9-]+\/[a-zA-Z0-9-]+#[0-9]+$")
 
 
 def format_timestamp(iso_timestamp: str) -> str:
@@ -22,17 +20,9 @@ def format_timestamp(iso_timestamp: str) -> str:
     return formatted_time
 
 
-class GitHubCog(commands.Cog):
+class GitHub(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-
-    async def fetch_github_data(self, url: str) -> Optional[dict]:
-        """Fetch JSON data from the GitHub API."""
-        try:
-            return await oclib.request(url)
-        except Exception as e:
-            print(f"Error fetching GitHub data: {e}")
-            return None
 
     def build_repo_embed(self, repo_data: dict) -> nextcord.Embed:
         """Build an embed for repository details."""
@@ -78,7 +68,7 @@ class GitHubCog(commands.Cog):
         if repo_match:
             await message.edit(suppress=True)
             owner, repo_name = repo_match.groups()
-            repo_data = await self.fetch_github_data(f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}")
+            repo_data = await oclib.request(f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}")
             if repo_data:
                 await message.channel.send(embed=self.build_repo_embed(repo_data))
             return  # Only process the first match in the message
@@ -87,28 +77,14 @@ class GitHubCog(commands.Cog):
         pr_issue_match = PR_ISSUE_PATTERN.search(content)
         if pr_issue_match:
             owner, repo_name, pr_issue_number = pr_issue_match.groups()
-            url = f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}/issues/{pr_issue_number}"
-            pr_issue_data = await self.fetch_github_data(url)
+            url = f"{GITHUB_BASE_URL}/repos/{owner}/{repo_name}/issues/{pr_issue_number}"  # TODO: also /pulls! this is broken for pulls
+            pr_issue_data = await oclib.request(url)
             if pr_issue_data:
                 is_issue = "pull_request" not in pr_issue_data
                 embed = self.build_pr_issue_embed(pr_issue_data, is_issue)
-                view = self.RefreshView(self, url, is_issue)
-                await message.channel.send(embed=embed, view=view)
-
-    class RefreshView(ui.View):
-        def __init__(self, cog, url, is_issue):
-            super().__init__()
-            self.cog = cog
-            self.url = url
-            self.is_issue = is_issue
-
-        @ui.button(label="Refresh Status", style=nextcord.ButtonStyle.primary)
-        async def refresh(self, button: ui.Button, interaction: nextcord.Interaction):
-            pr_issue_data = await self.cog.fetch_github_data(self.url)
-            if pr_issue_data:
-                embed = self.cog.build_pr_issue_embed(pr_issue_data, self.is_issue)
-                await interaction.response.edit_message(embed=embed)
+                await message.channel.send(embed=embed)
+            return
 
 
 def setup(bot):
-    bot.add_cog(GitHubCog(bot))
+    bot.add_cog(GitHub(bot))
