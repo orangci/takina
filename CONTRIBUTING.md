@@ -41,19 +41,19 @@ Every command must have sufficient documentation for help commands.
 ### Example cog
 ```py
 # takina/cogs/fun/hello.py
-import nextcord
 from nextcord.ext import commands
-import config # EMBED_COLOR and other variables are imported from here
 from ..libs import oclib # various helper functions like fetch_random_emoji() or request() are imported from here
+import nextcord
+import config # EMBED_COLOR and other variables are imported from here
 
 class Hello(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="hello", aliases=["hi", "hey"], help="Say hello! \nUsage: `hello`.")
-    async def hello(self, ctx: commands.Context):
+    @commands.command(name="hello", aliases=["hi", "hey"], help="Say hello!", usage="<name you wish to have the bot greet>")
+    async def hello(self, ctx: commands.Context, name: str):
         embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = f"{await oclib.fetch_random_emoji()} Hello there!"
+        embed.description = f"{await oclib.fetch_random_emoji()} Hello there {name}!"
         await ctx.reply(embed=embed, mention_author=False)
 
 class SlashHello(commands.Cog):

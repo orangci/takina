@@ -147,3 +147,6 @@ Fixed Nix packaging requiring you git clone the repo and remove the need for a `
 ### 1.18.0
 Refactored fun.neko to support all nekos.best endpoints dynamically.
 Usage is now `takina neko category`.
+
+### 1.19.0
+Added `util.translate` for translating text from one language to another.

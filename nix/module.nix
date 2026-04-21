@@ -61,6 +61,11 @@ in
         default = "#2B2D31";
         description = "The colour of embed responses.";
       };
+      libretranslateApiUrl = mkOption {
+        type = types.str;
+        default = null;
+        description = "The API URL of the LibeTranslate instance to use for the translation cog.";
+      };
     };
 
     database = {
@@ -114,6 +119,7 @@ in
         HASDB = mkIf cfg.database.createLocally "yes";
         DB_NAME = mkIf cfg.database.createLocally cfg.database.name;
         MONGO = mkIf cfg.database.createLocally "mongodb://${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}?directConnection=true&appName=takina";
+        LIBRETRANSLATE_API_URL = cfg.config.libretranslateApiUrl;
       };
       serviceConfig = {
         User = cfg.user;

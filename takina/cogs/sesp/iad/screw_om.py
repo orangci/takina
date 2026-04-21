@@ -16,12 +16,12 @@ class ScrewOm(commands.Cog):
         if before.name == after.name:
             return
 
-        for entry in after.guild.audit_logs(limit=10, action=nextcord.AuditLogAction.channel_update):
-            if entry.target.id != after.id:
-                return
+        async for entry in after.guild.audit_logs(limit=5, action=nextcord.AuditLogAction.channel_update):
+            if not entry.target or entry.target.id != after.id:
+                continue
 
             if entry.user.id != 248470317540966443:
-                return
+                continue
 
             # revert the name (screw u om)
             await after.edit(name=before.name, reason="Screw you, Om <3")
