@@ -136,7 +136,6 @@ celerybeat.pid
 
 # Environments
 .env
-.envrc
 .venv
 env/
 venv/
@@ -204,3 +203,6 @@ __marimo__/
 
 # Nix
 result
+
+# direnv
+.direnv
