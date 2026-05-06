@@ -19,7 +19,7 @@ dependencies = [
     "motor>=3.7.1",
     "nextcord==3.1.1",
     "open-meteo==0.4.0",
-    "orjson==3.11.8",
+    "orjson==3.11.9",
     "ping3==5.1.5",
     "platformdirs==4.9.6",
     "pygithub==2.9.1",
