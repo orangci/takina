@@ -17,7 +17,7 @@ dependencies = [
     "geopy==2.4.1",
     "google-books-api-wrapper==1.0.5",
     "motor>=3.7.1",
-    "nextcord==3.1.1",
+    "nextcord==3.2.0",
     "open-meteo==0.4.0",
     "orjson==3.11.9",
     "ping3==5.1.5",

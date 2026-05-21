@@ -691,16 +691,16 @@ wheels = [
 
 [[package]]
 name = "nextcord"
-version = "3.1.1"
+version = "3.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "audioop-lts", marker = "python_full_version < '4'" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/cf/53/fa21411f96988e1a4568614e3869538b3dba84d38f27cc2a094db8a88a35/nextcord-3.1.1.tar.gz", hash = "sha256:ed0d1c2ccae6c5acceea13f3c388ded875f21d7378d5ea1330a3d9c6b37e9d93", size = 930931, upload-time = "2025-08-16T10:38:29.818Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b3/60/b4e3ad804146e54c1ca0eef38678b8a17974b68d5ad1a412ae246153b028/nextcord-3.2.0.tar.gz", hash = "sha256:59a86283d832b5495535d1ffd611291fb3840d8b97225d35caf519eaf593c718", size = 946181, upload-time = "2026-05-21T18:01:18.234Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ef/06/e598f610d046cb4ecb69d831d1630a84eda6ef12f3f0ae3f2fa05f753f29/nextcord-3.1.1-py3-none-any.whl", hash = "sha256:9432d3ad2d2a5d65624b512e2408e5fca4aee059e40d1c3a70a7b0040536d767", size = 999430, upload-time = "2025-08-16T10:38:28.333Z" },
+    { url = "https://files.pythonhosted.org/packages/ba/ad/e04b76223f2e317e11464c7f6fe83e3720dc6061d10b9d7ccde4f1927eb4/nextcord-3.2.0-py3-none-any.whl", hash = "sha256:0e099527f4663d47d75c5f1e95d2cb5cad7ac56aebf12a0f0064db5bf5206d72", size = 1014308, upload-time = "2026-05-21T18:01:16.789Z" },
 ]
 
 [[package]]
@@ -1114,7 +1114,7 @@ requires-dist = [
     { name = "geopy", specifier = "==2.4.1" },
     { name = "google-books-api-wrapper", specifier = "==1.0.5" },
     { name = "motor", specifier = ">=3.7.1" },
-    { name = "nextcord", specifier = "==3.1.1" },
+    { name = "nextcord", specifier = "==3.2.0" },
     { name = "open-meteo", specifier = "==0.4.0" },
     { name = "orjson", specifier = "==3.11.9" },
     { name = "ping3", specifier = "==5.1.5" },
