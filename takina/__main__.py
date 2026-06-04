@@ -49,7 +49,7 @@ bot = Bot(
 
 
 def load_exts(directory):
-    blacklist_subfolders = ["libs", "sesp/isadev/libs", "sesp/theanimeflow/libs"]
+    blacklist_subfolders = ["libs", "sesp/isadev/libs"]
 
     cogs = []
     for root, dirs, files in os.walk(directory):

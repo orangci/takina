@@ -153,3 +153,6 @@ Added `util.translate` for translating text from one language to another.
 
 #### 1.19.1
 Fixed a bug in util.translate that didn't allow passing languages in this format: `en-de`, or `ar-en`, et cetera as "unsupported translations".
+
+### 1.20.0
+Added `listeners.haiku`, a cog that watches for haikus in Discord messages and then alerts the user if their message contains a haiku, similar to Reddit's [u/haikusbot](https://reddit.com/u/haikusbot).
