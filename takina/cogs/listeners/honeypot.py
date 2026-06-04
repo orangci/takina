@@ -17,7 +17,10 @@ class Honeypot(commands.Cog):
         guild_data = await self.db.honeypot_settings.find_one({"guild_id": guild_id})
 
         # Fetch the honeypot channel ID and ensure it exists
-        honeypot_channel_id = guild_data.get("honeypot_channel_id")
+        if guild_data:
+            honeypot_channel_id = guild_data.get("honeypot_channel_id")
+        else:
+            return
 
         # honeypot_channel = self.bot.get_channel(honeypot_channel_id)
 

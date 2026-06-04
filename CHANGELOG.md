@@ -162,3 +162,6 @@ Fixed `listeners.haikus` being broken in production due to insufficient permissi
 
 #### 1.20.2
 Fixed `listeners.haikus` being broken on NixOS specifically due to `/nix/store` being read-only and therefore impossible to download ntlk data into.
+
+#### 1.20.3
+Fixed `listeners.honeypot` spamming logs with an AttributeError if the honeypot channel has not been set. Closes #80.
