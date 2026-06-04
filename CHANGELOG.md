@@ -159,3 +159,6 @@ Added `listeners.haikus`, a cog that watches for haikus in Discord messages and 
 
 #### 1.20.1
 Fixed `listeners.haikus` being broken in production due to insufficient permissions to download the nltk dict.
+
+#### 1.20.2
+Fixed `listeners.haikus` being broken on NixOS specifically due to `/nix/store` being read-only and therefore impossible to download ntlk data into.

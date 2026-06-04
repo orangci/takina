@@ -86,6 +86,7 @@
           makeWrapper ${appPythonEnv}/bin/python $out/bin/takina \
             --chdir $out/app \
             --set PYTHONPATH ${./takina} \
+            --set NLTK_DATA ${pkgs.nltk-data.cmudict} \
             --add-flags "-m takina"
         '';
       };

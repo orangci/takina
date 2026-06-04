@@ -8,10 +8,11 @@ import re
 import os
 
 # download the nltk dictionary thing.. this is the data containing syllables and stuff
-NLTK_DIR = os.path.join(os.getcwd(), ".nltk_data")
-os.makedirs(NLTK_DIR, exist_ok=True)
-nltk.data.path.append(NLTK_DIR)
-nltk.download("cmudict", download_dir=NLTK_DIR)
+if not os.getenv("NIXOS_INSTANCE"):
+    NLTK_DIR = os.path.join(os.getcwd(), ".nltk_data")
+    os.makedirs(NLTK_DIR, exist_ok=True)
+    nltk.data.path.append(NLTK_DIR)
+    nltk.download("cmudict", download_dir=NLTK_DIR)
 cmu = nltk.corpus.cmudict.dict()
 
 
@@ -68,7 +69,9 @@ class Haikus(commands.Cog):
                 return
 
         if len(lines) == 3:
-            await message.reply(f"\n{lines[0]}\n{lines[1]}\n{lines[2]}\n-# {await oclib.fetch_random_emoji()} I detect haikus. Yes, just like [u/haikusbot](<https://reddit.com/u/haikus.bot>).")
+            await message.reply(
+                f"\n{lines[0]}\n{lines[1]}\n{lines[2]}\n-# {await oclib.fetch_random_emoji()} I detect haikus. Yes, just like [u/haikusbot](<https://reddit.com/u/haikus.bot>)."
+            )
 
 
 def setup(bot: commands.Bot):
