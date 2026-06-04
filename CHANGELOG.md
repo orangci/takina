@@ -155,4 +155,7 @@ Added `util.translate` for translating text from one language to another.
 Fixed a bug in util.translate that didn't allow passing languages in this format: `en-de`, or `ar-en`, et cetera as "unsupported translations".
 
 ### 1.20.0
-Added `listeners.haiku`, a cog that watches for haikus in Discord messages and then alerts the user if their message contains a haiku, similar to Reddit's [u/haikusbot](https://reddit.com/u/haikusbot).
+Added `listeners.haikus`, a cog that watches for haikus in Discord messages and then alerts the user if their message contains a haiku, similar to Reddit's [u/haikusbot](https://reddit.com/u/haikusbot).
+
+#### 1.20.1
+Fixed `listeners.haikus` being broken in production due to insufficient permissions to download the nltk dict.

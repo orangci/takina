@@ -206,3 +206,6 @@ result
 
 # direnv
 .direnv
+
+# Misc
+.nltk_data

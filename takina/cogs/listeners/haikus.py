@@ -5,8 +5,13 @@ from ..libs import oclib
 import nextcord
 import nltk
 import re
+import os
 
-nltk.download("cmudict")
+# download the nltk dictionary thing.. this is the data containing syllables and stuff
+NLTK_DIR = os.path.join(os.getcwd(), ".nltk_data")
+os.makedirs(NLTK_DIR, exist_ok=True)
+nltk.data.path.append(NLTK_DIR)
+nltk.download("cmudict", download_dir=NLTK_DIR)
 cmu = nltk.corpus.cmudict.dict()
 
 
