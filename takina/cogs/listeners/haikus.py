@@ -13,19 +13,18 @@ if not os.getenv("NIXOS_INSTANCE"):
     os.makedirs(NLTK_DIR, exist_ok=True)
     nltk.data.path.append(NLTK_DIR)
     nltk.download("cmudict", download_dir=NLTK_DIR)
-cmu = nltk.corpus.cmudict.dict()
 
 
 class Haikus(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.cmu = nltk.corpus.cmudict.dict()
 
     def syllables(self, word: str) -> int:
         word = word.lower()
-        if word in cmu:
-            return len([p for p in cmu[word][0] if p[-1].isdigit()])
-        # fallback.. idk if this works man... xD
-        return max(1, len(re.findall(r"[aeiouy]+", word.lower())))
+        if word in self.cmu:
+            return len([p for p in self.cmu[word][0] if p[-1].isdigit()])
+        return 0
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
@@ -36,9 +35,26 @@ class Haikus(commands.Cog):
         if not text:
             return
 
+        # stop the idiots from spamming the same character 17 times over
+        # and just filter out short messages
+        if len(text.strip(" ")) <= 33:
+            return
+        
+        # sometimes, GIFs somehow have exactly 17 syllables...
+        # so let's just block links from being recognised as haikus entirely
+        if "://" in text:
+            return
+
         words = re.findall(r"\b\w+\b", text)
         if not words:
             return
+        
+        # this is to stop people from spamming the same one syllable word 17 times over;
+        # if more than half of the words are the same word
+        # we skip! teehee
+        for word in set(words):
+            if words.count(word) > len(words) / 2:
+                return
 
         syllable_counts = [self.syllables(w) for w in words]
         total = sum(syllable_counts)

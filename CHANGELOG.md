@@ -165,3 +165,6 @@ Fixed `listeners.haikus` being broken on NixOS specifically due to `/nix/store` 
 
 #### 1.20.3
 Fixed `listeners.honeypot` spamming logs with an AttributeError if the honeypot channel has not been set. Closes #80.
+
+#### 1.20.4
+Fixed `listeners.haikus` accidentally recognising GIF links as haikus, as well as blocking messages that are too short from being recognised (prevents spamming the letter "a" 17 times over, for example). Also block the user from spamming the same word repeatedly; if more than half the words are the same word, the message is skipped over.
