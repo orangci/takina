@@ -86,7 +86,7 @@ class Haikus(commands.Cog):
 
         if len(lines) == 3:
             await message.reply(
-                f"\n{lines[0]}\n{lines[1]}\n{lines[2]}\n-# {await oclib.fetch_random_emoji()} I detect haikus. Yes, just like [u/haikusbot](<https://reddit.com/u/haikus.bot>)."
+                f"\n{lines[0]}\n{lines[1]}\n{lines[2]}\n-# {await oclib.fetch_random_emoji()} I detect haikus. Yes, just like [u/haikusbot](<https://reddit.com/u/haikusbot>)."
             )
 
 
