@@ -28,18 +28,17 @@ class Haikus(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
-        if message.author.bot:
+        if message.author.bot or not message.content:
             return
 
-        text = message.content.strip()
-        if not text:
-            return
+        # strip out apostrophes because that breaks stuff lol
+        text = message.content.strip().replace("'", "").replace("’", "")
 
         # stop the idiots from spamming the same character 17 times over
         # and just filter out short messages
-        if len(text.strip(" ")) <= 33:
+        if len(text.replace(" ", "")) <= 50:
             return
-        
+
         # sometimes, GIFs somehow have exactly 17 syllables...
         # so let's just block links from being recognised as haikus entirely
         if "://" in text:
@@ -48,7 +47,7 @@ class Haikus(commands.Cog):
         words = re.findall(r"\b\w+\b", text)
         if not words:
             return
-        
+
         # this is to stop people from spamming the same one syllable word 17 times over;
         # if more than half of the words are the same word
         # we skip! teehee
