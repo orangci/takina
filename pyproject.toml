@@ -11,7 +11,7 @@ dependencies = [
     "asyncpraw==7.8.1",
     "audioop-lts==0.2.2",
     "brotli==1.2.0",
-    "distlib==0.4.1",
+    "distlib==0.4.2",
     "emoji==2.15.0",
     "filelock==3.29.1",
     "geopy==2.4.1",
