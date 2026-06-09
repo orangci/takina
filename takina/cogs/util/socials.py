@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from nextcord.ext import commands
-from github import Github
+from github import Github, Auth
 import asyncpraw
 import nextcord
 import config
@@ -30,9 +30,11 @@ class SocialsGitHub(commands.Cog):
     async def fetch_user_information(self, username):
         username = username[1:] if username.startswith("@") else username
         embed = nextcord.Embed(color=config.EMBED_COLOR, description="", title=username)
-        github = Github(config.GITHUB_AUTH_TOKEN)
+        auth = Auth.Token(config.GITHUB_AUTH_TOKEN)
+        github = Github(auth=auth)
         try:
             user = github.get_user(username)
+            _ = user.id
         except Exception:
             github.close()
             embed.title = None
