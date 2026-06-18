@@ -130,18 +130,6 @@ wheels = [
 ]
 
 [[package]]
-name = "aiosqlite"
-version = "0.17.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/40/e0/ad1edd74311831ca71b32a5b83352b490d78d11a90a1cde04e1b6830e018/aiosqlite-0.17.0.tar.gz", hash = "sha256:f0e6acc24bc4864149267ac82fb46dfb3be4455f99fe21df82609cc6e6baee51", size = 25941, upload-time = "2021-02-22T01:01:10.45Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a0/48/77c0092f716c4bf9460dca44f5120f70b8f71f14a12f40d22551a7152719/aiosqlite-0.17.0-py3-none-any.whl", hash = "sha256:6c49dc6d3405929b1d08eeccc72306d3677503cc5e5e43771efc1e00232e8231", size = 15433, upload-time = "2021-02-22T01:01:07.698Z" },
-]
-
-[[package]]
 name = "aladhan-py"
 version = "1.2.2"
 source = { registry = "https://pypi.org/simple" }
@@ -169,31 +157,31 @@ wheels = [
 
 [[package]]
 name = "asyncpraw"
-version = "7.8.1"
+version = "8.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
-    { name = "aiosqlite" },
     { name = "asyncprawcore" },
-    { name = "update-checker" },
+    { name = "defusedxml" },
+    { name = "update-checker", extra = ["async"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/be/df/f5dad426f02a6f0b3ad3c0b028ae2ecda80a05a90237c99b33583d1a1370/asyncpraw-7.8.1.tar.gz", hash = "sha256:6fc50e3976ae106ef6190dbcca3b1b4050de7da5644adc50851ae6487679206f", size = 158972, upload-time = "2024-12-21T19:48:20.712Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4d/6a/36cc001814ecd79389fe093ad9c9b270c870c319aa87a0020a20552e9a64/asyncpraw-8.0.1.tar.gz", hash = "sha256:7b51dc093efa846c41c904f91ba61e05b20d492a9331ce05a408b42904f83dbd", size = 13681099, upload-time = "2026-06-15T02:27:13.273Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/45/65671411cfaf816e4ca60b3417e79b03c98edebbe6b157dc79063f8a469b/asyncpraw-7.8.1-py3-none-any.whl", hash = "sha256:8b960dd0ab404e876b8a4eb3752a3706048a9da8fb0503018b82437d973651ba", size = 196437, upload-time = "2024-12-21T19:48:17.682Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/02/4b9771e2dbf0dd84a93d97360012871e8a1b9aa372efb5b76ca0c98106fc/asyncpraw-8.0.1-py3-none-any.whl", hash = "sha256:06e1f288fa82473a0c10e9a582b7594c7bddc80a646875d03c10542d589547e3", size = 205296, upload-time = "2026-06-15T02:27:11.506Z" },
 ]
 
 [[package]]
 name = "asyncprawcore"
-version = "2.4.0"
+version = "4.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "yarl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1e/0a/45dfc8c3b91d74f646817db3e89baecbd963a8374e2a8a33f2eb83c7e398/asyncprawcore-2.4.0.tar.gz", hash = "sha256:3a3359e5cd1ebe61d544a09d4b5eca7b16edfd17de07081a8415fc794f7bb62e", size = 18072, upload-time = "2023-11-27T03:39:53.009Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e9/f6/28bb1cafb664e53d045830593b2442aaf7e8cea2598c2da916d76412abb3/asyncprawcore-4.0.0.tar.gz", hash = "sha256:a95583190c86f14b164dd53190b928883837240f6be30bb4f47c5be3c11d5736", size = 1334812, upload-time = "2026-06-13T02:00:51.107Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1d/a0/a1f216c7ad7fd94482242eb92d6903c0ed5f3340436b952db2a42d2eddeb/asyncprawcore-2.4.0-py3-none-any.whl", hash = "sha256:3fe0f85d783ad0fd2a5d68d219b576bdbe04260ad7195c8a035d8724f57cfa45", size = 19741, upload-time = "2023-11-27T03:39:51.793Z" },
+    { url = "https://files.pythonhosted.org/packages/a6/41/1b4d9d86465d78829f026693d765aef864025293590ee71f16995eba145a/asyncprawcore-4.0.0-py3-none-any.whl", hash = "sha256:ad3f493a0bde0734b1104b987bfb90169cf4cc3ba107545547f1f992b868e4c1", size = 22694, upload-time = "2026-06-13T02:00:49.403Z" },
 ]
 
 [[package]]
@@ -424,12 +412,21 @@ wheels = [
 ]
 
 [[package]]
-name = "distlib"
-version = "0.4.2"
+name = "defusedxml"
+version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/46/8d/873e9252ea2c0e0c857884e0a2899ec43ade132345df1925ef24cbe64f18/distlib-0.4.2.tar.gz", hash = "sha256:baeb401c90f27acd15c4861ae0847d1e731c27ac3dbf4210643ba61fa1e813db", size = 614914, upload-time = "2026-06-08T16:24:15.439Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/d5/c66da9b79e5bdb124974bfe172b4daf3c984ebd9c2a06e2b8a4dc7331c72/defusedxml-0.7.1.tar.gz", hash = "sha256:1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69", size = 75520, upload-time = "2021-03-08T10:59:26.269Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/60/aa891c893821d4d127292ed66c6940d1d715894bd5a0ce048056bc641773/distlib-0.4.2-py2.py3-none-any.whl", hash = "sha256:ca4cb11e5d746b5ec13c199cbf19ae27a241f89702b54e153a74332955446067", size = 470510, upload-time = "2026-06-08T16:24:13.208Z" },
+    { url = "https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl", hash = "sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61", size = 25604, upload-time = "2021-03-08T10:59:24.45Z" },
+]
+
+[[package]]
+name = "distlib"
+version = "0.4.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c9/02/bd72be9134d25ed783ecbbc38a539ffaefbf90c78418c7fb7229600dbac7/distlib-0.4.3.tar.gz", hash = "sha256:f152097224a0ae24be5a0f6bae1b9359af82133bce63f98a95f86cae1aede9ed", size = 615141, upload-time = "2026-06-12T08:04:52.847Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/02/08/9c41fb51ab5b43eb21674aff13df270e8ba6c4b29c8624e328dc7a9482af/distlib-0.4.3-py2.py3-none-any.whl", hash = "sha256:4b0ce306c966eb73bc3a7b6abad017c556dadd92c44701562cd528ac7fde4d5b", size = 470628, upload-time = "2026-06-12T08:04:50.506Z" },
 ]
 
 [[package]]
@@ -452,11 +449,11 @@ wheels = [
 
 [[package]]
 name = "filelock"
-version = "3.29.1"
+version = "3.29.4"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/1f/f9/f38573ed5844586db374d085911740a501ccfa373b455fc9413f09f85237/filelock-3.29.1.tar.gz", hash = "sha256:d97e6b1b9757569626c58caa07dc4beb1613f4a2938b1e8cc81afca398906c9e", size = 59335, upload-time = "2026-06-03T15:19:04.053Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e6/dc/be6cbe99670cd6e4ad387123647cb08e0c32975e223f82551e914c5568a6/filelock-3.29.4.tar.gz", hash = "sha256:10cdb3656fc44541cdf30652a93fb10ec6b05325620eb316bd26893e4201538a", size = 63028, upload-time = "2026-06-13T16:12:00.744Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4c/a0/614c5fe402fd88951df45f4dda2fa3b4e17a99ecd92340771929169b3b95/filelock-3.29.1-py3-none-any.whl", hash = "sha256:85199dfd706869641b72b2e8955d5416a4b2b7dc4b0e8e6d97b4cc1299a6983b", size = 40750, upload-time = "2026-06-03T15:19:02.959Z" },
+    { url = "https://files.pythonhosted.org/packages/13/37/a065dc3bd6e49423a6532c642ca7378d3f467b1ef44c2800c937af7f9739/filelock-3.29.4-py3-none-any.whl", hash = "sha256:dac1648087d5115554850d113e7dd8c83ab2d38e3435dde2d4f163847e57b767", size = 42757, upload-time = "2026-06-13T16:11:59.582Z" },
 ]
 
 [[package]]
@@ -1233,12 +1230,12 @@ requires-dist = [
     { name = "aiodns", specifier = "==4.0.4" },
     { name = "aiohttp", specifier = "==3.14.1" },
     { name = "aladhan-py", specifier = "==1.2.2" },
-    { name = "asyncpraw", specifier = "==7.8.1" },
+    { name = "asyncpraw", specifier = "==8.0.1" },
     { name = "audioop-lts", specifier = "==0.2.2" },
     { name = "brotli", specifier = "==1.2.0" },
-    { name = "distlib", specifier = "==0.4.2" },
+    { name = "distlib", specifier = "==0.4.3" },
     { name = "emoji", specifier = "==2.15.0" },
-    { name = "filelock", specifier = "==3.29.1" },
+    { name = "filelock", specifier = "==3.29.4" },
     { name = "geopy", specifier = "==2.4.1" },
     { name = "google-books-api-wrapper", specifier = "==1.0.5" },
     { name = "motor", specifier = ">=3.7.1" },
@@ -1254,7 +1251,7 @@ requires-dist = [
     { name = "pytz", specifier = "==2026.2" },
     { name = "setuptools", specifier = "==82.0.1" },
     { name = "tzfpy", specifier = "==1.3.1" },
-    { name = "virtualenv", specifier = "==21.4.2" },
+    { name = "virtualenv", specifier = "==21.5.1" },
     { name = "whodap", specifier = "==0.1.16" },
     { name = "wynn-api", specifier = "==3.2.1" },
 ]
@@ -1311,6 +1308,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/51/f5/a264987b052d61c172d23eec92935480535fd32e45357bd6557fa2c687d5/update_checker-1.0.0-py3-none-any.whl", hash = "sha256:5837640948ff21820ba3ea881fb4bed5abefb39037895c6447f5e712236d60c6", size = 10618, upload-time = "2026-06-08T07:08:19.782Z" },
 ]
 
+[package.optional-dependencies]
+async = [
+    { name = "aiohttp" },
+]
+
 [[package]]
 name = "urllib3"
 version = "1.26.14"
@@ -1322,7 +1324,7 @@ wheels = [
 
 [[package]]
 name = "virtualenv"
-version = "21.4.2"
+version = "21.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "distlib" },
@@ -1330,9 +1332,9 @@ dependencies = [
     { name = "platformdirs" },
     { name = "python-discovery" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e1/0d/4e93c8e6d1001a75763f87d8f5ecda8ebc7f4aa2153dddfaf4ae8892821a/virtualenv-21.4.2.tar.gz", hash = "sha256:38e6ee0a555615c0ea9da2ac7e9998fe8dc3b911dd33ad8eaad2020957653b0c", size = 7613326, upload-time = "2026-05-31T17:01:22.827Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f1/a5/81f987504738e6defeed61ec1c47e2aefab3c35d8eeb87e1b3f38cf28254/virtualenv-21.5.1.tar.gz", hash = "sha256:dca3bf98275a59c652b69d68e73433e597d977c2da9198882479d1a7188009c8", size = 4578798, upload-time = "2026-06-16T16:23:58.603Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bf/c4/557dc082be035381b85fdb2b74e21d3d21b57750b74f2b47a32f3a639ff9/virtualenv-21.4.2-py3-none-any.whl", hash = "sha256:854210ca524a1a4d0d744734f4acbc721c3ffe163b85bbf5d56d14d5ae2f0fae", size = 7594079, upload-time = "2026-05-31T17:01:20.735Z" },
+    { url = "https://files.pythonhosted.org/packages/2c/02/3623e6169bed617ed1e2d372f7c69f92ec28d54c4dfc997055c8578ec148/virtualenv-21.5.1-py3-none-any.whl", hash = "sha256:55aa670b67bbfb991b03fda39bd3276d92c419d702376e98c5df1c9989a26783", size = 4558820, upload-time = "2026-06-16T16:23:56.963Z" },
 ]
 
 [[package]]
