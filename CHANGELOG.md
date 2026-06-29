@@ -175,3 +175,6 @@ Fixed `util.socials`'s GitHub command being broken due to outdated auth code. Th
 
 #### 1.20.6
 Skip loading `util.translate` if the LibreTranslate API variables are unset. 
+
+### 1.21.0
+Added the `fate` command in `fun.fun`. Also changed the 8ball and commit commands to be seed-based, using the new randint_from_seed function in `libs.oclib`.

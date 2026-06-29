@@ -63,4 +63,6 @@ def setup(bot: commands.Bot):
     if config.LIBRETRANSLATE_API_URL:
         bot.add_cog(Translate(bot))
     else:
-        print("You must set the LIBRETRANSLATE_API_URL, and, if necessary, LIBRETRANSLATE_API_KEY environment variables in order for util.translate to work. Skipping this cog.")
+        print(
+            "You must set the LIBRETRANSLATE_API_URL, and, if necessary, LIBRETRANSLATE_API_KEY environment variables in order for util.translate to work. Skipping this cog."
+        )

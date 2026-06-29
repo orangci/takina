@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from ..libs.fate_responses import fates
 from nextcord.ext import commands
 from ..libs import oclib
 import nextcord
@@ -75,7 +76,7 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(name="commit", help=f"Order {config.BOT_NAME.lower().capitalize()} to do anything.", usage="arson")
-    async def commit(self, ctx: commands.Context):
+    async def commit(self, ctx: commands.Context, *, action: str):
         possible_responses = [
             "Yes, sir!",
             "I don't particularly feel like it.",
@@ -84,11 +85,11 @@ class Fun(commands.Cog):
             "Right away.",
             "As your majesty orders.",
             "No, I refuse.",
-            "I don't want to, get lost.",
+            "I don't want to, so get lost.",
         ]
 
         embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
+        embed.description = f"{oclib.randint_from_seed(action, possible_responses)} {await oclib.fetch_random_emoji()}"
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(
@@ -149,7 +150,7 @@ class Fun(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(name="8ball", help="Ask the 8ball anything.", usage="are you sentient")
+    @commands.command(name="8ball", aliases=["42ball"], help="Ask the 8ball anything.", usage="are you sentient")
     async def eight_ball(self, ctx: commands.Context, *, question: str = None):
         responses = [
             "It is certain.",
@@ -178,8 +179,26 @@ class Fun(commands.Cog):
             embed.description = "You need to ask a question to the 8ball for this command to work!"
             await ctx.reply(embed=embed, mention_author=False)
             return
-        response = random.choice(responses)
+        response = oclib.randint_from_seed(question, responses)
         embed = nextcord.Embed(title="🎱 The 8ball", description=f"**Question:** {question}\n**Answer:** {response}", color=config.EMBED_COLOR)
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.command(aliases=["relationship"], description="Check your fate with another user.", help="@username")
+    async def fate(self, ctx: commands.Context, target: str):
+        if not isinstance(target, nextcord.Member):
+            target = oclib.extract_user_id(target, ctx)
+            if isinstance(target, nextcord.Embed):
+                await ctx.reply(embed=target, mention_author=False)
+                return
+
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
+        embed.description = (
+            f"{await oclib.fetch_random_emoji()} {oclib.randint_from_seed(ctx.author.id + target.id, fates).format(target=target.mention)}"
+        )
+        embed.set_footer(text="In another universe...")
+        if ctx.author.id == target.id:
+            embed.description = f"{await oclib.fetch_random_emoji()} You and {target.mention} are the same person!"
+            embed.remove_footer()
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -252,7 +271,7 @@ class SlashFun(commands.Cog):
         ]
 
         embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = f"{random.choice(possible_responses)} {await oclib.fetch_random_emoji()}"
+        embed.description = f"{oclib.randint_from_seed(action, possible_responses)} {await oclib.fetch_random_emoji()}"
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="avatar", description="Fetch a Discord user's avatar.")
@@ -337,9 +356,25 @@ class SlashFun(commands.Cog):
             "Outlook not so good.",
             "Very doubtful.",
         ]
-        response = random.choice(responses)
+        response = oclib.randint_from_seed(question, responses)
         embed = nextcord.Embed(title="🎱 The 8ball", description=f"**Question:** {question}\n**Answer:** {response}", color=config.EMBED_COLOR)
         await interaction.send(embed=embed, ephemeral=True)
+
+    @nextcord.slash_command(description="Check your fate with another user.")
+    async def fate(
+        self,
+        interaction: nextcord.Interaction,
+        target: nextcord.Member = nextcord.SlashOption(description="The user to check your fate with.", required=True),
+    ):
+        embed = nextcord.Embed(color=config.EMBED_COLOR)
+        embed.description = (
+            f"{await oclib.fetch_random_emoji()} {oclib.randint_from_seed(interaction.user.id + target.id, fates).format(target=target.mention)}"
+        )
+        embed.set_footer(text="In another universe...")
+        if interaction.user.id == target.id:
+            embed.description = f"{await oclib.fetch_random_emoji()} You and {target.mention} are the same person!"
+            embed.remove_footer()
+        await interaction.send(embed=embed)
 
 
 def setup(bot):

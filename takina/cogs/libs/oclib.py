@@ -265,3 +265,11 @@ def get_ordinal(n: int) -> str:
         return "th"
     else:
         return suffix[n % 10]
+
+
+def randint_from_seed(seed: str | int, array: list = None, minimum: int = 1, maximum: int = 10) -> int:
+    """Based on a string (the 'seed'), produce a random integer. Apparently this is called a deterministic pseudorandom value."""
+    if array:
+        return array[random.Random(seed).randint(0, len(array) - 1)]
+    else:
+        return random.Random(seed).randint(minimum, maximum)
