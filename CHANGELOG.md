@@ -172,9 +172,11 @@ Fixed `listeners.haikus` accidentally recognising GIF links as haikus, as well a
 #### 1.20.5
 Fixed `util.socials`'s GitHub command being broken due to outdated auth code. This patch was submitted by https://github.com/doughmination; thank you.
 
-
 #### 1.20.6
 Skip loading `util.translate` if the LibreTranslate API variables are unset. 
 
 ### 1.21.0
 Added the `fate` command in `fun.fun`. Also changed the 8ball and commit commands to be seed-based, using the new randint_from_seed function in `libs.oclib`.
+
+### 1.22.0
+Added `util.qalc`, adding the `qalc` command for evaluating mathematical expressions with libqalculate. Resolves issue #88.
