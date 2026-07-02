@@ -180,3 +180,6 @@ Added the `fate` command in `fun.fun`. Also changed the 8ball and commit command
 
 ### 1.22.0
 Added `util.qalc`, adding the `qalc` command for evaluating mathematical expressions with libqalculate. Resolves issue #88.
+
+#### 1.22.1
+Removed unclear responses for the 8ball command in `fun.fun`
