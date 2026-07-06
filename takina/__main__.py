@@ -70,7 +70,7 @@ if missing_vars:
     raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}.")
 
 
-cogs_blacklist = ["fun.snipe", "fun.esnipe"]
+cogs_blacklist = ["fun.snipe", "fun.esnipe", "listeners.haikus"]
 cogs = load_exts("cogs") + load_exts("takina/cogs")
 
 for cog in cogs:
