@@ -18,6 +18,8 @@ LIBRETRANSLATE_API_URL = getenv("LIBRETRANSLATE_API_URL").removesuffix("/")
 STEAM_REGION = getenv("STEAM_REGION") or "US"
 ERROR_COLOR = 0xFF0037
 NIXOS_INSTANCE = getenv("NIXOS_INSTANCE")
+# how many commands can be used in five seconds
+COMMANDS_COOLDOWN = getenv("COMMANDS_COOLDOWN") or 5
 
 # the nixos package sets the bot version as an environment variable
 # as should other packaging for takina

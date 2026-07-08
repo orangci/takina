@@ -32,10 +32,6 @@ For slash commands, generally `interaction.send(ephemeral=True)` should be used,
 ### Slash Commands
 `await interaction.response.defer()` should be used in all complex slash commands.
 
-<!-- ### Cooldowns
-Generally commands should have at least a one second cooldown.
-`@commands.cooldown(1, 1, commands.BucketType.user)` -->
-
 ### Documentation
 Every command must have sufficient documentation for help commands.
 

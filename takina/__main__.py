@@ -47,6 +47,21 @@ bot = Bot(
     activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="the stars"),
 )
 
+# commands cooldown
+cooldown = commands.CooldownMapping.from_cooldown(
+    config.COMMANDS_COOLDOWN,  # uses
+    5.0,  # per how many seconds
+    lambda m: m.author.id,
+)
+
+
+# ignores a command if the user's on cooldown
+@bot.check
+def global_cooldown(ctx: commands.Context):
+    bucket = cooldown.get_bucket(ctx.message)
+    retry_after = bucket.update_rate_limit()
+    return retry_after is None
+
 
 def load_exts(directory):
     blacklist_subfolders = ["libs", "sesp/isadev/libs"]

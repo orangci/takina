@@ -64,6 +64,11 @@ class Errors(commands.Cog):
         # description = "The command you entered does not exist. Please ensure you typed it correctly. Type `help` for a full list of commands."
         # error_type = "Command Not Found"
 
+        # for commands on cooldown
+        elif isinstance(error, commands.CheckFailure):
+            if str(error).startswith("The global check functions for command"):
+                return
+
         elif isinstance(error, nextcord.DiscordException):
             description = str(error)
             error_type = "Discord Exception"

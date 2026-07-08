@@ -189,3 +189,6 @@ Added `util.steam`, which has the `steam` command for looking up video games on 
 
 #### 1.23.1
 Made the config.BOT_VERSION variable extract its value from pyproject.toml as opposed to hardcoding.
+
+#### 1.23.2
+Added a global cooldown/ratelimit for commands; one per second being the default.
