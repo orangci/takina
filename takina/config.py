@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from dotenv import load_dotenv
+from pathlib import Path
 from os import getenv
+import tomllib
 
 load_dotenv()
 
@@ -15,7 +17,19 @@ LIBRETRANSLATE_API_KEY = getenv("LIBRETRANSLATE_API_KEY")
 LIBRETRANSLATE_API_URL = getenv("LIBRETRANSLATE_API_URL").removesuffix("/")
 STEAM_REGION = getenv("STEAM_REGION") or "US"
 ERROR_COLOR = 0xFF0037
-BOT_VERSION = "1.23.0"
+NIXOS_INSTANCE = getenv("NIXOS_INSTANCE")
+
+# the nixos package sets the bot version as an environment variable
+# as should other packaging for takina
+# except docker
+BOT_VERSION = getenv("BOT_VERSION")
+
+# if it's docker, or running it directly
+if BOT_VERSION is None:
+    PROJECT_ROOT = Path(__file__).resolve().parent.parent
+    # get the version from pyproject.toml
+    with (PROJECT_ROOT / "pyproject.toml").open("rb") as f:
+        BOT_VERSION = tomllib.load(f)["project"]["version"]
 
 EMBED_COLOR_STR = getenv("EMBED_COLOR", "#2B2D31").strip().strip('"').strip("'")
 if EMBED_COLOR_STR.startswith("#"):

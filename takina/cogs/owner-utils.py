@@ -216,7 +216,7 @@ class OwnerUtils(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def pull(self, ctx: commands.Context):
-        if os.getenv("NIXOS_INSTANCE"):
+        if config.NIXOS_INSTANCE:
             embed = nextcord.Embed()
             embed.color = config.ERROR_COLOR
             embed.description = f":x: The pull command is not available on instances of {config.BOT_NAME} run on NixOS."

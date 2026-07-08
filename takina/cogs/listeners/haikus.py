@@ -3,12 +3,13 @@
 from nextcord.ext import commands
 from ..libs import oclib
 import nextcord
+import config
 import nltk
 import re
 import os
 
 # download the nltk dictionary thing.. this is the data containing syllables and stuff
-if not os.getenv("NIXOS_INSTANCE"):
+if not config.NIXOS_INSTANCE:
     NLTK_DIR = os.path.join(os.getcwd(), ".nltk_data")
     os.makedirs(NLTK_DIR, exist_ok=True)
     nltk.data.path.append(NLTK_DIR)

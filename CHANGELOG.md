@@ -186,3 +186,6 @@ Removed unclear responses for the 8ball command in `fun.fun`.
 
 ### 1.23.0
 Added `util.steam`, which has the `steam` command for looking up video games on Steam via the Steam API.
+
+#### 1.23.1
+Made the config.BOT_VERSION variable extract its value from pyproject.toml as opposed to hardcoding.

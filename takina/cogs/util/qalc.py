@@ -55,7 +55,7 @@ class Qalc(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    if shutil.which("qalc") is None and not os.getenv("NIXOS_INSTANCE"):
+    if shutil.which("qalc") is None and not config.NIXOS_INSTANCE:
         print("Skipping loading of util.qalc, as libqalculate is not installed/available on the system.")
         return
     bot.add_cog(Qalc(bot))
