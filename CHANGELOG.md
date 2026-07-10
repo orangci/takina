@@ -192,3 +192,6 @@ Made the config.BOT_VERSION variable extract its value from pyproject.toml as op
 
 #### 1.23.2
 Added a global cooldown/ratelimit for commands; one per second being the default.
+
+#### 1.23.3
+Hardcoded the bot account's fate with orangc and iostpa and made it refuse to work for anybody else. Closes #102.

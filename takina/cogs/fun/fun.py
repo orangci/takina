@@ -187,13 +187,31 @@ class Fun(commands.Cog):
                 return
 
         embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = (
-            f"{await oclib.fetch_random_emoji()} {oclib.randint_from_seed(ctx.author.id + target.id, fates).format(target=target.mention)}"
-        )
+        if not target.id:
+            embed.color = config.ERROR_COLOR
+            embed.description = ":x: The target user either does not exist or is not a member of this server."
+            await ctx.reply(embed=embed, mention_author=False)
+            return
+
+        emoji = await oclib.fetch_random_emoji()
+        embed.description = f"{emoji} {oclib.randint_from_seed(ctx.author.id + target.id, fates).format(target=target.mention)}"
         embed.set_footer(text="In another universe...")
+
+        # if the user wants to see their fate with themself
         if ctx.author.id == target.id:
-            embed.description = f"{await oclib.fetch_random_emoji()} You and {target.mention} are the same person!"
+            embed.description = f"{emoji} You and {target.mention} are the same person!"
             embed.remove_footer()
+
+        # your fate with Takina should be a special case!
+        if target.id == self.bot.application_id or target.id == 1287074090783604797:
+            if ctx.author.id == 961063229168164864:
+                embed.description = f"{emoji} I'm your daughter! How could you forget..?"
+            elif ctx.author.id == 716306888492318790:
+                embed.description = f"{emoji} I'm your niece! How could you forget..?"
+            else:
+                embed.description = f"{emoji} I won't tell you! Hmph, mind your own business!"
+            embed.remove_footer()
+
         await ctx.reply(embed=embed, mention_author=False)
 
 
@@ -357,13 +375,31 @@ class SlashFun(commands.Cog):
         target: nextcord.Member = nextcord.SlashOption(description="The user to check your fate with.", required=True),
     ):
         embed = nextcord.Embed(color=config.EMBED_COLOR)
-        embed.description = (
-            f"{await oclib.fetch_random_emoji()} {oclib.randint_from_seed(interaction.user.id + target.id, fates).format(target=target.mention)}"
-        )
+        if not target.id:
+            embed.color = config.ERROR_COLOR
+            embed.description = ":x: The target user either does not exist or is not a member of this server."
+            await interaction.send(embed=embed)
+            return
+
+        emoji = await oclib.fetch_random_emoji()
+        embed.description = f"{emoji} {oclib.randint_from_seed(interaction.user.id + target.id, fates).format(target=target.mention)}"
         embed.set_footer(text="In another universe...")
+
+        # if the user wants to see their fate with themself
         if interaction.user.id == target.id:
-            embed.description = f"{await oclib.fetch_random_emoji()} You and {target.mention} are the same person!"
+            embed.description = f"{emoji} You and {target.mention} are the same person!"
             embed.remove_footer()
+
+        # your fate with Takina should be a special case!
+        if target.id == self.bot.application_id or target.id == 1287074090783604797:
+            if interaction.user.id == 961063229168164864:
+                embed.description = f"{emoji} I'm your daughter! How could you forget..?"
+            elif interaction.user.id == 716306888492318790:
+                embed.description = f"{emoji} I'm your niece! How could you forget..?"
+            else:
+                embed.description = f"{emoji} I won't tell you! Hmph, mind your own business!"
+            embed.remove_footer()
+
         await interaction.send(embed=embed)
 
 

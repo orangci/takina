@@ -113,7 +113,7 @@ class OwnerUtils(commands.Cog):
             embed.description = f"✅ Successfully enabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(hidden=True, aliases=["maintainer", "perms"])
+    @commands.command(hidden=True, aliases=["maintainer", "perms", "maintainers", "owners"])
     async def owner(self, ctx: commands.Context):
         owner_names = []
         for owner_id in self.bot.owner_ids:
