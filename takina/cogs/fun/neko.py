@@ -13,7 +13,7 @@ class Neko(commands.Cog):
     async def request_neko(self, file_format: str, category: str) -> nextcord.Embed:
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         url = f"https://nekos.best/api/v2/{category}"
-        data = await oclib.request(url)
+        data = await oclib.request(url, headers={"User-Agent": f"{config.BOT_NAME}-{self.bot.application_id} (https://takina.orangc.net)"})
         if data.get("code"):
             embed.color = config.ERROR_COLOR
             embed.description = f":x: {category.lower().capitalize()} is not a valid nekos.best endpoint. For a list of available endpoints such as 'kitsune', see the [list of endpoints](https://nekos.best/api/v2/endpoints)."

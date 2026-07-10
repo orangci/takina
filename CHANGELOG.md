@@ -195,3 +195,6 @@ Added a global cooldown/ratelimit for commands; one per second being the default
 
 #### 1.23.3
 Hardcoded the bot account's fate with orangc and iostpa and made it refuse to work for anybody else. Closes #102.
+
+#### 1.24.4
+To comply with the new requirements by the nekos.best API, use a User-Agent header in API requests in fun.neko.
