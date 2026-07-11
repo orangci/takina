@@ -1,5 +1,5 @@
 # Changelog
-This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 14.04.2025. This changelog was initiated at the same date.
+This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. This changelog was initiated at the same date.
 
 
 #### 1.23.6

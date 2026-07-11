@@ -4,36 +4,35 @@ Takina does not currently follow *all* of these standards, but as of now does fo
 ### Before Contributing
 First of all, thanks for considering contributing to Takina! I appreciate it. Please make sure that what you're contributing follows Discord's [Terms of Service](https://discord.com/terms). Please follow the standards after this section, and lastly, if it's a new feature, please contact me ([orangc](https://orangc.net)) or in the least open an issue before starting to write code; confirming that I'll approve your idea is better than wasting your time and finding out later that I can't merge your pull request because of x and y. 💖
 
+### AI Contributions
+The door is that way. Leave.
+
 ### Formatting/Linting & Commits
-- `ruff format` and `ruff check` should be run before committing. If `ruff check` raises any errors, they must be addressed.
-- Each commit should follow the Conventional Commits standard, for example: `fix(mod): mute command did not check for perms`. The scope should be the subfolder affected in the cogs dir, and if there is none, use (core) as a scope.
-- Every command should have a description and help information.
+The `ruff format` and `ruff check` commands should be run pre-commit. If `ruff check` raises any errors, they must be addressed.
+
+Each commit should follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard, for example: `fix(mod.mute): mute command did not check for perms`. The scope should be the cog path; `util.qalc`, `fun.dictionary`, et cetera. Please use [atomic commits](https://en.wikipedia.org/wiki/Atomic_commit#Atomic_commit_convention).
 
 ### Embeds
-- All embeds must use the config.EMBED_COLOR variable as its color, with the exception of it being an error embed; in which case it should be config.ERROR_COLOR
-- All mentions of a user should generally be user.mention, not user.name or anything else
-- Generally field names should be prefixed with an emoji, preferrably a cute one
+- All embeds must use the config.EMBED_COLOR variable as its color, with the exception of it being an error embed; in which case it should be config.ERROR_COLOR.
+- All mentions of a user should generally be user.mention, not user.name or anything else.
+- Generally field names should be prefixed with an emoji, preferrably a cute one.
 
 ### Categorisation
-- The `fun` folder is for fun related commands and cogs
-` The `islam` folder is for Islamic related cogs, such as the prayer times' command cog 
-- The `libs` folder is for libraries; all functions that might be used over and over again should be put in here, generally placed in libs/oclib.py
-- The `listeners` folder is for listener cogs; ones that are not commands but instead listen for events and respond, like the github or starboard modules
-- The `mod` folder is for moderation related commands and cogs
+Only cog categories with names that are not self explanatory are listed here.
+- The `libs` folder is for libraries; all functions that might be used over and over again should be put in here, generally placed in `libs.oclib`.
+- The `listeners` folder is for listener cogs; ones that are not commands but instead listen for events and respond, like the github or starboard modules.
 - The `sesp` folder is for *server specific* cogs, cogs dedicated to a specific Discord server.
-- The `util` folder is for utility related commands and cogs
-- The `weebism` folder is for anime/manga related commands and cogs
-- If a cog is not palced in a subfolder, it can be considered a core cog, vital to the functionality of bot
+- If a cog is not placed in a subfolder, it can be considered a core cog that is vital to the functionality of the bot.
 
 ### Responses
 For base commands, `ctx.reply(mention_author=False)` should always be used, save for special scenarios.
-For slash commands, generally `interaction.send(ephemeral=True)` should be used, except for some places where ephemeral messages shouldn't be ephemeral (e.g. moderation commands.)
+For slash commands, generally `interaction.send(ephemeral=True)` should be used, except for some places where ephemeral messages shouldn't be ephemeral (e.g. moderation commands).
 
 ### Slash Commands
 `await interaction.response.defer()` should be used in all complex slash commands.
 
 ### Documentation
-Every command must have sufficient documentation for help commands.
+Every command must have sufficient documentation for help commands. You must also strive to thoroughly comment your code and ensure that it is readable and understandable. You must use readable variable/function names; instead of `for i in x`, do `for user in members`.
 
 ### Example cog that hooks into the database
 ```py
@@ -53,10 +52,6 @@ class Hello(commands.Cog):
         embed.description = f"{await oclib.fetch_random_emoji()} Hello there {name}!"
         await ctx.reply(embed=embed, mention_author=False)
 
-class SlashHello(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="hello", description="Say hello!")
     async def slash_hello(self, interaction: nextcord.Interaction):
         # await interaction.response.defer() # since this is a very basic command that will respond instantly, we won't defer this 
@@ -67,5 +62,14 @@ class SlashHello(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(Hello(bot))
-    bot.add_cog(SlashHello(bot))
 ```
+
+### Submitting A Contribution
+You have two options. Firstly, you can request that I create an account for you on my Git instance; email orangc at c@orangc.net, and then fork the repository and make a pull request.
+
+Secondly, you may also email us a patch directly if you don't want to go through the hassle of waiting for orangc to make you an account. To create a patch file:
+```fish
+git format-patch -1 HEAD
+ls *.patch # the file you see is the patch file
+```
+This creates a patch file in the current directory containing the latest commit. Replace -1 with -2 for the latest *two* commits, ad infinitum. If you have `git send-email` configured, then I will assume you already know how to use it. If you do not, then manually email takina@orangc.net the patch file.
