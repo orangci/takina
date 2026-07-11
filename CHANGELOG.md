@@ -2,7 +2,10 @@
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 14.04.2025. This changelog was initiated at the same date.
 
 
-### 1.23.5
+#### 1.23.6
+Fix broken error handling in minecraft.wynncraft when a non-existent username is queried. Closes #73.
+
+#### 1.23.5
 Address issue #79; in util.dns, throw a correct error response when the user queries a TLD that does not support WHOIS lookups.
 
 #### 1.23.4

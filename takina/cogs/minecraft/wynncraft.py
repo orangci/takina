@@ -33,9 +33,9 @@ class Wynncraft(commands.Cog):
         embed.description = ""
         player = get_player(username)
 
-        if player.get("Error"):
+        if player.get("error"):
             error_embed = nextcord.Embed(color=config.ERROR_COLOR)
-            error_embed.description = ":x: No player found with that username."
+            error_embed.description = ":x: No Wynncraft member found with that username."
             return error_embed
 
         characters = get_character_list(username)
