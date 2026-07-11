@@ -30,8 +30,8 @@ class PingResponse(commands.Cog):
     async def construct_info_embed(self, ctx: commands.Context | nextcord.Interaction | nextcord.Message = None):
         embed = nextcord.Embed(
             title=f"{await oclib.fetch_random_emoji()}Takina",
-            url="https://orangc.net/takina",
-            description="-# Open a [bug report](https://github.com/orangci/takina/issues/new?template=bug_report.md) • Make a [feature request](https://github.com/orangci/takina/issues/new?template=feature_request.md)\n\n Takina is a multipurpose [opensource](https://github.com/orangci/takina) bot written in Python by [orangc](https://orangc.net). More information is available in the [website](https://orangc.net/takina).\n",
+            url="https://takina.orangc.net",
+            description="-# Open a [bug report](https://git.orangc.net/c/takina/issues/new?template=.forgejo%2fISSUE_TEMPLATE%2fbug_report.md) • Make a [feature request](https://git.orangc.net/c/takina/issues/new?template=.forgejo%2fISSUE_TEMPLATE%2ffeature_request.md)\n\n Takina is a multipurpose [opensource](https://github.com/orangci/takina) bot written in Python by [orangc](https://orangc.net). More information is available in the [website](https://takina.orangc.net).\n",
             color=config.EMBED_COLOR,
         )
 
