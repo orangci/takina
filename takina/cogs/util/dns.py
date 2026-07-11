@@ -26,12 +26,20 @@ class DNS(commands.Cog):
             try:
                 response = await client.aio_lookup(sld, tld)
                 return response
+            except NotImplementedError:
+                raise NotImplementedError
             except Exception:
                 return None
 
     async def build_whois_embed(self, ctx: commands.Context | nextcord.Interaction, domain: str) -> nextcord.Embed:
         embed = nextcord.Embed(color=config.EMBED_COLOR, description="")
-        response = await self.resolve_domain(domain)
+
+        try:
+            response = await self.resolve_domain(domain)
+        except NotImplementedError:
+            embed.color = config.ERROR_COLOR
+            embed.description = ":x: WHOIS lookups for this top-level domain are not supported."
+            return embed
 
         if not isinstance(response, whodap.DomainResponse):
             embed.color = config.ERROR_COLOR
