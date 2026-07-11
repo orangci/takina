@@ -12,6 +12,8 @@ The `ruff format` and `ruff check` commands should be run pre-commit. If `ruff c
 
 Each commit should follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard, for example: `fix(mod.mute): mute command did not check for perms`. The scope should be the cog path; `util.qalc`, `fun.dictionary`, et cetera. Please use [atomic commits](https://en.wikipedia.org/wiki/Atomic_commit#Atomic_commit_convention).
 
+Please run `uv lock` before comitting!
+
 ### Embeds
 - All embeds must use the config.EMBED_COLOR variable as its color, with the exception of it being an error embed; in which case it should be config.ERROR_COLOR.
 - All mentions of a user should generally be user.mention, not user.name or anything else.
