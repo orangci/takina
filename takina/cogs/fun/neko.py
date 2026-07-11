@@ -8,7 +8,7 @@ import config
 
 class Neko(commands.Cog):
     def __init__(self, bot):
-        self._bot = bot
+        self.bot = bot
 
     async def request_neko(self, file_format: str, category: str) -> nextcord.Embed:
         embed = nextcord.Embed(color=config.EMBED_COLOR)
