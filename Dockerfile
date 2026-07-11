@@ -22,7 +22,7 @@ COPY . .
 # Disable development dependencies
 ENV UV_NO_DEV=1
 
-RUN uv sync --locked
+RUN uv sync
 
 # git owo
 RUN mkdir test && \
