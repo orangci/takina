@@ -24,6 +24,8 @@ services:
       - GITHUB_AUTH_TOKEN=${GITHUB_AUTH_TOKEN} # if you want the github command in util.socials to work, set this variable
       - REDDIT_CLIENT_ID=${REDDIT_CLIENT_ID} # You must set this and the below environment variable if you want the reddit command in util.socials to work. To get your own Reddit client secret and ID visit https://www.reddit.com/prefs/apps.
       - REDDIT_CLIENT_SECRET=${REDDIT_CLIENT_SECRET} # see above
+      - LIBRETRANSLATE_API_URL=${LIBRETRANSLATE_API_URL}
+      - LIBRETRANSLATE_API_KEY=${LIBRETRANSLATE_API_KEY}
 
 volumes:
   data-volume:

@@ -2,6 +2,10 @@
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. This changelog was initiated at the same date.
 
 
+### 1.24.0
+Added `util.wiki`, resolving #39. This adds the `wiki` and `randomwiki` commands for fetching articles from Wikipedia.
+This cog was contributed by @okcoder1 in the form of a patch file. Thank you!
+
 #### 1.23.6
 Fix broken error handling in minecraft.wynncraft when a non-existent username is queried. Closes #73.
 
