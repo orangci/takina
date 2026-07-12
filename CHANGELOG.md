@@ -1,16 +1,18 @@
 # Changelog
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. This changelog was initiated at the same date.
 
+#### 1.24.1
+Defer interaction in `util.wiki` and add a warning for capitalisation.
 
 ### 1.24.0
 Added `util.wiki`, resolving #39. This adds the `wiki` and `randomwiki` commands for fetching articles from Wikipedia.
 This cog was contributed by @okcoder1 in the form of a patch file. Thank you!
 
 #### 1.23.6
-Fix broken error handling in minecraft.wynncraft when a non-existent username is queried. Closes #73.
+Fix broken error handling in `minecraft.wynncraft` when a non-existent username is queried. Closes #73.
 
 #### 1.23.5
-Address issue #79; in util.dns, throw a correct error response when the user queries a TLD that does not support WHOIS lookups.
+Address issue #79; in `util.dns`, throw a correct error response when the user queries a TLD that does not support WHOIS lookups.
 
 #### 1.23.4
 To comply with the new requirements by the nekos.best API, use a User-Agent header in API requests in fun.neko.

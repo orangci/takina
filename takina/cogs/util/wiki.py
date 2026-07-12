@@ -18,13 +18,19 @@ class Wikipedia(commands.Cog):
 
     async def build_wikipedia_embed(self, page_name: str, bot_id: int) -> nextcord.Embed:
         """Fetches a Wikipedia page and returns an embed with the page's title, summary, and thumbnail."""
-        wiki = wikipediaapi.AsyncWikipedia(user_agent=f"{config.BOT_NAME}-{str(bot_id)}/{config.BOT_VERSION} (https://takina.orangc.net)", language="en")
+        wiki = wikipediaapi.AsyncWikipedia(
+            user_agent=f"{config.BOT_NAME}-{str(bot_id)}/{config.BOT_VERSION} (https://takina.orangc.net)", language="en"
+        )
 
         wiki_page = wiki.page(page_name)
-        if not (await wiki_page.exists()):  # Check if page exists
+
+        if not await wiki_page.exists():  # Check if page exists
             embed = nextcord.Embed(color=config.ERROR_COLOR)
-            embed.description = ":x: That Wikipedia page does not exist."
+            embed.description = (
+                ":x: That Wikipedia page does not exist. Try adjusting your capitalisation, as results are occasionally case-sensitive!"
+            )
             return embed
+
         elif "Category:All disambiguation pages" in (await wiki_page.categories):  # Check for disambiguation pages
             page_links = await wiki_page.links
             first_link_title = sorted(page_links.keys())[0]
@@ -43,7 +49,9 @@ class Wikipedia(commands.Cog):
         return embed
 
     async def build_randomwiki_embed(self, bot_id: int) -> nextcord.Embed:
-        wiki = wikipediaapi.AsyncWikipedia(user_agent=f"{config.BOT_NAME}-{str(bot_id)}/{config.BOT_VERSION} (https://takina.orangc.net)", language="en")
+        wiki = wikipediaapi.AsyncWikipedia(
+            user_agent=f"{config.BOT_NAME}-{str(bot_id)}/{config.BOT_VERSION} (https://takina.orangc.net)", language="en"
+        )
 
         random_page = await wiki.random()  # Gets a random Wikipedia page
         wiki_page = next(iter(random_page.values()))
@@ -79,6 +87,7 @@ class Wikipedia(commands.Cog):
 
     @nextcord.slash_command(name="randomwiki", description="Get a random Wikipedia page.")
     async def slash_randomwiki(self, interaction: nextcord.Interaction):
+        await interaction.response.defer()
         embed = await self.build_randomwiki_embed(self.bot.application_id)
         await interaction.send(embed=embed)
 
