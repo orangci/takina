@@ -33,7 +33,7 @@ class UrbanDictionary(commands.Cog):
                 text,
             )
             # Trim the text to 300 characters, adding "..." if necessary
-            return text[:300] + "..." if len(text) > 300 else text
+            return text[:300].strip() + "..." if len(text) > 300 else text
 
         definition = format_text(data["list"][0]["definition"])
         example = format_text(data["list"][0]["example"]) if data["list"][0]["example"] else "No examples provided."
@@ -68,7 +68,7 @@ class UrbanDictionary(commands.Cog):
                 text,
             )
             # Trim the text to 300 characters, adding "..." if necessary
-            return text[:300] + "..." if len(text) > 300 else text
+            return text[:300].strip() + "..." if len(text) > 300 else text
 
         definition = format_text(data["list"][0]["definition"])
         example = format_text(data["list"][0]["example"]) if data["list"][0]["example"] else "No examples provided."

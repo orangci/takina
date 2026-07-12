@@ -82,8 +82,8 @@ class OwnerUtils(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def disable(self, ctx: commands.Context, cmd: str):
-        if cmd == "disable":
-            await ctx.reply("You cannot disable the disable command.", mention_author=False)
+        if cmd in ["enable", "disable"]:
+            await ctx.reply(f":x: You cannot disable the `{cmd}` command.", mention_author=False)
         else:
             command = self.bot.get_command(cmd)
             if command is None:
@@ -99,8 +99,8 @@ class OwnerUtils(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def enable(self, ctx: commands.Context, cmd: str):
-        if cmd == "disable":
-            await ctx.reply("You cannot enable the enable command.", mention_author=False)
+        if cmd in ["enable", "disable"]:
+            await ctx.reply(f":x: You cannot enable the `{cmd}` command.", mention_author=False)
         else:
             command = self.bot.get_command(cmd)
             if command is None:
