@@ -230,7 +230,7 @@ class ModLog(commands.Cog):
             },
         ]
 
-        stats = await self.db.modlog_cases.aggregate(stats_pipeline).to_list(length=1)
+        stats = await (await self.db.modlog_cases.aggregate(stats_pipeline)).to_list(length=1)
         stats = stats[0] if stats else {}
 
         def format_stats(actions):
@@ -357,7 +357,7 @@ class SlashModLog(commands.Cog):
             },
         ]
 
-        stats = await self.db.modlog_cases.aggregate(stats_pipeline).to_list(length=1)
+        stats = await (await self.db.modlog_cases.aggregate(stats_pipeline)).to_list(length=1)
         stats = stats[0] if stats else {}
 
         def format_stats(actions):

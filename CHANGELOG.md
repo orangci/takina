@@ -2,6 +2,9 @@
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. This changelog was initiated at the same date.
 
 
+#### 1.26.1
+Fixed an issue with the modstats command in `mod.modlog` where the command would fail do to a function not being awaited properly. Closes #111.
+
 ### 1.26.0
 Added the hackban command in `mod.ban`. Closes #14.
 
