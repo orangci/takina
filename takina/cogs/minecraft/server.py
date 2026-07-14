@@ -55,7 +55,6 @@ class MinecraftServerStatus(commands.Cog):
     async def slash_mcstatus(
         self,
         interaction: nextcord.Interaction,
-        *,
         server_name: str = nextcord.SlashOption(description="The Minecraft server IP to fetch information on", required=True),
     ):
         await interaction.response.defer()

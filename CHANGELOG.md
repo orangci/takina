@@ -1,6 +1,10 @@
 # Changelog
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. This changelog was initiated at the same date.
 
+
+### 1.25.0
+Added `minecraft.hypixel` with various Hypixel statistics et cetera commands. Closes #109.
+
 #### 1.24.1
 Defer interaction in `util.wiki` and add a warning for capitalisation.
 
