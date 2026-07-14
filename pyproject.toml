@@ -14,7 +14,7 @@ dependencies = [
     "distlib==0.4.3",
     "emoji==2.15.0",
     "filelock==3.29.7",
-    "geopy==2.4.1",
+    "geopy==2.5.0",
     "google-books-api-wrapper==1.0.5",
     "motor>=3.7.1",
     "nextcord==3.2.0",
