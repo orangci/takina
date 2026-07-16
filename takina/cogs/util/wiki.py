@@ -32,12 +32,18 @@ class Wikipedia(commands.Cog):
             return embed
 
         elif "Category:All disambiguation pages" in (await wiki_page.categories):  # Check for disambiguation pages
-            page_links = await wiki_page.links
-            first_link_title = sorted(page_links.keys())[0]
-            wiki_page = wiki.page(first_link_title)
+            page_summary = f"{page_name} disambiguation:"
 
-        page_images = await wiki_page.images
-        page_summary = format_text(await wiki_page.summary)
+            page_links = await wiki_page.links
+            for name in page_links:
+                page_summary += f"\n- {name}"
+
+            page_images = {}
+            page_summary = format_text(page_summary)
+        else:
+            page_images = await wiki_page.images
+            page_summary = format_text(await wiki_page.summary)
+
         embed = nextcord.Embed(title=wiki_page.title, description=page_summary, url=(await wiki_page.fullurl), color=config.EMBED_COLOR)
         embed.set_footer(text="Powered by Wikipedia")
         if page_images:
