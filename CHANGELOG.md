@@ -1,6 +1,8 @@
 # Changelog
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. This changelog was initiated at the same date.
 
+### 1.27.0
+Added `listeners.quran`, which listens for patterns in the form of `Quran xxx:xxx` (e.g. `Quran 1:1`) and responds with the relevant verse from the Qur'an and its English translation. Closes #41.
 
 #### 1.26.1
 Fixed an issue with the modstats command in `mod.modlog` where the command would fail do to a function not being awaited properly. Closes #111.
