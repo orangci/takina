@@ -56,50 +56,9 @@ class Mute(commands.Cog):
         if modlog_cog:
             await modlog_cog.log_action("mute", member, reason, ctx.author, duration)
 
-
-class Unmute(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
-    @commands.command(name="unmute", help="Unmute a member.")
-    @commands.has_permissions(moderate_members=True)
-    async def unmute(self, ctx: commands.Context, member: str, *, reason: str = "No reason provided"):
-        member = oclib.extract_user_id(member, ctx)
-        if isinstance(member, nextcord.Embed):
-            await ctx.reply(embed=member, mention_author=False)
-            return
-
-        can_proceed, message = oclib.perms_check(member, ctx=ctx)
-        if not can_proceed:
-            await ctx.reply(embed=message, mention_author=False)
-            return
-
-        await member.timeout(None, reason=f"Unmuted by {ctx.author} for: {reason}")
-        embed = nextcord.Embed(
-            description=f"✅ Successfully unmuted **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
-            color=config.EMBED_COLOR,
-        )
-        dm_embed = nextcord.Embed(
-            description=f"You were unmuted in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}", color=config.EMBED_COLOR
-        )
-        try:
-            await member.send(embed=dm_embed)
-        except Exception:
-            embed.set_footer(text="I was unable to DM this user.")
-        await ctx.reply(embed=embed, mention_author=False)
-
-        modlog_cog = self.bot.get_cog("ModLog")
-        if modlog_cog:
-            await modlog_cog.log_action("unmute", member, reason, ctx.author)
-
-
-class MuteSlash(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="mute", description="Timeout a member for a specified duration.")
     @application_checks.has_permissions(moderate_members=True)
-    async def mute(
+    async def slash_mute(
         self,
         interaction: nextcord.Interaction,
         member: nextcord.Member = nextcord.SlashOption(description="The user to mute", required=True),
@@ -140,13 +99,44 @@ class MuteSlash(commands.Cog):
             await modlog_cog.log_action("mute", member, reason, interaction.user, duration)
 
 
-class UnmuteSlash(commands.Cog):
+class Unmute(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    @commands.command(name="unmute", help="Unmute a member.")
+    @commands.has_permissions(moderate_members=True)
+    async def unmute(self, ctx: commands.Context, member: str, *, reason: str = "No reason provided"):
+        member = oclib.extract_user_id(member, ctx)
+        if isinstance(member, nextcord.Embed):
+            await ctx.reply(embed=member, mention_author=False)
+            return
+
+        can_proceed, message = oclib.perms_check(member, ctx=ctx)
+        if not can_proceed:
+            await ctx.reply(embed=message, mention_author=False)
+            return
+
+        await member.timeout(None, reason=f"Unmuted by {ctx.author} for: {reason}")
+        embed = nextcord.Embed(
+            description=f"✅ Successfully unmuted **{member.mention}**. \n\n<:note:1289880498541297685> **Reason:** {reason}\n<:salute:1287038901151862795> **Moderator:** {ctx.author}",
+            color=config.EMBED_COLOR,
+        )
+        dm_embed = nextcord.Embed(
+            description=f"You were unmuted in **{ctx.guild}**. \n\n<:note:1289880498541297685> **Reason:** {reason}", color=config.EMBED_COLOR
+        )
+        try:
+            await member.send(embed=dm_embed)
+        except Exception:
+            embed.set_footer(text="I was unable to DM this user.")
+        await ctx.reply(embed=embed, mention_author=False)
+
+        modlog_cog = self.bot.get_cog("ModLog")
+        if modlog_cog:
+            await modlog_cog.log_action("unmute", member, reason, ctx.author)
+
     @nextcord.slash_command(name="unmute", description="Unmute a member.")
     @application_checks.has_permissions(moderate_members=True)
-    async def unmute(
+    async def slash_unmute(
         self,
         interaction: nextcord.Interaction,
         member: nextcord.Member = nextcord.SlashOption(description="The user to unmute", required=True),
@@ -180,5 +170,3 @@ class UnmuteSlash(commands.Cog):
 def setup(bot):
     bot.add_cog(Mute(bot))
     bot.add_cog(Unmute(bot))
-    bot.add_cog(MuteSlash(bot))
-    bot.add_cog(UnmuteSlash(bot))

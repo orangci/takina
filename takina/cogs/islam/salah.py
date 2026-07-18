@@ -32,11 +32,6 @@ class Salawat(commands.Cog):
         finally:
             await client.close()
 
-
-class SlashSalawat(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="salawat", description="Fetch a list of the Islāmic prayer times in the specified location.")
     async def slash_salawat(
         self,
@@ -67,4 +62,3 @@ class SlashSalawat(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(Salawat(bot))
-    bot.add_cog(SlashSalawat(bot))

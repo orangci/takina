@@ -129,20 +129,6 @@ class TriggerResponses(commands.Cog):
                 await message.channel.send(data["response"])
                 break
 
-
-class SlashTriggerResponses(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
-
-    async def get_guild_triggers(self, guild_id: int):
-        """Fetch all triggers for a guild."""
-        return await self.db.triggers.find_one({"guild_id": guild_id}) or {"guild_id": guild_id, "triggers": {}}
-
-    async def update_guild_triggers(self, guild_id: int, triggers: dict):
-        """Update triggers for a guild."""
-        await self.db.triggers.update_one({"guild_id": guild_id}, {"$set": {"triggers": triggers}}, upsert=True)
-
     @nextcord.slash_command(name="trigger", description="Manage trigger responses.")
     async def slash_trigger(self, interaction: Interaction):
         """Base slash command for trigger management."""
@@ -236,4 +222,3 @@ class SlashTriggerResponses(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(TriggerResponses(bot))
-    bot.add_cog(SlashTriggerResponses(bot))

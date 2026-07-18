@@ -45,14 +45,9 @@ class Kick(commands.Cog):
         if modlog_cog:
             await modlog_cog.log_action("kick", member, reason, ctx.author)
 
-
-class KickSlash(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="kick", description="Kick a member from the server.")
     @application_checks.has_permissions(kick_members=True)
-    async def kick(
+    async def slash_kick(
         self,
         interaction: nextcord.Interaction,
         member: nextcord.Member = nextcord.SlashOption(description="The user to kick", required=True),
@@ -90,4 +85,3 @@ class KickSlash(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Kick(bot))
-    bot.add_cog(KickSlash(bot))

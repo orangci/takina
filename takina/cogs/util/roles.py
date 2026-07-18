@@ -51,18 +51,13 @@ class Roles(commands.Cog):
         embed = nextcord.Embed(description=f"✅ Removed role {role.mention} from {member.mention}.", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-
-class RolesSlash(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="role", description="Role management commands.")
-    async def role(self, interaction: nextcord.Interaction):
+    async def slash_role(self, interaction: nextcord.Interaction):
         pass
 
     @role.subcommand(name="add", description="Add a role to a member.")
     @application_checks.has_permissions(manage_roles=True)
-    async def add(
+    async def slash_add(
         self,
         interaction: nextcord.Interaction,
         member: nextcord.Member = nextcord.SlashOption(description="The member to add the role to", required=True),
@@ -75,7 +70,7 @@ class RolesSlash(commands.Cog):
 
     @role.subcommand(name="remove", description="Remove a role from member.")
     @application_checks.has_permissions(manage_roles=True)
-    async def remove(
+    async def slash_remove(
         self,
         interaction: nextcord.Interaction,
         member: nextcord.Member = nextcord.SlashOption(description="The member to remove the role from", required=True),
@@ -89,4 +84,3 @@ class RolesSlash(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Roles(bot))
-    bot.add_cog(RolesSlash(bot))

@@ -58,18 +58,13 @@ class ChannelManagement(commands.Cog):
         embed = nextcord.Embed(description=f"🔓 Channel {channel.mention} has been unlocked.", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-
-class SlashChannelManagement(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="channel", description="Channel management commands.")
-    async def channel_group(self, interaction: nextcord.Interaction):
+    async def slash_channel_group(self, interaction: nextcord.Interaction):
         pass
 
-    @channel_group.subcommand(name="slowmode", description="Sets slowmode in the current or specified channel.")
+    @slash_channel_group.subcommand(name="slowmode", description="Sets slowmode in the current or specified channel.")
     @application_checks.has_permissions(manage_channels=True)
-    async def slowmode(
+    async def slash_slowmode(
         self,
         interaction: nextcord.Interaction,
         duration: str = SlashOption(description="The amount of time to set the slowmode to", required=False),
@@ -98,9 +93,9 @@ class SlashChannelManagement(commands.Cog):
 
         await interaction.send(embed=embed)
 
-    @channel_group.subcommand(name="lock", description="Locks the current or specified channel.")
+    @slash_channel_group.subcommand(name="lock", description="Locks the current or specified channel.")
     @application_checks.has_permissions(manage_channels=True)
-    async def lock(
+    async def slash_lock(
         self, interaction: nextcord.Interaction, channel: nextcord.TextChannel = SlashOption(description="Channel to lock", required=False)
     ):
         await interaction.response.defer()
@@ -112,9 +107,9 @@ class SlashChannelManagement(commands.Cog):
         embed = nextcord.Embed(description=f"🔒 Channel {channel.mention} has been locked.", color=config.EMBED_COLOR)
         await interaction.send(embed=embed)
 
-    @channel_group.subcommand(name="unlock", description="Unlocks the current or specified channel.")
+    @slash_channel_group.subcommand(name="unlock", description="Unlocks the current or specified channel.")
     @application_checks.has_permissions(manage_channels=True)
-    async def unlock(
+    async def slash_unlock(
         self, interaction: nextcord.Interaction, channel: nextcord.TextChannel = SlashOption(description="Channel to unlock", required=False)
     ):
         await interaction.response.defer()
@@ -129,4 +124,3 @@ class SlashChannelManagement(commands.Cog):
 
 def setup(bot):
     bot.add_cog(ChannelManagement(bot))
-    bot.add_cog(SlashChannelManagement(bot))

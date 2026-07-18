@@ -59,13 +59,8 @@ class MAL_Stats(commands.Cog):
     async def manga(self, ctx: commands.Context, *, username: str):
         await fetch_stats(ctx, username, category="manga")
 
-
-class SlashMAL_Stats(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @nextcord.slash_command(description="MyAnimeList statistics commands.")
-    async def malstats(self, interaction: nextcord.Interaction):
+    @nextcord.slash_command(name="malstats", description="MyAnimeList statistics commands.")
+    async def slash_malstats(self, interaction: nextcord.Interaction):
         pass
 
     @malstats.subcommand(name="anime", description="Fetch a MyAnimeList user's anime statistics.")
@@ -81,4 +76,3 @@ class SlashMAL_Stats(commands.Cog):
 
 def setup(bot):
     bot.add_cog(MAL_Stats(bot))
-    bot.add_cog(SlashMAL_Stats(bot))

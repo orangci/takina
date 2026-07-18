@@ -46,14 +46,9 @@ class Warnings(commands.Cog):
         if modlog_cog:
             await modlog_cog.log_action("warn", member, reason, ctx.author)
 
-
-class SlashWarnings(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="warn", description="Warn a member.")
     @application_checks.has_permissions(moderate_members=True)
-    async def warn(
+    async def slash_warn(
         self,
         interaction: nextcord.Interaction,
         member: nextcord.Member = nextcord.SlashOption(description="The user to warn", required=True),
@@ -93,4 +88,3 @@ class SlashWarnings(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Warnings(bot))
-    bot.add_cog(SlashWarnings(bot))

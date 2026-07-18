@@ -48,13 +48,8 @@ class Weather(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
         pass
 
-
-class SlashWeather(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="weather", description="Weather information command.")
-    async def weather(
+    async def slash_weather(
         self,
         interaction: nextcord.Interaction,
         *,
@@ -67,4 +62,3 @@ class SlashWeather(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(Weather(bot))
-    bot.add_cog(SlashWeather(bot))

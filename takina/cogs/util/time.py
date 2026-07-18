@@ -44,13 +44,8 @@ class Time(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
         pass
 
-
-class SlashTime(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="time", description="Timezone utility command.")
-    async def time(
+    async def slash_time(
         self,
         interaction: nextcord.Interaction,
         *,
@@ -63,4 +58,3 @@ class SlashTime(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(Time(bot))
-    bot.add_cog(SlashTime(bot))

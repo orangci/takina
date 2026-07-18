@@ -2,6 +2,9 @@
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. This changelog was initiated at the same date.
 
 
+#### 1.27.3
+Removed all Slash classes in cogs, such as the channel management cog having SlashChannelManagement. There is zero need to keep them in separate classes and thus cogs.
+
 #### 1.27.2
 Made the role commands in `util.roles` consistent with other commands in regards to target-action syntax; target first, role second.
 

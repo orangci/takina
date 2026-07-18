@@ -44,11 +44,6 @@ class Books(commands.Cog):
             embed.set_footer(text=f"ISBN: {book_data.ISBN_13 or book_data.ISBN_10}")
         await ctx.reply(embed=embed, mention_author=False)
 
-
-class SlashBooks(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="book", description="Fetch information on a book title or ISBN.")
     async def slash_book(
         self,
@@ -91,4 +86,3 @@ class SlashBooks(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Books(bot))
-    bot.add_cog(SlashBooks(bot))

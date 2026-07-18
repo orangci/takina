@@ -16,10 +16,13 @@ class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def fetch_user_image(self, ctx: commands.Context, member: str = None, image_type: str = "display_avatar"):
+    async def fetch_user_image(self, ctx: commands.Context | nextcord.Interaction, member: str = None, image_type: str = "display_avatar"):
         image_type_str = image_type.replace("_", " ").title()
         if member is None:
-            member = ctx.author
+            if ctx.author:
+                member = ctx.author
+            else:
+                member = ctx.user
         else:
             member = oclib.extract_user_id(member, ctx)
             if isinstance(member, nextcord.Embed):
@@ -214,29 +217,8 @@ class Fun(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-
-class SlashFun(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    async def fetch_user_image(self, interaction: nextcord.Interaction, member: nextcord.Member = None, image_type: str = "display_avatar"):
-        image_type_str = image_type.replace("_", " ").title()
-        if member is None:
-            member = interaction.user
-
-        member = await self.bot.fetch_user(member.id) if image_type == "banner" else member
-        embed = nextcord.Embed(title=f"{member.name}'s {image_type_str}", color=config.EMBED_COLOR)
-        image = getattr(member, image_type)
-        if image:
-            embed.set_image(url=image.url)
-            return embed
-        else:
-            error_embed = nextcord.Embed(color=config.ERROR_COLOR)
-            error_embed.description = f"❌ This user does not have a {image_type_str.lower()} set."
-            return error_embed
-
     @nextcord.slash_command(name="fact", description="Fetch a random fact.")
-    async def fact(self, interaction: nextcord.Interaction):
+    async def slash_fact(self, interaction: nextcord.Interaction):
         data = await oclib.request("https://uselessfacts.jsph.pl/api/v2/facts/random")
         fact = data.get("text")
         emoji = await oclib.fetch_random_emoji()
@@ -244,7 +226,7 @@ class SlashFun(commands.Cog):
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="joke", description="Fetch a random joke.")
-    async def joke(self, interaction: nextcord.Interaction):
+    async def slash_joke(self, interaction: nextcord.Interaction):
         joke_type = random.choice(["dadjoke", "regular"])
 
         if joke_type == "dadjoke":
@@ -269,7 +251,7 @@ class SlashFun(commands.Cog):
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="commit", description="Order me to do something.")
-    async def commit(
+    async def slash_commit(
         self, interaction: nextcord.Interaction, action: str = nextcord.SlashOption(description="The action you'd like me to commit", required=True)
     ):
         possible_responses = [
@@ -288,39 +270,41 @@ class SlashFun(commands.Cog):
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(name="avatar", description="Fetch a Discord user's avatar.")
-    async def avatar(self, interaction: nextcord.Interaction):
+    async def slash_avatar(self, interaction: nextcord.Interaction):
         pass
 
     @avatar.subcommand(name="display", description="Fetch the Discord display avatar of any member including yourself.")
-    async def display_avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
+    async def slash_display_avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "display_avatar")
         await interaction.send(embed=embed, ephemeral=True)
 
     @avatar.subcommand(name="server", description="Fetch the Discord server avatar of any member including yourself.")
-    async def server_avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
+    async def slash_server_avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "guild_avatar")
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="banner", description="Fetch a Discord user's banner.")
-    async def banner(self, interaction: nextcord.Interaction):
+    async def slash_banner(self, interaction: nextcord.Interaction):
         pass
 
     @banner.subcommand(name="banner", description="Fetch the Discord banner of any member including yourself.")
-    async def display_banner(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
+    async def slash_display_banner(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "banner")
         await interaction.send(embed=embed, ephemeral=True)
 
     @banner.subcommand(name="server", description="Fetch the Discord server banner of any member including yourself.")
-    async def server_banner(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
+    async def slash_server_banner(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "guild_banner")
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="google", description="Google anything!")
-    async def google(self, interaction: nextcord.Interaction, *, query: str = nextcord.SlashOption(description="Your search query", required=True)):
+    async def slash_google(
+        self, interaction: nextcord.Interaction, *, query: str = nextcord.SlashOption(description="Your search query", required=True)
+    ):
         query_before_conversion = query
         query = urllib.parse.quote_plus(query)
         lmgtfy_url = f"https://letmegooglethat.com/?q={query}"
@@ -335,7 +319,7 @@ class SlashFun(commands.Cog):
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="roll", description="Roll a random number from 1-100.")
-    async def roll(self, interaction: nextcord.Interaction):
+    async def slash_roll(self, interaction: nextcord.Interaction):
         embed = nextcord.Embed(
             title=f"What number did you roll? {await oclib.fetch_random_emoji()}",
             description=f"You rolled {random.randint(1, 100)}!",
@@ -344,7 +328,7 @@ class SlashFun(commands.Cog):
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="8ball", description="Ask the 8ball anything.")
-    async def eight_ball(
+    async def slash_eight_ball(
         self, interaction: nextcord.Interaction, *, question: str = nextcord.SlashOption(description="Ask the 8ball a question!", required=True)
     ):
         responses = [
@@ -369,7 +353,7 @@ class SlashFun(commands.Cog):
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(description="Check your fate with another user.")
-    async def fate(
+    async def slash_fate(
         self,
         interaction: nextcord.Interaction,
         target: nextcord.Member = nextcord.SlashOption(description="The user to check your fate with.", required=True),
@@ -405,4 +389,3 @@ class SlashFun(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Fun(bot))
-    bot.add_cog(SlashFun(bot))

@@ -59,19 +59,14 @@ class Purge(commands.Cog):
         embed = nextcord.Embed(description=f"✅ Successfully purged {len(deleted)} messages sent by bots.", color=config.EMBED_COLOR)
         await ctx.send(embed=embed, delete_after=2)
 
-
-class SlashPurge(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="purge", description="Purge messages.")
     @application_checks.has_permissions(manage_messages=True)
-    async def purge(self, interaction: nextcord.Interaction):
+    async def slash_purge(self, interaction: nextcord.Interaction):
         pass
 
     @purge.subcommand(name="all", description="Purge a number of messages.")
     @application_checks.has_permissions(manage_messages=True)
-    async def purge_all(self, interaction: nextcord.Interaction, amount: int):
+    async def slash_purge_all(self, interaction: nextcord.Interaction, amount: int):
         await interaction.response.defer()
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(description=":x: Please specify a number between 1 and 200.", color=config.ERROR_COLOR)
@@ -87,7 +82,7 @@ class SlashPurge(commands.Cog):
 
     @purge.subcommand(name="user", description="Purge messages from a specific user.")
     @application_checks.has_permissions(manage_messages=True)
-    async def purge_user(self, interaction: nextcord.Interaction, user: nextcord.Member, amount: int):
+    async def slash_purge_user(self, interaction: nextcord.Interaction, user: nextcord.Member, amount: int):
         await interaction.response.defer()
         if amount <= 0 or amount > 200:
             embed = nextcord.Embed(description=":x: Please specify a number between 1 and 200.", color=config.ERROR_COLOR)
@@ -104,7 +99,7 @@ class SlashPurge(commands.Cog):
 
     @purge.subcommand(name="bots", description="Purge messages sent by bots.")
     @application_checks.has_permissions(manage_messages=True)
-    async def purge_bots(self, interaction: nextcord.Interaction, amount: int):
+    async def slash_purge_bots(self, interaction: nextcord.Interaction, amount: int):
         await interaction.response.defer()
         if amount <= 0 or amount > 100:
             embed = nextcord.Embed(description=":x: Please specify a number between 1 and 200.", color=config.ERROR_COLOR)
@@ -122,4 +117,3 @@ class SlashPurge(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Purge(bot))
-    bot.add_cog(SlashPurge(bot))

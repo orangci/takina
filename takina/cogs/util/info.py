@@ -126,13 +126,8 @@ class Info(commands.Cog):
             embed.set_thumbnail(url=guild.icon.url)
         await ctx.reply(embed=embed, mention_author=False)
 
-
-class SlashInfo(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="userinfo", description="Fetch information about a user.")
-    async def userinfo(
+    async def slash_userinfo(
         self,
         interaction: nextcord.Interaction,
         member: nextcord.Member = nextcord.SlashOption(description="The user to fetch information on", required=False),
@@ -193,7 +188,7 @@ class SlashInfo(commands.Cog):
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="roleinfo", description="Fetch information about a role.")
-    async def roleinfo(
+    async def slash_roleinfo(
         self,
         interaction: nextcord.Interaction,
         role: nextcord.Role = nextcord.SlashOption(description="The role to fetch information on", required=True),
@@ -220,7 +215,7 @@ class SlashInfo(commands.Cog):
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="serverinfo", description="Fetch information about the server.")
-    async def serverinfo(self, interaction: nextcord.Interaction):
+    async def slash_serverinfo(self, interaction: nextcord.Interaction):
         guild = interaction.guild
         emoji = await oclib.fetch_random_emoji()
         embed = nextcord.Embed(
@@ -253,4 +248,3 @@ class SlashInfo(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Info(bot))
-    bot.add_cog(SlashInfo(bot))

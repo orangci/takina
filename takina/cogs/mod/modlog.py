@@ -249,20 +249,14 @@ class ModLog(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-
-class SlashModLog(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
-
-    @nextcord.slash_command(description="Manage the modlog settings")
+    @nextcord.slash_command(name="case", description="Manage the modlog settings")
     @application_checks.has_permissions(moderate_members=True)
-    async def case(self, interaction: nextcord.Interaction):
+    async def slash_case(self, interaction: nextcord.Interaction):
         pass
 
-    @case.subcommand(name="fetch", description="Get case details by case ID.")
+    @slash_case.subcommand(name="fetch", description="Get case details by case ID.")
     @application_checks.has_permissions(moderate_members=True)
-    async def case_fetch(self, interaction: nextcord.Interaction, case_id: int):
+    async def slash_case_fetch(self, interaction: nextcord.Interaction, case_id: int):
         await interaction.response.defer()
         case = await self.db.modlog_cases.find_one({"guild_id": interaction.guild.id, "case_id": case_id})
         if not case:
@@ -282,9 +276,9 @@ class SlashModLog(commands.Cog):
         embed.add_field(name="Reason", value=case["reason"], inline=False)
         await interaction.send(embed=embed)
 
-    @case.subcommand(name="edit", description="Edit the reason for a case.")
+    @slash_case.subcommand(name="edit", description="Edit the reason for a case.")
     @application_checks.has_permissions(moderate_members=True)
-    async def case_edit(self, interaction: nextcord.Interaction, case_id: int, new_reason: str):
+    async def slash_case_edit(self, interaction: nextcord.Interaction, case_id: int, new_reason: str):
         await interaction.response.defer()
         result = await self.db.modlog_cases.update_one({"guild_id": interaction.guild.id, "case_id": case_id}, {"$set": {"reason": new_reason}})
         if result.modified_count == 0:
@@ -296,7 +290,7 @@ class SlashModLog(commands.Cog):
 
     @nextcord.slash_command(name="cases", description="View all cases or cases for a user.")
     @application_checks.has_permissions(moderate_members=True)
-    async def cases(self, interaction: nextcord.Interaction, user: nextcord.Member = None):
+    async def slash_cases(self, interaction: nextcord.Interaction, user: nextcord.Member = None):
         await interaction.response.defer()
         query = {"guild_id": interaction.guild.id}
         if user:
@@ -313,7 +307,7 @@ class SlashModLog(commands.Cog):
 
     @nextcord.slash_command(name="modcases", description="View a moderator's involved cases.")
     @application_checks.has_permissions(moderate_members=True)
-    async def modcases(
+    async def slash_modcases(
         self,
         interaction: nextcord.Interaction,
         user: nextcord.Member = nextcord.SlashOption(description="The user whose moderation cases you want to fetch.", required=False),
@@ -332,7 +326,7 @@ class SlashModLog(commands.Cog):
 
     @nextcord.slash_command(name="modstats", description="Fetch moderation statistics on a user.")
     @application_checks.has_permissions(moderate_members=True)
-    async def get_mod_stats(
+    async def slash_get_mod_stats(
         self, interaction: nextcord.Interaction, user: nextcord.Member = nextcord.SlashOption(description="User to fetch modstats on", required=False)
     ):
         await interaction.response.defer()
@@ -379,4 +373,3 @@ class SlashModLog(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(ModLog(bot))
-    bot.add_cog(SlashModLog(bot))

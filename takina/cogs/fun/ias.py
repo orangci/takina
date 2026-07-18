@@ -34,11 +34,6 @@ class Ias(commands.Cog):
         embed = await request_api("touhou")
         await ctx.reply(embed=embed, mention_author=False)
 
-
-class SlashIas(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
     @nextcord.slash_command(name="uma", description="Posts Umamusume artwork")
     async def slash_uma(self, interaction: nextcord.Interaction):
         embed = await request_api("uma")
@@ -52,4 +47,3 @@ class SlashIas(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(Ias(bot))
-    bot.add_cog(SlashIas(bot))

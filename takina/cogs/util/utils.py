@@ -97,11 +97,6 @@ class Utils(commands.Cog):
         embed.set_footer(text="For more information, run the info command.")
         await ctx.reply(embed=embed, mention_author=False)
 
-
-class UtilsSlash(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
-        self.bot: commands.Bot = bot
-
     @nextcord.slash_command(name="ping", description="Ping the bot.")
     async def slash_ping(
         self, interaction: nextcord.Interaction, ip: str = nextcord.SlashOption(description="The IP address you'd like to ping", required=False)
@@ -183,7 +178,7 @@ class UtilsSlash(commands.Cog):
         await interaction.send(embed=embed, ephemeral=True)
 
     @nextcord.slash_command(name="version", description=f"Fetch {config.BOT_NAME}'s current version.")
-    async def version(self, interaction: nextcord.Interaction):
+    async def slash_version(self, interaction: nextcord.Interaction):
         embed = nextcord.Embed(color=config.EMBED_COLOR)
         BOT_VERSION_LINK = (
             f"[**{config.BOT_VERSION}**](https://github.com/orangci/takina/blob/main/CHANGELOG.md#{config.BOT_VERSION.replace('.', '')})"
@@ -195,4 +190,3 @@ class UtilsSlash(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(Utils(bot))
-    bot.add_cog(UtilsSlash(bot))
