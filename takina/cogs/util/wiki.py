@@ -32,7 +32,7 @@ class Wikipedia(commands.Cog):
             return embed
 
         elif "Category:All disambiguation pages" in (await wiki_page.categories):  # Check for disambiguation pages
-            page_summary = f"{page_name} disambiguation:"
+            page_summary = f'Disambiguations for "{page_name}":'
 
             page_links = await wiki_page.links
             for name in page_links:
