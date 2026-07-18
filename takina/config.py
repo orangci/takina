@@ -20,7 +20,9 @@ STEAM_REGION = getenv("STEAM_REGION") or "US"
 ERROR_COLOR = 0xFF0037
 NIXOS_INSTANCE = getenv("NIXOS_INSTANCE")
 # how many commands can be used in five seconds
-COMMANDS_COOLDOWN = getenv("COMMANDS_COOLDOWN") or 5
+COMMANDS_COOLDOWN = int(getenv("COMMANDS_COOLDOWN") or 5)
+# timeout for libqalculate in seconds
+QALC_TIMEOUT = int(getenv("QALC_TIMEOUT") or 3)
 
 # the nixos package sets the bot version as an environment variable
 # as should other packaging for takina
