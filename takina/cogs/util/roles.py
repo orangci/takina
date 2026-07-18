@@ -21,9 +21,9 @@ class Roles(commands.Cog):
         embed = nextcord.Embed(description="Please specify a subcommand: `add` or `remove`", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @role.command(name="add", help="Add a role to a member.", usage="Moderator @member")
+    @role.command(name="add", help="Add a role to a member.", usage="@member Moderator")
     @commands.has_permissions(manage_roles=True)
-    async def add(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
+    async def add(self, ctx: commands.Context, member: str = None, *, role: nextcord.Role):
         if member is None:
             member = ctx.author
         else:
@@ -36,9 +36,9 @@ class Roles(commands.Cog):
         embed = nextcord.Embed(description=f"✅ Added role {role.mention} to {member.mention}.", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @role.command(name="remove", help="Remove a role from member.", usage="Moderator @member")
+    @role.command(name="remove", help="Remove a role from member.", usage="@member Moderator")
     @commands.has_permissions(manage_roles=True)
-    async def remove(self, ctx: commands.Context, role: nextcord.Role, member: str = None):
+    async def remove(self, ctx: commands.Context, member: str = None, *, role: nextcord.Role):
         if member is None:
             member = ctx.author
         else:
@@ -65,8 +65,8 @@ class RolesSlash(commands.Cog):
     async def add(
         self,
         interaction: nextcord.Interaction,
-        role: nextcord.Role = nextcord.SlashOption(description="The role to add", required=True),
         member: nextcord.Member = nextcord.SlashOption(description="The member to add the role to", required=True),
+        role: nextcord.Role = nextcord.SlashOption(description="The role to add", required=True),
     ):
         await interaction.response.defer()
         await member.add_roles(role, reason=f"Role added by {interaction.user}")
@@ -78,8 +78,8 @@ class RolesSlash(commands.Cog):
     async def remove(
         self,
         interaction: nextcord.Interaction,
-        role: nextcord.Role = nextcord.SlashOption(description="The role to remove", required=True),
         member: nextcord.Member = nextcord.SlashOption(description="The member to remove the role from", required=True),
+        role: nextcord.Role = nextcord.SlashOption(description="The role to remove", required=True),
     ):
         await interaction.response.defer()
         await member.remove_roles(role, reason=f"Role removed by {interaction.user}")
