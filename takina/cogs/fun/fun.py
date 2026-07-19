@@ -273,13 +273,13 @@ class Fun(commands.Cog):
     async def slash_avatar(self, interaction: nextcord.Interaction):
         pass
 
-    @avatar.subcommand(name="display", description="Fetch the Discord display avatar of any member including yourself.")
+    @slash_avatar.subcommand(name="display", description="Fetch the Discord display avatar of any member including yourself.")
     async def slash_display_avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "display_avatar")
         await interaction.send(embed=embed, ephemeral=True)
 
-    @avatar.subcommand(name="server", description="Fetch the Discord server avatar of any member including yourself.")
+    @slash_avatar.subcommand(name="server", description="Fetch the Discord server avatar of any member including yourself.")
     async def slash_server_avatar(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "guild_avatar")
@@ -289,13 +289,13 @@ class Fun(commands.Cog):
     async def slash_banner(self, interaction: nextcord.Interaction):
         pass
 
-    @banner.subcommand(name="banner", description="Fetch the Discord banner of any member including yourself.")
+    @slash_banner.subcommand(name="banner", description="Fetch the Discord banner of any member including yourself.")
     async def slash_display_banner(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "banner")
         await interaction.send(embed=embed, ephemeral=True)
 
-    @banner.subcommand(name="server", description="Fetch the Discord server banner of any member including yourself.")
+    @slash_banner.subcommand(name="server", description="Fetch the Discord server banner of any member including yourself.")
     async def slash_server_banner(self, interaction: nextcord.Interaction, member: nextcord.Member = nextcord.SlashOption(required=False)):
         await interaction.response.defer()
         embed = await self.fetch_user_image(interaction, member, "guild_banner")

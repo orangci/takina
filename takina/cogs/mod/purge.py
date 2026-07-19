@@ -64,7 +64,7 @@ class Purge(commands.Cog):
     async def slash_purge(self, interaction: nextcord.Interaction):
         pass
 
-    @purge.subcommand(name="all", description="Purge a number of messages.")
+    @slash_purge.subcommand(name="all", description="Purge a number of messages.")
     @application_checks.has_permissions(manage_messages=True)
     async def slash_purge_all(self, interaction: nextcord.Interaction, amount: int):
         await interaction.response.defer()
@@ -80,7 +80,7 @@ class Purge(commands.Cog):
         embed = nextcord.Embed(description=f"✅ Successfully purged {len(deleted) - 1} messages.", color=config.EMBED_COLOR)
         await interaction.send(embed=embed, ephemeral=True)
 
-    @purge.subcommand(name="user", description="Purge messages from a specific user.")
+    @slash_purge.subcommand(name="user", description="Purge messages from a specific user.")
     @application_checks.has_permissions(manage_messages=True)
     async def slash_purge_user(self, interaction: nextcord.Interaction, user: nextcord.Member, amount: int):
         await interaction.response.defer()
@@ -97,7 +97,7 @@ class Purge(commands.Cog):
         embed = nextcord.Embed(description=f"✅ Successfully purged {len(deleted)} messages from {user.mention}.", color=config.EMBED_COLOR)
         await interaction.send(embed=embed, ephemeral=True)
 
-    @purge.subcommand(name="bots", description="Purge messages sent by bots.")
+    @slash_purge.subcommand(name="bots", description="Purge messages sent by bots.")
     @application_checks.has_permissions(manage_messages=True)
     async def slash_purge_bots(self, interaction: nextcord.Interaction, amount: int):
         await interaction.response.defer()

@@ -13,12 +13,12 @@ class Roles(commands.Cog):
     @commands.group(
         name="role",
         aliases=["rank"],
-        description="Base role command, if no subcommand is passed.",
+        description="Base role command, slash_if no subcommand is passed.",
         invoke_without_command=True,
-        help="Role management. Use subcommands `add` and `remove`.",
+        help="Role managementslash_. Use subcommands `add` and `remove`.",
     )
     async def role(self, ctx: commands.Context):
-        embed = nextcord.Embed(description="Please specify a subcommand: `add` or `remove`", color=config.EMBED_COLOR)
+        embed = nextcord.Embed(description="Please slash_specify a subcommand: `add` or `remove`", color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
     @role.command(name="add", help="Add a role to a member.", usage="@member Moderator")
@@ -55,7 +55,7 @@ class Roles(commands.Cog):
     async def slash_role(self, interaction: nextcord.Interaction):
         pass
 
-    @role.subcommand(name="add", description="Add a role to a member.")
+    @slash_role.subcommand(name="add", description="Add a role to a member.")
     @application_checks.has_permissions(manage_roles=True)
     async def slash_add(
         self,
@@ -68,7 +68,7 @@ class Roles(commands.Cog):
         embed = nextcord.Embed(description=f"✅ Added role {role.mention} to {member.mention}.", color=config.EMBED_COLOR)
         await interaction.send(embed=embed)
 
-    @role.subcommand(name="remove", description="Remove a role from member.")
+    @slash_role.subcommand(name="remove", description="Remove a role from member.")
     @application_checks.has_permissions(manage_roles=True)
     async def slash_remove(
         self,

@@ -63,12 +63,12 @@ class MAL_Stats(commands.Cog):
     async def slash_malstats(self, interaction: nextcord.Interaction):
         pass
 
-    @malstats.subcommand(name="anime", description="Fetch a MyAnimeList user's anime statistics.")
+    @slash_malstats.subcommand(name="anime", description="Fetch a MyAnimeList user's anime statistics.")
     async def malstats_anime(self, interaction: nextcord.Interaction, username: str = nextcord.SlashOption(description="MyAnimeList username")):
         await interaction.response.defer()
         await fetch_stats(interaction, username, category="anime")
 
-    @malstats.subcommand(name="manga", description="Fetch a MyAnimeList user's manga statistics.")
+    @slash_malstats.subcommand(name="manga", description="Fetch a MyAnimeList user's manga statistics.")
     async def malstats_manga(self, interaction: nextcord.Interaction, username: str = nextcord.SlashOption(description="MyAnimeList username")):
         await interaction.response.defer()
         await fetch_stats(interaction, username, category="manga")
