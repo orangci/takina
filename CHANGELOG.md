@@ -1,8 +1,12 @@
 # Changelog
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. This changelog was initiated at the same date.
 
+
+#### 1.27.5
+Add a link to the queried game in `util.steam` in the embed title.
+
 #### 1.27.4
-Add timeout for `util.qalc` commands so that huge factorizations dont freeze the bot.
+Add timeout for `util.qalc` commands so that huge factorisations don't freeze the bot.
 
 #### 1.27.3
 Removed all Slash classes in cogs, such as the channel management cog having SlashChannelManagement. There is zero need to keep them in separate classes and thus cogs.

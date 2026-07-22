@@ -38,6 +38,7 @@ class Steam(commands.Cog):
             website = data.get("website", "")
 
             embed.title = data["name"]
+            embed.url = f"https://store.steampowered.com/app/{app_id}"
             embed.set_footer(text="Steam APP ID: " + str(app_id))
             embed.set_thumbnail(url=data.get("capsule_image") or data.get("header_image"))
             lines = []
