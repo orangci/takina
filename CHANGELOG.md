@@ -2,6 +2,9 @@
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. This changelog was initiated at the same date.
 
 
+#### 1.27.6
+Do not ping the target when the roast command in `fun.roast` fails.
+
 #### 1.27.5
 Add a link to the queried game in `util.steam` in the embed title.
 

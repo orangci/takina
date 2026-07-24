@@ -18,6 +18,8 @@ class Roasts(commands.Cog):
             embed.description = await oclib.fetch_random_emoji() + response.get("insult")
         except Exception:
             embed.description = ":x: Failed to fetch a roast. Try again later!"
+            await ctx.reply(embed=embed, mention_author=False)
+            return
 
         target = ctx.author if not target else target
         if not isinstance(target, nextcord.Member):
@@ -40,6 +42,8 @@ class Roasts(commands.Cog):
             embed.description = await oclib.fetch_random_emoji() + response.get("insult")
         except Exception:
             embed.description = ":x: Failed to fetch a roast. Try again later!"
+            await interaction.send(embed=embed, ephemeral=True)
+            return
 
         target = interaction.user if not target else target
         await interaction.send(target.mention, embed=embed)

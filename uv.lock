@@ -1234,7 +1234,7 @@ wheels = [
 
 [[package]]
 name = "takina"
-version = "1.27.5"
+version = "1.27.6"
 source = { virtual = "." }
 dependencies = [
     { name = "aiodns" },
