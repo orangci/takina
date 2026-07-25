@@ -2,6 +2,9 @@
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. This changelog was initiated at the same date.
 
 
+#### 1.27.7
+The odds were biased for a positive response for the 8ball command in `fun.fun`, since there were 10 positive responses and 5 negative. This has been fixed by adding 5 more negative responses.
+
 #### 1.27.6
 Do not ping the target when the roast command in `fun.roast` fails.
 

@@ -171,6 +171,11 @@ class Fun(commands.Cog):
             "My sources say no.",
             "Outlook not so good.",
             "Very doubtful.",
+            "Absolutely not.",
+            "The answer is no.",
+            "Highly unlikely.",
+            "The odds are against it.",
+            "All signs point to no.",
         ]
         if not question:
             embed = nextcord.Embed(color=config.ERROR_COLOR)
@@ -347,6 +352,11 @@ class Fun(commands.Cog):
             "My sources say no.",
             "Outlook not so good.",
             "Very doubtful.",
+            "Absolutely not.",
+            "The answer is no.",
+            "Highly unlikely.",
+            "The odds are against it.",
+            "All signs point to no.",
         ]
         response = oclib.randint_from_seed(question, responses)
         embed = nextcord.Embed(title="🎱 The 8ball", description=f"**Question:** {question}\n**Answer:** {response}", color=config.EMBED_COLOR)
