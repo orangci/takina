@@ -39,3 +39,9 @@ dependencies = [
 [tool.setuptools]
 packages = ["takina"]
 
+[dependency-groups]
+dev = [
+    "ruff>=0.16.0",
+    "ty>=0.0.63",
+]
+
