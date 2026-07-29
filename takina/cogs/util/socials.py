@@ -2,8 +2,11 @@
 # SPDX-FileCopyrightText: orangc
 from nextcord.ext import commands
 from github import Github, Auth
+from ..libs import oclib
+import datetime as dt
 import asyncpraw
 import nextcord
+import requests
 import config
 
 
@@ -121,6 +124,65 @@ class SocialsReddit(commands.Cog):
         return embed
 
 
+class SocialsCodeberg(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+
+    @commands.command(aliases=["cb"], help="Social information command for Codeberg.", usage="orangc")
+    async def codeberg(self, ctx: commands.Context, *, username: str):
+        embed = await self.fetch_codeberg_user_information(username)
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @nextcord.slash_command(name="codeberg", description="Social information command for Codeberg.")
+    async def slash_codeberg(
+        self,
+        interaction: nextcord.Interaction,
+        *,
+        username: str = nextcord.SlashOption(description="The Codeberg username to fetch information on.", required=True),
+    ):
+        await interaction.response.defer()
+        embed = await self.fetch_codeberg_user_information(username)
+        await interaction.send(embed=embed)
+
+    async def fetch_codeberg_user_information(self, username):
+        embed = nextcord.Embed(color=config.EMBED_COLOR, description="", title=username)
+        url = f"https://codeberg.org/api/v1/users/{username}"
+        data = await oclib.request(url)
+        if data.get("message"):
+            embed.title = None
+            embed.color = config.ERROR_COLOR
+            embed.description = ":x: That Codeberg account does not exist."
+            return embed
+
+        username = data.get("username")
+        repo_headers = requests.get(f"https://codeberg.org/api/v1/users/{username}/repos").headers
+        repo_count = repo_headers["x-total-count"]
+
+        embed.set_thumbnail(url=data.get("avatar_url"))
+        embed.set_footer(text=f"User ID: {data.get('id')}")
+
+        if data.get("website"):
+            if data.get("website").startswith("https://"):
+                website = data.get("website")[8:]
+            else:
+                website = data.get("website")[7:]
+
+        embed.url = data.get("html_url")
+        embed.description += f"{data.get('description')}\n" if data.get("description") else ""
+        embed.description += f"\n> **Website**: [{website}]({data.get('website')})" if data.get("website") else ""
+        embed.description += f"\n> **Email**: [{data.get('email')}](mailto:{data.get('email')})" if data.get("email") else ""
+        embed.description += f"\n> **Location**: {data.get('location')}" if data.get("location") else ""
+        embed.description += f"\n> **Followers**: {data.get('followers_count')}" if data.get("followers_count") else ""
+        embed.description += f"\n> **Following**: {data.get('following_count')}" if data.get("following_count") else ""
+        embed.description += f"\n> **Public Repositories**: {repo_count}" if repo_count else ""
+        embed.description += (
+            f"\n> **Joined Codeberg**: <t:{int((dt.datetime.fromisoformat(data.get('created'))).timestamp())}:D>" if data.get("created") else ""
+        )
+        embed.description += "\n\n**This user is a Codeberg site administrator.**" if data.get("is_admin") else ""
+
+        return embed
+
+
 def setup(bot: commands.Bot):
     if config.GITHUB_AUTH_TOKEN:
         bot.add_cog(SocialsGitHub(bot))
@@ -134,3 +196,4 @@ def setup(bot: commands.Bot):
         print(
             "You must set the config.REDDIT_CLIENT_ID and config.REDDIT_CLIENT_SECRET environment variables if you would like the reddit command to work. Skipping loading the reddit command. \nTo get your own Reddit application visit <https://www.reddit.com/prefs/apps>."
         )
+    bot.add_cog(SocialsCodeberg(bot))

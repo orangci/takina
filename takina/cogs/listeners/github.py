@@ -33,8 +33,8 @@ class GitHub(commands.Cog):
                 color=config.EMBED_COLOR,
                 url=repo_data["html_url"],
             )
-            .add_field(name="Stars", value=repo_data["stargazers_count"])
-            .add_field(name="Forks", value=repo_data["forks_count"])
+            .add_field(name="Stars", value=f"[{repo_data['stargazers_count']}](https://github.com/{repo_data['full_name']}/stargazers)")
+            .add_field(name="Forks", value=f"[{repo_data['forks_count']}](https://github.com/{repo_data['full_name']}/forks)")
             .set_thumbnail(url=repo_data["owner"]["avatar_url"])
         )
 

@@ -7,7 +7,6 @@ import datetime
 import config
 import os
 
-
 start_time = datetime.datetime.now(datetime.UTC)
 
 
@@ -29,6 +28,8 @@ class Bot(commands.Bot):
             guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
             if guild_data and "prefix" in guild_data:
                 return [guild_data["prefix"], "takina ", "Takina "]
+            elif os.getenv("PREFIX"):
+                return [os.getenv("PREFIX")]
             return [".", "takina ", "Takina "]
 
     @commands.Cog.listener()
