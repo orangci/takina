@@ -22,7 +22,7 @@
   };
 
   outputs =
-    inputs@{
+    {
       self,
       nixpkgs,
       uv2nix,
@@ -33,7 +33,7 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
-      lib = pkgs.lib;
+      inherit (pkgs) lib;
       inherit (lib) singleton composeManyExtensions;
       python = pkgs.python313;
       workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };
@@ -71,8 +71,8 @@
       };
 
       packages.${system}.default = pkgs.stdenv.mkDerivation {
-        pname = takina.pname;
-        version = takina.version;
+        inherit (takina) pname;
+        inherit (takina) version;
         meta.mainProgram = "takina";
         src = ./.;
 

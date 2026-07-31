@@ -45,3 +45,19 @@ dev = [
     "ty>=0.0.63",
 ]
 
+[tool.ruff]
+line-length = 150
+fix = true
+show-fixes = true
+target-version = "py313"
+indent-width = 4
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 79
+indent-style = "space"
+line-ending = "lf"
+skip-magic-trailing-comma = true
+
+[tool.ruff.analyze]
+detect-string-imports = true

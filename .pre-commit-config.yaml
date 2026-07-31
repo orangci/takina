@@ -1,6 +1,7 @@
 repos:
   - repo: local
     hooks:
+      # python stuff
       - id: ruff-format
         name: ruff format
         entry: ruff format
@@ -13,8 +14,33 @@ repos:
         language: system
         pass_filenames: false
 
+      - id: ty-check
+        name: ty check
+        entry: ty check
+        language: system
+        pass_filenames: false
+
       - id: uv-lock
         name: uv lock
         entry: uv lock
+        language: system
+        pass_filenames: false
+
+      # nix stuff
+      - id: nixfmt
+        name: nixfmt
+        entry: fish -c "nixfmt **.nix"
+        language: system
+        pass_filenames: false
+
+      - id: statix-fix
+        name: statix fix
+        entry: statix fix
+        language: system
+        pass_filenames: false
+
+      - id: deadnix
+        name: deadnix
+        entry: fish -c "deadnix -eq **.nix"
         language: system
         pass_filenames: false
