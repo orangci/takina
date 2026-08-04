@@ -1,9 +1,7 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
-# SPDX-FileCopyrightText: orangc
-from pymongo import AsyncMongoClient
-from nextcord.ext import commands
-import nextcord
+from discord.ext import commands
+import discord
 import datetime
+import psycopg
 import config
 import os
 
@@ -11,42 +9,69 @@ start_time = datetime.datetime.now(datetime.UTC)
 
 
 class Bot(commands.Bot):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.db = AsyncMongoClient(host=config.MONGO_URI).get_database(config.DB_NAME)
+    def __init__(self):
+        intents = discord.Intents.all()
 
-    async def setup_database(self) -> None:
-        # Setup MongoDB connection and collections
+        super().__init__(
+            command_prefix=get_prefix,
+            intents=intents,
+            case_insensitive=True,
+            help_command=None,
+            owner_ids={961063229168164864, 716306888492318790},
+            allowed_mentions=discord.AllowedMentions(
+                everyone=False, roles=False, users=True, replied_user=True
+            ),
+            activity=discord.Activity(
+                type=discord.ActivityType.watching, name="the stars"
+            ),
+        )
+
+        self.db: psycopg.AsyncConnection | None = None
+
+    async def setup_hook(self):
         if not os.getenv("HASDB"):
-            raise Exception("No Mongo found. Set the HASDB variable in case you do have a Mongo instance runnin'.")
-        self.db_client = AsyncMongoClient(host=config.MONGO_URI)
-        self.db = self.db_client.get_database(config.DB_NAME)
+            raise RuntimeError("No PostgreSQL database configured.")
 
-    async def get_prefix(self, message):
-        if message.guild:
-            guild_id = message.guild.id
-            guild_data = await self.db.prefixes.find_one({"guild_id": guild_id})
-            if guild_data and "prefix" in guild_data:
-                return [guild_data["prefix"], "takina ", "Takina "]
-            elif os.getenv("PREFIX"):
-                return [os.getenv("PREFIX")]
-            return [".", "takina ", "Takina "]
+        self.db = await psycopg.AsyncConnection.connect(config.POSTGRESQL_URI)
+        if self.db is None:
+            raise RuntimeError("Database not initialised.")
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"{self.user} is now online!")
-        await self.setup_database()
+        for cog in cogs:
+            if cog not in cogs_blacklist:
+                try:
+                    await self.load_extension(f"cogs.{cog}")
+                except Exception as e:
+                    print(f"Failed to load {cog}: {e}")
 
 
-bot = Bot(
-    intents=nextcord.Intents.all(),
-    command_prefix=Bot.get_prefix,
-    case_insensitive=True,
-    help_command=None,
-    owner_ids=[961063229168164864, 716306888492318790],  # orangc, iostpa
-    allowed_mentions=nextcord.AllowedMentions(everyone=False, roles=False, users=True, replied_user=True),
-    activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="the stars"),
-)
+async def get_prefix(self, message: discord.Message):
+    prefixes = [".", "takina ", "Takina "]
+
+    if not message.guild:
+        return prefixes
+
+    async with self.db.cursor() as cur:
+        await cur.execute(
+            """
+            SELECT prefix
+            FROM prefixes
+            WHERE guild_id = %s
+            """,
+            (message.guild.id,),
+        )
+
+        row = await cur.fetchone()
+
+    if row:
+        return [row[0], "takina ", "Takina "]
+
+    if prefix := os.getenv("PREFIX"):
+        return [prefix]
+
+    return prefixes
+
+
+bot = Bot()
 
 # commands cooldown
 cooldown = commands.CooldownMapping.from_cooldown(
@@ -60,12 +85,13 @@ cooldown = commands.CooldownMapping.from_cooldown(
 @bot.check
 def global_cooldown(ctx: commands.Context):
     bucket = cooldown.get_bucket(ctx.message)
-    retry_after = bucket.update_rate_limit()
+    if bucket:
+        retry_after = bucket.update_rate_limit()
     return retry_after is None
 
 
 def load_exts(directory):
-    blacklist_subfolders = ["libs", "sesp/isadev/libs"]
+    blacklist_subfolders = ["libs"]
 
     cogs = []
     for root, dirs, files in os.walk(directory):
@@ -80,21 +106,23 @@ def load_exts(directory):
     return cogs
 
 
-REQUIRED_ENV_VARS = ["TOKEN", "HASDB", "MONGO", "BOT_NAME", "DB_NAME", "EMBED_COLOR"]
+REQUIRED_ENV_VARS = [
+    "TOKEN",
+    "HASDB",
+    "POSTGRESQL_URI",
+    "BOT_NAME",
+    "DB_NAME",
+    "EMBED_COLOR",
+]
 missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
 if missing_vars:
-    raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}.")
+    raise EnvironmentError(
+        f"Missing required environment variables: {', '.join(missing_vars)}."
+    )
 
 
-cogs_blacklist = ["fun.snipe", "fun.esnipe", "listeners.haikus"]
+cogs_blacklist = []
 cogs = load_exts("cogs") + load_exts("takina/cogs")
 
-for cog in cogs:
-    if cog not in cogs_blacklist:
-        try:
-            bot.load_extension("cogs." + cog)
-        except Exception as e:
-            print(f"Failed to load {cog}: {e}")
-
 if __name__ == "__main__":
-    bot.run(os.getenv("TOKEN"))
+    bot.run(os.environ["TOKEN"])
