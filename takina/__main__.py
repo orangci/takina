@@ -1,11 +1,10 @@
 from discord.ext import commands
-import datetime
 import discord
 import psycopg
 import config
 import os
 
-start_time = datetime.datetime.now(datetime.UTC)
+start_time = discord.utils.utcnow()
 
 
 class Bot(commands.Bot):
