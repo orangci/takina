@@ -1,6 +1,6 @@
 from discord.ext import commands
-import discord
 import datetime
+import discord
 import psycopg
 import config
 import os
@@ -34,7 +34,7 @@ class Bot(commands.Bot):
 
         self.db = await psycopg.AsyncConnection.connect(config.POSTGRESQL_URI)
         if self.db is None:
-            raise RuntimeError("Database not initialised.")
+            raise RuntimeError("No PostgreSQL database configured.")
 
         for cog in cogs:
             if cog not in cogs_blacklist:
@@ -90,7 +90,9 @@ def global_cooldown(ctx: commands.Context):
     return retry_after is None
 
 
+# this will automatically load cogs in from the different subfolders
 def load_exts(directory):
+    # the folders to NOT load cogs from
     blacklist_subfolders = ["libs"]
 
     cogs = []
@@ -106,21 +108,16 @@ def load_exts(directory):
     return cogs
 
 
-REQUIRED_ENV_VARS = [
-    "TOKEN",
-    "HASDB",
-    "POSTGRESQL_URI",
-    "BOT_NAME",
-    "DB_NAME",
-    "EMBED_COLOR",
-]
+# these are required for the bot to function
+REQUIRED_ENV_VARS = ["TOKEN", "HASDB", "POSTGRESQL_URI", "BOT_NAME", "DB_NAME"]
 missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
 if missing_vars:
+    # raise an error if one of the required variables are missing
     raise EnvironmentError(
         f"Missing required environment variables: {', '.join(missing_vars)}."
     )
 
-
+# these are *individual* cogs to be blacklisted. e.g. "util.dns"
 cogs_blacklist = []
 cogs = load_exts("cogs") + load_exts("takina/cogs")
 
