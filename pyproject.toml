@@ -1,6 +1,6 @@
 [project]
 name = "takina"
-version = "1.28.0"
+version = "2.0.0"
 description = "The cutest multipurpose Discord bot."
 readme = "README.md"
 requires-python = ">=3.13"
@@ -17,13 +17,11 @@ dependencies = [
     "geopy==2.5.0",
     "google-books-api-wrapper==1.0.5",
     "motor>=3.7.1",
-    "nextcord==3.2.0",
     "open-meteo==0.4.0",
     "orjson==3.11.9",
     "ping3==5.1.5",
     "platformdirs==4.11.0",
     "pygithub==2.9.1",
-    "pymongo>=4.16.0",
     "python-dotenv==1.2.2",
     "pytz==2026.3.post1",
     "setuptools==83.0.0",
@@ -34,6 +32,8 @@ dependencies = [
     "wynn-api==3.2.1",
     "nltk==3.10.1",
     "hypixel.py==0.4.2",
+    "psycopg[binary]>=3.3.4",
+    "discord-py>=2.7.1",
 ]
 
 [tool.setuptools]
@@ -46,7 +46,7 @@ dev = [
 ]
 
 [tool.ruff]
-line-length = 150
+# line-length = 150
 fix = true
 show-fixes = true
 target-version = "py313"
@@ -54,7 +54,7 @@ indent-width = 4
 
 [tool.ruff.format]
 docstring-code-format = true
-docstring-code-line-length = 79
+# docstring-code-line-length = 79
 indent-style = "space"
 line-ending = "lf"
 skip-magic-trailing-comma = true

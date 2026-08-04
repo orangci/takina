@@ -1,20 +1,18 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
-# SPDX-FileCopyrightText: orangc
+from os import getenv, environ
 from dotenv import load_dotenv
 from pathlib import Path
-from os import getenv
 import tomllib
 
 load_dotenv()
 
 BOT_NAME = getenv("BOT_NAME")
-DB_NAME = getenv("DB_NAME").lower()
-MONGO_URI = getenv("MONGO")
+DB_NAME = environ["DB_NAME"].lower()
+POSTGRESQL_URI = environ["POSTGRESQL_URI"]
 GITHUB_AUTH_TOKEN = getenv("GITHUB_AUTH_TOKEN")
 REDDIT_CLIENT_ID = getenv("REDDIT_CLIENT_ID")
 REDDIT_CLIENT_SECRET = getenv("REDDIT_CLIENT_SECRET")
 LIBRETRANSLATE_API_KEY = getenv("LIBRETRANSLATE_API_KEY")
-LIBRETRANSLATE_API_URL = getenv("LIBRETRANSLATE_API_URL").removesuffix("/")
+LIBRETRANSLATE_API_URL = environ["LIBRETRANSLATE_API_URL"].removesuffix("/")
 HYPIXEL_API_KEY = getenv("HYPIXEL_API_KEY")
 STEAM_REGION = getenv("STEAM_REGION") or "US"
 ERROR_COLOR = 0xFF0037
