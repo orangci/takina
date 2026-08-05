@@ -1,7 +1,7 @@
 from takina.database import initiate_database
 from takina.prefix import get_prefix
+from takina.libs import lychecks
 from discord.ext import commands
-from takina import config
 import discord
 import os
 
@@ -17,7 +17,9 @@ class Bot(commands.Bot):
             intents=intents,
             case_insensitive=True,
             help_command=None,
-            owner_ids={961063229168164864, 716306888492318790},
+            owner_ids={961063229168164864, 716306888492318790, 1262781933608374415},
+            # in order: orangc, iostpa
+            # TODO remove 3rd ID, greyastrea, once 2.0 rewrite is finished
             allowed_mentions=discord.AllowedMentions(
                 everyone=False, roles=False, users=True, replied_user=True
             ),
@@ -41,28 +43,14 @@ class Bot(commands.Bot):
 
 
 bot = Bot()
-
-# commands cooldown
-cooldown = commands.CooldownMapping.from_cooldown(
-    config.COMMANDS_COOLDOWN,  # uses
-    5.0,  # per how many seconds
-    lambda m: m.author.id,
-)
-
-
-# ignores a command if the user's on cooldown
-@bot.check
-def global_cooldown(ctx: commands.Context):
-    bucket = cooldown.get_bucket(ctx.message)
-    if bucket:
-        retry_after = bucket.update_rate_limit()
-    return retry_after is None
+# our lovely checks
+lychecks.setup(bot)
 
 
 # this will automatically load cogs in from the different subfolders
 def load_exts(directory):
     # the folders to NOT load cogs from
-    blacklist_subfolders = ["libs"]
+    blacklist_subfolders = []
 
     cogs = []
     for root, dirs, files in os.walk(directory):
