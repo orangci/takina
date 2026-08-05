@@ -1,9 +1,9 @@
 from __main__ import bot, start_time
+from takina import config
 import discord
 import datetime
 import aiohttp
 import random
-import config
 import re
 
 
