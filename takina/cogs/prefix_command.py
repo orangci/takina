@@ -29,7 +29,7 @@ class Prefix(commands.Cog):
             color=config.EMBED_COLOR,
             description=f"✅ Prefix updated to: `{new_prefix}`",
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
 async def setup(bot: commands.Bot) -> None:

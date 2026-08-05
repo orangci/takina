@@ -1,4 +1,4 @@
-import takina.cogs.libs.oclib as oclib
+from takina.libs import lyhelpers
 from contextlib import redirect_stdout
 from discord.ext import commands
 from typing import Any, cast
@@ -60,7 +60,7 @@ class OwnerUtils(commands.Cog):
         else:
             return f"```py\n{value}{result}\n```"
 
-    @commands.hybrid_command(hidden=True, name="eval")
+    @commands.command(hidden=True, name="eval")
     @commands.is_owner()
     async def eval(self, ctx: commands.Context, *, code: str):
         result = await self.run_eval(ctx, code)
@@ -68,7 +68,7 @@ class OwnerUtils(commands.Cog):
         if result:
             await ctx.reply(result, mention_author=False)
 
-    @commands.hybrid_command(hidden=True, name="guilds")
+    @commands.command(hidden=True, name="guilds")
     @commands.is_owner()
     async def guilds(self, ctx: commands.Context):
         """Lists all guilds the bot is in, ranked from most members to least."""
@@ -91,7 +91,7 @@ class OwnerUtils(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(hidden=True)
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def disable(self, ctx: commands.Context, cmd: str):
         if cmd in ["enable", "disable"]:
@@ -110,7 +110,7 @@ class OwnerUtils(commands.Cog):
             embed.description = f"✅ Successfully disabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(hidden=True)
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def enable(self, ctx: commands.Context, cmd: str):
         if cmd in ["enable", "disable"]:
@@ -129,7 +129,7 @@ class OwnerUtils(commands.Cog):
             embed.description = f"✅ Successfully enabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(
+    @commands.command(
         hidden=True, aliases=["maintainer", "perms", "maintainers", "owners"]
     )
     async def owner(self, ctx: commands.Context):
@@ -153,10 +153,10 @@ class OwnerUtils(commands.Cog):
             embed.description = f"You are not a maintainer of {config.BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(hidden=True, aliases=["rx"])
+    @commands.command(hidden=True, aliases=["rx"])
     @commands.is_owner()
     async def reload_exts(self, ctx: commands.Context, cog: str | None):
-        importlib.reload(oclib)
+        importlib.reload(lyhelpers)
         importlib.reload(config)
 
         if cog is None:
@@ -214,7 +214,7 @@ class OwnerUtils(commands.Cog):
                 )
                 await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(hidden=True, aliases=["rsc"])
+    @commands.command(hidden=True, aliases=["rsc"])
     @commands.is_owner()
     async def reload_slash_command(self, ctx: commands.Context) -> None:
         start = time.perf_counter()
@@ -224,7 +224,7 @@ class OwnerUtils(commands.Cog):
         embed.description = f"✅ Successfully synced {len(synced):,} bot application commands in {elapsed:.4f} seconds."
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(hidden=True, aliases=["ux"])
+    @commands.command(hidden=True, aliases=["ux"])
     @commands.is_owner()
     async def unload(self, ctx: commands.Context, cog: str) -> None:
         try:
@@ -237,7 +237,7 @@ class OwnerUtils(commands.Cog):
             embed.description = f"❌ `cogs.{cog}` was already unloaded."
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(hidden=True, aliases=["lx"])
+    @commands.command(hidden=True, aliases=["lx"])
     @commands.is_owner()
     async def load(self, ctx: commands.Context, cog: str) -> None:
         try:
