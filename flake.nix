@@ -59,9 +59,12 @@
           appPythonEnv
           pkgs.ruff
           pkgs.uv
+          pkgs.gcc.cc.lib
         ];
 
         shellHook = ''
+          export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.gcc.cc.lib ]}:$LD_LIBRARY_PATH"
+
           if [ -f .env ]; then
             set -a
             . .env

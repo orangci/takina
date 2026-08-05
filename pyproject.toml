@@ -34,6 +34,12 @@ dependencies = [
     "hypixel.py==0.4.2",
     "psycopg[binary]>=3.3.4",
     "discord-py>=2.7.1",
+    "psycopg-pool>=3.3.1",
+    "sqlmodel>=0.0.39",
+    "sqlalchemy[asyncio]>=2.0.51",
+    "asyncpg>=0.31.0",
+    "psycopg2-binary>=2.9.12",
+    "greenlet>=3.5.4",
 ]
 
 [tool.setuptools]

@@ -1,0 +1,275 @@
+import takina.cogs.libs.oclib as oclib
+from contextlib import redirect_stdout
+from discord.ext import commands
+from typing import Any, cast
+from takina import config
+import importlib
+import traceback
+import textwrap
+import discord
+import time
+import io
+
+
+class OwnerUtils(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self._bot = bot
+
+    def cleanup_code(self, content):
+        # for cleaning up codeblocks
+        if (
+            content.startswith("```py")
+            or content.startswith("```")
+            and content.endswith("```")
+        ):
+            return "\n".join(content.split("\n")[1:-1])
+        return content.strip("` \n")
+
+    async def run_eval(self, ctx, body):
+        env = {
+            "bot": self._bot,
+            "ctx": ctx,
+            "guild": ctx.guild,
+            "channel": ctx.channel,
+            "author": ctx.author,
+            "__import__": __import__,
+        }
+
+        env.update(globals())
+        body = self.cleanup_code(body)
+        stdout = io.StringIO()
+        code = f"async def _eval():\n{textwrap.indent(body, '    ')}"
+
+        try:
+            exec(code, env)
+        except Exception as e:
+            return f"```py\n{e.__class__.__name__}: {e}\n```"
+
+        try:
+            with redirect_stdout(stdout):
+                result = await cast(Any, env["_eval"])()
+        except Exception:
+            return f"```py\n{stdout.getvalue()}{traceback.format_exc()}\n```"
+
+        value = stdout.getvalue()
+        if result is None:
+            if value:
+                return f"```py\n{value}\n```"
+            else:
+                return
+        else:
+            return f"```py\n{value}{result}\n```"
+
+    @commands.hybrid_command(hidden=True, name="eval")
+    @commands.is_owner()
+    async def eval(self, ctx: commands.Context, *, code: str):
+        result = await self.run_eval(ctx, code)
+        await ctx.message.add_reaction("✅")
+        if result:
+            await ctx.reply(result, mention_author=False)
+
+    @commands.hybrid_command(hidden=True, name="guilds")
+    @commands.is_owner()
+    async def guilds(self, ctx: commands.Context):
+        """Lists all guilds the bot is in, ranked from most members to least."""
+        guilds_sorted = sorted(
+            self._bot.guilds, key=lambda g: g.member_count, reverse=True
+        )
+        description = ""
+        for guild in guilds_sorted:
+            entry = f"\n**{guild.name}**"
+
+            if len(description) + len(entry) > 4096:
+                break
+            description += entry
+
+        if not description:
+            description = "No guilds available to display."
+
+        embed = discord.Embed(
+            title="Guilds", description=description, color=config.EMBED_COLOR
+        )
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.hybrid_command(hidden=True)
+    @commands.is_owner()
+    async def disable(self, ctx: commands.Context, cmd: str):
+        if cmd in ["enable", "disable"]:
+            await ctx.reply(
+                f":x: You cannot disable the `{cmd}` command.", mention_author=False
+            )
+        else:
+            command = self._bot.get_command(cmd)
+            if command is None:
+                embed = discord.Embed(color=config.ERROR_COLOR)
+                embed.description = "❌ Command not found."
+                await ctx.reply(embed=embed, mention_author=False)
+                return
+            command.enabled = False
+            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed.description = f"✅ Successfully disabled `{command}`."
+            await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.hybrid_command(hidden=True)
+    @commands.is_owner()
+    async def enable(self, ctx: commands.Context, cmd: str):
+        if cmd in ["enable", "disable"]:
+            await ctx.reply(
+                f":x: You cannot enable the `{cmd}` command.", mention_author=False
+            )
+        else:
+            command = self._bot.get_command(cmd)
+            if command is None:
+                embed = discord.Embed(color=config.ERROR_COLOR)
+                embed.description = "❌ Command not found."
+                await ctx.reply(embed=embed, mention_author=False)
+                return
+            command.enabled = True
+            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed.description = f"✅ Successfully enabled `{command}`."
+            await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.hybrid_command(
+        hidden=True, aliases=["maintainer", "perms", "maintainers", "owners"]
+    )
+    async def owner(self, ctx: commands.Context):
+        owner_names = []
+        assert self._bot.owner_ids is not None
+        for owner_id in self._bot.owner_ids:
+            owner = self._bot.get_user(owner_id) or await self._bot.fetch_user(owner_id)
+            if owner:
+                owner_names.append("**" + owner.display_name + "**")
+            else:
+                owner_names.append(f"Unknown User (ID: {owner_id})")
+
+        is_owner = await self._bot.is_owner(ctx.author)
+        owner_names_str = ", ".join(owner_names)
+        if is_owner:
+            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed.description = f"You have maintainer level permissions when interacting with {config.BOT_NAME}. Current users who hold maintainer level permissions: {owner_names_str}"
+            await ctx.reply(embed=embed, mention_author=False)
+        else:
+            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed.description = f"You are not a maintainer of {config.BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
+            await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.hybrid_command(hidden=True, aliases=["rx"])
+    @commands.is_owner()
+    async def reload_exts(self, ctx: commands.Context, cog: str | None):
+        importlib.reload(oclib)
+        importlib.reload(config)
+
+        if cog is None:
+            failed_cogs = []
+            for cog in list(
+                self._bot.extensions.keys()
+            ):  # Iterate over loaded extensions
+                try:
+                    await self._bot.reload_extension(cog)
+                except Exception as e:
+                    failed_cogs.append(f"{cog}: {e}")
+
+            if failed_cogs:
+                error_message = (
+                    "❌ Reloaded all except the following cogs:\n\n"
+                    + "\n> ".join(failed_cogs)
+                )
+                embed = discord.Embed(
+                    color=config.ERROR_COLOR, description=error_message
+                )
+                await ctx.reply(embed=embed, mention_author=False)
+                print(f"\n\n{embed.description}")
+            else:
+                embed = discord.Embed(
+                    color=config.EMBED_COLOR,
+                    description="✅ Successfully reloaded all cogs.",
+                )
+                await ctx.reply(embed=embed, mention_author=False)
+                print(f"\n\n{embed.description}")
+
+        else:
+            full_cog_name = (
+                f"takina.cogs.{cog}" if not cog.startswith("takina.cogs.") else cog
+            )
+
+            if full_cog_name in self._bot.extensions:
+                try:
+                    await self._bot.reload_extension(full_cog_name)
+                    embed = discord.Embed(
+                        color=config.EMBED_COLOR,
+                        description=f"✅ Successfully reloaded `{full_cog_name}`.",
+                    )
+                    await ctx.reply(embed=embed, mention_author=False)
+                    print(f"\n\n{embed.description}")
+                except Exception as e:
+                    embed = discord.Embed(
+                        color=config.ERROR_COLOR,
+                        description=f"❌ Failed to reload `{full_cog_name}`: {e}",
+                    )
+                    await ctx.reply(embed=embed, mention_author=False)
+            else:
+                embed = discord.Embed(
+                    color=config.ERROR_COLOR,
+                    description=f"❌ Cog `{full_cog_name}` is not loaded.",
+                )
+                await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.hybrid_command(hidden=True, aliases=["rsc"])
+    @commands.is_owner()
+    async def reload_slash_command(self, ctx: commands.Context) -> None:
+        start = time.perf_counter()
+        synced = await self._bot.tree.sync()
+        embed = discord.Embed(color=config.EMBED_COLOR)
+        elapsed = time.perf_counter() - start
+        embed.description = f"✅ Successfully synced {len(synced):,} bot application commands in {elapsed:.4f} seconds."
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.hybrid_command(hidden=True, aliases=["ux"])
+    @commands.is_owner()
+    async def unload(self, ctx: commands.Context, cog: str) -> None:
+        try:
+            await self._bot.unload_extension("cogs." + cog)
+            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed.description = f"✅ Successfully unloaded `cogs.{cog}`."
+            await ctx.reply(embed=embed, mention_author=False)
+        except commands.ExtensionNotLoaded:
+            embed = discord.Embed(color=config.ERROR_COLOR)
+            embed.description = f"❌ `cogs.{cog}` was already unloaded."
+            await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.hybrid_command(hidden=True, aliases=["lx"])
+    @commands.is_owner()
+    async def load(self, ctx: commands.Context, cog: str) -> None:
+        try:
+            await self._bot.load_extension("cogs." + cog)
+        except commands.ExtensionNotLoaded:
+            embed = discord.Embed(color=config.ERROR_COLOR)
+            embed.description = f"❌ `cogs.{cog}` was already loaded."
+            await ctx.reply(embed=embed, mention_author=False)
+        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed.description = f"✅ Successfully loaded `cogs.{cog}`."
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.hybrid_command(hidden=True)
+    @commands.is_owner()
+    async def send(
+        self,
+        ctx: commands.Context,
+        channel: discord.TextChannel | None = None,
+        *,
+        message: str,
+    ):
+        channel = channel or cast(discord.TextChannel, ctx.channel)
+
+        if channel and message:
+            await channel.send(message)
+            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed.description = f"{config.emojis.SUCCESS} Message sent."
+            if ctx.interaction is not None:
+                await ctx.reply(embed=embed, ephemeral=True)
+        else:
+            raise commands.UserInputError
+
+
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(OwnerUtils(bot))

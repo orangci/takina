@@ -1,7 +1,8 @@
+from takina.database import initiate_database
+from takina.prefix import get_prefix
 from discord.ext import commands
+from takina import config
 import discord
-import psycopg
-import config
 import os
 
 start_time = discord.utils.utcnow()
@@ -25,49 +26,18 @@ class Bot(commands.Bot):
             ),
         )
 
-        self.db: psycopg.AsyncConnection | None = None
-
     async def setup_hook(self):
         if not os.getenv("HASDB"):
             raise RuntimeError("No PostgreSQL database configured.")
 
-        self.db = await psycopg.AsyncConnection.connect(config.POSTGRESQL_URI)
-        if self.db is None:
-            raise RuntimeError("No PostgreSQL database configured.")
+        await initiate_database()
 
         for cog in cogs:
             if cog not in cogs_blacklist:
                 try:
-                    await self.load_extension(f"cogs.{cog}")
+                    await self.load_extension(f"takina.cogs.{cog}")
                 except Exception as e:
                     print(f"Failed to load {cog}: {e}")
-
-
-async def get_prefix(self, message: discord.Message):
-    prefixes = [".", "takina ", "Takina "]
-
-    if not message.guild:
-        return prefixes
-
-    async with self.db.cursor() as cur:
-        await cur.execute(
-            """
-            SELECT prefix
-            FROM prefixes
-            WHERE guild_id = %s
-            """,
-            (message.guild.id,),
-        )
-
-        row = await cur.fetchone()
-
-    if row:
-        return [row[0], "takina ", "Takina "]
-
-    if prefix := os.getenv("PREFIX"):
-        return [prefix]
-
-    return prefixes
 
 
 bot = Bot()
@@ -103,6 +73,7 @@ def load_exts(directory):
             if file.endswith(".py"):
                 relative_path = os.path.relpath(os.path.join(root, file), directory)
                 cog_name = relative_path[:-3].replace(os.sep, ".")
+                print(f"DEBUG: loaded {cog_name}")
                 cogs.append(cog_name)
     return cogs
 
@@ -118,7 +89,7 @@ if missing_vars:
 
 # these are *individual* cogs to be blacklisted. e.g. "util.dns"
 cogs_blacklist = []
-cogs = load_exts("cogs") + load_exts("takina/cogs")
+cogs = load_exts("takina/cogs")
 
 if __name__ == "__main__":
     bot.run(os.environ["TOKEN"])
