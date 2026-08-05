@@ -17,9 +17,8 @@ class Bot(commands.Bot):
             intents=intents,
             case_insensitive=True,
             help_command=None,
-            owner_ids={961063229168164864, 716306888492318790, 1262781933608374415},
+            owner_ids={961063229168164864, 716306888492318790},
             # in order: orangc, iostpa
-            # TODO remove 3rd ID, greyastrea, once 2.0 rewrite is finished
             allowed_mentions=discord.AllowedMentions(
                 everyone=False, roles=False, users=True, replied_user=True
             ),

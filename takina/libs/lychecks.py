@@ -1,5 +1,6 @@
 from discord import app_commands
 from discord.ext import commands
+from takina.libs import lyerrors
 from takina import config
 import discord
 
@@ -25,14 +26,29 @@ def has_permissions(**perms: bool):
             return True
 
         if ctx.guild is None:
-            return False
+            raise lyerrors.TakinaPermissionError(
+                "This command can only be used in a server."
+            )
 
-        if isinstance(ctx.author, discord.Member):
-            permissions = ctx.author.guild_permissions
-        else:
-            return False
+        if not isinstance(ctx.author, discord.Member):
+            raise lyerrors.TakinaPermissionError(
+                "Unable to determine your permissions."
+            )
 
-        return all(getattr(permissions, name) == value for name, value in perms.items())
+        permissions = ctx.author.guild_permissions
+
+        missing = [
+            name.replace("_", " ").title()
+            for name, value in perms.items()
+            if getattr(permissions, name) != value
+        ]
+
+        if missing:
+            raise lyerrors.TakinaPermissionError(
+                f"You are missing the following permissions required to use this command: {', '.join(missing)}."
+            )
+
+        return True
 
     return commands.check(predicate)
 

@@ -1,4 +1,4 @@
-from takina.libs import lyhelpers
+from takina.libs import lyerrors, lychecks, lyhelpers
 from contextlib import redirect_stdout
 from discord.ext import commands
 from typing import Any, cast
@@ -64,7 +64,7 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def eval(self, ctx: commands.Context, *, code: str):
         result = await self.run_eval(ctx, code)
-        await ctx.message.add_reaction("✅")
+        await ctx.message.add_reaction("{config.emojis.SUCCESS}")
         if result:
             await ctx.reply(result, mention_author=False)
 
@@ -95,44 +95,40 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def disable(self, ctx: commands.Context, cmd: str):
         if cmd in ["enable", "disable"]:
-            await ctx.reply(
-                f":x: You cannot disable the `{cmd}` command.", mention_author=False
+            raise lyerrors.TakinaUserInputError(
+                f"You cannot disable the `{cmd}` command."
             )
         else:
             command = self._bot.get_command(cmd)
             if command is None:
-                embed = discord.Embed(color=config.ERROR_COLOR)
-                embed.description = "❌ Command not found."
-                await ctx.reply(embed=embed, mention_author=False)
-                return
+                raise lyerrors.TakinaNotFoundError("Command not found.")
             command.enabled = False
             embed = discord.Embed(color=config.EMBED_COLOR)
-            embed.description = f"✅ Successfully disabled `{command}`."
+            embed.description = (
+                f"{config.emojis.SUCCESS} Successfully disabled `{command}`."
+            )
             await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def enable(self, ctx: commands.Context, cmd: str):
         if cmd in ["enable", "disable"]:
-            await ctx.reply(
-                f":x: You cannot enable the `{cmd}` command.", mention_author=False
+            raise lyerrors.TakinaUserInputError(
+                f":x: You cannot enable the `{cmd}` command."
             )
         else:
             command = self._bot.get_command(cmd)
             if command is None:
-                embed = discord.Embed(color=config.ERROR_COLOR)
-                embed.description = "❌ Command not found."
-                await ctx.reply(embed=embed, mention_author=False)
-                return
+                raise lyerrors.TakinaNotFoundError("Command not found.")
             command.enabled = True
             embed = discord.Embed(color=config.EMBED_COLOR)
-            embed.description = f"✅ Successfully enabled `{command}`."
+            embed.description = (
+                f"{config.emojis.SUCCESS} Successfully enabled `{command}`."
+            )
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
-        hidden=True, aliases=["maintainer", "perms", "maintainers", "owners"]
-    )
-    async def owner(self, ctx: commands.Context):
+    @commands.command(hidden=True, aliases=["maintainer", "perms", "owner", "owners"])
+    async def maintainers(self, ctx: commands.Context):
         owner_names = []
         assert self._bot.owner_ids is not None
         for owner_id in self._bot.owner_ids:
@@ -157,6 +153,8 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def reload_exts(self, ctx: commands.Context, cog: str | None):
         importlib.reload(lyhelpers)
+        importlib.reload(lyerrors)
+        importlib.reload(lychecks)
         importlib.reload(config)
 
         if cog is None:
@@ -171,18 +169,15 @@ class OwnerUtils(commands.Cog):
 
             if failed_cogs:
                 error_message = (
-                    "❌ Reloaded all except the following cogs:\n\n"
+                    "Reloaded all except the following cogs:\n\n"
                     + "\n> ".join(failed_cogs)
                 )
-                embed = discord.Embed(
-                    color=config.ERROR_COLOR, description=error_message
-                )
-                await ctx.reply(embed=embed, mention_author=False)
-                print(f"\n\n{embed.description}")
+                print(f"\n\n{error_message}")
+                raise lyerrors.TakinaError(error_message)
             else:
                 embed = discord.Embed(
                     color=config.EMBED_COLOR,
-                    description="✅ Successfully reloaded all cogs.",
+                    description=f"{config.emojis.SUCCESS} Successfully reloaded all cogs.",
                 )
                 await ctx.reply(embed=embed, mention_author=False)
                 print(f"\n\n{embed.description}")
@@ -197,22 +192,16 @@ class OwnerUtils(commands.Cog):
                     await self._bot.reload_extension(full_cog_name)
                     embed = discord.Embed(
                         color=config.EMBED_COLOR,
-                        description=f"✅ Successfully reloaded `{full_cog_name}`.",
+                        description=f"{config.emojis.SUCCESS} Successfully reloaded `{full_cog_name}`.",
                     )
                     await ctx.reply(embed=embed, mention_author=False)
                     print(f"\n\n{embed.description}")
                 except Exception as e:
-                    embed = discord.Embed(
-                        color=config.ERROR_COLOR,
-                        description=f"❌ Failed to reload `{full_cog_name}`: {e}",
+                    raise lyerrors.TakinaError(
+                        f"Failed to reload `{full_cog_name}`: {e}"
                     )
-                    await ctx.reply(embed=embed, mention_author=False)
             else:
-                embed = discord.Embed(
-                    color=config.ERROR_COLOR,
-                    description=f"❌ Cog `{full_cog_name}` is not loaded.",
-                )
-                await ctx.reply(embed=embed, mention_author=False)
+                raise lyerrors.TakinaError(f"Cog `{full_cog_name}` is not loaded.")
 
     @commands.command(hidden=True, aliases=["rsc"])
     @commands.is_owner()
@@ -221,7 +210,7 @@ class OwnerUtils(commands.Cog):
         synced = await self._bot.tree.sync()
         embed = discord.Embed(color=config.EMBED_COLOR)
         elapsed = time.perf_counter() - start
-        embed.description = f"✅ Successfully synced {len(synced):,} bot application commands in {elapsed:.4f} seconds."
+        embed.description = f"{config.emojis.SUCCESS} Successfully synced {len(synced):,} bot application commands in {elapsed:.4f} seconds."
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True, aliases=["ux"])
@@ -230,12 +219,12 @@ class OwnerUtils(commands.Cog):
         try:
             await self._bot.unload_extension("cogs." + cog)
             embed = discord.Embed(color=config.EMBED_COLOR)
-            embed.description = f"✅ Successfully unloaded `cogs.{cog}`."
+            embed.description = (
+                f"{config.emojis.SUCCESS} Successfully unloaded `cogs.{cog}`."
+            )
             await ctx.reply(embed=embed, mention_author=False)
         except commands.ExtensionNotLoaded:
-            embed = discord.Embed(color=config.ERROR_COLOR)
-            embed.description = f"❌ `cogs.{cog}` was already unloaded."
-            await ctx.reply(embed=embed, mention_author=False)
+            raise lyerrors.TakinaError(f"`cogs.{cog}` was already unloaded.")
 
     @commands.command(hidden=True, aliases=["lx"])
     @commands.is_owner()
@@ -243,11 +232,9 @@ class OwnerUtils(commands.Cog):
         try:
             await self._bot.load_extension("cogs." + cog)
         except commands.ExtensionNotLoaded:
-            embed = discord.Embed(color=config.ERROR_COLOR)
-            embed.description = f"❌ `cogs.{cog}` was already loaded."
-            await ctx.reply(embed=embed, mention_author=False)
+            raise lyerrors.TakinaError(f"`cogs.{cog}` was already loaded.")
         embed = discord.Embed(color=config.EMBED_COLOR)
-        embed.description = f"✅ Successfully loaded `cogs.{cog}`."
+        embed.description = f"{config.emojis.SUCCESS} Successfully loaded `cogs.{cog}`."
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(hidden=True)
