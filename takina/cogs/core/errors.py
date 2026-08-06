@@ -3,6 +3,9 @@ from discord.ext import commands
 from takina import config
 import logging
 import discord
+import os
+
+DEBUG = os.getenv("TAKINA_DEBUG") == "1"
 
 
 class Errors(commands.Cog):
@@ -14,6 +17,9 @@ class Errors(commands.Cog):
     async def on_command_error(
         self, ctx: commands.Context, error: commands.CommandError
     ):
+        if DEBUG:
+            self.logger.exception("Unhandled command exception", exc_info=error)
+
         error = getattr(error, "original", error)
 
         # ignore these two
@@ -35,12 +41,11 @@ class Errors(commands.Cog):
                 "This command is restricted to Takina's maintainers (`/maintainers`)."
             )
 
-        elif isinstance(error, commands.CommandError):
-            if str(error) in {
-                "That command does not exist.",
-                "That subcommand does not exist.",
-            }:
-                error = lyerrors.TakinaNotFoundError(str(error))
+        elif str(error) in {
+            "That command does not exist.",
+            "That subcommand does not exist.",
+        }:
+            error = lyerrors.TakinaNotFoundError(str(error))
 
         elif isinstance(error, commands.BotMissingPermissions):
             perms = ", ".join(
@@ -70,7 +75,8 @@ class Errors(commands.Cog):
             )
 
         elif not isinstance(error, lyerrors.TakinaError):
-            self.logger.exception("Unhandled command exception", exc_info=error)
+            if not DEBUG:
+                self.logger.exception("Unhandled command exception", exc_info=error)
             error = lyerrors.TakinaError(
                 "Unexpected Error: An unexpected error occurred. Please report this issue if it persists."
             )
