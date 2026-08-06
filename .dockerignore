@@ -1,0 +1,8 @@
+.forgejo
+.github
+flake*
+*.nix
+.pre-commit-config.yaml
+*.md
+renovate.json
+.envrc
