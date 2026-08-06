@@ -6,18 +6,22 @@ import discord
 
 # global cooldown for all commands
 _cooldown = commands.CooldownMapping.from_cooldown(
-    config.COMMANDS_COOLDOWN, 5.0, lambda m: m.author.id
+    config.COMMANDS_COOLDOWN, 5.0, lambda message: message.author.id
 )
 
 
 def setup(bot: commands.Bot) -> None:
-    @bot.check
-    async def global_cooldown(ctx: commands.Context) -> bool:
+    @bot.before_invoke
+    async def global_cooldown(ctx: commands.Context) -> None:
         bucket = _cooldown.get_bucket(ctx.message)
         if bucket is None:
-            return True
+            return
 
-        return bucket.update_rate_limit() is None
+        retry_after = bucket.update_rate_limit()
+        if retry_after is not None:
+            raise commands.CommandOnCooldown(
+                bucket, retry_after, commands.BucketType.user
+            )
 
 
 def has_permissions(**perms: bool):

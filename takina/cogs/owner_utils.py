@@ -64,7 +64,7 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def eval(self, ctx: commands.Context, *, code: str):
         result = await self.run_eval(ctx, code)
-        await ctx.message.add_reaction("{config.emojis.SUCCESS}")
+        await ctx.message.add_reaction("✅")
         if result:
             await ctx.reply(result, mention_author=False)
 
@@ -217,7 +217,7 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def unload(self, ctx: commands.Context, cog: str) -> None:
         try:
-            await self._bot.unload_extension("cogs." + cog)
+            await self._bot.unload_extension("takina.cogs." + cog)
             embed = discord.Embed(color=config.EMBED_COLOR)
             embed.description = (
                 f"{config.emojis.SUCCESS} Successfully unloaded `cogs.{cog}`."
@@ -230,7 +230,7 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def load(self, ctx: commands.Context, cog: str) -> None:
         try:
-            await self._bot.load_extension("cogs." + cog)
+            await self._bot.load_extension("takina.cogs." + cog)
         except commands.ExtensionNotLoaded:
             raise lyerrors.TakinaError(f"`cogs.{cog}` was already loaded.")
         embed = discord.Embed(color=config.EMBED_COLOR)
