@@ -49,6 +49,7 @@ async def build_profile_embed(ctx: commands.Context, member: discord.Member) -> 
 ## Cogs Layout
 Helper functions et cetera belong in `takina/libs`. Cogs go into `takina/cogs/category-name`.
 Two special cogs categories are:
+- `takina/cogs/core` which is for core cogs vital to the bot's functionality, such as error handling.
 - `takina/cogs/sesp` which is for server specific cogs; e.g. `takina/cogs/sesp/server-name/welcome-message.py`.
 - `takina/cogs/listeners` which is for cogs that don't usually register commands, but instead consist of cog listeners that respond to events.
 

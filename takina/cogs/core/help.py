@@ -1,6 +1,5 @@
-from takina.libs.lyviews import PaginatorView
+from takina.libs import lyerrors, lyviews
 from collections.abc import Mapping
-from takina.libs import lyerrors
 from discord.ext import commands
 from takina import config
 import discord
@@ -18,9 +17,6 @@ class Help(commands.HelpCommand):
         if command.signature:
             signature += f" {command.signature}"
 
-        if command.help:
-            signature += f": {command.help}"
-
         return signature
 
     async def send_bot_help(self, mapping: Mapping, /) -> None:
@@ -32,7 +28,7 @@ class Help(commands.HelpCommand):
             for command in filtered:
                 lines.append(
                     f"> **{command.qualified_name}**: "
-                    f"{command.help or 'No description.'}"
+                    f"{command.description or 'No description.'}"
                 )
 
         if not lines:
@@ -49,7 +45,7 @@ class Help(commands.HelpCommand):
 
             embeds.append(embed)
 
-        view = PaginatorView(self.context.author, embeds)
+        view = lyviews.PaginatorView(self.context.author, embeds)
         view.message = await self.get_destination().send(embed=embeds[0], view=view)
 
     async def send_command_help(self, command: commands.Command):
@@ -57,14 +53,12 @@ class Help(commands.HelpCommand):
 
         description = []
 
-        if command.help:
-            description.append(command.help)
+        if command.description:
+            description.append(command.description)
             description.append("")
 
         description.append(
-            f"> **Command**: "
-            f"{self.context.clean_prefix}{command.qualified_name} "
-            f"{command.signature}"
+            f"> **Command**: {self.context.clean_prefix}{command.qualified_name} {command.signature}"
         )
 
         if command.aliases:
@@ -79,8 +73,8 @@ class Help(commands.HelpCommand):
 
         description = []
 
-        if group.help:
-            description.append(group.help)
+        if group.description:
+            description.append(group.description)
             description.append("")
 
         description.append(

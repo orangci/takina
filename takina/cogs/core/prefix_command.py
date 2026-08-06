@@ -1,6 +1,6 @@
+from takina.libs import lychecks
 from takina.prefix import PrefixModel
 from takina import config, database
-from takina.libs import lychecks
 from discord.ext import commands
 import discord
 
@@ -12,9 +12,7 @@ class Prefix(commands.Cog):
     @commands.guild_only()
     @lychecks.has_permissions(administrator=True)
     @commands.hybrid_command(
-        name="prefix",
-        description=f"Set a custom prefix for {config.BOT_NAME}",
-        help="new_prefix",
+        name="prefix", description=f"Set a custom prefix for {config.BOT_NAME}"
     )
     async def set_prefix(self, ctx: commands.Context, new_prefix: str):
         assert ctx.guild is not None
@@ -32,7 +30,7 @@ class Prefix(commands.Cog):
             color=config.EMBED_COLOR,
             description=f"✅ Prefix updated to: `{new_prefix}`",
         )
-        await ctx.reply(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 async def setup(bot: commands.Bot) -> None:
