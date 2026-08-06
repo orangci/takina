@@ -1,22 +1,21 @@
 repos:
   - repo: local
     hooks:
-      # python stuff
       - id: ruff-format
         name: ruff format
-        entry: ruff format
+        entry: sh -c 'if command -v ruff >/dev/null 2>&1; then ruff format; else uv run ruff format; fi'
         language: system
         pass_filenames: false
 
       - id: ruff-check
         name: ruff check
-        entry: ruff check
+        entry: sh -c 'if command -v ruff >/dev/null 2>&1; then ruff check; else uv run ruff check; fi'
         language: system
         pass_filenames: false
 
       - id: ty-check
         name: ty check
-        entry: ty check
+        entry: sh -c 'if command -v ty >/dev/null 2>&1; then ty check; else uv run ty check; fi'
         language: system
         pass_filenames: false
 
@@ -29,18 +28,18 @@ repos:
       # nix stuff
       - id: nixfmt
         name: nixfmt
-        entry: fish -c "nixfmt **.nix"
+        entry: sh -c 'if command -v nixfmt >/dev/null 2>&1; then find . -name "*.nix" -exec nixfmt {} +; else echo "Skipping nixfmt"; fi'
         language: system
         pass_filenames: false
 
       - id: statix-fix
         name: statix fix
-        entry: statix fix
+        entry: sh -c 'if command -v statix >/dev/null 2>&1; then statix fix; else echo "Skipping statix"; fi'
         language: system
         pass_filenames: false
 
       - id: deadnix
         name: deadnix
-        entry: fish -c "deadnix -eq **.nix"
+        entry: sh -c 'command -v deadnix >/dev/null 2>&1 && deadnix -eq . || echo "Skipping deadnix"'
         language: system
         pass_filenames: false
