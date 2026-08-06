@@ -33,3 +33,7 @@ class TakinaDisabledError(TakinaError):
 
 class TakinaMaintainerOnlyError(TakinaError):
     error_name = "Maintainer Only Command"
+
+
+class TakinaMissingEnvironmentVariableError(TakinaError):
+    error_name = "Missing Environment Variable"

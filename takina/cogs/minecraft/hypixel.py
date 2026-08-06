@@ -590,7 +590,6 @@ async def setup(bot: commands.Bot):
     if config.HYPIXEL_API_KEY:
         await bot.add_cog(Hypixel(bot))
     else:
-        # TODO make an error for this
-        print(
-            "Skipping loading of the minecraft.hypixel cog: you must set the HYPIXEL_API_KEY environment variable for htis cog to work! Visit https://developer.hypixel.net for an API key."
+        raise lyerrors.TakinaMissingEnvironmentVariableError(
+            "Visit https://developer.hypixel.net for an API key."
         )
