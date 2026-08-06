@@ -75,7 +75,7 @@ if missing_vars:
     )
 
 # these are *individual* cogs to be blacklisted. e.g. "util.dns"
-cogs_blacklist = []
+cogs_blacklist = ["core.settings"]
 cogs = load_exts("takina/cogs")
 
 if __name__ == "__main__":
