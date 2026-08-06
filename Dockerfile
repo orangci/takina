@@ -5,7 +5,7 @@ FROM python:latest
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
 
 # Download the uv installer
-ADD https://astral.sh/uv/0.11.6/install.sh /uv-installer.sh
+ADD https://astral.sh/uv/0.12.2/install.sh /uv-installer.sh
 
 # Run the installer then remove it
 RUN sh /uv-installer.sh && rm /uv-installer.sh
@@ -33,4 +33,4 @@ RUN mkdir test && \
     rm -rf test
 
 # Specify the command to run the application
-CMD ["uv", "run", "takina"]
+CMD ["uv", "run", "-m", "takina"]

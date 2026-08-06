@@ -68,6 +68,9 @@ Before proceeding, I am assuming that you have a running MongoDB database. The m
 ## Contributing
 Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Maintainers
+Takina is currently maintained by [orangc](https://orang.ci) and [iostpa](https://iostpa.com)
+
 ## License
 - [License: GNU AGPLv3](./LICENSE)
 - [Terms of Service](https://takina.orangc.net/tos.html)
