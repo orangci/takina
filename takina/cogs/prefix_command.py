@@ -1,5 +1,6 @@
 from takina.prefix import PrefixModel
 from takina import config, database
+from takina.libs import lychecks
 from discord.ext import commands
 import discord
 
@@ -9,7 +10,7 @@ class Prefix(commands.Cog):
         self.bot = bot
 
     @commands.guild_only()
-    @commands.has_permissions(administrator=True)
+    @lychecks.has_permissions(administrator=True)
     @commands.hybrid_command(
         name="prefix", description=f"Set a custom prefix for {config.BOT_NAME}"
     )
