@@ -1,6 +1,7 @@
 from __main__ import bot, start_time
 from collections.abc import Iterable
 from discord.ext import commands
+from takina.libs import lyerrors
 from takina import config
 import datetime
 import discord
@@ -10,12 +11,17 @@ import re
 
 
 # for requesting data from APIs
-async def request(url, headers=None, *args, **kwargs):
-    if headers:
-        kwargs["headers"] = headers
-
+async def request(url: str):
     async with aiohttp.ClientSession() as session:
-        async with session.request("GET", url, *args, **kwargs) as response:
+        async with session.get(url) as response:
+            if response.status == 404:
+                return False
+
+            elif response.status >= 400:
+                raise lyerrors.TakinaError(
+                    f"Error {response.status}: Failed to reach the [requested resource]({str(response.url)})."
+                )
+
             return await response.json()
 
 
