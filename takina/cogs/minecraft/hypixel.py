@@ -1,4 +1,4 @@
-from takina.libs import lyhelpers, lyerrors
+from takina.libs import lyhelpers, lyerrors, lychecks
 from discord.ext import commands
 from takina import config
 import discord
@@ -492,6 +492,7 @@ class Hypixel(commands.Cog):
 
         return embed
 
+    @lychecks.is_user_app()
     @commands.hybrid_group(
         name="hypixel",
         aliases=["hypickle", "hy"],
