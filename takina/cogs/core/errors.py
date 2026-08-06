@@ -94,6 +94,10 @@ class Errors(commands.Cog):
                 await ctx.reply(embed=embed, mention_author=False)
             return
 
+        if isinstance(error, lyerrors.TakinaMissingEnvironmentVariableError):
+            print(error.message)
+            return
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Errors(bot))
