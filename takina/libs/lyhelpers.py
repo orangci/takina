@@ -1,7 +1,9 @@
 from __main__ import bot, start_time
+from collections.abc import Iterable
+from discord.ext import commands
 from takina import config
-import discord
 import datetime
+import discord
 import aiohttp
 import random
 import re
@@ -148,3 +150,14 @@ def randint_from_seed(
         return array[random.Random(seed).randint(0, len(array) - 1)]
     else:
         return random.Random(seed).randint(minimum, maximum)
+
+
+# for group commands that can be invoked without a subcommand
+# we will send a nice "pick your subcommand" embed
+async def send_subcommands_list(
+    ctx: commands.Context, subcommands: Iterable[commands.Command]
+):
+    names = ", ".join(f"`{command.name}`" for command in subcommands)
+    embed = discord.Embed(color=config.EMBED_COLOR)
+    embed.description = f"Please specify a subcommand: {names}"
+    await ctx.reply(embed=embed, mention_author=False)
