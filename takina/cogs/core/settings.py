@@ -16,7 +16,7 @@ class GuildSettingsModel(SQLModel, table=True):
 
 class Settings(commands.Cog):
     def __init__(self, bot: commands.Bot):
-        self.bot = bot
+        self._bot = bot
 
     @commands.hybrid_group(
         name="settings", description="Configure Takina.", invoke_without_command=True

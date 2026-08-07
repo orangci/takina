@@ -1,7 +1,7 @@
-from sqlmodel import Field, SQLModel, select
-from takina.database import SessionLocal
+from sqlmodel import Field, SQLModel
 from sqlalchemy import BigInteger
 from discord.ext import commands
+from takina import database
 import discord
 import os
 
@@ -12,11 +12,7 @@ async def get_prefix(bot: commands.Bot, message: discord.Message) -> list[str]:
     if message.guild is None:
         return default_prefixes
 
-    async with SessionLocal() as session:
-        result = await session.execute(
-            select(PrefixModel).where(PrefixModel.guild_id == message.guild.id)
-        )
-        prefix = result.scalar_one_or_none()
+    prefix = await database.get(PrefixModel, guild_id=message.guild.id)
 
     if prefix is not None:
         return [prefix.prefix, "takina ", "Takina "]

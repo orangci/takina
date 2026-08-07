@@ -7,7 +7,7 @@ import discord
 
 class Prefix(commands.Cog):
     def __init__(self, bot: commands.Bot):
-        self.bot = bot
+        self._bot = bot
 
     @commands.guild_only()
     @lychecks.has_permissions(administrator=True)
