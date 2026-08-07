@@ -58,7 +58,32 @@ def has_permissions(**perms: bool):
 
 
 def is_user_app():
-    return app_commands.allowed_installs(users=True, guilds=False)
+    def decorator(command):
+        command = app_commands.allowed_installs(users=True, guilds=False)(command)
+
+        command = app_commands.allowed_contexts(
+            guilds=True, dms=True, private_channels=True
+        )(command)
+
+        return command
+
+        # hybrid groups have a normal commands.Group wrapper around
+        # their actual application command Group
+        if isinstance(command, commands.Group):
+            app_command = command.app_command
+
+            if app_command is not None:
+                app_command = app_commands.allowed_installs(users=True, guilds=False)(
+                    app_command
+                )
+
+                app_command = app_commands.allowed_contexts(
+                    guilds=True, dms=True, private_channels=True
+                )(app_command)
+
+                command.app_command = app_command
+
+    return decorator
 
 
 def dms_only():

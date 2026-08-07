@@ -1,4 +1,4 @@
-from takina.libs import lyerrors, lyhelpers
+from takina.libs import lyerrors, lyhelpers, lychecks
 from discord.ext import commands
 from takina import config
 import discord
@@ -8,6 +8,7 @@ class MinecraftServerStatus(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @lychecks.is_user_app()
     @commands.hybrid_command(
         help="Display a Minecraft server's status.",
         usage="hypixel.net",
