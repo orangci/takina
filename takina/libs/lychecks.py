@@ -98,3 +98,16 @@ def is_guild_app():
 
 def is_user_and_guild_app():
     return app_commands.allowed_installs(users=True, guilds=True)
+
+
+# this is for commands that are meant to work only in specific servers
+# which is mostly just sesp cog commands
+# sesp stands for specific server, by the way
+def sesp_guild_only(guild_id: int):
+    async def predicate(ctx: commands.Context):
+        if await ctx.bot.is_owner(ctx.author):
+            return True
+
+        return ctx.guild and ctx.guild.id == guild_id
+
+    return commands.check(predicate)
