@@ -11,9 +11,12 @@ import re
 
 
 # for requesting data from APIs
-async def request(url: str):
+async def request(url: str, headers: dict | None = None, *args, **kwargs):
+    if headers:
+        kwargs["headers"] = headers
+
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
+        async with session.get(url, *args, **kwargs) as response:
             if response.status == 404:
                 return False
 
