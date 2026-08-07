@@ -6,7 +6,7 @@ import discord
 
 class MinecraftServerStatus(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self._bot = bot
 
     @lychecks.is_user_app()
     @commands.hybrid_command(

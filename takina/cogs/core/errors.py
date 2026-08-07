@@ -10,7 +10,7 @@ DEBUG = os.getenv("TAKINA_DEBUG") == "1"
 
 class Errors(commands.Cog):
     def __init__(self, bot: commands.Bot):
-        self.bot = bot
+        self._bot = bot
         self.logger = logging.getLogger("takina.errors")
 
     @commands.Cog.listener()

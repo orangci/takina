@@ -60,7 +60,6 @@ def load_exts(directory):
             if file.endswith(".py"):
                 relative_path = os.path.relpath(os.path.join(root, file), directory)
                 cog_name = relative_path[:-3].replace(os.sep, ".")
-                print(f"DEBUG: loaded {cog_name}")
                 cogs.append(cog_name)
     return cogs
 
