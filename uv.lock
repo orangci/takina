@@ -1605,7 +1605,6 @@ dependencies = [
     { name = "virtualenv" },
     { name = "whodap" },
     { name = "wikipedia-api" },
-    { name = "wynn-api" },
 ]
 
 [package.dev-dependencies]
@@ -1650,7 +1649,6 @@ requires-dist = [
     { name = "virtualenv", specifier = "==21.7.1" },
     { name = "whodap", specifier = "==0.1.16" },
     { name = "wikipedia-api", specifier = "==0.15.0" },
-    { name = "wynn-api", specifier = "==3.2.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -1819,15 +1817,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/8c/fd/5107db6856173559881c9da718dea0b2d399ca958409d8050b6e26494f99/wikipedia_api-0.15.0.tar.gz", hash = "sha256:acc6965ed4b6948c61de5f6d1edcc49654e2fc7f7239f26111ccb4ea5796cc1d", size = 142078, upload-time = "2026-05-26T08:41:12.012Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fb/6a/011739728de80f87777485ac1eac3fa9761590729dbb790156c2df6f2c8d/wikipedia_api-0.15.0-py3-none-any.whl", hash = "sha256:b15b8745bb0c85a5872bc8e8d760d2e93a551c0257de2a31107c1bb476befdbc", size = 129153, upload-time = "2026-05-26T08:41:09.687Z" },
-]
-
-[[package]]
-name = "wynn-api"
-version = "3.2.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c8/bf/82af2791ec60e90e0b5ff753ad5f57ea917d48346188b154866cee2456a1/wynn-api-3.2.1.tar.gz", hash = "sha256:c01ea4a429c0162354af3f0f223a7eb4113566620d94448d446bfc353feb3d49", size = 7304, upload-time = "2024-01-29T17:07:14.406Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ed/b8/b4635f0248118e34a2c757ae07ab93b8906e9fc411b20a953bb4e28c3573/wynn_api-3.2.1-py3-none-any.whl", hash = "sha256:b3ae0ac6e49e61134552fece0784336e46de87faef1039f208a018f0a239472a", size = 6531, upload-time = "2024-01-29T17:07:12.992Z" },
 ]
 
 [[package]]
