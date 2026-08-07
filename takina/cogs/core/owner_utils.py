@@ -114,7 +114,7 @@ class OwnerUtils(commands.Cog):
     async def enable(self, ctx: commands.Context, cmd: str):
         if cmd in ["enable", "disable"]:
             raise lyerrors.TakinaUserInputError(
-                f":x: You cannot enable the `{cmd}` command."
+                f"You cannot enable the `{cmd}` command."
             )
         else:
             command = self._bot.get_command(cmd)
