@@ -270,7 +270,6 @@ class OwnerUtils(commands.Cog):
 
             embed.description += f"\n> **Contexts**: {contexts}"
             embed.description += f"\n> **Allowed Installs**: {installs}"
-            embed.description += f"\n> **Default Permissions**: {app_command.default_permissions}"
 
         await ctx.reply(embed=embed, mention_author=False)
 

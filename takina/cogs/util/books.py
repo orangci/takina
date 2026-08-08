@@ -17,12 +17,12 @@ class Books(commands.Cog):
     )
     async def book(self, ctx: commands.Context, *, book: str):
         book_data = await lyhelpers.request(
-            f"https://www.googleapis.com/books/v1/volumes?q=intitle:{book}&key={config.GOOGLE_BOOKS_API_KEY}"
+            f"https://www.googleapis.com/books/v1/volumes?q=intitle:{book}&key={config.GOOGLE_API_KEY}"
         )
 
         if not book_data.get("items"):
             book_data = await lyhelpers.request(
-                f"https://www.googleapis.com/books/v1/volumes?q=isbn:{book}&key={config.GOOGLE_BOOKS_API_KEY}"
+                f"https://www.googleapis.com/books/v1/volumes?q=isbn:{book}&key={config.GOOGLE_API_KEY}"
             )
 
         if not book_data.get("items"):
@@ -71,7 +71,7 @@ class Books(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
-    if config.GOOGLE_BOOKS_API_KEY:
+    if config.GOOGLE_API_KEY:
         await bot.add_cog(Books(bot))
     else:
         raise lyerrors.TakinaMissingEnvironmentVariableError(
