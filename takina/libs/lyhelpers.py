@@ -22,7 +22,7 @@ async def request(url: str, headers: dict | None = None, *args, **kwargs):
 
             elif response.status >= 400:
                 raise lyerrors.TakinaError(
-                    f"Error {response.status}: Failed to reach the [requested resource]({str(response.url)})."
+                    f"Error {response.status}: Failed to reach the requested resource."
                 )
 
             return await response.json()
