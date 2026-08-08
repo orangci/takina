@@ -10,14 +10,10 @@ class MinecraftServerStatus(commands.Cog):
 
     @lychecks.is_user_app()
     @commands.hybrid_command(
-        help="Display a Minecraft server's status.",
-        usage="hypixel.net",
-        aliases=["mcserver"],
+        help="Display a Minecraft server's status.", usage="hypixel.net", aliases=["mcserver"]
     )
     async def mcstatus(self, ctx: commands.Context, *, server_name: str):
-        data = await lyhelpers.request(
-            f"https://api.mcstatus.io/v2/status/java/{server_name}"
-        )
+        data = await lyhelpers.request(f"https://api.mcstatus.io/v2/status/java/{server_name}")
 
         if not data or not data.get("online"):
             raise lyerrors.TakinaNotFoundError("Server not found or is offline.")

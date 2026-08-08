@@ -8,9 +8,7 @@ load_dotenv()
 
 BOT_NAME = getenv("BOT_NAME")
 DB_NAME = environ["DB_NAME"].lower()
-POSTGRESQL_URI = environ["POSTGRESQL_URI"].replace(
-    "postgresql://", "postgresql+asyncpg://"
-)
+POSTGRESQL_URI = environ["POSTGRESQL_URI"].replace("postgresql://", "postgresql+asyncpg://")
 GITHUB_AUTH_TOKEN = getenv("GITHUB_AUTH_TOKEN")
 REDDIT_CLIENT_ID = getenv("REDDIT_CLIENT_ID")
 REDDIT_CLIENT_SECRET = getenv("REDDIT_CLIENT_SECRET")

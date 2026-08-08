@@ -49,7 +49,7 @@ dev = [
 ]
 
 [tool.ruff]
-# line-length = 150
+line-length = 100
 fix = true
 show-fixes = true
 target-version = "py313"

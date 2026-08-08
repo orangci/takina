@@ -19,9 +19,7 @@ def setup(bot: commands.Bot) -> None:
 
         retry_after = bucket.update_rate_limit()
         if retry_after is not None:
-            raise commands.CommandOnCooldown(
-                bucket, retry_after, commands.BucketType.user
-            )
+            raise commands.CommandOnCooldown(bucket, retry_after, commands.BucketType.user)
 
 
 def has_permissions(**perms: bool):
@@ -30,14 +28,10 @@ def has_permissions(**perms: bool):
             return True
 
         if ctx.guild is None:
-            raise lyerrors.TakinaPermissionError(
-                "This command can only be used in a server."
-            )
+            raise lyerrors.TakinaPermissionError("This command can only be used in a server.")
 
         if not isinstance(ctx.author, discord.Member):
-            raise lyerrors.TakinaPermissionError(
-                "Unable to determine your permissions."
-            )
+            raise lyerrors.TakinaPermissionError("Unable to determine your permissions.")
 
         permissions = ctx.author.guild_permissions
 
@@ -60,9 +54,9 @@ def has_permissions(**perms: bool):
 def is_user_app():
     def decorator(command):
         command = app_commands.allowed_installs(users=True, guilds=False)(command)
-        command = app_commands.allowed_contexts(
-            guilds=True, dms=True, private_channels=True
-        )(command)
+        command = app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)(
+            command
+        )
 
         return command
 

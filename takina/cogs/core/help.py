@@ -27,8 +27,7 @@ class Help(commands.HelpCommand):
 
             for command in filtered:
                 lines.append(
-                    f"> **{command.qualified_name}**: "
-                    f"{command.description or 'No description.'}"
+                    f"> **{command.qualified_name}**: {command.description or 'No description.'}"
                 )
 
         if not lines:
@@ -78,9 +77,7 @@ class Help(commands.HelpCommand):
             description.append("")
 
         description.append(
-            f"> **Command**: "
-            f"{self.context.clean_prefix}{group.qualified_name} "
-            f"{group.signature}"
+            f"> **Command**: {self.context.clean_prefix}{group.qualified_name} {group.signature}"
         )
 
         if group.aliases:

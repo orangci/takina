@@ -16,8 +16,7 @@ class Salawat(commands.Cog):
     )
     async def salawat(self, ctx: commands.Context, location_name: str):
         response = await lyhelpers.request(
-            "https://api.aladhan.com/v1/timingsByAddress",
-            params={"address": location_name},
+            "https://api.aladhan.com/v1/timingsByAddress", params={"address": location_name}
         )
 
         embed = discord.Embed(color=config.EMBED_COLOR)

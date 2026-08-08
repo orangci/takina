@@ -26,9 +26,7 @@ class Wynncraft(commands.Cog):
         usage="orangci",
     )
     async def player(self, ctx: commands.Context, username: str):
-        player = await lyhelpers.request(
-            f"https://api.wynncraft.com/v3/player/{username}"
-        )
+        player = await lyhelpers.request(f"https://api.wynncraft.com/v3/player/{username}")
 
         if not player:
             raise lyerrors.TakinaNotFoundError(
@@ -41,9 +39,7 @@ class Wynncraft(commands.Cog):
 
         if characters:
             sorted_characters = sorted(
-                characters.values(),
-                key=lambda character: character["level"],
-                reverse=True,
+                characters.values(), key=lambda character: character["level"], reverse=True
             )
 
             character_list = ", ".join(
@@ -80,25 +76,23 @@ class Wynncraft(commands.Cog):
 
         embed.description += f"\n> **Playtime**: {player.get('playtime')} hours"
 
-        join_date_timestamp = int(
-            datetime.fromisoformat(player.get("firstJoin")).timestamp()
-        )
+        join_date_timestamp = int(datetime.fromisoformat(player.get("firstJoin")).timestamp())
         formatted_join_date = f"<t:{join_date_timestamp}> (<t:{join_date_timestamp}:R>)"
         embed.description += f"\n> **Joined**: {formatted_join_date}"
         embed.description += f"\n> **Mobs killed**: {global_data.get('mobsKilled')}"
         embed.description += f"\n> **Chests opened**: {global_data.get('chestsFound')}"
+        embed.description += f"\n> **Quests completed**: {global_data.get('completedQuests')}"
         embed.description += (
-            f"\n> **Quests completed**: {global_data.get('completedQuests')}"
+            f"\n> **Dungeons completed**: {global_data.get('dungeons', {}).get('total', 0)}"
         )
-        embed.description += f"\n> **Dungeons completed**: {global_data.get('dungeons', {}).get('total', 0)}"
         if characters:
             embed.description += f"\n> **Characters**: {character_list}"
-        embed.description += (
-            f"\n> **Raids**: {global_data.get('raids', {}).get('total', 0)}"
-        )
+        embed.description += f"\n> **Raids**: {global_data.get('raids', {}).get('total', 0)}"
         embed.description += f"\n> **Wars**: {global_data.get('wars', 0):}"
         if forum := player.get("forumLink"):
-            embed.description += f"\n> **Forum account**: [Linked](https://forums.wynncraft.com/members/{forum}/)"
+            embed.description += (
+                f"\n> **Forum account**: [Linked](https://forums.wynncraft.com/members/{forum}/)"
+            )
 
         if (pvp_kills := pvp.get("kills", 0)) and (pvp_deaths := pvp.get("deaths", 0)):
             embed.description += f"\n> **PVP**: {pvp_kills} kills / {pvp_deaths} deaths"
@@ -106,14 +100,10 @@ class Wynncraft(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @wynn.command(
-        name="guild",
-        description="Fetch and display a Wynncraft guild's data.",
-        usage="Juniper",
+        name="guild", description="Fetch and display a Wynncraft guild's data.", usage="Juniper"
     )
     async def guild(self, ctx: commands.Context, *, guild_name: str):
-        guild = await lyhelpers.request(
-            f"https://api.wynncraft.com/v3/guild/{guild_name}"
-        )
+        guild = await lyhelpers.request(f"https://api.wynncraft.com/v3/guild/{guild_name}")
 
         if not guild:
             guild = await lyhelpers.request(
@@ -121,9 +111,7 @@ class Wynncraft(commands.Cog):
             )
 
             if not guild:
-                raise lyerrors.TakinaNotFoundError(
-                    "No guild found with that identifier."
-                )
+                raise lyerrors.TakinaNotFoundError("No guild found with that identifier.")
 
         prefix = guild.get("prefix")
         created_at = int(datetime.fromisoformat(guild.get("created")).timestamp())
@@ -132,14 +120,12 @@ class Wynncraft(commands.Cog):
         embed.title = f"[{prefix}] {guild.get('name')}"
         embed.url = f"https://wynncraft.com/stats/guild/{prefix}"
 
-        embed.description = f"> **Owner(s):** {', '.join(guild.get('members', {}).get('owner', {}).keys())}\n"
+        embed.description = (
+            f"> **Owner(s):** {', '.join(guild.get('members', {}).get('owner', {}).keys())}\n"
+        )
         embed.description += f"> **Created:** <t:{created_at}> (<t:{created_at}:R>)\n"
-        embed.description += (
-            f"> **Level:** {guild.get('level')} ({guild.get('xpPercent')}% XP)\n"
-        )
-        embed.description += (
-            f"> **Territories controlled:** {guild.get('territories')}\n"
-        )
+        embed.description += f"> **Level:** {guild.get('level')} ({guild.get('xpPercent')}% XP)\n"
+        embed.description += f"> **Territories controlled:** {guild.get('territories')}\n"
         embed.description += f"> **Wars participated:** {guild.get('wars')}\n"
         embed.description += f"> **Online members:** {guild.get('online')}"
         await ctx.reply(embed=embed, mention_author=False)

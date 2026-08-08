@@ -17,11 +17,7 @@ class OwnerUtils(commands.Cog):
 
     def cleanup_code(self, content):
         # for cleaning up codeblocks
-        if (
-            content.startswith("```py")
-            or content.startswith("```")
-            and content.endswith("```")
-        ):
+        if content.startswith("```py") or content.startswith("```") and content.endswith("```"):
             return "\n".join(content.split("\n")[1:-1])
         return content.strip("` \n")
 
@@ -72,9 +68,7 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def guilds(self, ctx: commands.Context):
         """Lists all guilds the bot is in, ranked from most members to least."""
-        guilds_sorted = sorted(
-            self._bot.guilds, key=lambda g: g.member_count, reverse=True
-        )
+        guilds_sorted = sorted(self._bot.guilds, key=lambda g: g.member_count, reverse=True)
         description = ""
         for guild in guilds_sorted:
             entry = f"\n**{guild.name}**"
@@ -86,45 +80,35 @@ class OwnerUtils(commands.Cog):
         if not description:
             description = "No guilds available to display."
 
-        embed = discord.Embed(
-            title="Guilds", description=description, color=config.EMBED_COLOR
-        )
+        embed = discord.Embed(title="Guilds", description=description, color=config.EMBED_COLOR)
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def disable(self, ctx: commands.Context, cmd: str):
         if cmd in ["enable", "disable"]:
-            raise lyerrors.TakinaUserInputError(
-                f"You cannot disable the `{cmd}` command."
-            )
+            raise lyerrors.TakinaUserInputError(f"You cannot disable the `{cmd}` command.")
         else:
             command = self._bot.get_command(cmd)
             if command is None:
                 raise lyerrors.TakinaNotFoundError("Command not found.")
             command.enabled = False
             embed = discord.Embed(color=config.EMBED_COLOR)
-            embed.description = (
-                f"{config.emojis.SUCCESS} Successfully disabled `{command}`."
-            )
+            embed.description = f"{config.emojis.SUCCESS} Successfully disabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def enable(self, ctx: commands.Context, cmd: str):
         if cmd in ["enable", "disable"]:
-            raise lyerrors.TakinaUserInputError(
-                f"You cannot enable the `{cmd}` command."
-            )
+            raise lyerrors.TakinaUserInputError(f"You cannot enable the `{cmd}` command.")
         else:
             command = self._bot.get_command(cmd)
             if command is None:
                 raise lyerrors.TakinaNotFoundError("Command not found.")
             command.enabled = True
             embed = discord.Embed(color=config.EMBED_COLOR)
-            embed.description = (
-                f"{config.emojis.SUCCESS} Successfully enabled `{command}`."
-            )
+            embed.description = f"{config.emojis.SUCCESS} Successfully enabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True, aliases=["maintainer", "perms", "owner", "owners"])
@@ -159,18 +143,15 @@ class OwnerUtils(commands.Cog):
 
         if cog is None:
             failed_cogs = []
-            for cog in list(
-                self._bot.extensions.keys()
-            ):  # Iterate over loaded extensions
+            for cog in list(self._bot.extensions.keys()):  # Iterate over loaded extensions
                 try:
                     await self._bot.reload_extension(cog)
                 except Exception as e:
                     failed_cogs.append(f"{cog}: {e}")
 
             if failed_cogs:
-                error_message = (
-                    "Reloaded all except the following cogs:\n\n"
-                    + "\n> ".join(failed_cogs)
+                error_message = "Reloaded all except the following cogs:\n\n" + "\n> ".join(
+                    failed_cogs
                 )
                 print(f"\n\n{error_message}")
                 raise lyerrors.TakinaError(error_message)
@@ -183,9 +164,7 @@ class OwnerUtils(commands.Cog):
                 print(f"\n\n{embed.description}")
 
         else:
-            full_cog_name = (
-                f"takina.cogs.{cog}" if not cog.startswith("takina.cogs.") else cog
-            )
+            full_cog_name = f"takina.cogs.{cog}" if not cog.startswith("takina.cogs.") else cog
 
             if full_cog_name in self._bot.extensions:
                 try:
@@ -197,9 +176,7 @@ class OwnerUtils(commands.Cog):
                     await ctx.reply(embed=embed, mention_author=False)
                     print(f"\n\n{embed.description}")
                 except Exception as e:
-                    raise lyerrors.TakinaError(
-                        f"Failed to reload `{full_cog_name}`: {e}"
-                    )
+                    raise lyerrors.TakinaError(f"Failed to reload `{full_cog_name}`: {e}")
             else:
                 raise lyerrors.TakinaError(f"Cog `{full_cog_name}` is not loaded.")
 
@@ -219,9 +196,7 @@ class OwnerUtils(commands.Cog):
         try:
             await self._bot.unload_extension("takina.cogs." + cog)
             embed = discord.Embed(color=config.EMBED_COLOR)
-            embed.description = (
-                f"{config.emojis.SUCCESS} Successfully unloaded `cogs.{cog}`."
-            )
+            embed.description = f"{config.emojis.SUCCESS} Successfully unloaded `cogs.{cog}`."
             await ctx.reply(embed=embed, mention_author=False)
         except commands.ExtensionNotLoaded:
             raise lyerrors.TakinaError(f"`cogs.{cog}` was already unloaded.")
@@ -240,11 +215,7 @@ class OwnerUtils(commands.Cog):
     @commands.hybrid_command(hidden=True)
     @commands.is_owner()
     async def send(
-        self,
-        ctx: commands.Context,
-        channel: discord.TextChannel | None = None,
-        *,
-        message: str,
+        self, ctx: commands.Context, channel: discord.TextChannel | None = None, *, message: str
     ):
         channel = channel or cast(discord.TextChannel, ctx.channel)
 
@@ -299,9 +270,7 @@ class OwnerUtils(commands.Cog):
 
             embed.description += f"\n> **Contexts**: {contexts}"
             embed.description += f"\n> **Allowed Installs**: {installs}"
-            embed.description += (
-                f"\n> **Default Permissions**: {app_command.default_permissions}"
-            )
+            embed.description += f"\n> **Default Permissions**: {app_command.default_permissions}"
 
         await ctx.reply(embed=embed, mention_author=False)
 
