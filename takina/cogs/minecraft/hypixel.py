@@ -492,13 +492,13 @@ class Hypixel(commands.Cog):
 
         return embed
 
-    @lychecks.is_user_app()
     @commands.hybrid_group(
         name="hypixel",
         aliases=["hypickle", "hy"],
         description="Base hypixel command, if no subcommand is passed.",
         invoke_without_command=True,
     )
+    @lychecks.is_user_app()
     async def hypixel(self, ctx: commands.Context):
         await lyhelpers.send_subcommands_list(ctx, self.hypixel.commands)
 

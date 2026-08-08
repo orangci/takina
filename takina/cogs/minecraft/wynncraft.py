@@ -9,13 +9,13 @@ class Wynncraft(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @lychecks.is_user_app()
     @commands.hybrid_group(
         name="wynn",
         aliases=["wynncraft"],
         invoke_without_command=True,
         description="Wynncraft information commands.",
     )
+    @lychecks.is_user_app()
     async def wynn(self, ctx: commands.Context):
         await lyhelpers.send_subcommands_list(ctx, self.wynn.commands)
 

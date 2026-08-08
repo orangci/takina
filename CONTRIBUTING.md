@@ -151,12 +151,9 @@ await database.delete(model)
 
 ### Defining models
 
-Each cog that owns persistent data should define its own SQLModel class rather than placing every model in a single file. Keeping models alongside the code that uses them makes the project easier to navigate and maintain.
+Each cog that owns persistent data should define its own SQLModel model class, which belongs in `takina/models.py`. Here's a simple example:
 
 ```py
-from sqlmodel import Field, SQLModel
-from sqlalchemy import BigInteger
-
 class PrefixModel(SQLModel, table=True):
     __tablename__ = "prefixes"
 
