@@ -43,14 +43,13 @@ def duration_calculator(
 ) -> int | discord.Embed:
     pattern = r"(\d+)([s|m|h|d|w])"
     match = re.fullmatch(pattern, duration)
-    error_embed = discord.Embed(color=config.ERROR_COLOR)
     if timeout:
-        error_embed.description = ":x: Invalid duration format. Use <number>[s|m|h|d|w]."
-    if slowmode:
-        error_embed.description = ":x: Invalid duration format. Use <number>[s|m|h]."
+        error_message = "Invalid duration format. Use <number>[s|m|h|d|w]."
+    elif slowmode:
+        error_message = "Invalid duration format. Use <number>[s|m|h]."
 
     if not match:
-        return error_embed
+        raise lyerrors.TakinaUserInputError(error_message)
 
     time_value, time_unit = match.groups()
     time_value = int(time_value)
@@ -66,30 +65,26 @@ def duration_calculator(
     elif time_unit == "w":
         time_value *= 604800
     else:
-        return error_embed
+        raise lyerrors.TakinaUserInputError(error_message)
 
     if timeout and time_value > 2419200:
-        return discord.Embed(
-            description=":x: The duration you've specified is too long. The maximum timeout length you may set is 28 days.",
-            color=config.ERROR_COLOR,
+        raise lyerrors.TakinaUserInputError(
+            "The duration you've specified is too long. The maximum timeout length you may set is 28 days."
         )
 
     if slowmode and time_value > 21600:
-        return discord.Embed(
-            description=":x: The duration you've specified is too long. The maximum slowmode you may set is six hours.",
-            color=config.ERROR_COLOR,
+        raise lyerrors.TakinaUserInputError(
+            "The duration you've specified is too long. The maximum slowmode you may set is six hours."
         )
 
     if purge and time_value > 1209600:
-        return discord.Embed(
-            description=":x: You may only purge messages within the last two weeks.",
-            color=config.ERROR_COLOR,
+        raise lyerrors.TakinaUserInputError(
+            "You may only purge messages within the last two weeks."
         )
 
     if purge and time_value < 0:
-        return discord.Embed(
-            description=":x: You must specify a time period within which to purge messages.",
-            color=config.ERROR_COLOR,
+        lyerrors.TakinaUserInputError(
+            "You must specify a time period within which to purge messages."
         )
 
     return time_value
