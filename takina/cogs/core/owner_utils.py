@@ -257,6 +257,54 @@ class OwnerUtils(commands.Cog):
         else:
             raise commands.UserInputError
 
+    @commands.command(hidden=True, aliases=["ci"])
+    async def command_info(self, ctx: commands.Context, *, name: str):
+        command = self._bot.get_command(name)
+
+        if not command:
+            raise lyerrors.TakinaNotFoundError("That command doesn't seem to exist.")
+
+        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed.title = f"Command: {command.qualified_name}"
+
+        embed.description = f"\n> **Description**: {command.description}"
+        embed.description += f"\n> **Usage**: {command.signature}"
+        embed.description += f"\n> **Enabled**: {command.enabled}"
+        embed.description += f"\n> **Hidden**: {command.hidden}"
+
+        app_command = getattr(command, "app_command", None)
+
+        if app_command:
+            contexts = (
+                ", ".join(
+                    name
+                    for name, attr in (
+                        ("Guilds", "guild"),
+                        ("DMs", "dm_channel"),
+                        ("Private Channels", "private_channel"),
+                    )
+                    if getattr(app_command.allowed_contexts, attr, False)
+                )
+                or "Default"
+            )
+
+            installs = (
+                ", ".join(
+                    name
+                    for name, attr in (("Guilds", "guild"), ("Users", "user"))
+                    if getattr(app_command.allowed_installs, attr, False)
+                )
+                or "Default"
+            )
+
+            embed.description += f"\n> **Contexts**: {contexts}"
+            embed.description += f"\n> **Allowed Installs**: {installs}"
+            embed.description += (
+                f"\n> **Default Permissions**: {app_command.default_permissions}"
+            )
+
+        await ctx.reply(embed=embed, mention_author=False)
+
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(OwnerUtils(bot))

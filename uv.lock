@@ -619,22 +619,6 @@ wheels = [
 ]
 
 [[package]]
-name = "google-books-api-wrapper"
-version = "1.0.5"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "certifi" },
-    { name = "charset-normalizer" },
-    { name = "idna" },
-    { name = "requests" },
-    { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5b/03/0422521d943d5347daabb863a3127bb492668eccf2a390e60f8b0d966e0b/google_books_api_wrapper-1.0.5.tar.gz", hash = "sha256:33108ab507543412d645201cc7ee722c39def4fd4edadba709b8f99b538bbd4c", size = 7244, upload-time = "2024-02-13T20:40:27.595Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/a4/cb8c716bd14e912a9e60990687aa03bddea8bf25c5dc2a7c67c4d9add047/google_books_api_wrapper-1.0.5-py3-none-any.whl", hash = "sha256:b60051afe5428e3d5013445d247def794493638f95932d5c812b051181a46c6a", size = 8648, upload-time = "2024-02-13T20:40:25.766Z" },
-]
-
-[[package]]
 name = "greenlet"
 version = "3.5.4"
 source = { registry = "https://pypi.org/simple" }
@@ -1568,7 +1552,6 @@ dependencies = [
     { name = "emoji" },
     { name = "filelock" },
     { name = "geopy" },
-    { name = "google-books-api-wrapper" },
     { name = "greenlet" },
     { name = "hypixel-py" },
     { name = "motor" },
@@ -1611,7 +1594,6 @@ requires-dist = [
     { name = "emoji", specifier = "==2.15.0" },
     { name = "filelock", specifier = "==3.32.2" },
     { name = "geopy", specifier = "==2.5.0" },
-    { name = "google-books-api-wrapper", specifier = "==1.0.5" },
     { name = "greenlet", specifier = ">=3.5.4" },
     { name = "hypixel-py", specifier = "==0.4.2" },
     { name = "motor", specifier = ">=3.7.1" },
