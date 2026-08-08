@@ -1,13 +1,8 @@
-from takina.libs import lyerrors, lyviews
+from takina.libs import lyerrors, lyviews, lyhelpers
 from collections.abc import Mapping
 from discord.ext import commands
 from takina import config
 import discord
-
-
-def chunked[T](items: list[T], size: int):
-    for i in range(0, len(items), size):
-        yield items[i : i + size]
 
 
 class Help(commands.HelpCommand):
@@ -37,7 +32,7 @@ class Help(commands.HelpCommand):
 
         embeds: list[discord.Embed] = []
 
-        for page, chunk in enumerate(chunked(lines, 10), start=1):
+        for page, chunk in enumerate(lyhelpers.chunked(lines, 10), start=1):
             embed = discord.Embed(color=config.EMBED_COLOR)
             embed.description = "\n".join(chunk)
             embed.set_footer(text=f"Page {page} of {(len(lines) + 9) // 10}")

@@ -161,3 +161,8 @@ async def send_subcommands_list(ctx: commands.Context, subcommands: Iterable[com
     embed = discord.Embed(color=config.EMBED_COLOR)
     embed.description = f"Please specify a subcommand: {names}"
     await ctx.reply(embed=embed, mention_author=False)
+
+
+def chunked[T](items: list[T], size: int):
+    for i in range(0, len(items), size):
+        yield items[i : i + size]
