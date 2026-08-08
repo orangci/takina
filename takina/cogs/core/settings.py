@@ -1,17 +1,5 @@
-from sqlmodel import Field, SQLModel
-from sqlalchemy import BigInteger
 from discord.ext import commands
 from takina.libs import lychecks
-
-
-class UserSettingsModel(SQLModel, table=True):
-    __tablename__ = "user_settings"
-    user_id: int = Field(sa_type=BigInteger, primary_key=True)
-
-
-class GuildSettingsModel(SQLModel, table=True):
-    __tablename__ = "guild_settings"
-    guild_id: int = Field(sa_type=BigInteger, primary_key=True)
 
 
 class Settings(commands.Cog):

@@ -1,17 +1,7 @@
+from takina import config, database, models
 from takina.libs import lychecks, lyhelpers
-from sqlmodel import Field, SQLModel
-from takina import config, database
-from sqlalchemy import BigInteger
 from discord.ext import commands
 import discord
-
-
-class AFKStatusModel(SQLModel, table=True):
-    __tablename__: str = "afk_statuses"
-    __table_args__ = {"extend_existing": True}
-
-    user_id: int = Field(sa_type=BigInteger, primary_key=True)
-    status: str
 
 
 class AFK(commands.Cog):
@@ -25,13 +15,15 @@ class AFK(commands.Cog):
     )
     async def afk(self, ctx: commands.Context, *, status: str = "AFK"):
         embed = discord.Embed(color=config.EMBED_COLOR)
-        current_status = await database.get(AFKStatusModel, user_id=ctx.author.id)
+        current_status = await database.get(
+            models.AFKStatusModel, user_id=ctx.author.id
+        )
 
         if current_status:
             await database.delete(current_status)
             return
         else:
-            new_status = AFKStatusModel(user_id=ctx.author.id, status=status)
+            new_status = models.AFKStatusModel(user_id=ctx.author.id, status=status)
             await database.save(new_status)
             embed.description = f"{await lyhelpers.fetch_random_emoji()}{ctx.author.mention} is now AFK: {status}"
 
@@ -43,7 +35,9 @@ class AFK(commands.Cog):
             return
 
         # check if the author is AFK and remove if so
-        current_status = await database.get(AFKStatusModel, user_id=message.author.id)
+        current_status = await database.get(
+            models.AFKStatusModel, user_id=message.author.id
+        )
         if current_status:
             await database.delete(current_status)
             embed = discord.Embed(color=config.EMBED_COLOR)
@@ -52,7 +46,7 @@ class AFK(commands.Cog):
 
         # notify mentions about AFK users
         for user in message.mentions:
-            afk_status = await database.get(AFKStatusModel, user_id=user.id)
+            afk_status = await database.get(models.AFKStatusModel, user_id=user.id)
             if afk_status:
                 embed = discord.Embed(color=config.EMBED_COLOR)
                 embed.description = f"{await lyhelpers.fetch_random_emoji()}{user.mention} is currently AFK: {afk_status.status}"

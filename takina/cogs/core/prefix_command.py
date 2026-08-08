@@ -1,6 +1,5 @@
+from takina import config, database, models
 from takina.libs import lychecks
-from takina.prefix import PrefixModel
-from takina import config, database
 from discord.ext import commands
 import discord
 
@@ -17,10 +16,10 @@ class Prefix(commands.Cog):
     async def set_prefix(self, ctx: commands.Context, new_prefix: str):
         assert ctx.guild is not None
 
-        prefix = await database.get(PrefixModel, guild_id=ctx.guild.id)
+        prefix = await database.get(models.PrefixModel, guild_id=ctx.guild.id)
 
         if prefix is None:
-            prefix = PrefixModel(guild_id=ctx.guild.id, prefix=new_prefix)
+            prefix = models.PrefixModel(guild_id=ctx.guild.id, prefix=new_prefix)
         else:
             prefix.prefix = new_prefix
 
