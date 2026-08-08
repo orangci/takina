@@ -14,9 +14,7 @@ class Errors(commands.Cog):
         self.logger = logging.getLogger("takina.errors")
 
     @commands.Cog.listener()
-    async def on_command_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
         if DEBUG:
             self.logger.exception("Unhandled command exception", exc_info=error)
 
@@ -41,25 +39,18 @@ class Errors(commands.Cog):
                 "This command is restricted to Takina's maintainers (`/maintainers`)."
             )
 
-        elif str(error) in {
-            "That command does not exist.",
-            "That subcommand does not exist.",
-        }:
+        elif str(error) in {"That command does not exist.", "That subcommand does not exist."}:
             error = lyerrors.TakinaNotFoundError(str(error))
 
         elif isinstance(error, commands.BotMissingPermissions):
-            perms = ", ".join(
-                perm.replace("_", " ").title() for perm in error.missing_permissions
-            )
+            perms = ", ".join(perm.replace("_", " ").title() for perm in error.missing_permissions)
             raise lyerrors.TakinaBotPermissionError(
                 f"I am missing the following permissions required to use this command: `{perms}`."
             )
 
         elif isinstance(error, commands.MissingPermissions):
             print("asdf")
-            perms = ", ".join(
-                perm.replace("_", " ").title() for perm in error.missing_permissions
-            )
+            perms = ", ".join(perm.replace("_", " ").title() for perm in error.missing_permissions)
             error = lyerrors.TakinaPermissionError(
                 f"You are missing the following permissions required to use this command: {perms}"
             )
@@ -70,9 +61,7 @@ class Errors(commands.Cog):
             )
 
         elif isinstance(error, commands.BadArgument):
-            error = lyerrors.TakinaUserInputError(
-                "One or more arguments provided are invalid."
-            )
+            error = lyerrors.TakinaUserInputError("One or more arguments provided are invalid.")
 
         elif not isinstance(error, lyerrors.TakinaError):
             if not DEBUG:

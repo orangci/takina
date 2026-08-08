@@ -38,9 +38,7 @@ class Bot(commands.Bot):
             allowed_mentions=discord.AllowedMentions(
                 everyone=False, roles=False, users=True, replied_user=True
             ),
-            activity=discord.Activity(
-                type=discord.ActivityType.watching, name="the stars"
-            ),
+            activity=discord.Activity(type=discord.ActivityType.watching, name="the stars"),
         )
 
     async def setup_hook(self):
@@ -85,9 +83,7 @@ REQUIRED_ENV_VARS = ["TOKEN", "HASDB", "POSTGRESQL_URI", "BOT_NAME", "DB_NAME"]
 missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
 if missing_vars:
     # raise an error if one of the required variables are missing
-    raise EnvironmentError(
-        f"Missing required environment variables: {', '.join(missing_vars)}."
-    )
+    raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}.")
 
 # these are *individual* cogs to be blacklisted. e.g. "util.dns"
 cogs_blacklist = ["core.settings"]

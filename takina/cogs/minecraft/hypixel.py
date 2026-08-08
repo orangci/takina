@@ -39,9 +39,7 @@ class Hypixel(commands.Cog):
 
                 lines = []
 
-                lines.append(
-                    f"> **Level**: {guild.level:,}, with {guild.exp:,} guild EXP"
-                )
+                lines.append(f"> **Level**: {guild.level:,}, with {guild.exp:,} guild EXP")
                 lines.append(f"> **Created**: <t:{created}:D> (<t:{created}:R>)")
                 lines.append(f"> **Members**: {len(guild.members):,}")
                 if guild.tag:
@@ -50,14 +48,10 @@ class Hypixel(commands.Cog):
                     lines.append(
                         f"> **Preferred Games**: {', '.join(game.clean_name for game in guild.preferred_games)}"
                     )
-                lines.append(
-                    f"> **Publicly Listed**: {'Yes' if guild.publicly_listed else 'No'}"
-                )
+                lines.append(f"> **Publicly Listed**: {'Yes' if guild.publicly_listed else 'No'}")
                 lines.append(f"> **Joinable**: {'Yes' if guild.joinable else 'No'}")
                 if guild.most_online_players:
-                    lines.append(
-                        f"> **Most Online Players**: {guild.most_online_players:,}"
-                    )
+                    lines.append(f"> **Most Online Players**: {guild.most_online_players:,}")
                 if guild.experience_kings:
                     lines.append(f"> **Experience Kings**: {guild.experience_kings:,}")
 
@@ -111,23 +105,17 @@ class Hypixel(commands.Cog):
                 self.sanitise_stats(duels)
 
                 embed.title = await lyhelpers.fetch_random_emoji() + player.name
-                embed.description = (
-                    f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
-                )
+                embed.description = f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
 
                 lines = []
-                lines.append(
-                    f"> **First joined**: <t:{first_join}:D> (<t:{first_join}:R>)"
-                )
+                lines.append(f"> **First joined**: <t:{first_join}:D> (<t:{first_join}:R>)")
                 lines.append(
                     f"> **Level**: {player.level:,}, with {player.network_exp:,} network EXP and {player.karma:,} karma"
                 )
                 if player.rank:
                     lines.append(f"> **Rank**: {player.rank}")
                 if player.most_recent_game:
-                    lines.append(
-                        f"> **Last played**: {player.most_recent_game.clean_name}"
-                    )
+                    lines.append(f"> **Last played**: {player.most_recent_game.clean_name}")
                 if socials_string:
                     lines.append(f"> **Socials**: {socials_string}")
                 if len(player.achievements) > 0:
@@ -170,23 +158,16 @@ class Hypixel(commands.Cog):
                 self.sanitise_stats(bedwars)
 
                 embed.title = (
-                    await lyhelpers.fetch_random_emoji()
-                    + f"{player.name}'s Bedwars Statistics"
+                    await lyhelpers.fetch_random_emoji() + f"{player.name}'s Bedwars Statistics"
                 )
-                embed.description = (
-                    f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
-                )
+                embed.description = f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
 
                 lines = []
                 lines.append(f"> **Level**: {bedwars.level:,} ({bedwars.exp:,} EXP)")
                 lines.append(f"> **Coins**: {bedwars.coins:,}")
                 lines.append(f"> **Games played**: {bedwars.games:,}")
-                lines.append(
-                    f"> **Kills**: {bedwars.kills:,} ({bedwars.final_kills:,} final)"
-                )
-                lines.append(
-                    f"> **Deaths**: {bedwars.deaths:,} ({bedwars.final_deaths:,} final)"
-                )
+                lines.append(f"> **Kills**: {bedwars.kills:,} ({bedwars.final_kills:,} final)")
+                lines.append(f"> **Deaths**: {bedwars.deaths:,} ({bedwars.final_deaths:,} final)")
                 lines.append(
                     f"> **Void deaths**: {bedwars.void_deaths:,} ({bedwars.void_final_deaths:,} final)"
                 )
@@ -229,12 +210,9 @@ class Hypixel(commands.Cog):
                 self.sanitise_stats(blitz)
 
                 embed.title = (
-                    await lyhelpers.fetch_random_emoji()
-                    + f"{player.name}'s Blitz Statistics"
+                    await lyhelpers.fetch_random_emoji() + f"{player.name}'s Blitz Statistics"
                 )
-                embed.description = (
-                    f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
-                )
+                embed.description = f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
 
                 lines = []
                 lines.append(f"> **Coins**: {blitz.coins:,}")
@@ -277,12 +255,9 @@ class Hypixel(commands.Cog):
                 self.sanitise_stats(duels)
 
                 embed.title = (
-                    await lyhelpers.fetch_random_emoji()
-                    + f"{player.name}'s Duels Statistics"
+                    await lyhelpers.fetch_random_emoji() + f"{player.name}'s Duels Statistics"
                 )
-                embed.description = (
-                    f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
-                )
+                embed.description = f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
 
                 lines = []
 
@@ -333,9 +308,7 @@ class Hypixel(commands.Cog):
                     await lyhelpers.fetch_random_emoji()
                     + f"{player.name}'s Murder Mystery Statistics"
                 )
-                embed.description = (
-                    f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
-                )
+                embed.description = f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
 
                 lines = []
                 lines.append(f"> **Coins**: {murder.coins:,}")
@@ -374,12 +347,9 @@ class Hypixel(commands.Cog):
                 self.sanitise_stats(paintball)
 
                 embed.title = (
-                    await lyhelpers.fetch_random_emoji()
-                    + f"{player.name}'s Paintball Statistics"
+                    await lyhelpers.fetch_random_emoji() + f"{player.name}'s Paintball Statistics"
                 )
-                embed.description = (
-                    f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
-                )
+                embed.description = f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
 
                 lines = []
                 lines.append(f"> **Coins**: {paintball.coins:,}")
@@ -415,12 +385,9 @@ class Hypixel(commands.Cog):
                 self.sanitise_stats(skywars)
 
                 embed.title = (
-                    await lyhelpers.fetch_random_emoji()
-                    + f"{player.name}'s Skywars Statistics"
+                    await lyhelpers.fetch_random_emoji() + f"{player.name}'s Skywars Statistics"
                 )
-                embed.description = (
-                    f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
-                )
+                embed.description = f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
 
                 lines = []
                 lines.append(f"> **Level**: {skywars.level:,} ({skywars.exp:,} EXP)")
@@ -466,12 +433,9 @@ class Hypixel(commands.Cog):
                 self.sanitise_stats(uhc)
 
                 embed.title = (
-                    await lyhelpers.fetch_random_emoji()
-                    + f"{player.name}'s UHC Statistics"
+                    await lyhelpers.fetch_random_emoji() + f"{player.name}'s UHC Statistics"
                 )
-                embed.description = (
-                    f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
-                )
+                embed.description = f"-# Last seen <t:{last_login}:R>\n\n" if last_login else ""
 
                 lines = []
                 lines.append(f"> **Level**: {uhc.level:,}")
@@ -535,8 +499,7 @@ class Hypixel(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @hypixel.command(
-        name="blitz",
-        description="Display information on a Hypixel member's blitz statistics.",
+        name="blitz", description="Display information on a Hypixel member's blitz statistics."
     )
     async def hypixel_blitz(self, ctx: commands.Context, username: str):
         embed = await self.build_hypixel_blitz_embed(username)
@@ -579,8 +542,7 @@ class Hypixel(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @hypixel.command(
-        name="uhc",
-        description="Display information on a Hypixel member's UHC statistics.",
+        name="uhc", description="Display information on a Hypixel member's UHC statistics."
     )
     async def hypixel_uhc(self, ctx: commands.Context, username: str):
         embed = await self.build_hypixel_uhc_embed(username)

@@ -26,8 +26,7 @@ class Prefix(commands.Cog):
         await database.save(prefix)
 
         embed = discord.Embed(
-            color=config.EMBED_COLOR,
-            description=f"✅ Prefix updated to: `{new_prefix}`",
+            color=config.EMBED_COLOR, description=f"✅ Prefix updated to: `{new_prefix}`"
         )
         await ctx.reply(embed=embed, mention_author=False)
 

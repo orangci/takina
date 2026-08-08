@@ -15,9 +15,7 @@ class AFK(commands.Cog):
     )
     async def afk(self, ctx: commands.Context, *, status: str = "AFK"):
         embed = discord.Embed(color=config.EMBED_COLOR)
-        current_status = await database.get(
-            models.AFKStatusModel, user_id=ctx.author.id
-        )
+        current_status = await database.get(models.AFKStatusModel, user_id=ctx.author.id)
 
         if current_status:
             await database.delete(current_status)
@@ -25,7 +23,9 @@ class AFK(commands.Cog):
         else:
             new_status = models.AFKStatusModel(user_id=ctx.author.id, status=status)
             await database.save(new_status)
-            embed.description = f"{await lyhelpers.fetch_random_emoji()}{ctx.author.mention} is now AFK: {status}"
+            embed.description = (
+                f"{await lyhelpers.fetch_random_emoji()}{ctx.author.mention} is now AFK: {status}"
+            )
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -35,13 +35,13 @@ class AFK(commands.Cog):
             return
 
         # check if the author is AFK and remove if so
-        current_status = await database.get(
-            models.AFKStatusModel, user_id=message.author.id
-        )
+        current_status = await database.get(models.AFKStatusModel, user_id=message.author.id)
         if current_status:
             await database.delete(current_status)
             embed = discord.Embed(color=config.EMBED_COLOR)
-            embed.description = f"{await lyhelpers.fetch_random_emoji()}{message.author.mention} is no longer AFK."
+            embed.description = (
+                f"{await lyhelpers.fetch_random_emoji()}{message.author.mention} is no longer AFK."
+            )
             await message.channel.send(embed=embed, delete_after=5)
 
         # notify mentions about AFK users

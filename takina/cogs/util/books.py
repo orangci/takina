@@ -33,18 +33,12 @@ class Books(commands.Cog):
         book_data = book_data["items"][0]["volumeInfo"]
 
         embed = discord.Embed(title=book_data["title"], color=config.EMBED_COLOR)
-        embed.description = (
-            f"-# {book_data['subtitle']}\n" if book_data.get("subtitle") else ""
-        )
+        embed.description = f"-# {book_data['subtitle']}\n" if book_data.get("subtitle") else ""
 
         if authors := book_data.get("authors"):
-            embed.description += (
-                f"> **Authors**: {', '.join(author for author in authors)}"
-            )
+            embed.description += f"> **Authors**: {', '.join(author for author in authors)}"
         if subjects := book_data.get("categories"):
-            embed.description += (
-                f"\n> **Subjects**: {', '.join(subject for subject in subjects)}"
-            )
+            embed.description += f"\n> **Subjects**: {', '.join(subject for subject in subjects)}"
 
         if page_count := book_data.get("pageCount"):
             embed.description += f"\n> **Pagecount**: {page_count}"

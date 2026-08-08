@@ -45,9 +45,7 @@ def duration_calculator(
     match = re.fullmatch(pattern, duration)
     error_embed = discord.Embed(color=config.ERROR_COLOR)
     if timeout:
-        error_embed.description = (
-            ":x: Invalid duration format. Use <number>[s|m|h|d|w]."
-        )
+        error_embed.description = ":x: Invalid duration format. Use <number>[s|m|h|d|w]."
     if slowmode:
         error_embed.description = ":x: Invalid duration format. Use <number>[s|m|h]."
 
@@ -163,9 +161,7 @@ def randint_from_seed(
 
 # for group commands that can be invoked without a subcommand
 # we will send a nice "pick your subcommand" embed
-async def send_subcommands_list(
-    ctx: commands.Context, subcommands: Iterable[commands.Command]
-):
+async def send_subcommands_list(ctx: commands.Context, subcommands: Iterable[commands.Command]):
     names = ", ".join(f"`{command.name}`" for command in subcommands)
     embed = discord.Embed(color=config.EMBED_COLOR)
     embed.description = f"Please specify a subcommand: {names}"
