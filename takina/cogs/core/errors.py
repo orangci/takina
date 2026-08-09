@@ -71,7 +71,7 @@ class Errors(commands.Cog):
             )
 
         if isinstance(error, lyerrors.TakinaError):
-            embed = discord.Embed(color=config.ERROR_COLOR)
+            embed = discord.Embed(colour=config.ERROR_COLOUR)
             if error.message:
                 embed.description = f"{config.emojis.ERROR} {error.message}"
             else:

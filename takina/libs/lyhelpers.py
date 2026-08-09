@@ -1,10 +1,6 @@
 from __main__ import bot, start_time
-from collections.abc import Iterable
-from discord.ext import commands
 from takina.libs import lyerrors
-from takina import config
 import datetime
-import discord
 import aiohttp
 import random
 import re
@@ -38,54 +34,18 @@ async def post(url, headers=None, *args, **kwargs):
 
 
 # for calculating durations, e.g. 1d, 2h, 5s, 34m
-def duration_calculator(
-    duration: str, slowmode=False, timeout=False, purge=False
-) -> int | discord.Embed:
-    pattern = r"(\d+)([s|m|h|d|w])"
+def duration_calculator(duration: str, slowmode=False, timeout=False, purge=False) -> int:
+    pattern = r"(\d+)([smhdw])"
     match = re.fullmatch(pattern, duration)
-    if timeout:
-        error_message = "Invalid duration format. Use <number>[s|m|h|d|w]."
-    elif slowmode:
-        error_message = "Invalid duration format. Use <number>[s|m|h]."
 
     if not match:
-        raise lyerrors.TakinaUserInputError(error_message)
+        raise lyerrors.TakinaUserInputError("Invalid duration format. Use <number>[s|m|h|d|w].")
 
     time_value, time_unit = match.groups()
     time_value = int(time_value)
 
-    if time_unit == "s":
-        time_value *= 1
-    elif time_unit == "m":
-        time_value *= 60
-    elif time_unit == "h":
-        time_value *= 3600
-    elif time_unit == "d":
-        time_value *= 86400
-    elif time_unit == "w":
-        time_value *= 604800
-    else:
-        raise lyerrors.TakinaUserInputError(error_message)
-
-    if timeout and time_value > 2419200:
-        raise lyerrors.TakinaUserInputError(
-            "The duration you've specified is too long. The maximum timeout length you may set is 28 days."
-        )
-
-    if slowmode and time_value > 21600:
-        raise lyerrors.TakinaUserInputError(
-            "The duration you've specified is too long. The maximum slowmode you may set is six hours."
-        )
-
-    if purge and time_value > 1209600:
-        raise lyerrors.TakinaUserInputError(
-            "You may only purge messages within the last two weeks."
-        )
-
-    if purge and time_value < 0:
-        lyerrors.TakinaUserInputError(
-            "You must specify a time period within which to purge messages."
-        )
+    multipliers = {"s": 1, "m": 60, "h": 3600, "d": 86400, "w": 604800, "y": 31557600}
+    time_value *= multipliers[time_unit]
 
     return time_value
 
@@ -94,18 +54,11 @@ def reverse_duration_calculator(seconds) -> str:
     if seconds < 0:
         raise ValueError("Duration cannot be negative.")
 
-    time_units = [
-        ("w", 604800),  # weeks
-        ("d", 86400),  # days
-        ("h", 3600),  # hours
-        ("m", 60),  # minutes
-        ("s", 1),  # seconds
-    ]
+    time_units = {"s": 1, "m": 60, "h": 3600, "d": 86400, "w": 604800, "y": 31557600}
 
-    for unit, value in time_units:
+    for unit, value in time_units.items():
         if seconds >= value:
-            time_value = seconds // value
-            return f"{time_value}{unit}"
+            return f"{seconds // value}{unit}"
 
     return f"{seconds}s"  # Default to seconds if less than 1 minute
 
@@ -152,15 +105,6 @@ def randint_from_seed(
         return array[random.Random(seed).randint(0, len(array) - 1)]
     else:
         return random.Random(seed).randint(minimum, maximum)
-
-
-# for group commands that can be invoked without a subcommand
-# we will send a nice "pick your subcommand" embed
-async def send_subcommands_list(ctx: commands.Context, subcommands: Iterable[commands.Command]):
-    names = ", ".join(f"`{command.name}`" for command in subcommands)
-    embed = discord.Embed(color=config.EMBED_COLOR)
-    embed.description = f"Please specify a subcommand: {names}"
-    await ctx.reply(embed=embed, mention_author=False)
 
 
 def chunked[T](items: list[T], size: int):

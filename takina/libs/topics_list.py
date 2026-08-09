@@ -402,7 +402,7 @@ topics = [
     "What’s some insider knowledge that only people in your line of work have?",
     "Who do you wish you could get back into contact with?",
     "How do you make yourself sleep when you can’t seem to get to sleep?",
-    "If people receive a purple heart for bravery, what would other color hearts represent?",
+    "If people receive a purple heart for bravery, what would other colour hearts represent?",
     "What are some of the best vacations you’ve had?",
     "If there was a book of commandments for the modern world, what would some of the rules be?",
     "What’s the craziest video you’ve ever seen?",

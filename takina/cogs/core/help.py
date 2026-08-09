@@ -26,14 +26,14 @@ class Help(commands.HelpCommand):
                 )
 
         if not lines:
-            embed = discord.Embed(color=config.ERROR_COLOR)
+            embed = discord.Embed(colour=config.ERROR_COLOUR)
             embed.description = f"{config.emojis.ERROR} No commands were found."
             return await self.get_destination().send(embed=embed)
 
         embeds: list[discord.Embed] = []
 
         for page, chunk in enumerate(lyhelpers.chunked(lines, 10), start=1):
-            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed = discord.Embed(colour=config.EMBED_COLOUR)
             embed.description = "\n".join(chunk)
             embed.set_footer(text=f"Page {page} of {(len(lines) + 9) // 10}")
 
@@ -43,7 +43,7 @@ class Help(commands.HelpCommand):
         view.message = await self.get_destination().send(embed=embeds[0], view=view)
 
     async def send_command_help(self, command: commands.Command):
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
 
         description = []
 
@@ -63,7 +63,7 @@ class Help(commands.HelpCommand):
         await self.get_destination().send(embed=embed)
 
     async def send_group_help(self, group: commands.Group):
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
 
         description = []
 
@@ -98,7 +98,7 @@ class Help(commands.HelpCommand):
         if not filtered:
             raise lyerrors.TakinaNotFoundError("That command does not exist.")
 
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
 
         embed.description = "\n".join(
             f"> {self.get_command_signature(command)}" for command in filtered

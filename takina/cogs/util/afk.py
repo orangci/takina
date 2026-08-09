@@ -14,7 +14,7 @@ class AFK(commands.Cog):
         usage="reading a book",
     )
     async def afk(self, ctx: commands.Context, *, status: str = "AFK"):
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         current_status = await database.get(models.AFKStatusModel, user_id=ctx.author.id)
 
         if current_status:
@@ -38,7 +38,7 @@ class AFK(commands.Cog):
         current_status = await database.get(models.AFKStatusModel, user_id=message.author.id)
         if current_status:
             await database.delete(current_status)
-            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed = discord.Embed(colour=config.EMBED_COLOUR)
             embed.description = (
                 f"{await lyhelpers.fetch_random_emoji()}{message.author.mention} is no longer AFK."
             )
@@ -48,7 +48,7 @@ class AFK(commands.Cog):
         for user in message.mentions:
             afk_status = await database.get(models.AFKStatusModel, user_id=user.id)
             if afk_status:
-                embed = discord.Embed(color=config.EMBED_COLOR)
+                embed = discord.Embed(colour=config.EMBED_COLOUR)
                 embed.description = f"{await lyhelpers.fetch_random_emoji()}{user.mention} is currently AFK: {afk_status.status}"
                 await message.channel.send(embed=embed)
 

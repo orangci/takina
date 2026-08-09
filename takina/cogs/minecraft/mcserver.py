@@ -18,7 +18,7 @@ class MinecraftServerStatus(commands.Cog):
         if not data or not data.get("online"):
             raise lyerrors.TakinaNotFoundError("Server not found or is offline.")
 
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = await lyhelpers.fetch_random_emoji() + data.get("host")
         embed.set_image(url=f"https://api.mcstatus.io/v2/widget/java/{server_name}")
         embed.description = ""

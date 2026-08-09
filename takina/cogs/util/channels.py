@@ -1,4 +1,4 @@
-from takina.libs import lychecks, lyhelpers
+from takina.libs import lychecks, lyhelpers, lyerrors
 from discord.ext import commands
 from takina import config
 import discord
@@ -24,13 +24,14 @@ class Channels(commands.Cog):
         assert isinstance(ctx.channel, discord.TextChannel)
         channel = channel or ctx.channel
         assert channel is not None
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         if duration:
             duration = "0s" if duration.lower() in ["off", "disable"] else duration
             duration_parsed = lyhelpers.duration_calculator(duration, slowmode=True)
-            if isinstance(duration_parsed, discord.Embed):
-                await ctx.reply(embed=duration_parsed, mention_author=False)
-                return
+            if duration_parsed > 21600:
+                raise lyerrors.TakinaUserInputError(
+                    "The duration you've specified is too long. The maximum slowmode you may set is six hours."
+                )
 
             await channel.edit(slowmode_delay=duration_parsed)
             embed.description = (
@@ -60,7 +61,7 @@ class Channels(commands.Cog):
         await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
         embed = discord.Embed(
             description=f":lock: Channel {channel.mention} has been locked.",
-            color=config.EMBED_COLOR,
+            colour=config.EMBED_COLOUR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -79,7 +80,7 @@ class Channels(commands.Cog):
         await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
         embed = discord.Embed(
             description=f":unlock: Channel {channel.mention} has been unlocked.",
-            color=config.EMBED_COLOR,
+            colour=config.EMBED_COLOUR,
         )
         await ctx.reply(embed=embed, mention_author=False)
 

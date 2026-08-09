@@ -15,7 +15,7 @@ class AWCC_HOF(commands.Cog):
         aliases=["awcc", "mrcc"],
     )
     async def hof(self, ctx: commands.Context, *, username: str):
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         data = await lyhelpers.request(f"https://anime.jhiday.net/hof/api/user/{username}")
         if not data:
             raise lyerrors.TakinaNotFoundError(
