@@ -3,6 +3,7 @@ from sqlmodel import Field, SQLModel, Column, DateTime
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy import BigInteger
 from datetime import datetime
+from secrets import token_hex
 
 
 class PrefixModel(SQLModel, table=True):
@@ -53,3 +54,12 @@ class GiveawayModel(SQLModel, table=True):
         default_factory=list, sa_column=Column(MutableList.as_mutable(PGArray(BigInteger)))
     )
     winners: int = 1
+
+
+class ReminderModel(SQLModel, table=True):
+    __tablename__ = "reminders"
+
+    id: str = Field(default_factory=lambda: token_hex(12), primary_key=True)
+    user_id: int = Field(sa_type=BigInteger)
+    reminder: str
+    remind_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))

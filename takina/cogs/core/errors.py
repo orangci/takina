@@ -20,12 +20,14 @@ class Errors(commands.Cog):
 
         error = getattr(error, "original", error)
 
-        # ignore these two
-        if isinstance(error, commands.CommandNotFound):
-            return
-
-        elif isinstance(error, commands.CheckFailure) and not isinstance(
-            error, lyerrors.TakinaError
+        # ignore these
+        if (
+            isinstance(error, commands.CommandNotFound)
+            or (
+                isinstance(error, commands.CheckFailure)
+                and not isinstance(error, lyerrors.TakinaError)
+            )
+            or isinstance(error, commands.CommandOnCooldown)
         ):
             return
 
