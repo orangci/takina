@@ -1,6 +1,8 @@
 from __main__ import bot, start_time
 from takina.libs import lyerrors
+from discord.ext import commands
 import datetime
+import discord
 import aiohttp
 import random
 import re
@@ -110,3 +112,30 @@ def randint_from_seed(
 def chunked[T](items: list[T], size: int):
     for i in range(0, len(items), size):
         yield items[i : i + size]
+
+
+async def permissions_check(
+    ctx: commands.Context,
+    member: discord.Member,
+    author_check: bool = True,
+    owner_check: bool = False,
+    role_check: bool = True,
+) -> None:
+    if not isinstance(ctx.author, discord.Member) or not ctx.guild:
+        raise lyerrors.TakinaError("This command can only be used in a server.")
+
+    if author_check and member == ctx.author:
+        raise lyerrors.TakinaPermissionError("You cannot perform this action on yourself.")
+
+    if owner_check and member == ctx.guild.owner:
+        raise lyerrors.TakinaPermissionError("You cannot perform this action on the server owner.")
+
+    if role_check and member.top_role >= ctx.author.top_role:
+        raise lyerrors.TakinaPermissionError(
+            "You cannot perform this action on a member with a role that is higher than or equal to your own."
+        )
+
+    if role_check and ctx.guild.me and member.top_role >= ctx.guild.me.top_role:
+        raise lyerrors.TakinaBotPermissionError(
+            "I cannot perform this action on a member with a role that is higher than or equal to my own."
+        )
