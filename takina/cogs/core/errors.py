@@ -46,8 +46,13 @@ class Errors(commands.Cog):
 
         elif isinstance(error, commands.BotMissingPermissions):
             perms = ", ".join(perm.replace("_", " ").title() for perm in error.missing_permissions)
-            raise lyerrors.TakinaBotPermissionError(
+            error = lyerrors.TakinaBotPermissionError(
                 f"I am missing the following permissions required to use this command: `{perms}`."
+            )
+
+        elif isinstance(error, discord.errors.Forbidden):
+            error = lyerrors.TakinaBotPermissionError(
+                "I have do not have the sufficient permissions required to perform this action."
             )
 
         elif isinstance(error, commands.MissingPermissions):

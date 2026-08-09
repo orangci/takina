@@ -10,10 +10,7 @@ class Wynncraft(commands.Cog):
         self._bot = bot
 
     @commands.hybrid_group(
-        name="wynn",
-        aliases=["wynncraft"],
-        invoke_without_command=True,
-        description="Wynncraft information commands.",
+        name="wynn", aliases=["wynncraft"], description="Wynncraft information commands."
     )
     @lychecks.is_user_app()
     async def wynn(self, ctx: commands.Context):

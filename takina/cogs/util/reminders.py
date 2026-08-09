@@ -17,7 +17,6 @@ class Reminders(commands.Cog):
 
     @commands.hybrid_group(
         name="reminder",
-        invoke_without_command=True,
         description="Manage your reminders.",
         aliases=["reminders", "remind", "todo"],
     )
