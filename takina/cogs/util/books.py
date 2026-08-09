@@ -32,7 +32,7 @@ class Books(commands.Cog):
 
         book_data = book_data["items"][0]["volumeInfo"]
 
-        embed = discord.Embed(title=book_data["title"], color=config.EMBED_COLOR)
+        embed = discord.Embed(title=book_data["title"], colour=config.EMBED_COLOUR)
         embed.description = f"-# {book_data['subtitle']}\n" if book_data.get("subtitle") else ""
 
         if authors := book_data.get("authors"):

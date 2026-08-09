@@ -59,7 +59,7 @@ Prefer embed responses over plain text responses.
 Success embeds:
 
 ```py
-embed = discord.Embed(color=config.EMBED_COLOR)
+embed = discord.Embed(colour=config.EMBED_COLOUR)
 embed.description = "Lorem ipsum dolor..."
 ```
 

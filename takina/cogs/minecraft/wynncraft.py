@@ -17,7 +17,7 @@ class Wynncraft(commands.Cog):
     )
     @lychecks.is_user_app()
     async def wynn(self, ctx: commands.Context):
-        await lyhelpers.send_subcommands_list(ctx, self.wynn.commands)
+        await ctx.send_help(ctx.command)
 
     @wynn.command(
         name="player",
@@ -53,7 +53,7 @@ class Wynncraft(commands.Cog):
         global_data = player.get("globalData", {})
         pvp = global_data.get("pvp", {})
 
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = player.get("username")
         embed.url = f"https://wynncraft.com/stats/player/{uuid}"
         embed.set_thumbnail(url=f"https://visage.surgeplay.com/bust/256/{uuid}.webp")
@@ -116,7 +116,7 @@ class Wynncraft(commands.Cog):
         prefix = guild.get("prefix")
         created_at = int(datetime.fromisoformat(guild.get("created")).timestamp())
 
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = f"[{prefix}] {guild.get('name')}"
         embed.url = f"https://wynncraft.com/stats/guild/{prefix}"
 

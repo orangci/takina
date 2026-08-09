@@ -24,7 +24,7 @@ class Minecraft(commands.Cog):
         uuid = data["id"]
 
         embed = discord.Embed(
-            title=await lyhelpers.fetch_random_emoji() + username, color=config.EMBED_COLOR
+            title=await lyhelpers.fetch_random_emoji() + username, colour=config.EMBED_COLOUR
         )
         embed.set_image(url=f"https://visage.surgeplay.com/full/384/{uuid}")
         embed.set_footer(text=f"UUID: {uuid}")

@@ -17,7 +17,7 @@ LIBRETRANSLATE_API_URL = environ["LIBRETRANSLATE_API_URL"].removesuffix("/")
 HYPIXEL_API_KEY = getenv("HYPIXEL_API_KEY")
 GOOGLE_API_KEY = getenv("GOOGLE_API_KEY")
 STEAM_REGION = getenv("STEAM_REGION") or "US"
-ERROR_COLOR = 0xFF0037
+ERROR_COLOUR = 0xFF0037
 NIXOS_INSTANCE = getenv("NIXOS_INSTANCE")
 # how many commands can be used in five seconds
 COMMANDS_COOLDOWN = int(getenv("COMMANDS_COOLDOWN") or 5)
@@ -36,19 +36,19 @@ if BOT_VERSION is None:
     with (PROJECT_ROOT / "pyproject.toml").open("rb") as f:
         BOT_VERSION = tomllib.load(f)["project"]["version"]
 
-EMBED_COLOR_STR = getenv("EMBED_COLOR", "#2B2D31").strip().strip('"').strip("'")
-if EMBED_COLOR_STR.startswith("#"):
-    EMBED_COLOR = int(EMBED_COLOR_STR[1:], 16)  # Remove "#" and convert hex to int
-elif EMBED_COLOR_STR.startswith("0x"):
-    EMBED_COLOR = int(EMBED_COLOR_STR, 16)  # Directly convert hex to int
+EMBED_COLOUR_STR = getenv("EMBED_COLOUR", "#2B2D31").strip().strip('"').strip("'")
+if EMBED_COLOUR_STR.startswith("#"):
+    EMBED_COLOUR = int(EMBED_COLOUR_STR[1:], 16)  # Remove "#" and convert hex to int
+elif EMBED_COLOUR_STR.startswith("0x"):
+    EMBED_COLOUR = int(EMBED_COLOUR_STR, 16)  # Directly convert hex to int
 else:
-    EMBED_COLOR = int(EMBED_COLOR_STR)  # Handle cases where it might be directly an int
+    EMBED_COLOUR = int(EMBED_COLOUR_STR)  # Handle cases where it might be directly an int
 
 
 class _Emojis:
     def __init__(self):
-        self._success = self._parse("EMOJIS_SUCCESS", ":white_check_mark:")
-        self._error = self._parse("EMOJIS_ERROR", ":x:")
+        self._success = self._parse("EMOJIS_SUCCESS", "✅")
+        self._error = self._parse("EMOJIS_ERROR", "❌")
 
     @staticmethod
     def _parse(env_var: str, default: str) -> list[str]:

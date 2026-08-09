@@ -56,7 +56,7 @@ in
         default = "Takina";
         description = "The name of the bot used throughout the bot's commands.";
       };
-      embedColor = mkOption {
+      embedColour = mkOption {
         type = types.str;
         default = "#2B2D31";
         description = "The colour of embed responses.";
@@ -115,7 +115,7 @@ in
         NIXOS_INSTANCE = "yes";
         BOT_NAME = cfg.config.botName;
         PREFIX = cfg.config.prefix;
-        EMBED_COLOR = cfg.config.embedColor;
+        EMBED_COLOUR = cfg.config.embedColour;
         HASDB = mkIf cfg.database.createLocally "yes";
         DB_NAME = mkIf cfg.database.createLocally cfg.database.name;
         MONGO = mkIf cfg.database.createLocally "mongodb://${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}?directConnection=true&appName=takina";

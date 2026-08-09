@@ -19,7 +19,7 @@ class Hypixel(commands.Cog):
 
     async def build_hypixel_status_embed(self):
         client = hypixel.Client(config.HYPIXEL_API_KEY)
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         async with client:
             try:
                 embed.title = await lyhelpers.fetch_random_emoji() + "Hypixel Status"
@@ -30,7 +30,7 @@ class Hypixel(commands.Cog):
 
     async def build_hypixel_guild_embed(self, guild_name: str) -> discord.Embed:
         client = hypixel.Client(config.HYPIXEL_API_KEY)
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         async with client:
             try:
                 guild = await client.guild_from_name(guild_name)
@@ -68,7 +68,7 @@ class Hypixel(commands.Cog):
 
     async def build_hypixel_player_embed(self, username: str) -> discord.Embed:
         client = hypixel.Client(config.HYPIXEL_API_KEY)
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         async with client:
             try:
                 player = await client.player(username)
@@ -144,7 +144,7 @@ class Hypixel(commands.Cog):
 
     async def build_hypixel_bedwars_embed(self, username: str) -> discord.Embed:
         client = hypixel.Client(config.HYPIXEL_API_KEY)
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
 
         async with client:
             try:
@@ -196,7 +196,7 @@ class Hypixel(commands.Cog):
 
     async def build_hypixel_blitz_embed(self, username: str) -> discord.Embed:
         client = hypixel.Client(config.HYPIXEL_API_KEY)
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
 
         async with client:
             try:
@@ -241,7 +241,7 @@ class Hypixel(commands.Cog):
 
     async def build_hypixel_duels_embed(self, username: str) -> discord.Embed:
         client = hypixel.Client(config.HYPIXEL_API_KEY)
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
 
         async with client:
             try:
@@ -291,7 +291,7 @@ class Hypixel(commands.Cog):
 
     async def build_hypixel_murder_mystery_embed(self, username: str) -> discord.Embed:
         client = hypixel.Client(config.HYPIXEL_API_KEY)
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
 
         async with client:
             try:
@@ -333,7 +333,7 @@ class Hypixel(commands.Cog):
 
     async def build_hypixel_paintball_embed(self, username: str) -> discord.Embed:
         client = hypixel.Client(config.HYPIXEL_API_KEY)
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
 
         async with client:
             try:
@@ -371,7 +371,7 @@ class Hypixel(commands.Cog):
 
     async def build_hypixel_skywars_embed(self, username: str) -> discord.Embed:
         client = hypixel.Client(config.HYPIXEL_API_KEY)
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
 
         async with client:
             try:
@@ -419,7 +419,7 @@ class Hypixel(commands.Cog):
 
     async def build_hypixel_uhc_embed(self, username: str) -> discord.Embed:
         client = hypixel.Client(config.HYPIXEL_API_KEY)
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
 
         async with client:
             try:
@@ -464,7 +464,7 @@ class Hypixel(commands.Cog):
     )
     @lychecks.is_user_app()
     async def hypixel(self, ctx: commands.Context):
-        await lyhelpers.send_subcommands_list(ctx, self.hypixel.commands)
+        await ctx.send_help(ctx.command)
 
     @hypixel.command(name="status", description="Display Hypixel's status.")
     async def hypixel_status(self, ctx: commands.Context):

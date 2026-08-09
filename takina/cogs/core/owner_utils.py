@@ -80,7 +80,7 @@ class OwnerUtils(commands.Cog):
         if not description:
             description = "No guilds available to display."
 
-        embed = discord.Embed(title="Guilds", description=description, color=config.EMBED_COLOR)
+        embed = discord.Embed(title="Guilds", description=description, colour=config.EMBED_COLOUR)
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(hidden=True)
@@ -93,7 +93,7 @@ class OwnerUtils(commands.Cog):
             if command is None:
                 raise lyerrors.TakinaNotFoundError("Command not found.")
             command.enabled = False
-            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed = discord.Embed(colour=config.EMBED_COLOUR)
             embed.description = f"{config.emojis.SUCCESS} Successfully disabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -107,7 +107,7 @@ class OwnerUtils(commands.Cog):
             if command is None:
                 raise lyerrors.TakinaNotFoundError("Command not found.")
             command.enabled = True
-            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed = discord.Embed(colour=config.EMBED_COLOUR)
             embed.description = f"{config.emojis.SUCCESS} Successfully enabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -125,11 +125,11 @@ class OwnerUtils(commands.Cog):
         is_owner = await self._bot.is_owner(ctx.author)
         owner_names_str = ", ".join(owner_names)
         if is_owner:
-            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed = discord.Embed(colour=config.EMBED_COLOUR)
             embed.description = f"You have maintainer level permissions when interacting with {config.BOT_NAME}. Current users who hold maintainer level permissions: {owner_names_str}"
             await ctx.reply(embed=embed, mention_author=False)
         else:
-            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed = discord.Embed(colour=config.EMBED_COLOUR)
             embed.description = f"You are not a maintainer of {config.BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
             await ctx.reply(embed=embed, mention_author=False)
 
@@ -157,7 +157,7 @@ class OwnerUtils(commands.Cog):
                 raise lyerrors.TakinaError(error_message)
             else:
                 embed = discord.Embed(
-                    color=config.EMBED_COLOR,
+                    colour=config.EMBED_COLOUR,
                     description=f"{config.emojis.SUCCESS} Successfully reloaded all cogs.",
                 )
                 await ctx.reply(embed=embed, mention_author=False)
@@ -170,7 +170,7 @@ class OwnerUtils(commands.Cog):
                 try:
                     await self._bot.reload_extension(full_cog_name)
                     embed = discord.Embed(
-                        color=config.EMBED_COLOR,
+                        colour=config.EMBED_COLOUR,
                         description=f"{config.emojis.SUCCESS} Successfully reloaded `{full_cog_name}`.",
                     )
                     await ctx.reply(embed=embed, mention_author=False)
@@ -185,7 +185,7 @@ class OwnerUtils(commands.Cog):
     async def reload_slash_command(self, ctx: commands.Context) -> None:
         start = time.perf_counter()
         synced = await self._bot.tree.sync()
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         elapsed = time.perf_counter() - start
         embed.description = f"{config.emojis.SUCCESS} Successfully synced {len(synced):,} bot application commands in {elapsed:.4f} seconds."
         await ctx.reply(embed=embed, mention_author=False)
@@ -195,7 +195,7 @@ class OwnerUtils(commands.Cog):
     async def unload(self, ctx: commands.Context, cog: str) -> None:
         try:
             await self._bot.unload_extension("takina.cogs." + cog)
-            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed = discord.Embed(colour=config.EMBED_COLOUR)
             embed.description = f"{config.emojis.SUCCESS} Successfully unloaded `cogs.{cog}`."
             await ctx.reply(embed=embed, mention_author=False)
         except commands.ExtensionNotLoaded:
@@ -208,7 +208,7 @@ class OwnerUtils(commands.Cog):
             await self._bot.load_extension("takina.cogs." + cog)
         except commands.ExtensionNotLoaded:
             raise lyerrors.TakinaError(f"`cogs.{cog}` was already loaded.")
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.description = f"{config.emojis.SUCCESS} Successfully loaded `cogs.{cog}`."
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -221,7 +221,7 @@ class OwnerUtils(commands.Cog):
 
         if channel and message:
             await channel.send(message)
-            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed = discord.Embed(colour=config.EMBED_COLOUR)
             embed.description = f"{config.emojis.SUCCESS} Message sent."
             if ctx.interaction is not None:
                 await ctx.reply(embed=embed, ephemeral=True)
@@ -235,7 +235,7 @@ class OwnerUtils(commands.Cog):
         if not command:
             raise lyerrors.TakinaNotFoundError("That command doesn't seem to exist.")
 
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = f"Command: {command.qualified_name}"
 
         embed.description = f"\n> **Description**: {command.description}"

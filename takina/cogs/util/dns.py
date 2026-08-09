@@ -46,7 +46,7 @@ class DNS(commands.Cog):
 
         data = response.to_whois_dict()
 
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = f"WHOIS Information for {domain}"
         embed.description = ""
 
@@ -100,7 +100,7 @@ class DNS(commands.Cog):
         pages = []
 
         for chunk in lyhelpers.chunked(lines, 3):
-            embed = discord.Embed(color=config.EMBED_COLOR)
+            embed = discord.Embed(colour=config.EMBED_COLOUR)
             embed.title = f"DNS Records for {url}"
             embed.description = "\n".join(chunk)
             pages.append(embed)

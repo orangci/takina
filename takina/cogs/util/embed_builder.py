@@ -26,8 +26,8 @@ class EmbedModal(discord.ui.Modal):
             placeholder="Enter embed description",
             style=discord.TextStyle.paragraph,
         )
-        self.color_input = discord.ui.TextInput(
-            label="Color (Hex)", placeholder="#FFFFFF", required=False
+        self.colour_input = discord.ui.TextInput(
+            label="Colour (Hex)", placeholder="#FFFFFF", required=False
         )
         self.footer_input = discord.ui.TextInput(
             label="Footer", placeholder="Enter footer text", required=False
@@ -40,18 +40,18 @@ class EmbedModal(discord.ui.Modal):
 
         self.add_item(self.title_input)
         self.add_item(self.description_input)
-        self.add_item(self.color_input)
+        self.add_item(self.colour_input)
         self.add_item(self.footer_input)
         self.add_item(self.fields_input)
 
     async def on_submit(self, interaction: discord.Interaction):
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = self.title_input.value or None
         embed.description = self.description_input.value or None
 
-        if self.color_input.value:
+        if self.colour_input.value:
             try:
-                embed.color = int(self.color_input.value.lstrip("#"), 16)
+                embed.colour = int(self.colour_input.value.lstrip("#"), 16)
             except ValueError:
                 return
 

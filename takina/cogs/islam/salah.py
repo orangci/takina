@@ -19,7 +19,7 @@ class Salawat(commands.Cog):
             "https://api.aladhan.com/v1/timingsByAddress", params={"address": location_name}
         )
 
-        embed = discord.Embed(color=config.EMBED_COLOR)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = f"Islāmic Prayer Times for {location_name.title()}"
 
         prayer_times = response["data"]["timings"]

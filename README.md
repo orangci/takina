@@ -26,7 +26,7 @@ services.takina = {
     enable = true;
     config = {
         PREFIX = "?";
-        EMBED_COLOR = "0x2B2D31";
+        EMBED_COLOUR = "0x2B2D31";
         # you may also set TOKEN here, but we ***highly*** advise you not to
         # as that would make your bot token publicly readable in the Nix store
         # you can instead set it via services.takina.environmentFile
