@@ -19,15 +19,6 @@ wheels = [
 ]
 
 [[package]]
-name = "aiofiles"
-version = "25.1.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/41/c3/534eac40372d8ee36ef40df62ec129bee4fdb5ad9706e58a29be53b2c970/aiofiles-25.1.0.tar.gz", hash = "sha256:a8d728f0a29de45dc521f18f07297428d56992a742f0cd2701ba86e44d23d5b2", size = 46354, upload-time = "2025-10-09T20:51:04.358Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/8a/340a1555ae33d7354dbca4faa54948d76d89a27ceef032c8c3bc661d003e/aiofiles-25.1.0-py3-none-any.whl", hash = "sha256:abe311e527c862958650f9438e859c1fa7568a141b22abcd015e120e86a85695", size = 14668, upload-time = "2025-10-09T20:51:03.174Z" },
-]
-
-[[package]]
 name = "aiohappyeyeballs"
 version = "2.7.1"
 source = { registry = "https://pypi.org/simple" }
@@ -180,35 +171,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/ba/7a/15e37d45e7f7c94facc1e9148c0e455e8f33c08f0b8a0b1deb2c5171771b/asyncpg-0.31.0-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:8df714dba348efcc162d2adf02d213e5fab1bd9f557e1305633e851a61814a7a", size = 3429426, upload-time = "2025-11-24T23:26:41.032Z" },
     { url = "https://files.pythonhosted.org/packages/13/d5/71437c5f6ae5f307828710efbe62163974e71237d5d46ebd2869ea052d10/asyncpg-0.31.0-cp314-cp314t-win32.whl", hash = "sha256:1b41f1afb1033f2b44f3234993b15096ddc9cd71b21a42dbd87fc6a57b43d65d", size = 614495, upload-time = "2025-11-24T23:26:42.659Z" },
     { url = "https://files.pythonhosted.org/packages/3c/d7/8fb3044eaef08a310acfe23dae9a8e2e07d305edc29a53497e52bc76eca7/asyncpg-0.31.0-cp314-cp314t-win_amd64.whl", hash = "sha256:bd4107bb7cdd0e9e65fae66a62afd3a249663b844fa34d479f6d5b3bef9c04c3", size = 706062, upload-time = "2025-11-24T23:26:44.086Z" },
-]
-
-[[package]]
-name = "asyncpraw"
-version = "8.0.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "aiofiles" },
-    { name = "aiohttp" },
-    { name = "asyncprawcore" },
-    { name = "defusedxml" },
-    { name = "update-checker", extra = ["async"] },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/2f/80/18a6ff36987f18191287f30dc136d29e0c945bbea0145d5a85978fcefbb4/asyncpraw-8.0.2.tar.gz", hash = "sha256:a242b20505d65066f8bb63c6ae29a22dc1b070b13baf4e2303cd13d12103e977", size = 13683324, upload-time = "2026-06-24T00:06:06.29Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/6b/80d1d7cb839095cfa57a44f1f849f37081adf7262e8d7c8d08a0e09527ff/asyncpraw-8.0.2-py3-none-any.whl", hash = "sha256:ead582ef880f52b828e190707604778d372c7d54cdad8f44c4f969793b6108f0", size = 205273, upload-time = "2026-06-24T00:06:04.423Z" },
-]
-
-[[package]]
-name = "asyncprawcore"
-version = "4.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "aiohttp" },
-    { name = "yarl" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/e9/f6/28bb1cafb664e53d045830593b2442aaf7e8cea2598c2da916d76412abb3/asyncprawcore-4.0.0.tar.gz", hash = "sha256:a95583190c86f14b164dd53190b928883837240f6be30bb4f47c5be3c11d5736", size = 1334812, upload-time = "2026-06-13T02:00:51.107Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/41/1b4d9d86465d78829f026693d765aef864025293590ee71f16995eba145a/asyncprawcore-4.0.0-py3-none-any.whl", hash = "sha256:ad3f493a0bde0734b1104b987bfb90169cf4cc3ba107545547f1f992b868e4c1", size = 22694, upload-time = "2026-06-13T02:00:49.403Z" },
 ]
 
 [[package]]
@@ -1544,7 +1506,6 @@ dependencies = [
     { name = "aiodns" },
     { name = "aiohttp" },
     { name = "asyncpg" },
-    { name = "asyncpraw" },
     { name = "audioop-lts" },
     { name = "brotli" },
     { name = "discord-py" },
@@ -1586,7 +1547,6 @@ requires-dist = [
     { name = "aiodns", specifier = "==4.0.4" },
     { name = "aiohttp", specifier = "==3.14.3" },
     { name = "asyncpg", specifier = ">=0.31.0" },
-    { name = "asyncpraw", specifier = "==8.0.2" },
     { name = "audioop-lts", specifier = "==0.2.2" },
     { name = "brotli", specifier = "==1.2.0" },
     { name = "discord-py", specifier = ">=2.7.1" },
@@ -1719,20 +1679,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/7a/ab/75d5adc5a47d86da4637bc77b3ea6d86302e735b9f8efd18782b78a9b25a/tzfpy-1.3.2-cp314-cp314t-musllinux_1_2_aarch64.whl", hash = "sha256:d3432bedb6ced68a8da045e526d9e77bcc51a46c2b50bb8308ebd3f0db887def", size = 4659520, upload-time = "2026-07-12T01:35:05.361Z" },
     { url = "https://files.pythonhosted.org/packages/51/99/bd762e903c116b6ffdecd479f5ac91977f80e857079bba0cd278e4668f3d/tzfpy-1.3.2-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:716898e6e024b5c9d09ca8fd9d9fa3abb05eb515dbd3e5443b3de88dfa290587", size = 4693789, upload-time = "2026-07-12T01:35:07.316Z" },
     { url = "https://files.pythonhosted.org/packages/8f/b1/b4344e06435c001ce20078751cab7190d6fa180c2d62ae756f788c6620be/tzfpy-1.3.2-cp314-cp314t-win_amd64.whl", hash = "sha256:408af2823d88c4e709dc264d8025941829f04cffcb8613e7093bc567a2f21349", size = 4340205, upload-time = "2026-07-12T01:35:09.619Z" },
-]
-
-[[package]]
-name = "update-checker"
-version = "1.0.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/92/0d/cdf2a0bc53f2b0b85a9cc7a81d0c5fa666dc140d26a1797ddf8ce4a24d0d/update_checker-1.0.0.tar.gz", hash = "sha256:bfcac66414572a82a98ea8c8633bf1ce5d102750e3b93469b89b30aa845cd1d7", size = 9600, upload-time = "2026-06-08T07:08:20.799Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/51/f5/a264987b052d61c172d23eec92935480535fd32e45357bd6557fa2c687d5/update_checker-1.0.0-py3-none-any.whl", hash = "sha256:5837640948ff21820ba3ea881fb4bed5abefb39037895c6447f5e712236d60c6", size = 10618, upload-time = "2026-06-08T07:08:19.782Z" },
-]
-
-[package.optional-dependencies]
-async = [
-    { name = "aiohttp" },
 ]
 
 [[package]]
