@@ -1,6 +1,7 @@
 from os import getenv, environ
 from dotenv import load_dotenv
 from pathlib import Path
+from __main__ import bot
 import tomllib
 import random
 
@@ -35,6 +36,9 @@ if BOT_VERSION is None:
     # get the version from pyproject.toml
     with (PROJECT_ROOT / "pyproject.toml").open("rb") as f:
         BOT_VERSION = tomllib.load(f)["project"]["version"]
+
+# it's friendlier to provide a proper user agent when utilising public APIs!
+USER_AGENT = f"{BOT_NAME}-{bot.application_id}/{BOT_VERSION} (https://takina.is-a.bot)"
 
 EMBED_COLOUR_STR = getenv("EMBED_COLOUR", "#2B2D31").strip().strip('"').strip("'")
 if EMBED_COLOUR_STR.startswith("#"):
