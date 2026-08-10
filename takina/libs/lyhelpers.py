@@ -10,18 +10,16 @@ import re
 
 
 # for requesting data from APIs
-async def request(url: str, headers: dict | None = None, *args, **kwargs):
+async def request(url: str, method: str = "GET", headers: dict | None = None, *args, **kwargs):
     user_agent_header = {"User-Agent": config.USER_AGENT}
-
-    if headers:
-        kwargs["headers"] = user_agent_header | (headers or {})
+    kwargs["headers"] = user_agent_header | (headers or {})
 
     async with aiohttp.ClientSession() as session:
-        async with session.get(url, *args, **kwargs) as response:
+        async with session.request(method, url, *args, **kwargs) as response:
             if response.status == 404:
                 return False
 
-            elif response.status >= 400:
+            if response.status >= 400:
                 raise lyerrors.TakinaError(
                     f"Error {response.status}: Failed to reach the requested resource."
                 )
