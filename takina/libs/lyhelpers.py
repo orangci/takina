@@ -1,6 +1,7 @@
 from __main__ import bot, start_time
 from takina.libs import lyerrors
 from discord.ext import commands
+from takina import config
 import datetime
 import discord
 import aiohttp
@@ -10,8 +11,10 @@ import re
 
 # for requesting data from APIs
 async def request(url: str, headers: dict | None = None, *args, **kwargs):
+    user_agent_header = {"User-Agent": config.USER_AGENT}
+
     if headers:
-        kwargs["headers"] = headers
+        kwargs["headers"] = user_agent_header | (headers or {})
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url, *args, **kwargs) as response:
