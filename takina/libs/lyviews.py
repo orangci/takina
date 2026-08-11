@@ -1,4 +1,5 @@
 from discord.ui import Button, View, Select
+from discord.ext import commands
 from takina import config
 import discord
 
@@ -17,7 +18,7 @@ class AuthorView(View):
 
         embed = discord.Embed()
         embed.description = (
-            f"{config.emojis.ERROR} You cannot interact with somebody else's message."
+            f"{config.emojis.ERROR} You cannot interact with someone else's message."
         )
 
         await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -32,35 +33,49 @@ class AuthorView(View):
             await self.message.edit(view=self)
 
 
-class ConfirmView(AuthorView):
-    """Simple Yes / No confirmation dialog."""
+class ModerationConfirmationView(AuthorView):
+    def __init__(
+        self,
+        *,
+        ctx: commands.Context,
+        member: discord.User | discord.Member | str,
+        action: str,
+        reason: str,
+    ):
+        super().__init__(ctx.author, timeout=60)
 
-    def __init__(self, author: discord.abc.User, *, timeout: float | None = 60):
-        super().__init__(author, timeout=timeout)
+        self.ctx = ctx
+        self.action = action
+        self.reason = reason
+        self.confirmed = False
+        self.message: discord.Message
+        self.member = member.mention if not isinstance(member, str) else member
 
-        self.value: bool | None = None
-
-    @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
-    async def confirm(self, interaction: discord.Interaction, button: Button):
-        self.value = True
-
-        for child in self.children:
-            if isinstance(child, (Button, Select)):
-                child.disabled = True
-
-        await interaction.response.edit_message(view=self)
+    @discord.ui.button(label="Confirm", style=discord.ButtonStyle.success)
+    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.confirmed = True
+        await interaction.response.edit_message(view=None)
         self.stop()
 
-    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.red)
-    async def cancel(self, interaction: discord.Interaction, button: Button):
-        self.value = False
-
-        for child in self.children:
-            if isinstance(child, (Button, Select)):
-                child.disabled = True
-
-        await interaction.response.edit_message(view=self)
+    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.danger)
+    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.confirmed = False
+        await interaction.response.edit_message(view=None)
         self.stop()
+
+    async def prompt(self) -> bool:
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
+        embed.description = f"Are you sure you want to **{self.action}** {self.member}?"
+        embed.description += f"\n\n{config.emojis.NOTE} **Reason**: {self.reason}"
+
+        message = await self.ctx.reply(embed=embed, view=self, mention_author=False)
+        self.message = message
+
+        await self.wait()
+        return self.confirmed
+
+    async def edit_success(self, embed: discord.Embed) -> None:
+        await self.message.edit(embed=embed, view=None)
 
 
 class PaginatorView(AuthorView):

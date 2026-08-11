@@ -41,8 +41,8 @@ class Translate(commands.Cog):
             raise lyerrors.TakinaError("Translation failed.")
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"> **Original:** {text}"
-        embed.description += f"\n> **Translation:** {translated_text}"
+        embed.description = f"> **Original**: {text}"
+        embed.description += f"\n> **Translation**: {translated_text}"
         await ctx.reply(embed=embed, mention_author=False)
 
 

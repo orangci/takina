@@ -118,13 +118,13 @@ class Wynncraft(commands.Cog):
         embed.url = f"https://wynncraft.com/stats/guild/{prefix}"
 
         embed.description = (
-            f"> **Owner(s):** {', '.join(guild.get('members', {}).get('owner', {}).keys())}\n"
+            f"> **Owner(s)**: {', '.join(guild.get('members', {}).get('owner', {}).keys())}\n"
         )
-        embed.description += f"> **Created:** <t:{created_at}> (<t:{created_at}:R>)\n"
-        embed.description += f"> **Level:** {guild.get('level')} ({guild.get('xpPercent')}% XP)\n"
-        embed.description += f"> **Territories controlled:** {guild.get('territories')}\n"
-        embed.description += f"> **Wars participated:** {guild.get('wars')}\n"
-        embed.description += f"> **Online members:** {guild.get('online')}"
+        embed.description += f"> **Created**: <t:{created_at}> (<t:{created_at}:R>)\n"
+        embed.description += f"> **Level**: {guild.get('level')} ({guild.get('xpPercent')}% XP)\n"
+        embed.description += f"> **Territories controlled**: {guild.get('territories')}\n"
+        embed.description += f"> **Wars participated**: {guild.get('wars')}\n"
+        embed.description += f"> **Online members**: {guild.get('online')}"
         await ctx.reply(embed=embed, mention_author=False)
 
 

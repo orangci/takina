@@ -49,17 +49,17 @@ class Info(commands.Cog):
         permissions_str = ", ".join(dangerous_perms) if dangerous_perms else None
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"> **Username:** {member.name}"
-        embed.description += f"\n> **Display Name:** {member.display_name}"
-        embed.description += f"\n> **Account ID:** {member.id}"
-        embed.description += f"\n> **Created on:** <t:{int(member.created_at.timestamp())}:D> (<t:{int(member.created_at.timestamp())}:R>)"
+        embed.description = f"> **Username**: {member.name}"
+        embed.description += f"\n> **Display Name**: {member.display_name}"
+        embed.description += f"\n> **Account ID**: {member.id}"
+        embed.description += f"\n> **Created on**: <t:{int(member.created_at.timestamp())}:D> (<t:{int(member.created_at.timestamp())}:R>)"
 
         if member.joined_at:
             timestamp = int(member.joined_at.timestamp())
-            embed.description += f"\n> **Joined on:** <t:{timestamp}:D> (<t:{timestamp}:R>)"
+            embed.description += f"\n> **Joined on**: <t:{timestamp}:D> (<t:{timestamp}:R>)"
 
         embed.description += (
-            f"\n> **Roles ({len(roles)}):** {' '.join(role.mention for role in reversed(roles))}"
+            f"\n> **Roles ({len(roles)})**: {' '.join(role.mention for role in reversed(roles))}"
         )
 
         embed.set_author(
@@ -69,11 +69,11 @@ class Info(commands.Cog):
         )
 
         if permissions_str:
-            embed.description += f"\n> **Dangerous Permissions:** {permissions_str}"
+            embed.description += f"\n> **Dangerous Permissions**: {permissions_str}"
 
         if member.timed_out_until:
             timestamp = int(member.timed_out_until.timestamp())
-            embed.description += f"\n> **Timed out until:** <t:{timestamp}> (<t:{timestamp}:R>)"
+            embed.description += f"\n> **Timed out until**: <t:{timestamp}> (<t:{timestamp}:R>)"
 
         if member.banner:
             embed.set_image(url=member.banner.url)
@@ -101,17 +101,17 @@ class Info(commands.Cog):
 
         embed = discord.Embed(colour=role.colour)
         embed.title = await lyhelpers.fetch_random_emoji() + role.name
-        embed.description = f"> **Role ID:** {role.id}"
-        embed.description += f"\n> **Name:** {role.name}"
-        embed.description += f"\n> **Colour:** {role.colour}"
-        embed.description += f"\n> **Position:** {len(ctx.guild.roles) - role.position}"
-        embed.description += f"\n> **Mentionable:** {role.mentionable}"
-        embed.description += f"\n> **Hoisted:** {role.hoist}"
-        embed.description += f"\n> **Managed:** {role.managed}"
-        embed.description += f"\n> **Members:** {len(role.members)}"
-        embed.description += f"\n> **Created:** <t:{int(role.created_at.timestamp())}:D> (<t:{int(role.created_at.timestamp())}:R>)"
+        embed.description = f"> **Role ID**: {role.id}"
+        embed.description += f"\n> **Name**: {role.name}"
+        embed.description += f"\n> **Colour**: {role.colour}"
+        embed.description += f"\n> **Position**: {len(ctx.guild.roles) - role.position}"
+        embed.description += f"\n> **Mentionable**: {role.mentionable}"
+        embed.description += f"\n> **Hoisted**: {role.hoist}"
+        embed.description += f"\n> **Managed**: {role.managed}"
+        embed.description += f"\n> **Members**: {len(role.members)}"
+        embed.description += f"\n> **Created**: <t:{int(role.created_at.timestamp())}:D> (<t:{int(role.created_at.timestamp())}:R>)"
         if role.permissions:
-            embed.description += "\n> **Permissions:** " + ", ".join(
+            embed.description += "\n> **Permissions**: " + ", ".join(
                 permission[0].replace("_", " ").title()
                 for permission in role.permissions
                 if permission[1]
@@ -134,27 +134,27 @@ class Info(commands.Cog):
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = await lyhelpers.fetch_random_emoji() + guild.name
-        embed.description = f"> **Server ID:** {guild.id}"
-        embed.description += f"\n> **Server Name:** {guild.name}"
+        embed.description = f"> **Server ID**: {guild.id}"
+        embed.description += f"\n> **Server Name**: {guild.name}"
 
         if guild.owner:
-            embed.description += f"\n> **Owner:** {guild.owner.mention}"
+            embed.description += f"\n> **Owner**: {guild.owner.mention}"
         else:
-            embed.description += "\n> **Owner:** Unknown"
+            embed.description += "\n> **Owner**: Unknown"
 
         embed.description += (
-            f"\n> **Created:** <t:{int(guild.created_at.timestamp())}:D>"
+            f"\n> **Created**: <t:{int(guild.created_at.timestamp())}:D>"
             f" (<t:{int(guild.created_at.timestamp())}:R>)"
         )
-        embed.description += f"\n> **Members:** {guild.member_count}"
-        embed.description += f"\n> **Verification Level:** {guild.verification_level}"
-        embed.description += f"\n> **Roles:** {len(guild.roles)}"
-        embed.description += f"\n> **Channels:** {len(guild.channels)}"
+        embed.description += f"\n> **Members**: {guild.member_count}"
+        embed.description += f"\n> **Verification Level**: {guild.verification_level}"
+        embed.description += f"\n> **Roles**: {len(guild.roles)}"
+        embed.description += f"\n> **Channels**: {len(guild.channels)}"
         embed.description += (
-            f"\n> **Emojis:** {len(guild.emojis)} emojis and {len(guild.stickers)} stickers"
+            f"\n> **Emojis**: {len(guild.emojis)} emojis and {len(guild.stickers)} stickers"
         )
         embed.description += (
-            f"\n> **Boosts:** Tier {guild.premium_tier} — {guild.premium_subscription_count} boosts"
+            f"\n> **Boosts**: Tier {guild.premium_tier} — {guild.premium_subscription_count} boosts"
         )
 
         if guild.description:

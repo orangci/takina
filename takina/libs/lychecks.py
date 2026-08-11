@@ -88,3 +88,16 @@ def sesp_guild_only(guild_id: int):
         return ctx.guild and ctx.guild.id == guild_id
 
     return commands.check(predicate)
+
+
+# this makes a hybrid command a slash command
+# i mean, ONLY a slash command
+# why not just make slash commands the normal way?
+# error handling shenanigans. don't even ask.
+# yes. yes, i know this is really damned stupid.
+def slash_only():
+    async def predicate(ctx: commands.Context) -> bool:
+        if ctx.interaction is None:
+            return False
+
+        return True

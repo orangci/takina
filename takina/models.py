@@ -1,5 +1,5 @@
+from sqlmodel import Field, SQLModel, Column, DateTime, String
 from sqlalchemy.dialects.postgresql import ARRAY as PGArray
-from sqlmodel import Field, SQLModel, Column, DateTime
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy import BigInteger
 from datetime import datetime
@@ -21,6 +21,10 @@ class UserSettingsModel(SQLModel, table=True):
 class GuildSettingsModel(SQLModel, table=True):
     __tablename__ = "guild_settings"
     guild_id: int = Field(sa_type=BigInteger, primary_key=True)
+
+    modlog_channel_id: int | None = Field(default=None, sa_type=BigInteger)
+    reports_channel_id: int | None = Field(default=None, sa_type=BigInteger)
+    reports_notification_role_id: int | None = Field(default=None, sa_type=BigInteger)
 
 
 class AFKStatusModel(SQLModel, table=True):
@@ -63,3 +67,23 @@ class ReminderModel(SQLModel, table=True):
     user_id: int = Field(sa_type=BigInteger)
     reminder: str
     remind_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))
+
+
+class ModLogCaseModel(SQLModel, table=True):
+    __tablename__ = "modlog_cases"
+
+    id: int | None = Field(default=None, primary_key=True)
+    guild_id: int = Field(sa_type=BigInteger)
+    case_id: int
+    action: str
+    member_ids: list[int] = Field(
+        default_factory=list, sa_column=Column(MutableList.as_mutable(PGArray(BigInteger)))
+    )
+    member_names: list[str] = Field(
+        default_factory=list, sa_column=Column(MutableList.as_mutable(PGArray(String)))
+    )
+    moderator_id: int = Field(sa_type=BigInteger)
+    reason: str
+    duration: str | None = None
+    timestamp: datetime = Field(sa_column=Column(DateTime(timezone=True)))
+    mass_action: bool = False

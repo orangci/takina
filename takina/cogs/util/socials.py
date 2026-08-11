@@ -43,35 +43,35 @@ class Socials(commands.Cog):
 
         if website := data.get("blog"):
             website_display = website.removeprefix("https://").removeprefix("http://")
-            embed.description += f"\n> **Website:** [{website_display}]({website})"
+            embed.description += f"\n> **Website**: [{website_display}]({website})"
 
         if email_address := data.get("email"):
-            embed.description += f"\n> **Email:** [{email_address}](mailto:{email_address})"
+            embed.description += f"\n> **Email**: [{email_address}](mailto:{email_address})"
 
         if location := data.get("location"):
-            embed.description += f"\n> **Location:** {location}"
+            embed.description += f"\n> **Location**: {location}"
 
         if data.get("hireable"):
-            embed.description += "\n> **Hireable:** This user is available for hire."
+            embed.description += "\n> **Hireable**: This user is available for hire."
 
         if company := data.get("company"):
-            embed.description += f"\n> **Company:** {company}"
+            embed.description += f"\n> **Company**: {company}"
 
         if followers := data.get("followers"):
-            embed.description += f"\n> **Followers:** {followers}"
+            embed.description += f"\n> **Followers**: {followers}"
 
         if following := data.get("following"):
-            embed.description += f"\n> **Following:** {following}"
+            embed.description += f"\n> **Following**: {following}"
 
         if created := data.get("created_at"):
             created_at = datetime.datetime.fromisoformat(created.replace("Z", "+00:00"))
-            embed.description += f"\n> **Joined GitHub:** <t:{int(created_at.timestamp())}:D> (<t:{int(created_at.timestamp())}:R>)"
+            embed.description += f"\n> **Joined GitHub**: <t:{int(created_at.timestamp())}:D> (<t:{int(created_at.timestamp())}:R>)"
 
         if public_repos := data.get("public_repos"):
-            embed.description += f"\n> **Public Repositories:** {public_repos}"
+            embed.description += f"\n> **Public Repositories**: {public_repos}"
 
         if public_gists := data.get("public_gists"):
-            embed.description += f"\n> **Public Gists:** {public_gists}"
+            embed.description += f"\n> **Public Gists**: {public_gists}"
 
         if data.get("type") != "User":
             embed.description += "\n\nThis account is not a regular GitHub user account."
@@ -109,26 +109,26 @@ class Socials(commands.Cog):
 
         if website := data.get("website"):
             website_display = website.removeprefix("https://").removeprefix("http://")
-            embed.description += f"\n\n> **Website:** [{website_display}]({website})"
+            embed.description += f"\n\n> **Website**: [{website_display}]({website})"
 
         if email_address := data.get("email"):
-            embed.description += f"\n> **Email:** [{email_address}](mailto:{email_address})"
+            embed.description += f"\n> **Email**: [{email_address}](mailto:{email_address})"
 
         if location := data.get("location"):
-            embed.description += f"\n> **Location:** {location}"
+            embed.description += f"\n> **Location**: {location}"
 
         if followers := data.get("followers_count"):
-            embed.description += f"\n> **Followers:** {followers}"
+            embed.description += f"\n> **Followers**: {followers}"
 
         if following := data.get("following_count"):
-            embed.description += f"\n> **Following:** {following}"
+            embed.description += f"\n> **Following**: {following}"
 
         if isinstance(repo_data, list):
-            embed.description += f"\n> **Public Repositories:** {len(repo_data)}"
+            embed.description += f"\n> **Public Repositories**: {len(repo_data)}"
 
         if created := data.get("created"):
             created_at = datetime.datetime.fromisoformat(created.replace("Z", "+00:00"))
-            embed.description += f"\n> **Joined Codeberg:** <t:{int(created_at.timestamp())}:D> (<t:{int(created_at.timestamp())}:R>)"
+            embed.description += f"\n> **Joined Codeberg**: <t:{int(created_at.timestamp())}:D> (<t:{int(created_at.timestamp())}:R>)"
 
         if data.get("is_admin"):
             embed.description += "\n\n**This user is a Codeberg site administrator.**"

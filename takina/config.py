@@ -52,20 +52,20 @@ class _Emojis:
     def __init__(self):
         self._success = self._parse("EMOJIS_SUCCESS", "✅")
         self._error = self._parse("EMOJIS_ERROR", "❌")
+        self._note = self._parse("EMOJIS_NOTE", "📝")
+        self._moderator = self._parse("EMOJIS_MODERATOR", "👤")
 
     @staticmethod
     def _parse(env_var: str, default: str) -> list[str]:
         value = getenv(env_var, default)
-
         return [emoji.strip() for emoji in value.split(",") if emoji.strip()]
 
-    @property
-    def SUCCESS(self) -> str:
-        return random.choice(self._success)
+    def __getattr__(self, name: str) -> str:
+        value = self.__dict__.get(f"_{name.lower()}")
+        if not value:
+            raise AttributeError(name)
 
-    @property
-    def ERROR(self) -> str:
-        return random.choice(self._error)
+        return random.choice(value)
 
 
 emojis = _Emojis()
