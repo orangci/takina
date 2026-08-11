@@ -21,7 +21,7 @@ async def request(url: str, method: str = "GET", headers: dict | None = None, *a
 
             if response.status >= 400:
                 raise lyerrors.TakinaError(
-                    f"Error {response.status}: Failed to reach the requested resource."
+                    f"Error [{response.status}](https://http.cat/{response.status}.png): Failed to reach the requested resource."
                 )
 
             return await response.json()
@@ -129,14 +129,16 @@ async def permissions_check(
         raise lyerrors.TakinaPermissionError("You cannot perform this action on yourself.")
 
     if owner_check and member == ctx.guild.owner:
-        raise lyerrors.TakinaPermissionError("You cannot perform this action on the server owner.")
+        raise lyerrors.TakinaPermissionError(
+            f"You cannot perform this action on the server owner ({member.mention})."
+        )
 
     if role_check and member.top_role >= ctx.author.top_role:
         raise lyerrors.TakinaPermissionError(
-            "You cannot perform this action on a member with a role that is higher than or equal to your own."
+            f"You cannot perform this action on a member ({member.mention}) with a role that is higher than or equal to your own."
         )
 
     if role_check and ctx.guild.me and member.top_role >= ctx.guild.me.top_role:
         raise lyerrors.TakinaBotPermissionError(
-            "I cannot perform this action on a member with a role that is higher than or equal to my own."
+            f"I cannot perform this action on a member ({member.mention}) with a role that is higher than or equal to my own."
         )

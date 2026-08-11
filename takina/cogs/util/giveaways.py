@@ -135,9 +135,9 @@ class Giveaways(commands.Cog):
         embed.title = giveaway.title
         embed.description = f"{giveaway.description}\n"
         embed.description += f"\n> **Ends**: <t:{int(giveaway.ends_at.timestamp())}> (<t:{int(giveaway.ends_at.timestamp())}:R>)"
-        embed.description += f"\n> **Giveaway ID:** `#{giveaway.id}`"
-        embed.description += f"\n> **Participants:** {len(giveaway.participants)}"
-        embed.description += f"\n> **Winners:** {giveaway.winners}"
+        embed.description += f"\n> **Giveaway ID**: `#{giveaway.id}`"
+        embed.description += f"\n> **Participants**: {len(giveaway.participants)}"
+        embed.description += f"\n> **Winners**: {giveaway.winners}"
 
         view = GiveawayView(self, giveaway.guild_id, giveaway.id)
         await message.edit(embed=embed, view=view)
@@ -178,9 +178,9 @@ class Giveaways(commands.Cog):
             embed.title = giveaway.title
             embed.description = f"{giveaway.description}\n"
             embed.description += f"\n> **Ended**: <t:{int(giveaway.ends_at.timestamp())}> (<t:{int(giveaway.ends_at.timestamp())}:R>)"
-            embed.description += f"\n> **Giveaway ID:** `#{giveaway.id}`"
-            embed.description += "\n> **Participants:** 0"
-            embed.description += f"\n> **Winners:** {giveaway.winners}"
+            embed.description += f"\n> **Giveaway ID**: `#{giveaway.id}`"
+            embed.description += "\n> **Participants**: 0"
+            embed.description += f"\n> **Winners**: {giveaway.winners}"
             embed.description += "\n\n**Giveaway ended with no participants.**"
 
             view = GiveawayView(self, giveaway.guild_id, giveaway.id)
@@ -202,9 +202,9 @@ class Giveaways(commands.Cog):
         embed.title = giveaway.title
         embed.description = f"{giveaway.description}\n"
         embed.description += f"\n> **Ends**: <t:{int(giveaway.ends_at.timestamp())}> (<t:{int(giveaway.ends_at.timestamp())}:R>)"
-        embed.description += f"\n> **Giveaway ID:** `#{giveaway.id}`"
-        embed.description += f"\n> **Participants:** {len(giveaway.participants)}"
-        embed.description += f"\n> **Winners:** {', '.join(winner.mention for winner in winners)}"
+        embed.description += f"\n> **Giveaway ID**: `#{giveaway.id}`"
+        embed.description += f"\n> **Participants**: {len(giveaway.participants)}"
+        embed.description += f"\n> **Winners**: {', '.join(winner.mention for winner in winners)}"
 
         view = GiveawayView(self, giveaway.guild_id, giveaway.id)
 
@@ -324,9 +324,9 @@ class Giveaways(commands.Cog):
         embed.description += (
             f"\n> **Ends**: <t:{int(ends_at.timestamp())}> (<t:{int(ends_at.timestamp())}:R>)"
         )
-        embed.description += f"\n> **Giveaway ID:** #`{giveaway_id}`"
-        embed.description += "\n> **Participants:** 0"
-        embed.description += f"\n> **Winners:** {winners}"
+        embed.description += f"\n> **Giveaway ID**: #`{giveaway_id}`"
+        embed.description += "\n> **Participants**: 0"
+        embed.description += f"\n> **Winners**: {winners}"
 
         view = GiveawayView(self, ctx.guild.id, giveaway_id)
         message = await ctx.channel.send(embed=embed, view=view)
@@ -423,8 +423,8 @@ class Giveaways(commands.Cog):
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.description = f"{giveaway.description}\n"
         embed.description += f"\n> **Ended**: <t:{int(giveaway.ends_at.timestamp())}> (<t:{int(giveaway.ends_at.timestamp())}:R>)"
-        embed.description += f"\n> **Giveaway ID:** `#{giveaway.id}`"
-        embed.description += f"\n> **Participants:** {len(giveaway.participants)}"
+        embed.description += f"\n> **Giveaway ID**: `#{giveaway.id}`"
+        embed.description += f"\n> **Participants**: {len(giveaway.participants)}"
 
         if giveaway.winner_ids:
             winners = []
@@ -438,7 +438,7 @@ class Giveaways(commands.Cog):
                 winners.append(winner.mention)
 
             if winners:
-                embed.description += f"\n> **Winners:** {', '.join(winner for winner in winners)}"
+                embed.description += f"\n> **Winners**: {', '.join(winner for winner in winners)}"
 
         await ctx.reply(embed=embed, mention_author=False)
 

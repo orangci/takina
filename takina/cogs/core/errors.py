@@ -50,13 +50,12 @@ class Errors(commands.Cog):
                 f"I am missing the following permissions required to use this command: `{perms}`."
             )
 
-        elif isinstance(error, discord.errors.Forbidden):
+        elif isinstance(error, discord.Forbidden):
             error = lyerrors.TakinaBotPermissionError(
-                "I have do not have the sufficient permissions required to perform this action."
+                "I do not have the sufficient permissions required to perform this action."
             )
 
         elif isinstance(error, commands.MissingPermissions):
-            print("asdf")
             perms = ", ".join(perm.replace("_", " ").title() for perm in error.missing_permissions)
             error = lyerrors.TakinaPermissionError(
                 f"You are missing the following permissions required to use this command: {perms}"

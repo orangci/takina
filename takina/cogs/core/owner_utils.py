@@ -1,4 +1,4 @@
-from takina.libs import lyerrors, lychecks, lyhelpers
+from takina.libs import lyerrors, lychecks, lyhelpers, lyviews
 from contextlib import redirect_stdout
 from discord.ext import commands
 from typing import Any, cast
@@ -139,6 +139,7 @@ class OwnerUtils(commands.Cog):
         importlib.reload(lyhelpers)
         importlib.reload(lyerrors)
         importlib.reload(lychecks)
+        importlib.reload(lyviews)
         importlib.reload(config)
 
         if cog is None:
