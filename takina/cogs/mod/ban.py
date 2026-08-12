@@ -21,7 +21,7 @@ class Ban(commands.Cog):
         usage="@member posting NSFW repeatedly",
     )
     @lychecks.has_permissions(ban_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def ban(
         self, ctx: commands.Context, member: discord.Member, *, reason: str = "No reason provided"
     ) -> None:
@@ -60,7 +60,7 @@ class Ban(commands.Cog):
         usage="@member1 @member2 posting gore",
     )
     @lychecks.has_permissions(ban_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def massban(
         self,
         ctx: commands.Context,
@@ -117,7 +117,7 @@ class Ban(commands.Cog):
         usage="716306888492318790 get banned, baldie!",
     )
     @lychecks.has_permissions(ban_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def hackban(
         self, ctx: commands.Context, user: int, *, reason: str = "No reason provided"
     ) -> None:
@@ -159,7 +159,7 @@ class Ban(commands.Cog):
         usage="716306888492318790 we're sorry for calling you bald",
     )
     @lychecks.has_permissions(ban_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def unban(
         self, ctx: commands.Context, user: int, *, reason: str = "No reason provided"
     ) -> None:

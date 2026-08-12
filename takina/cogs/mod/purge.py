@@ -11,7 +11,7 @@ class Purge(commands.Cog):
 
     @commands.hybrid_command(description="Purge/mass delete messages in a channel.")
     @lychecks.has_permissions(manage_messages=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def purge(self, ctx: commands.Context, amount: int) -> None:
         if amount <= 0 or amount > 200:
             raise lyerrors.TakinaUserInputError("Please specify a number between 1 and 200.")

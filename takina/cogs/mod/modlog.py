@@ -91,7 +91,7 @@ class ModLog(commands.Cog):
         description="Manage the server's moderation log.",
         invoke_without_command=True,
     )
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def modlog(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
@@ -102,7 +102,7 @@ class ModLog(commands.Cog):
         usage="#channel",
     )
     @lychecks.has_permissions(manage_guild=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def channel(self, ctx: commands.Context, channel: discord.TextChannel):
         assert ctx.guild is not None
 
@@ -124,7 +124,7 @@ class ModLog(commands.Cog):
 
     @commands.hybrid_command(description="Fetch information on a moderation case.", usage="42")
     @lychecks.has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def case(self, ctx: commands.Context, case_id: int):
         assert ctx.guild is not None
 
@@ -166,7 +166,7 @@ class ModLog(commands.Cog):
         usage="11 new reason",
     )
     @lychecks.has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def edit_case(self, ctx: commands.Context, case_id: int, *, new_reason: str):
         assert ctx.guild is not None
 
@@ -184,7 +184,7 @@ class ModLog(commands.Cog):
 
     @commands.hybrid_command(description="List moderation cases for a user.", usage="@user")
     @lychecks.has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def cases(self, ctx: commands.Context, user: discord.Member | None = None):
         assert ctx.guild is not None
 
@@ -224,7 +224,7 @@ class ModLog(commands.Cog):
         description="List moderation cases performed by a moderator.", usage="@user"
     )
     @lychecks.has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def modcases(self, ctx: commands.Context, moderator: discord.Member | None = None):
         assert ctx.guild is not None
 
@@ -266,7 +266,7 @@ class ModLog(commands.Cog):
         aliases=["ms"], description="List moderation statistics for a user.", usage="@user"
     )
     @lychecks.has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def modstats(self, ctx: commands.Context, user: discord.Member | None = None):
         assert ctx.guild is not None
 

@@ -1,4 +1,4 @@
-from takina.libs import lyhelpers, lyerrors
+from takina.libs import lyhelpers, lyerrors, lychecks
 from discord.ext import commands
 from takina import config
 import discord
@@ -14,7 +14,7 @@ class Info(commands.Cog):
         aliases=["ui", "profile", "user"],
         usage="@member",
     )
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def userinfo(self, ctx: commands.Context, *, member: discord.Member | None = None):
         assert ctx.guild is not None
 
@@ -95,7 +95,7 @@ class Info(commands.Cog):
         aliases=["ri"],
         usage="Moderator",
     )
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def roleinfo(self, ctx: commands.Context, *, role: discord.Role):
         assert ctx.guild is not None
 
@@ -127,7 +127,7 @@ class Info(commands.Cog):
         description="Fetch information about the server.",
         aliases=["si", "server"],
     )
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def serverinfo(self, ctx: commands.Context):
         assert ctx.guild is not None
         guild = ctx.guild

@@ -21,7 +21,7 @@ class Kick(commands.Cog):
         usage="@member get out!!",
     )
     @lychecks.has_permissions(kick_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def kick(
         self, ctx: commands.Context, member: discord.Member, *, reason: str = "No reason provided"
     ) -> None:
@@ -58,7 +58,7 @@ class Kick(commands.Cog):
         usage="@member1 @member2 all of you get out!!!",
     )
     @lychecks.has_permissions(kick_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def masskick(
         self,
         ctx: commands.Context,

@@ -1,4 +1,4 @@
-from takina.libs import lyhelpers
+from takina.libs import lyhelpers, lychecks
 from discord.ext import commands
 from takina import config
 import discord
@@ -75,7 +75,7 @@ class PingResponse(commands.Cog):
         await message.reply(embed=await self.construct_info_embed(message), mention_author=False)
 
     @commands.hybrid_command(name="info", description="Fetch information about the bot.")
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def info(self, ctx: commands.Context) -> None:
         await ctx.reply(embed=await self.construct_info_embed(ctx.message), mention_author=False)
 

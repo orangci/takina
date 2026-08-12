@@ -24,6 +24,11 @@ def setup(bot: commands.Bot) -> None:
 
 def has_permissions(**perms: bool):
     async def predicate(ctx: commands.Context):
+        # heh. bot owners can skip checks
+        # yes, i know, how sneaky
+        # but it's useful for testing purposes anyway
+        # and neither of us are the type to abuse this
+        # teehee
         if await ctx.bot.is_owner(ctx.author):
             return True
 
@@ -53,7 +58,7 @@ def has_permissions(**perms: bool):
 
 def is_user_app():
     def decorator(command):
-        command = app_commands.allowed_installs(users=True, guilds=False)(command)
+        command = app_commands.allowed_installs(users=True)(command)
         command = app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)(
             command
         )
@@ -67,14 +72,10 @@ def dms_only():
     return app_commands.allowed_contexts(guilds=False, dms=True, private_channels=True)
 
 
-# what the hell are guild apps for, anyway? sure, i'll these them now, but
+# what the hell are guild apps for, anyway? sure, i'll make this now, but
 # i really doubt i'll ever use them, you know?
 def is_guild_app():
-    return app_commands.allowed_installs(users=False, guilds=True)
-
-
-def is_user_and_guild_app():
-    return app_commands.allowed_installs(users=True, guilds=True)
+    return app_commands.allowed_installs(guilds=True)
 
 
 # this is for commands that are meant to work only in specific servers
@@ -101,3 +102,18 @@ def slash_only():
             return False
 
         return True
+
+
+# this is also stupid
+# but for some reason commands.guild_only doesn't work
+# don't ask me why
+def guild_only():
+    def decorator(command):
+        command = app_commands.allowed_installs(users=False, guilds=True)(command)
+        command = app_commands.allowed_contexts(guilds=True, dms=False, private_channels=True)(
+            command
+        )
+
+        return command
+
+    return decorator

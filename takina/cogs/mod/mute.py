@@ -22,7 +22,7 @@ class Mute(commands.Cog):
         usage="@member 12h spamming in #help-forum",
     )
     @lychecks.has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def mute(
         self,
         ctx: commands.Context,
@@ -79,7 +79,7 @@ class Mute(commands.Cog):
         usage="@member1 @member2 12h spamming",
     )
     @lychecks.has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def massmute(
         self,
         ctx: commands.Context,
@@ -149,7 +149,7 @@ class Mute(commands.Cog):
         usage="@member we muted you by accident sorry",
     )
     @lychecks.has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def unmute(
         self, ctx: commands.Context, member: discord.Member, *, reason: str = "No reason provided"
     ) -> None:

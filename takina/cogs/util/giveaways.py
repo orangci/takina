@@ -1,4 +1,4 @@
-from takina.libs import lyerrors, lyhelpers
+from takina.libs import lyerrors, lyhelpers, lychecks
 from datetime import datetime, timedelta, timezone
 from takina import config, database, models
 from discord.ext import commands, tasks
@@ -275,7 +275,7 @@ class Giveaways(commands.Cog):
         name="start", description="Start a giveaway.", usage='5h "title" "description" 2'
     )
     # @lychecks.has_permissions(manage_events=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def start(
         self,
         ctx: commands.Context,
@@ -355,7 +355,7 @@ class Giveaways(commands.Cog):
 
     @giveaway.command(name="stop", aliases=["end"], description="End a giveaway.", usage="1")
     # @lychecks.has_permissions(manage_events=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def stop(self, ctx: commands.Context, giveaway_id: int):
         assert ctx.guild is not None
         giveaway = await database.get(models.GiveawayModel, guild_id=ctx.guild.id, id=giveaway_id)
@@ -379,7 +379,7 @@ class Giveaways(commands.Cog):
 
     @giveaway.command(description="Reroll a giveaway winner.", usage="1")
     # @lychecks.has_permissions(manage_events=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def reroll(self, ctx: commands.Context, giveaway_id: int):
         assert ctx.guild is not None
         giveaway = await database.get(models.GiveawayModel, guild_id=ctx.guild.id, id=giveaway_id)
@@ -409,7 +409,7 @@ class Giveaways(commands.Cog):
 
     @giveaway.command(description="View the details of a past giveaway.", usage="1")
     # @lychecks.has_permissions(manage_events=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def view(self, ctx: commands.Context, giveaway_id: int):
         assert ctx.guild is not None
         giveaway = await database.get(models.GiveawayModel, guild_id=ctx.guild.id, id=giveaway_id)
