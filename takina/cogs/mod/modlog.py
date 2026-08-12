@@ -25,7 +25,7 @@ class ModLog(commands.Cog):
         action: str,
         member: discord.Member | discord.User | list[discord.Member | discord.User],
         reason: str,
-        moderator: discord.Member | discord.User,
+        moderator: discord.Member | discord.User | discord.ClientUser,
         duration: str | None = None,
     ) -> None:
         assert ctx.guild is not None

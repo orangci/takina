@@ -23,6 +23,7 @@ class GuildSettingsModel(SQLModel, table=True):
     guild_id: int = Field(sa_type=BigInteger, primary_key=True)
 
     modlog_channel_id: int | None = Field(default=None, sa_type=BigInteger)
+    honeypot_channel_id: int | None = Field(default=None, sa_type=BigInteger)
     reports_channel_id: int | None = Field(default=None, sa_type=BigInteger)
     reports_notification_role_id: int | None = Field(default=None, sa_type=BigInteger)
 
