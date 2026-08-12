@@ -14,7 +14,6 @@ async def get_prefix(bot: commands.Bot, message: discord.Message) -> list[str]:
         return default_prefixes
 
     prefix = await database.get(models.PrefixModel, guild_id=message.guild.id)
-
     if prefix is not None:
         return [prefix.prefix, "takina ", "Takina "]
 
