@@ -1,6 +1,6 @@
-from sqlmodel import Field, SQLModel, Column, DateTime, String
+from sqlmodel import Field, SQLModel, Column, DateTime, String, JSON
 from sqlalchemy.dialects.postgresql import ARRAY as PGArray
-from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy.ext.mutable import MutableList, MutableDict
 from sqlalchemy import BigInteger
 from datetime import datetime
 from secrets import token_hex
@@ -106,3 +106,10 @@ class StarboardMessageModel(SQLModel, table=True):
 
     message_id: int = Field(sa_type=BigInteger, primary_key=True)
     starboard_message_id: int = Field(sa_type=BigInteger)
+
+
+class TriggerResponsesModel(SQLModel, table=True):
+    __tablename__ = "trigger_responses"
+
+    guild_id: int = Field(sa_type=BigInteger, primary_key=True)
+    triggers: dict = Field(default_factory=dict, sa_column=Column(MutableDict.as_mutable(JSON)))
