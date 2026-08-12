@@ -53,7 +53,7 @@ class Utils(commands.Cog):
         description="Check a user's join position in the server.",
         usage="@member",
     )
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def join_position(self, ctx: commands.Context, member: discord.Member | None = None):
         assert ctx.guild is not None
         if member is None:
@@ -94,7 +94,7 @@ class Utils(commands.Cog):
         aliases=["mc", "membercount", "members", "minecraft"],
         description="Fetch the server's current member count.",
     )
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def member_count(self, ctx: commands.Context):
         assert ctx.guild is not None
 

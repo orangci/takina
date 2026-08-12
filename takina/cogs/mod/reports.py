@@ -1,6 +1,6 @@
 from takina.models import GuildSettingsModel
+from takina.libs import lyerrors, lychecks
 from takina import config, database
-from takina.libs import lyerrors
 from discord.ext import commands
 import discord
 
@@ -12,7 +12,7 @@ class Reports(commands.Cog):
     @commands.hybrid_group(
         name="report", description="Report something to the server's moderation team."
     )
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def report(self, ctx: commands.Context) -> None:
         pass
 
@@ -20,7 +20,7 @@ class Reports(commands.Cog):
         name="channel", description="Set the channel where reports will be sent.", usage="#channel"
     )
     @commands.has_permissions(manage_channels=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def report_channel(
         self,
         ctx: commands.Context,
@@ -51,7 +51,7 @@ class Reports(commands.Cog):
         description="Report a member to the server's moderation team.",
         usage="@member reason",
     )
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def report_member(
         self, ctx: commands.Context, member: discord.Member, *, reason: str
     ) -> None:

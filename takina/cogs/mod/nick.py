@@ -14,7 +14,7 @@ class Nick(commands.Cog):
         usage='@member "new nickname"',
     )
     @lychecks.has_permissions(manage_nicknames=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def nick(
         self,
         ctx: commands.Context,

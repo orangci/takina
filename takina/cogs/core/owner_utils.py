@@ -56,11 +56,12 @@ class OwnerUtils(commands.Cog):
         else:
             return f"```py\n{value}{result}\n```"
 
-    @commands.command(hidden=True, name="eval")
+    @commands.hybrid_command(hidden=True, name="eval")
     @commands.is_owner()
     async def eval(self, ctx: commands.Context, *, code: str):
         result = await self.run_eval(ctx, code)
-        await ctx.message.add_reaction("✅")
+        if not ctx.interaction:
+            await ctx.message.add_reaction("✅")
         if result:
             await ctx.reply(result, mention_author=False)
 
@@ -111,7 +112,7 @@ class OwnerUtils(commands.Cog):
             embed.description = f"{config.emojis.SUCCESS} Successfully enabled `{command}`."
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(hidden=True, aliases=["maintainer", "perms", "owner", "owners"])
+    @commands.hybrid_command(hidden=True, aliases=["maintainer", "perms", "owner", "owners"])
     async def maintainers(self, ctx: commands.Context):
         owner_names = []
         assert self._bot.owner_ids is not None
@@ -214,6 +215,7 @@ class OwnerUtils(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(hidden=True)
+    @lychecks.guild_only()
     @commands.is_owner()
     async def send(
         self, ctx: commands.Context, channel: discord.TextChannel | None = None, *, message: str

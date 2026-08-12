@@ -8,7 +8,7 @@ class Prefix(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
 
-    @commands.guild_only()
+    @lychecks.guild_only()
     @lychecks.has_permissions(administrator=True)
     @commands.hybrid_command(
         name="prefix", description=f"Set a custom prefix for {config.BOT_NAME}"

@@ -17,7 +17,7 @@ class Warnings(commands.Cog):
 
     @commands.hybrid_command(description="Warn a member.", usage="@member spamming in #manga")
     @lychecks.has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def warn(
         self, ctx: commands.Context, member: discord.Member, *, reason: str = "No reason provided"
     ) -> None:
@@ -55,7 +55,7 @@ class Warnings(commands.Cog):
         usage="@member1 @member2 spamming",
     )
     @lychecks.has_permissions(moderate_members=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def masswarn(
         self,
         ctx: commands.Context,

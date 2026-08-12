@@ -9,14 +9,14 @@ class Roles(commands.Cog):
         self._bot = bot
 
     @commands.hybrid_group(name="role", aliases=["rank"], description="Role management commands.")
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def role(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @role.command(name="add", description="Add a role to a member.", usage="@member Moderator")
     @lychecks.has_permissions(manage_roles=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def add(
         self, ctx: commands.Context, member: discord.Member | None, *, role: discord.Role
     ):
@@ -41,7 +41,7 @@ class Roles(commands.Cog):
         name="remove", description="Remove a role from member.", usage="@member Moderator"
     )
     @lychecks.has_permissions(manage_roles=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def remove(
         self, ctx: commands.Context, member: discord.Member | None, *, role: discord.Role
     ):
@@ -65,7 +65,7 @@ class Roles(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @role.command(name="info", description="Fetch information about a role.", usage="Moderator")
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def info(self, ctx: commands.Context, *, role: discord.Role):
         info_cog = self._bot.get_cog("Info")
         if not info_cog:

@@ -64,7 +64,7 @@ class Honeypot(commands.Cog):
         name="honeypot", description="Configure the honeypot channel.", usage="#channel"
     )
     @lychecks.has_permissions(manage_guild=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def honeypot(self, ctx: commands.Context, channel: discord.TextChannel) -> None:
         assert ctx.guild is not None
 
