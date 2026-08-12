@@ -106,7 +106,7 @@ class Starboard(commands.Cog):
         name="starboard", description="Configure the starboard.", invoke_without_command=True
     )
     @lychecks.has_permissions(manage_channels=True)
-    @commands.guild_only()
+    @lychecks.guild_only()
     async def starboard(self, ctx: commands.Context) -> None:
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
