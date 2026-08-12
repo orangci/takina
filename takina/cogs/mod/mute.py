@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: orangc
 from takina.libs import lychecks, lyerrors, lyviews, lyhelpers
 from takina.cogs.mod.modlog import ModLog
 from discord.ext import commands

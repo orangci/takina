@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: orangc
 from takina.libs import lychecks, lyerrors, lyviews
 from datetime import datetime, timedelta, timezone
 from takina import config, database, models

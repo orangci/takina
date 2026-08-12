@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: orangc
 fates = [
     "You and {target} are best friends.",
     "You and {target} are man and wife.",
