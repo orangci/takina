@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: orangc
 from os import getenv, environ
 from dotenv import load_dotenv
 from pathlib import Path

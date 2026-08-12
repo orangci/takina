@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: orangc
 from takina.models import StarboardMessageModel, StarboardSettingsModel
 from takina.libs import lychecks, lyerrors
 from discord.ui import Button, View

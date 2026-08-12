@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: orangc
 from sqlmodel import Field, SQLModel, Column, DateTime, String, JSON
 from sqlalchemy.dialects.postgresql import ARRAY as PGArray
 from sqlalchemy.ext.mutable import MutableList, MutableDict

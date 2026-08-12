@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: orangc
 from takina.libs import lychecks, lyerrors
 from geopy.adapters import AioHTTPAdapter
 from geopy.extra import rate_limiter
