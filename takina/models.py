@@ -88,3 +88,21 @@ class ModLogCaseModel(SQLModel, table=True):
     duration: str | None = None
     timestamp: datetime = Field(sa_column=Column(DateTime(timezone=True)))
     mass_action: bool = False
+
+
+class StarboardSettingsModel(SQLModel, table=True):
+    __tablename__ = "starboard_settings"
+
+    guild_id: int = Field(sa_type=BigInteger, primary_key=True)
+    starboard_channel_id: int | None = Field(default=None, sa_type=BigInteger)
+    minimum_reaction_count: int = 4
+    whitelisted_channel_ids: list[int] = Field(
+        default_factory=list, sa_column=Column(MutableList.as_mutable(PGArray(BigInteger)))
+    )
+
+
+class StarboardMessageModel(SQLModel, table=True):
+    __tablename__ = "starboard_messages"
+
+    message_id: int = Field(sa_type=BigInteger, primary_key=True)
+    starboard_message_id: int = Field(sa_type=BigInteger)
