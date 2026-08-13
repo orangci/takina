@@ -4,6 +4,7 @@ from takina import database, models
 from takina.libs import lychecks
 from discord.ext import commands
 import discord
+import aiohttp
 import os
 
 start_time = discord.utils.utcnow()
@@ -48,12 +49,19 @@ class Bot(commands.Bot):
 
         await database.initiate_database()
 
+        # for lyhelpers.request() to work
+        self.http_session = aiohttp.ClientSession()
+
         for cog in cogs:
             if cog not in cogs_blacklist:
                 try:
                     await self.load_extension(f"takina.cogs.{cog}")
                 except Exception as e:
                     print(f"Failed to load {cog}: {e}")
+
+    async def close(self):
+        await self.http_session.close()
+        await super().close()
 
 
 bot = Bot()

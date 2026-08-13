@@ -13,20 +13,22 @@ import re
 
 # for requesting data from APIs
 async def request(url: str, method: str = "GET", headers: dict | None = None, *args, **kwargs):
+    if not bot.http_session:
+        raise RuntimeError("Client HTTP session has not been initialised.")
+
     user_agent_header = {"User-Agent": config.USER_AGENT}
     kwargs["headers"] = user_agent_header | (headers or {})
 
-    async with aiohttp.ClientSession() as session:
-        async with session.request(method, url, *args, **kwargs) as response:
-            if response.status == 404:
-                return False
+    async with bot.http_session.request(method, url, *args, **kwargs) as response:
+        if response.status == 404:
+            return False
 
-            if response.status >= 400:
-                raise lyerrors.TakinaError(
-                    f"Error [{response.status}](https://http.cat/{response.status}.png): Failed to reach the requested resource."
-                )
+        if response.status >= 400:
+            raise lyerrors.TakinaError(
+                f"Error [{response.status}](https://http.cat/{response.status}.png): Failed to reach the requested resource."
+            )
 
-            return await response.json()
+        return await response.json()
 
 
 async def post(url, headers=None, *args, **kwargs):
