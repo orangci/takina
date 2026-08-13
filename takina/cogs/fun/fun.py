@@ -13,7 +13,7 @@ class Fun(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot = bot
 
-    @commands.hybrid_command(name="fact", description="Fetch a random fact.")
+    @commands.hybrid_command(description="Fetch a random fact.")
     @lychecks.is_user_app()
     async def fact(self, ctx: commands.Context) -> None:
         data = await lyhelpers.request("https://uselessfacts.jsph.pl/api/v2/facts/random")
@@ -21,7 +21,7 @@ class Fun(commands.Cog):
         embed.description = f"{data.get('text')} {await lyhelpers.fetch_random_emoji()}"
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(name="joke", aliases=["dadjoke"], description="Fetch a random joke.")
+    @commands.hybrid_command(aliases=["dadjoke"], description="Fetch a random joke.")
     @lychecks.is_user_app()
     async def joke(self, ctx: commands.Context) -> None:
         joke_type = random.choice(["dadjoke", "regular"])
@@ -47,7 +47,7 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(
-        name="commit", description=f"Order {config.BOT_NAME.title()} to do anything.", usage="arson"
+        description=f"Order {config.BOT_NAME.title()} to do anything.", usage="arson"
     )
     @lychecks.is_user_app()
     async def commit(self, ctx: commands.Context, *, action: str) -> None:
@@ -66,9 +66,7 @@ class Fun(commands.Cog):
         embed.description = f"{lyhelpers.randint_from_seed(action, possible_responses)} {await lyhelpers.fetch_random_emoji()}"
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(
-        name="google", description="Google anything!", usage="shawarma restaurants near me"
-    )
+    @commands.hybrid_command(description="Google anything!", usage="shawarma restaurants near me")
     @lychecks.is_user_app()
     async def google(self, ctx: commands.Context, *, query: str) -> None:
         query_before_conversion = query
@@ -141,10 +139,7 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(
-        name="fate",
-        aliases=["relationship"],
-        description="Check your fate with another user.",
-        usage="@user",
+        aliases=["relationship"], description="Check your fate with another user.", usage="@user"
     )
     @lychecks.is_user_app()
     async def fate(self, ctx: commands.Context, user: discord.User) -> None:
@@ -167,6 +162,22 @@ class Fun(commands.Cog):
                 embed.description = f"{emoji} I won't tell you! Hmph, mind your own business!"
             embed.remove_footer()
 
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.hybrid_command(description="Fetch a random image of Gary.")
+    @lychecks.is_user_app()
+    async def gary(self, ctx: commands.Context) -> None:
+        data = await lyhelpers.request("https://api.garythe.cat/gary")
+        embed = discord.Embed(colour=config.EMBED_COLOUR, title="Gary")
+        embed.set_image(url=data.get("url"))
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.hybrid_command(description="Fetch a random image of Goober.")
+    @lychecks.is_user_app()
+    async def goober(self, ctx: commands.Context) -> None:
+        data = await lyhelpers.request("https://api.garythe.cat/goober")
+        embed = discord.Embed(colour=config.EMBED_COLOUR, title="Goober")
+        embed.set_image(url=data.get("url"))
         await ctx.reply(embed=embed, mention_author=False)
 
 
