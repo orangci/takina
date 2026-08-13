@@ -86,7 +86,7 @@ class PaginatorView(AuthorView):
 
     Example:
         view = PaginatorView(ctx.author, embeds)
-        view.message = await ctx.reply(embed=embeds[0], view=view)
+        view.message = await ctx.reply(embed=embeds[0], view=view, mention_author=False)
     """
 
     def __init__(self, author: discord.abc.User, embeds: list[discord.Embed]):
