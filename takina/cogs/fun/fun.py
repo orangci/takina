@@ -165,6 +165,7 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(description="Fetch a random image of Gary.")
+    @lychecks.has_permissions(embed_links=True)
     @lychecks.is_user_app()
     async def gary(self, ctx: commands.Context) -> None:
         data = await lyhelpers.request("https://api.garythe.cat/gary")
@@ -173,6 +174,7 @@ class Fun(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(description="Fetch a random image of Goober.")
+    @lychecks.has_permissions(embed_links=True)
     @lychecks.is_user_app()
     async def goober(self, ctx: commands.Context) -> None:
         data = await lyhelpers.request("https://api.garythe.cat/goober")
