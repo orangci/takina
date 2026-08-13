@@ -182,6 +182,18 @@ class Fun(commands.Cog):
         embed.set_image(url=data.get("url"))
         await ctx.reply(embed=embed, mention_author=False)
 
+    @commands.hybrid_command(description="Get roasted by the bot.")
+    @lychecks.is_user_app()
+    async def roast(
+        self, ctx: commands.Context, target: discord.User | discord.Member | None = None
+    ):
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
+        response = await lyhelpers.request(
+            "https://insult.mattbas.org/api/insult", disable_json=True
+        )
+        embed.description = await lyhelpers.fetch_random_emoji() + response + "."
+        await ctx.reply(target.mention if target else None, embed=embed, mention_author=False)
+
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Fun(bot))
