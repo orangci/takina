@@ -77,11 +77,13 @@ class Info(commands.Cog):
             timestamp = int(member.timed_out_until.timestamp())
             embed.description += f"\n> **Timed out until**: <t:{timestamp}> (<t:{timestamp}:R>)"
 
-        if member.banner:
-            embed.set_image(url=member.banner.url)
-
         if member.guild_banner:
             embed.set_image(url=member.guild_banner.url)
+        else:
+            # refetch the user to be able to access banner assets
+            user = await self._bot.fetch_user(member.id)
+            if user.banner:
+                embed.set_image(url=user.banner.url)
 
         if member.avatar:
             embed.set_thumbnail(url=member.avatar.url)

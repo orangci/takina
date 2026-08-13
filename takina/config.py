@@ -8,7 +8,7 @@ import random
 
 load_dotenv()
 
-BOT_NAME = getenv("BOT_NAME")
+BOT_NAME = environ["BOT_NAME"]
 DB_NAME = environ["DB_NAME"].lower()
 POSTGRESQL_URI = environ["POSTGRESQL_URI"].replace("postgresql://", "postgresql+asyncpg://")
 GITHUB_AUTH_TOKEN = getenv("GITHUB_AUTH_TOKEN")
