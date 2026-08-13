@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lychecks, lyerrors, lyhelpers
 from takina.libs.fate_responses import fates
+from takina.libs.topics_list import topics
 from discord.ext import commands
 from takina import config
 from urllib import parse
@@ -193,6 +194,13 @@ class Fun(commands.Cog):
         )
         embed.description = await lyhelpers.fetch_random_emoji() + response + "."
         await ctx.reply(target.mention if target else None, embed=embed, mention_author=False)
+
+    @commands.hybrid_command(description="Fetch a random conversational topic.")
+    @lychecks.is_user_app()
+    async def topic(self, ctx: commands.Context) -> None:
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
+        embed.description = random.choice(topics) + await lyhelpers.fetch_random_emoji()
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 async def setup(bot: commands.Bot) -> None:
