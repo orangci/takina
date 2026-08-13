@@ -6,13 +6,19 @@ from discord.ext import commands
 from takina import config
 import datetime
 import discord
-import aiohttp
 import random
 import re
 
 
 # for requesting data from APIs
-async def request(url: str, method: str = "GET", headers: dict | None = None, *args, **kwargs):
+async def request(
+    url: str,
+    method: str = "GET",
+    headers: dict | None = None,
+    disable_json: bool = False,
+    *args,
+    **kwargs,
+):
     if not bot.http_session:
         raise RuntimeError("Client HTTP session has not been initialised.")
 
@@ -23,20 +29,14 @@ async def request(url: str, method: str = "GET", headers: dict | None = None, *a
         if response.status == 404:
             return False
 
-        if response.status >= 400:
+        if not response.ok:
             raise lyerrors.TakinaError(
-                f"Error [{response.status}](https://http.cat/{response.status}.png): Failed to reach the requested resource."
+                f"Error [{response.status}](https://http.cat/{response.status}.png): {response.reason}."
             )
 
-        return await response.json()
-
-
-async def post(url, headers=None, *args, **kwargs):
-    if headers:
-        kwargs["headers"] = headers
-
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, *args, **kwargs) as response:
+        if disable_json:
+            return await response.text()
+        else:
             return await response.json()
 
 
