@@ -15,7 +15,14 @@ let
     mkEnableOption
     types
     getExe
+    singleton
+    mapAttrs
+    nameValuePair
     ;
+
+  configToEnv = mapAttrs (
+    name: value: nameValuePair (lib.toUpper (lib.replaceStrings [ "-" ] [ "_" ] name)) (toString value)
+  );
 in
 {
   options.services.takina = {
@@ -42,55 +49,49 @@ in
     environmentFile = mkOption {
       type = types.nullOr types.path;
       default = null;
-      description = "Path to a environment file, usually used for passing sensitive environment variables to Takina such as the Discord bot token.";
+      description = "Path to an environment file, usually used for passing sensitive environment variables to Takina such as the Discord bot token.";
     };
 
-    config = {
-      prefix = mkOption {
-        type = types.str;
-        default = ".";
-        description = "The command prefix for Takina to listen for.";
+    config = mkOption {
+      type = types.attrsOf types.str;
+      default = {
+        prefix = ".";
+        bot_name = "Takina";
+        embed_colour = "#2B2D31";
+        libretranslate_api_url = "";
       };
-      botName = mkOption {
-        type = types.str;
-        default = "Takina";
-        description = "The name of the bot used throughout the bot's commands.";
-      };
-      embedColour = mkOption {
-        type = types.str;
-        default = "#2B2D31";
-        description = "The colour of embed responses.";
-      };
-      libretranslateApiUrl = mkOption {
-        type = types.str;
-        default = null;
-        description = "The API URL of the LibeTranslate instance to use for the translation cog.";
-      };
+      description = "Configuration values passed to Takina as environment variables.";
     };
 
     database = {
       createLocally = mkOption {
         type = types.bool;
         default = true;
-        description = "Create the database and database user locally.";
+        description = "Create the PostgreSQL database and database user locally.";
       };
 
       hostname = mkOption {
         type = types.str;
         default = "localhost";
-        description = "Database hostname";
+        description = "Database hostname.";
       };
 
       port = mkOption {
         type = types.port;
-        default = 27017;
-        description = "Database port";
+        default = 5432;
+        description = "Database port.";
       };
 
       name = mkOption {
         type = types.str;
         default = "takina";
-        description = "Database name";
+        description = "Database name.";
+      };
+
+      user = mkOption {
+        type = types.str;
+        default = "takina";
+        description = "PostgreSQL user.";
       };
     };
   };
@@ -102,25 +103,32 @@ in
     };
 
     users.groups.${cfg.group} = { };
-    services.mongodb = mkIf cfg.database.createLocally {
+
+    services.postgresql = mkIf cfg.database.createLocally {
       enable = true;
-      package = pkgs.mongodb-ce;
+      ensureDatabases = singleton cfg.database.name;
+      ensureUsers = singleton {
+        name = cfg.database.user;
+        ensureDBOwnership = true;
+      };
     };
 
     systemd.services.takina = {
       description = "Takina Discord bot";
       wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
-      environment = {
+      after = [
+        "network.target"
+      ]
+      ++ lib.optional cfg.database.createLocally "postgresql.service";
+
+      environment = configToEnv cfg.config // {
         NIXOS_INSTANCE = "yes";
-        BOT_NAME = cfg.config.botName;
-        PREFIX = cfg.config.prefix;
-        EMBED_COLOUR = cfg.config.embedColour;
         HASDB = mkIf cfg.database.createLocally "yes";
-        DB_NAME = mkIf cfg.database.createLocally cfg.database.name;
-        MONGO = mkIf cfg.database.createLocally "mongodb://${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}?directConnection=true&appName=takina";
-        LIBRETRANSLATE_API_URL = cfg.config.libretranslateApiUrl;
+        DB_NAME = cfg.database.name;
+        DB_USER = cfg.database.user;
+        POSTGRESQL_URI = "postgresql://${cfg.database.user}@${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}";
       };
+
       serviceConfig = {
         User = cfg.user;
         Group = cfg.group;
