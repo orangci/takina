@@ -116,12 +116,12 @@ class TriggerResponses(commands.Cog):
 
         title = f"{await lyhelpers.fetch_random_emoji()}Trigger List"
 
-        if len(description) > 4096:
+        if len(description) > 700:
             embeds = []
             current = ""
 
             for line in description.splitlines():
-                if current and len(current) + len(line) + 1 > 4096:
+                if current and len(current) + len(line) + 1 > 700:
                     embed = discord.Embed(title=title, colour=config.EMBED_COLOUR)
                     embed.description = current
                     embeds.append(embed)

@@ -40,7 +40,9 @@ class Bot(commands.Bot):
             allowed_mentions=discord.AllowedMentions(
                 everyone=False, roles=False, users=True, replied_user=True
             ),
-            activity=discord.Activity(type=discord.ActivityType.watching, name="the stars"),
+            activity=discord.Activity(
+                type=discord.ActivityType.watching, name=os.getenv("BOT_STATUS") or "the stars"
+            ),
         )
 
     async def setup_hook(self):
