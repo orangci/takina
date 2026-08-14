@@ -5,10 +5,10 @@ self:
   pkgs,
   ...
 }:
-
 let
   cfg = config.services.takina;
   inherit (pkgs.stdenv.hostPlatform) system;
+
   inherit (lib)
     mkIf
     mkOption
@@ -16,13 +16,9 @@ let
     types
     getExe
     singleton
-    mapAttrs
-    nameValuePair
+    optional
+    optionalAttrs
     ;
-
-  configToEnv = mapAttrs (
-    name: value: nameValuePair (lib.toUpper (lib.replaceStrings [ "-" ] [ "_" ] name)) (toString value)
-  );
 in
 {
   options.services.takina = {
@@ -49,25 +45,25 @@ in
     environmentFile = mkOption {
       type = types.nullOr types.path;
       default = null;
-      description = "Path to an environment file, usually used for passing sensitive environment variables to Takina such as the Discord bot token.";
+      description = "Environment file for Takina.";
     };
 
     config = mkOption {
       type = types.attrsOf types.str;
       default = {
-        prefix = ".";
-        bot_name = "Takina";
-        embed_colour = "#2B2D31";
-        libretranslate_api_url = "";
+        PREFIX = ".";
+        BOT_NAME = "Takina";
+        EMBED_COLOUR = "#2B2D31";
+        LIBRETRANSLATE_API_URL = "";
       };
-      description = "Configuration values passed to Takina as environment variables.";
+      description = "Environment variables passed to Takina.";
     };
 
     database = {
       createLocally = mkOption {
         type = types.bool;
         default = true;
-        description = "Create the PostgreSQL database and database user locally.";
+        description = "Create the PostgreSQL database and user locally.";
       };
 
       hostname = mkOption {
@@ -106,7 +102,9 @@ in
 
     services.postgresql = mkIf cfg.database.createLocally {
       enable = true;
+
       ensureDatabases = singleton cfg.database.name;
+
       ensureUsers = singleton {
         name = cfg.database.user;
         ensureDBOwnership = true;
@@ -115,29 +113,36 @@ in
 
     systemd.services.takina = {
       description = "Takina Discord bot";
-      wantedBy = [ "multi-user.target" ];
-      after = [
-        "network.target"
-      ]
-      ++ lib.optional cfg.database.createLocally "postgresql.service";
 
-      environment = configToEnv cfg.config // {
-        NIXOS_INSTANCE = "yes";
-        HASDB = mkIf cfg.database.createLocally "yes";
-        DB_NAME = cfg.database.name;
-        DB_USER = cfg.database.user;
-        POSTGRESQL_URI = "postgresql://${cfg.database.user}@${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}";
-      };
+      wantedBy = [ "multi-user.target" ];
+
+      after = [ "network.target" ] ++ optional cfg.database.createLocally "postgresql.service";
+
+      environment =
+        cfg.config
+        // {
+          NIXOS_INSTANCE = "yes";
+          DB_NAME = cfg.database.name;
+          DB_USER = cfg.database.user;
+          POSTGRESQL_URI = "postgresql://${cfg.database.user}@${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}";
+        }
+        // optionalAttrs cfg.database.createLocally {
+          HASDB = "yes";
+        };
 
       serviceConfig = {
         User = cfg.user;
         Group = cfg.group;
         ExecStart = getExe cfg.package;
+
         Restart = "always";
         RestartSec = 5;
+
         DynamicUser = false;
+
         StandardOutput = "inherit";
         StandardError = "inherit";
+
         EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
       };
     };
