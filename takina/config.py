@@ -8,8 +8,7 @@ import random
 
 load_dotenv()
 
-BOT_NAME = environ["BOT_NAME"] or "Takina"
-DB_NAME = environ["DB_NAME"].lower()
+BOT_NAME = getenv("BOT_NAME") or "Takina"
 POSTGRESQL_URI = environ["POSTGRESQL_URI"].replace("postgresql://", "postgresql+asyncpg://")
 GITHUB_AUTH_TOKEN = getenv("GITHUB_AUTH_TOKEN")
 REDDIT_CLIENT_ID = getenv("REDDIT_CLIENT_ID")
