@@ -194,7 +194,9 @@ class ModLog(commands.Cog):
         if user is not None:
             cases = [case for case in cases if user.id in case.member_ids]
 
-        cases.sort(key=lambda case: case.case_id)
+        # sort cases by newest to oldest
+        # ..like wick!
+        cases.sort(key=lambda case: case.case_id, reverse=True)
         if not cases:
             raise lyerrors.TakinaNotFoundError("This server has no moderation cases yet.")
 
