@@ -35,7 +35,7 @@ class PingResponse(commands.Cog):
             " • Make a [feature request](https://git.orangc.net/c/takina/issues/new?template=.forgejo%2fISSUE_TEMPLATE%2ffeature_request.md)"
         )
         embed.description += (
-            "\n\nTakina is a [open source](https://git.orangc.net/c/takina), multi-purpose"
+            "\n\nTakina is an [open source](https://git.orangc.net/c/takina), multi-purpose"
             " Discord bot written in Python with [discord.py](https://discordpy.readthedocs.io) by [orangc](https://orangc.net)."
             " More information is available on the [website](https://takina.is-a.bot)."
         )
