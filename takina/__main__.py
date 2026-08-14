@@ -88,7 +88,7 @@ def load_exts(directory):
 
 
 # these are required for the bot to function
-REQUIRED_ENV_VARS = ["TOKEN", "HASDB", "POSTGRESQL_URI", "BOT_NAME", "DB_NAME"]
+REQUIRED_ENV_VARS = ["TOKEN", "HASDB", "POSTGRESQL_URI"]
 missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
 if missing_vars:
     # raise an error if one of the required variables are missing
