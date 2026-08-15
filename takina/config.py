@@ -8,7 +8,7 @@ import random
 
 load_dotenv()
 
-BOT_NAME = getenv("BOT_NAME") or "Takina"
+BOT_NAME = getenv("BOT_NAME", "Takina")
 POSTGRESQL_URI = environ["POSTGRESQL_URI"].replace("postgresql://", "postgresql+asyncpg://")
 GITHUB_AUTH_TOKEN = getenv("GITHUB_AUTH_TOKEN")
 REDDIT_CLIENT_ID = getenv("REDDIT_CLIENT_ID")
@@ -17,7 +17,7 @@ LIBRETRANSLATE_API_KEY = getenv("LIBRETRANSLATE_API_KEY")
 LIBRETRANSLATE_API_URL = environ["LIBRETRANSLATE_API_URL"].removesuffix("/")
 HYPIXEL_API_KEY = getenv("HYPIXEL_API_KEY")
 GOOGLE_API_KEY = getenv("GOOGLE_API_KEY")
-STEAM_REGION = getenv("STEAM_REGION") or "US"
+STEAM_REGION = getenv("STEAM_REGION", "US")
 ERROR_COLOUR = 0xFF0037
 NIXOS_INSTANCE = getenv("NIXOS_INSTANCE")
 # how many commands can be used in five seconds
