@@ -71,7 +71,7 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def guilds(self, ctx: commands.Context):
         """Lists all guilds the bot is in, ranked from most members to least."""
-        guilds_sorted = sorted(self._bot.guilds, key=lambda g: g.member_count, reverse=True)
+        guilds_sorted = sorted(self._bot.guilds, key=lambda g: g.member_count or 0, reverse=True)
         description = ""
         for guild in guilds_sorted:
             entry = f"\n**{guild.name}**"

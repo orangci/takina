@@ -45,7 +45,7 @@ in
     environmentFile = mkOption {
       type = types.nullOr types.path;
       default = null;
-      description = "Environment file for Takina.";
+      description = "Environment file for Takina. Useful for passing secrets.";
     };
 
     config = mkOption {
@@ -102,9 +102,7 @@ in
 
     services.postgresql = mkIf cfg.database.createLocally {
       enable = true;
-
       ensureDatabases = singleton cfg.database.name;
-
       ensureUsers = singleton {
         name = cfg.database.user;
         ensureDBOwnership = true;
@@ -113,9 +111,7 @@ in
 
     systemd.services.takina = {
       description = "Takina Discord bot";
-
       wantedBy = [ "multi-user.target" ];
-
       after = [ "network.target" ] ++ optional cfg.database.createLocally "postgresql.service";
 
       environment =
@@ -134,15 +130,11 @@ in
         User = cfg.user;
         Group = cfg.group;
         ExecStart = getExe cfg.package;
-
         Restart = "always";
         RestartSec = 5;
-
         DynamicUser = false;
-
         StandardOutput = "inherit";
         StandardError = "inherit";
-
         EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
       };
     };

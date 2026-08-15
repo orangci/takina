@@ -3,6 +3,7 @@
 from takina.libs import lychecks, lyerrors, lyhelpers
 from ping3 import ping as dns_ping
 from discord.ext import commands
+from datetime import datetime
 from takina import config
 import discord
 import asyncio
@@ -65,7 +66,7 @@ class Utils(commands.Cog):
 
         members = sorted(
             (member for member in ctx.guild.members if member.joined_at),
-            key=lambda member: member.joined_at,
+            key=lambda member: member.joined_at or datetime.min,
         )
 
         join_position = members.index(member) + 1

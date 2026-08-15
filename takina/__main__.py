@@ -74,18 +74,20 @@ lychecks.setup(bot)
 # this will automatically load cogs in from the different subfolders
 def load_exts(directory):
     # the folders to NOT load cogs from
-    blacklist_subfolders = []
+    blacklist_subfolders = {
+        cog.strip() for cog in os.getenv("COGS_CATEGORY_BLACKLIST", "").split(",") if cog.strip()
+    }
 
     cogs = []
     for root, dirs, files in os.walk(directory):
-        if any(blacklisted in root for blacklisted in blacklist_subfolders):
-            continue
+        dirs[:] = [directory for directory in dirs if directory not in blacklist_subfolders]
 
         for file in files:
             if file.endswith(".py"):
                 relative_path = os.path.relpath(os.path.join(root, file), directory)
                 cog_name = relative_path[:-3].replace(os.sep, ".")
                 cogs.append(cog_name)
+
     return cogs
 
 
@@ -97,7 +99,7 @@ if missing_vars:
     raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}.")
 
 # these are *individual* cogs to be blacklisted. e.g. "util.dns"
-cogs_blacklist = ["core.settings"]
+cogs_blacklist = [cog.strip() for cog in os.getenv("COGS_BLACKLIST", "").split(",") if cog.strip()]
 cogs = load_exts("takina/cogs")
 
 if __name__ == "__main__":
