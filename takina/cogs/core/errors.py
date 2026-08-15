@@ -5,6 +5,7 @@ from discord.ext import commands
 from takina import config
 import logging
 import discord
+import aiohttp
 import os
 
 DEBUG = os.getenv("TAKINA_DEBUG") == "1"
@@ -72,11 +73,17 @@ class Errors(commands.Cog):
             error = lyerrors.TakinaUserInputError("One or more arguments provided are invalid.")
 
         elif not isinstance(error, lyerrors.TakinaError):
+            # if *not* because if *yes* is handled earlier in this file
             if not DEBUG:
                 self.logger.exception("Unhandled command exception", exc_info=error)
-            error = lyerrors.TakinaError(
-                "Unexpected Error: An unexpected error occurred. Please report this issue if it persists."
-            )
+            if isinstance(error, aiohttp.ClientResponseError):
+                error = lyerrors.TakinaError(
+                    f"Error [{error.status}](https://http.cat/{error.status}.png): {error.message}."
+                )
+            else:
+                error = lyerrors.TakinaError(
+                    "Unexpected Error: An unexpected error occurred. Please report this issue if it persists."
+                )
 
         if isinstance(error, lyerrors.TakinaError):
             embed = discord.Embed(colour=config.ERROR_COLOUR)
