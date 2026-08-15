@@ -75,8 +75,14 @@ lychecks.setup(bot)
 def load_exts(directory):
     # the folders to NOT load cogs from
     blacklist_subfolders = {
-        cog.strip() for cog in os.getenv("COGS_CATEGORY_BLACKLIST", "").split(",") if cog.strip()
+        category.strip()
+        for category in os.getenv("COGS_CATEGORY_BLACKLIST", "").split(",")
+        if category.strip()
     }
+    # essentially, you gotta WHITELIST sesp (server specific) cogs
+    # after all, i am the only one who will use them anyway
+    if os.environ["ENABLE_SESP_COGS"]:
+        blacklist_subfolders.add("sesp")
 
     cogs = []
     for root, dirs, files in os.walk(directory):
