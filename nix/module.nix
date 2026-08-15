@@ -107,6 +107,12 @@ in
         name = cfg.database.user;
         ensureDBOwnership = true;
       };
+
+      authentication = ''
+        local ${cfg.database.name} ${cfg.database.user} trust
+        host ${cfg.database.name} ${cfg.database.user} 127.0.0.1/32 trust
+        host ${cfg.database.name} ${cfg.database.user} ::1/128 trust
+      '';
     };
 
     systemd.services.takina = {
