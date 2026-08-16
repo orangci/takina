@@ -126,10 +126,9 @@ in
           NIXOS_INSTANCE = "yes";
           DB_NAME = cfg.database.name;
           DB_USER = cfg.database.user;
-          POSTGRESQL_URI = "postgresql://${cfg.database.user}@${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}";
         }
         // optionalAttrs cfg.database.createLocally {
-          HASDB = "yes";
+          POSTGRESQL_URI = "postgresql://${cfg.database.user}@${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}";
         };
 
       serviceConfig = {

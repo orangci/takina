@@ -46,7 +46,7 @@ class Bot(commands.Bot):
         )
 
     async def setup_hook(self):
-        if not os.getenv("HASDB"):
+        if not os.getenv("POSTGRESQL_URI"):
             raise RuntimeError("No PostgreSQL database configured.")
 
         await database.initiate_database()
@@ -98,7 +98,7 @@ def load_exts(directory):
 
 
 # these are required for the bot to function
-REQUIRED_ENV_VARS = ["TOKEN", "HASDB", "POSTGRESQL_URI"]
+REQUIRED_ENV_VARS = ["TOKEN", "POSTGRESQL_URI"]
 missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
 if missing_vars:
     # raise an error if one of the required variables are missing

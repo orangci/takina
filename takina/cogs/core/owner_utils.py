@@ -139,11 +139,11 @@ class OwnerUtils(commands.Cog):
     @commands.command(hidden=True, aliases=["rx"])
     @commands.is_owner()
     async def reload_exts(self, ctx: commands.Context, cog: str | None):
+        importlib.reload(config)
         importlib.reload(lyhelpers)
         importlib.reload(lyerrors)
         importlib.reload(lychecks)
         importlib.reload(lyviews)
-        importlib.reload(config)
 
         if cog is None:
             failed_cogs = []
@@ -157,7 +157,7 @@ class OwnerUtils(commands.Cog):
                 error_message = "Reloaded all except the following cogs:\n\n" + "\n> ".join(
                     failed_cogs
                 )
-                print(f"\n\n{error_message}")
+                print(f"\n\n❌ {error_message}")
                 raise lyerrors.TakinaError(error_message)
             else:
                 embed = discord.Embed(
@@ -165,7 +165,7 @@ class OwnerUtils(commands.Cog):
                     description=f"{config.emojis.SUCCESS} Successfully reloaded all cogs.",
                 )
                 await ctx.reply(embed=embed, mention_author=False)
-                print(f"\n\n{embed.description}")
+                print(f"\n\n{embed.description}".replace(config.emojis.SUCCESS, "✅"))
 
         else:
             full_cog_name = f"takina.cogs.{cog}" if not cog.startswith("takina.cogs.") else cog
@@ -178,7 +178,7 @@ class OwnerUtils(commands.Cog):
                         description=f"{config.emojis.SUCCESS} Successfully reloaded `{full_cog_name}`.",
                     )
                     await ctx.reply(embed=embed, mention_author=False)
-                    print(f"\n\n{embed.description}")
+                    print(f"\n\n{embed.description}".replace(config.emojis.SUCCESS, "✅"))
                 except Exception as e:
                     raise lyerrors.TakinaError(f"Failed to reload `{full_cog_name}`: {e}")
             else:
