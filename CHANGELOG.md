@@ -1,6 +1,15 @@
 # Changelog
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. This changelog was initiated at the same date.
 
+
+## 2.0.0
+For a good scope of what changed in this major release, see the relevant [pull request](https://git.orangc.net/c/takina/pulls/131) and [milestone](https://git.orangc.net/c/takina/milestone/1).
+
+I will shortly list some of the biggest changes.
+- Migrated the Discord API wrapper/commands framework from nextcord to [discord.py](https://github.com/Rapptz/discord.py).
+- Migrated the database from MongoDB to PostgreSQL.
+CHANGELOG WIP
+
 ### 1.28.0
 Fixed a bug where the bot didn't check the env file for the prefix, added links to the stars and forks fields in the GitHub repository embed in `listeners.github`, and added a Codeberg command in `util.socials`.
 

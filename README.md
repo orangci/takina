@@ -1,7 +1,13 @@
 # Takina
 A simple multipurpose bot for Discord. Also the very cutest Discord bot. Sakanaaa <3
 
-For a list of features and other information please visit: https://takina.orangc.net.
+For a list of features and other information please visit: https://takina.is-a.bot.
+
+> [!TIP]
+> Don't want to selfhost Takina? Our public instance is always up-to-date, and usually has excellent uptime.
+> Invite link: https://takina.is-a.bot/invite
+
+Note: Our documentation is WIP, and our website is also WIP, since it is severely outdated.
 
 ## Selfhosting
 
@@ -37,6 +43,11 @@ services.takina = {
 };
 ```
 
+> [!NOTE]
+> The above snippet does not show off all configurable options in Takina.
+> Please see [the .env.example file](.env.example) for all options.
+> Click [here](https://git.orangc.net/c/dots/src/branch/master/modules/services/misc/takina.nix) for an example configuration with the NixOS module.
+
 Or even install the Takina package directly:
 
 ```
@@ -46,14 +57,14 @@ environment.systemPackages = [ inputs.takina."x86_64-linux".default ];
 Happy nixxing!
 
 #### With Docker
-Before proceeding, I am assuming that you have a running MongoDB database. The majority of Takina's functionality depends on a MongoDB instance being available. A guide on selfhosting MongoDB with Docker is available [here](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker/), you can also consider using [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database) or use the MongoDB server made in the docker compose file. 
+Before proceeding, I am assuming that you have a running PostgreSQL database. The majority of Takina's functionality depends on a PostgreSQL instance being available. You can selfhost PostgreSQL with Docker yourself or or use the PostgreSQL server made in the docker compose file. 
 
 ##### Manually
 
 *Assuming you have `git` and `docker` installed.*
 
-- `git clone https://github.com/orangci/takina && cd takina`
-- Set all the required environment variables in the `.env` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the `TOKEN` (Discord bot token), `HASDB=yes`, and  `MONGO` (your MongoDB URI.)
+- `git clone https://git.orangc.net/c/takina && cd takina`
+- Set all the required environment variables in the `.env` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the `TOKEN` (Discord bot token), `HASDB=yes`, and  `POSTGRESQL_URI` (your PostgreSQL URI).
 - `docker build --tag 'takina' .`
 - `docker run 'takina'`
 
@@ -61,7 +72,7 @@ Before proceeding, I am assuming that you have a running MongoDB database. The m
 
 *Assuming you have `git` and `docker` installed.*
 
-- `git clone https://github.com/orangci/takina && cd takina`
+- `git clone https://git.orangc.net/c/takina && cd takina`
 - Set all the required environment variables in the `docker-compose.yml` file. You can find a list of what those are in the `docker-compose.yml` file, don't forget to make a `.env` file for the passwords or tokens as well! You can find out which enviroment variables need to go to the `.env` file if its for example `${TOKEN}`.
 - `docker compose up -d`
 
@@ -69,7 +80,7 @@ Before proceeding, I am assuming that you have a running MongoDB database. The m
 Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Maintainers
-Takina is currently maintained by [orangc](https://orang.ci) and [iostpa](https://iostpa.com)
+Takina is currently maintained by [orangc](https://orang.ci) and [iostpa](https://iostpa.com).
 
 ## License
 - [License: GNU AGPLv3](./LICENSE)
@@ -78,4 +89,3 @@ Takina is currently maintained by [orangc](https://orang.ci) and [iostpa](https:
 
 ## Specifications
 - This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. You may see the current version and changelog [here](./CHANGELOG.md).
-<!-- note to self: count takina loc with: `git ls-files | grep '\.py$' | xargs wc -l | tail -n 1`, 7,509 as of 2026-04-21 -->
