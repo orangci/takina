@@ -64,7 +64,7 @@ Before proceeding, I am assuming that you have a running PostgreSQL database. Th
 *Assuming you have `git` and `docker` installed.*
 
 - `git clone https://git.orangc.net/c/takina && cd takina`
-- Set all the required environment variables in the `.env` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the `TOKEN` (Discord bot token), `HASDB=yes`, and  `POSTGRESQL_URI` (your PostgreSQL URI).
+- Set all the required environment variables in the `.env` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the `TOKEN` (Discord bot token) and  `POSTGRESQL_URI` (your PostgreSQL database URI).
 - `docker build --tag 'takina' .`
 - `docker run 'takina'`
 
