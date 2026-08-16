@@ -97,23 +97,38 @@ class PaginatorView(AuthorView):
 
         self.embeds = embeds
         self.page = 0
-
         self._update_buttons()
 
     def _update_buttons(self):
+        self.first.disabled = self.page == 0
         self.previous.disabled = self.page == 0
         self.next.disabled = self.page == len(self.embeds) - 1
+        self.last.disabled = self.page == len(self.embeds) - 1
 
     @discord.ui.button(label="«", style=discord.ButtonStyle.secondary)
+    async def first(self, interaction: discord.Interaction, button: Button):
+        self.page = 0
+        self._update_buttons()
+
+        await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
+
+    @discord.ui.button(label="‹", style=discord.ButtonStyle.secondary)
     async def previous(self, interaction: discord.Interaction, button: Button):
         self.page -= 1
         self._update_buttons()
 
         await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
 
-    @discord.ui.button(label="»", style=discord.ButtonStyle.secondary)
+    @discord.ui.button(label="›", style=discord.ButtonStyle.secondary)
     async def next(self, interaction: discord.Interaction, button: Button):
         self.page += 1
+        self._update_buttons()
+
+        await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
+
+    @discord.ui.button(label="»", style=discord.ButtonStyle.secondary)
+    async def last(self, interaction: discord.Interaction, button: Button):
+        self.page = len(self.embeds) - 1
         self._update_buttons()
 
         await interaction.response.edit_message(embed=self.embeds[self.page], view=self)

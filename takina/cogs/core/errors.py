@@ -82,7 +82,7 @@ class Errors(commands.Cog):
                 )
             else:
                 error = lyerrors.TakinaError(
-                    "Unexpected Error: An unexpected error occurred. Please report this issue if it persists."
+                    f"Unexpected Error: {str(error) or 'We encountered an unexpected error.'} Please report this issue if it persists."
                 )
 
         if isinstance(error, lyerrors.TakinaError):
