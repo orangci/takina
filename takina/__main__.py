@@ -28,7 +28,17 @@ async def get_prefix(bot: commands.Bot, message: discord.Message) -> list[str]:
 
 class Bot(commands.Bot):
     def __init__(self):
-        intents = discord.Intents.all()
+        # https://discordpy.readthedocs.io/en/stable/api.html?highlight=intent#discord.Intents
+        intents = discord.Intents(
+            guilds=True,
+            messages=True,
+            moderation=True,
+            expressions=True,
+            reactions=True,
+            typing=True,
+            message_content=True,  # this is a privilaged intent!!!
+            polls=True,
+        )
 
         super().__init__(
             command_prefix=get_prefix,
