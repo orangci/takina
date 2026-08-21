@@ -9,7 +9,7 @@ import discord
 MAX_TRIGGERS = 30
 MAX_TRIGGER_NAME_LEN = 20
 MAX_TRIGGER_LEN = 75
-MAX_RESPONSE_LEN = 200
+MAX_RESPONSE_LEN = 500
 
 
 class TriggerResponses(commands.Cog):
