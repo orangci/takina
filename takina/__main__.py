@@ -91,7 +91,7 @@ def load_exts(directory):
     }
     # essentially, you gotta WHITELIST sesp (server specific) cogs
     # after all, i am the only one who will use them anyway
-    if os.environ["ENABLE_SESP_COGS"]:
+    if os.getenv("ENABLE_SESP_COGS"):
         blacklist_subfolders.add("sesp")
 
     cogs = []
