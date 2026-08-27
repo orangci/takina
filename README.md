@@ -1,6 +1,8 @@
 # Takina
 A simple multipurpose bot for Discord. Also the very cutest Discord bot. Sakanaaa <3
 
+Want to quickly see the bot in action? Join our testing server: https://discord.gg/KnYuVvEkpQ
+
 For a list of features and other information please visit: https://takina.is-a.bot.
 
 > [!TIP]
