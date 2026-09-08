@@ -9,7 +9,7 @@ import discord
 class AuthorView(View):
     """A view that can only be interacted with by the command invoker."""
 
-    def __init__(self, author: discord.abc.User, *, timeout: float | None = 180):
+    def __init__(self, author: discord.User | discord.Member, *, timeout: float | None = 180):
         super().__init__(timeout=timeout)
         self.author = author
         self.message: discord.Message | None = None
@@ -89,7 +89,7 @@ class PaginatorView(AuthorView):
         view.message = await ctx.reply(embed=embeds[0], view=view, mention_author=False)
     """
 
-    def __init__(self, author: discord.abc.User, embeds: list[discord.Embed]):
+    def __init__(self, author: discord.User | discord.Member, embeds: list[discord.Embed]):
         super().__init__(author)
 
         if not embeds:
