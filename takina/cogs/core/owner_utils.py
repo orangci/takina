@@ -125,6 +125,7 @@ class OwnerUtils(commands.Cog):
             else:
                 owner_names.append(f"Unknown User (ID: {owner_id})")
 
+        assert isinstance(ctx.author, discord.User)
         is_owner = await self._bot.is_owner(ctx.author)
         owner_names_str = ", ".join(owner_names)
         if is_owner:

@@ -58,7 +58,7 @@ class Channels(commands.Cog):
         channel = channel or ctx.channel
         assert channel is not None
         overwrite = channel.overwrites_for(ctx.guild.default_role)
-        overwrite.send_messages = False
+        overwrite.update(send_messages=False)
 
         await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
         embed = discord.Embed(
@@ -77,7 +77,7 @@ class Channels(commands.Cog):
         channel = channel or ctx.channel
         assert channel is not None
         overwrite = channel.overwrites_for(ctx.guild.default_role)
-        overwrite.send_messages = True
+        overwrite.update(send_messages=True)
 
         await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
         embed = discord.Embed(
