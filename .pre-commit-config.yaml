@@ -28,18 +28,18 @@ repos:
       # nix stuff
       - id: nixfmt
         name: nixfmt
-        entry: sh -c 'if command -v nixfmt >/dev/null 2>&1; then find . -name "*.nix" -exec nixfmt {} +; else echo "Skipping nixfmt"; fi'
+        entry: sh -c 'if command -v nixfmt >/dev/null 2>&1; then find . -name "*.nix" -exec nixfmt {} +; elif command -v nix >/dev/null 2>&1; then find . -name "*.nix" -exec nix run nixpkgs#nixfmt -- {} +; else echo "Skipping nixfmt"; fi'
         language: system
         pass_filenames: false
 
       - id: statix-fix
         name: statix fix
-        entry: sh -c 'if command -v statix >/dev/null 2>&1; then statix fix; else echo "Skipping statix"; fi'
+        entry: sh -c 'if command -v statix >/dev/null 2>&1; then statix fix; elif command -v nix >/dev/null 2>&1; then nix run nixpkgs#statix -- fix; else echo "Skipping statix"; fi'
         language: system
         pass_filenames: false
 
       - id: deadnix
         name: deadnix
-        entry: sh -c 'command -v deadnix >/dev/null 2>&1 && deadnix -eq . || echo "Skipping deadnix"'
+        entry: sh -c 'if command -v deadnix >/dev/null 2>&1; then deadnix -eq .; elif command -v nix >/dev/null 2>&1; then nix run nixpkgs#deadnix -- -eq .; else echo "Skipping deadnix"; fi'
         language: system
         pass_filenames: false
