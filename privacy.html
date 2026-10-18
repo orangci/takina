@@ -1,76 +1,105 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-FileCopyrightText: orangc -->
 <!DOCTYPE html>
-<html lang="en" data-theme="catppuccin">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="The cutest opensource multipurpose Discord bot.">
-    <meta property="og:title" content="Takina" />
+    <title>Privacy Policy | Takina</title>
+    <meta name="description" content="How Takina collects, uses and protects your data." />
+    <meta property="og:title" content="Takina | Privacy Policy" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://takina.orangc.net" />
-    <meta property="og:image" content="https://cdn.discordapp.com/avatars/1287074090783604797/74b52e03b8de639d95262a885b94ae98.webp" />
-    <meta property="og:description" content="The cutest opensource multipurpose Discord bot." />
-    <meta name="theme-color" content="#fab387" />
-
-    <title>Takina</title>
+    <meta property="og:url" content="https://takina.is-a.bot/privacy" />
+    <meta property="og:description" content="How Takina collects, uses and protects your data." />
+    <meta name="theme-color" content="#ffb48a" />
     <link rel="shortcut icon" href="takina.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="styles/output.css" />
+    <link rel="stylesheet" href="styles/site.css" />
 </head>
 
-<body class="mx-auto max-w-3xl">
-
-    <header class="mb-4">
-        <div class="flex justify-center my-2">
-            <img src="https://cdn.discordapp.com/avatars/1287074090783604797/8dac20c38f7cb2dd352acea0939bbbcb.png?size=60" alt="takina's avatar" id="avatar" class="mx-4 rounded-full size-12">
-            <span class="text-3xl align-middle text-accent">Takina Privacy Policy</span>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <a href="./" class="brand">
+                <img src="https://cdn.discordapp.com/avatars/1287074090783604797/8dac20c38f7cb2dd352acea0939bbbcb.png?size=64" alt="" width="32" height="32" />
+                Takina
+            </a>
+            <nav class="site-nav" aria-label="Main">
+                <a href="./#commands">Commands</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="./#selfhost">Self-host</a>
+                <a href="https://discord.com/oauth2/authorize?client_id=1287074090783604797" class="btn btn-primary">Invite</a>
+            </nav>
         </div>
     </header>
 
-    <p>This Privacy Policy outlines how Takina (&quot;the Bot&quot;) collects, uses, and protects your personal data in accordance with the Personal Data Protection Law of Saudi Arabia. By using the Bot, you consent to the practices described herein.</p>
-    <h2 class="mt-4 text-2xl">1. Data Collection</h2>
-    <p>Takina collects certain personal data to ensure proper functionality and moderation. This includes but is not limited to:</p>
-    <ul>
-    <li>User Identification: User IDs and usernames.</li>
-    <li>Data submitted to the Bot by the user: Such as personal reminders.</li>
-    </ul>
-    <h2 class="mt-4 text-2xl">2. Purpose of Data Processing</h2>
-    <p>The collected data is used for:</p>
-    <ul>
-    <li>Operational Purposes: To provide and maintain the Bot's services.</li>
-    </ul>
-    <h2 class="mt-4 text-2xl">3. Data Retention</h2>
-    <p>Personal data is retained only for as long as necessary to fulfill the purposes outlined above. Once the data is no longer needed, it will be securely deleted.</p>
-    <h2 class="mt-4 text-2xl">4. Data Security</h2>
-    <p>We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, disclosure, alteration, and destruction.</p>
-    <h2 class="mt-4 text-2xl">5. Data Subject Rights</h2>
-    <p>Under the PDPL, you have the right to:</p>
-    <ul>
-    <li>Access: Request access to your personal data.</li>
-    <li>Correction: Request correction of inaccurate or incomplete data.</li>
-    <li>Deletion: Request deletion of your personal data, subject to legal obligations.</li>
-    <li>Restriction: Request restriction of processing under certain conditions.</li>
-    <li>Objection: Object to the processing of your personal data.</li>
-    </ul>
-    <p>To exercise these rights, please contact us at takina@orangc.net.</p>
-    <h2 class="mt-4 text-2xl">6. Data Sharing</h2>
-    <p>Your personal data will not be sold or shared with third parties without your explicit consent, except as required by law or to protect our rights.</p>
-    <h2 class="mt-4 text-2xl">7. International Data Transfers</h2>
-    <p>If your data is transferred outside Saudi Arabia, we will ensure that such transfers comply with the PDPL and other applicable laws, providing adequate protection for your personal data.</p>
-    <h2 class="mt-4 text-2xl">8. Changes to the Privacy Policy</h2>
-    <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated effective date. Continued use of the Bot after such changes constitutes your acceptance of the updated Privacy Policy.</p>
-    <h2 class="mt-4 text-2xl">9. Contact Information</h2>
-    <p>For any questions or concerns regarding this Privacy Policy or our data processing practices, please contact us at:</p>
-    <p>takina [at] orangc.net</p>.<br> <br>
-    <p>By using Takina, you acknowledge that you have read and understood this Privacy Policy and agree to the collection and use of your personal data as described herein.</p>
-    <p>Note: This Privacy Policy is intended to comply with the Personal Data Protection Law of Saudi Arabia. For more detailed information, please refer to the official documentation.</p>
+    <main>
+        <article class="prose">
+            <h1>Privacy Policy</h1>
+            <p class="updated">Last updated: 19 October 2026</p>
 
+            <p>This policy explains what data Takina (&ldquo;the Bot&rdquo;) collects, why, and what you can do about it. It is written to comply with the Personal Data Protection Law of Saudi Arabia (PDPL). By using the Bot, you consent to the practices described here. This policy covers the public instance run by orangc; if you use a self-hosted copy, its operator is responsible for that copy.</p>
 
+            <h2>Data we store</h2>
+            <p>Takina stores only what a feature needs in order to work:</p>
+            <ul>
+                <li><strong>Identifiers.</strong> Discord user, server, channel, role and message IDs, and the usernames shown in moderation cases.</li>
+                <li><strong>Server settings.</strong> Your server's custom prefix, and the channels and roles chosen for the modlog, reports, honeypot and starboard.</li>
+                <li><strong>Moderation cases.</strong> The action taken, the affected members and the moderator, the reason, the duration and the time.</li>
+                <li><strong>Content you give the Bot.</strong> Reminders, AFK statuses, giveaway details and entries, and trigger phrases with their responses.</li>
+            </ul>
+            <p>Takina does not keep a log of ordinary messages. It reads messages as they arrive so that features like triggers, the starboard, AFK notices, honeypots and link previews can work, and then forgets them.</p>
 
-    <footer class="mt-10 text-center">
-        <a href="https://raw.githubusercontent.com/orangci/takina/refs/heads/main/LICENSE">Copyright</a>
-        <a href="https://orangc.net" class="link2">orangc</a> 2024 — Present.
+            <h2>Third-party services</h2>
+            <p>Some commands pass what you type (a search term, a username, a location) to an outside service to fetch a result, such as MyAnimeList through Jikan, Wikipedia, Steam, weather and prayer-time providers, and the Hypixel and Wynncraft APIs. Those services have their own privacy policies, and we have no control over them.</p>
+
+            <h2>Why we use it</h2>
+            <p>Solely to provide and maintain the Bot's features and to keep servers moderated. We do not use your data for advertising or profiling.</p>
+
+            <h2>Retention</h2>
+            <p>Data is kept for as long as the feature that needs it. Reminders are removed once delivered or deleted. Settings, cases and other data remain until a server administrator or the data subject asks for removal, or until the Bot is removed and the data is purged. When data is no longer needed, it is securely deleted.</p>
+
+            <h2>Security</h2>
+            <p>Data lives in a PostgreSQL database on infrastructure controlled by the Bot's developer, and we apply reasonable technical and organisational measures against unauthorised access, disclosure, alteration and destruction. No system is perfectly secure, and we cannot promise otherwise.</p>
+
+            <h2>Sharing</h2>
+            <p>We do not sell your data, and we do not share it with third parties without your explicit consent, except as required by law or to protect our rights. Moderation cases are visible to the moderators of the server in which they were created.</p>
+
+            <h2>International transfers</h2>
+            <p>If your data is transferred outside Saudi Arabia, including through Discord's own infrastructure, we will take steps to ensure the transfer complies with the PDPL and other applicable laws.</p>
+
+            <h2>Your rights</h2>
+            <p>Under the PDPL you may:</p>
+            <ul>
+                <li>Request access to your personal data.</li>
+                <li>Request correction of inaccurate or incomplete data.</li>
+                <li>Request deletion of your personal data, subject to legal obligations.</li>
+                <li>Request restriction of processing, or object to it.</li>
+            </ul>
+            <p>To exercise these rights, email <a href="mailto:takina@orangc.net">takina@orangc.net</a> from an address we can reasonably associate with you, along with your Discord user ID. Reminders, AFK status and triggers can also be removed directly with their own commands.</p>
+
+            <h2>Children</h2>
+            <p>Discord requires its users to be at least 13 years old (or older where local law demands). Takina is not directed at anyone younger.</p>
+
+            <h2>Changes</h2>
+            <p>We may update this policy from time to time. Changes will be posted here with a new &ldquo;last updated&rdquo; date, and continued use of the Bot after that counts as acceptance.</p>
+
+            <h2>Contact</h2>
+            <p>Questions or concerns? Write to <a href="mailto:takina@orangc.net">takina@orangc.net</a>.</p>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">
+            <nav aria-label="Footer">
+                <a href="privacy.html">Privacy</a>
+                <a href="tos.html">Terms</a>
+                <a href="https://www.gnu.org/licenses/agpl-3.0.html">License</a>
+                <a href="https://git.orangc.net/c/takina">Source</a>
+            </nav>
+            <span>&copy; 2024&ndash;present <a href="https://orangc.net">orangc</a></span>
+        </div>
     </footer>
-
 </body>
 
 </html>
