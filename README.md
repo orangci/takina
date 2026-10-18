@@ -1,5 +1,7 @@
-# Takina Webpage
-A static webpage built with [TailwindCSS](https://tailwindcss.com) and [FlyonUI](https://flyonui.com) dedicated to showcasing the Takina Discord bot and documenting its features.
+# Takina webpage
+The static website for the [Takina](https://git.orangc.net/c/takina) Discord bot. Plain HTML, CSS and a sprinkle of JavaScript, so there's nothing to build. Open `index.html` in a browser, or serve the folder with anything (`python -m http.server`).
+
+The command list lives in [`scripts/commands.js`](scripts/commands.js). Update it when commands change in the bot.
 
 ## License
 - This webpage's source code is licensed under [GNU AGPLv3](./LICENSE).

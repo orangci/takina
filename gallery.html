@@ -1,82 +1,75 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-FileCopyrightText: orangc -->
 <!DOCTYPE html>
-<html lang="en" data-theme="catppuccin">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery | Takina</title>
+    <meta name="description" content="Screenshots of Takina, the cutest open-source multipurpose Discord bot, in action." />
     <meta property="og:title" content="Takina | Gallery" />
     <meta property="og:type" content="website" />
-    <meta name="theme-color" content="#fab387" />
-    
-    <meta property="og:url" content="https://takina.orangc.net/gallery" />
-    <meta name="description" content="The cutest opensource multipurpose Discord bot.">
-    <meta property="og:description" content="The cutest opensource multipurpose Discord bot." />
-    
-    <title>Takina | Gallery</title>
-    <link rel="shortcut icon" href="../takina.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="styles/output.css" />
+    <meta property="og:url" content="https://takina.is-a.bot/gallery" />
+    <meta property="og:description" content="Screenshots of Takina in action." />
+    <meta name="theme-color" content="#ffb48a" />
+    <link rel="shortcut icon" href="takina.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="styles/site.css" />
 </head>
 
-<body class="flex flex-col items-center p-4">
-    <h1 class="mb-6 text-4xl font-bold text-accent">Takina Gallery</h1>
-    <p class="mb-6 max-w-4xl text-center">This is a gallery of images that serves to work as a preview of the majority of commands that Takina has to offer.
-        These can be outdated but generally are kept up to date! Click an image to zoom in!</p>
-    
-    <div class="grid grid-cols-2 gap-4 w-full max-w-7xl sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        <!-- Image List -->
-        <script>
-            const images = [
-                "anime.png", "ban.png", "book.png", "channels.png", "character.png",
-                "fun.png", "fun2.png", "github.png", "giveaways.png", "info.png",
-                "kick-purge.png", "malstats.png", "manga.png", "minecraft.png", "modlog.png",
-                "modlog2.png", "mute.png", "reports.png", "roles.png", "starboard.png",
-                "trigger.png", "utilities.png", "warn.png", "salawat.png", "time.png", "malupdates.png"
-            ];
-            document.write(images.map(img => `
-                <img src="../assets/screenshots/${img}" alt="${img.replace('.png', '')}" class="object-cover w-full h-48 rounded-lg cursor-pointer sm:h-56 md:h-64 lg:h-72 gallery-img">
-            `).join(''));
-        </script>
-    </div>
-    
-    <div id="modal" class="flex hidden fixed inset-0 justify-center items-center bg-black bg-opacity-75">
-        <button id="prev" class="absolute left-4 z-10 text-4xl text-white">&#10094;</button>
-        <div class="relative p-6 w-full max-w-3xl text-center rounded-lg bg-cmantle">
-            <span id="close-modal" class="absolute top-2 right-4 text-2xl cursor-pointer">&times;</span>
-            <h2 id="modal-title" class="mb-4 text-2xl"></h2>
-            <img id="modal-img" src="" class="w-full max-h-[80vh] object-contain rounded">
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <a href="./" class="brand">
+                <img src="https://cdn.discordapp.com/avatars/1287074090783604797/8dac20c38f7cb2dd352acea0939bbbcb.png?size=64" alt="" width="32" height="32" />
+                Takina
+            </a>
+            <nav class="site-nav" aria-label="Main">
+                <a href="./#commands">Commands</a>
+                <a href="gallery.html" aria-current="page">Gallery</a>
+                <a href="./#selfhost">Self-host</a>
+                <a href="https://discord.com/oauth2/authorize?client_id=1287074090783604797" class="btn btn-primary">Invite</a>
+            </nav>
         </div>
-        <button id="next" class="absolute right-4 z-10 text-4xl text-white">&#10095;</button>
-    </div>
-    
-    <script>
-        const modal = document.getElementById('modal');
-        const modalImg = document.getElementById('modal-img');
-        const modalTitle = document.getElementById('modal-title');
-        const closeModal = document.getElementById('close-modal');
-        const prevBtn = document.getElementById('prev');
-        const nextBtn = document.getElementById('next');
-        const galleryImages = document.querySelectorAll('.gallery-img');
-        let currentIndex = 0;
+    </header>
 
-        function showImage(index) {
-            if (index < 0) index = galleryImages.length - 1;
-            if (index >= galleryImages.length) index = 0;
-            currentIndex = index;
-            modalImg.src = galleryImages[index].src;
-            modalTitle.textContent = galleryImages[index].alt;
-            modal.classList.remove('hidden');
-        }
+    <main>
+        <div class="wrap">
+            <div class="section-head" style="padding-top: clamp(2.5rem, 6vw, 4rem)">
+                <h1 style="font-size: clamp(2rem, 5vw, 2.75rem); font-weight: 600">Gallery</h1>
+                <p>A preview of what Takina can do. Some shots predate 2.0 and may look slightly different today. Click one to zoom.</p>
+            </div>
+            <div id="gallery" class="gallery"></div>
+            <noscript><p class="empty">The gallery needs JavaScript, I'm afraid.</p></noscript>
+        </div>
+    </main>
 
-        galleryImages.forEach((img, index) => {
-            img.addEventListener('click', () => showImage(index));
-        });
+    <dialog id="lightbox" class="lightbox" aria-label="Screenshot viewer">
+        <img id="lightbox-img" src="" alt="" />
+        <div class="lightbox-bar">
+            <button id="prev" class="btn" type="button" aria-label="Previous">&larr;</button>
+            <span id="lightbox-caption"></span>
+            <span>
+                <button id="next" class="btn" type="button" aria-label="Next">&rarr;</button>
+                <button id="close" class="btn" type="button">Close</button>
+            </span>
+        </div>
+    </dialog>
 
-        closeModal.addEventListener('click', () => modal.classList.add('hidden'));
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.classList.add('hidden');
-        });
-        prevBtn.addEventListener('click', () => showImage(currentIndex - 1));
-        nextBtn.addEventListener('click', () => showImage(currentIndex + 1));
-    </script>
+    <footer class="site-footer">
+        <div class="wrap">
+            <nav aria-label="Footer">
+                <a href="privacy.html">Privacy</a>
+                <a href="tos.html">Terms</a>
+                <a href="https://www.gnu.org/licenses/agpl-3.0.html">License</a>
+                <a href="https://git.orangc.net/c/takina">Source</a>
+            </nav>
+            <span>&copy; 2024&ndash;present <a href="https://orangc.net">orangc</a></span>
+        </div>
+    </footer>
+
+    <script src="scripts/gallery.js"></script>
+    <script src="scripts/oneko.js"></script>
 </body>
+
 </html>
