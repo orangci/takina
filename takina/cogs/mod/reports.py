@@ -84,7 +84,9 @@ class Reports(commands.Cog):
             embed.set_thumbnail(url=member.avatar.url)
 
         await reports_channel.send(
-            f"<@&{settings.reports_notification_role_id}>",
+            f"<@&{settings.reports_notification_role_id}>"
+            if settings.reports_notification_role_id
+            else None,
             embed=embed,
             allowed_mentions=discord.AllowedMentions(roles=True),
         )
