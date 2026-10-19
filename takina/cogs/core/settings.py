@@ -14,11 +14,11 @@ class Settings(commands.Cog):
     async def settings(self, ctx: commands.Context):
         pass
 
-    @lychecks.guild_only()
-    @lychecks.has_permissions(administrator=True)
     @settings.command(
         name="guild", aliases=["server"], description="Manage settings for this server."
     )
+    @lychecks.has_permissions(administrator=True)
+    @lychecks.guild_only()
     async def guild_settings(self, ctx: commands.Context):
         pass
 

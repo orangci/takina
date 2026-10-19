@@ -10,12 +10,13 @@ class Channels(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @lychecks.has_permissions(manage_channels=True)
     @commands.hybrid_command(
         name="slowmode",
         description="Sets slowmode in the current or specified channel.",
         usage="2h #channel",
     )
+    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.guild_only()
     async def slowmode(
         self,
         ctx: commands.Context,
@@ -48,10 +49,11 @@ class Channels(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @lychecks.has_permissions(manage_channels=True)
     @commands.hybrid_command(
         name="lock", description="Locks the current or specified channel.", usage="#channel"
     )
+    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.guild_only()
     async def lock(self, ctx: commands.Context, channel: discord.TextChannel | None = None):
         assert ctx.guild is not None
         assert isinstance(ctx.channel, discord.TextChannel)
@@ -67,10 +69,11 @@ class Channels(commands.Cog):
         )
         await ctx.reply(embed=embed, mention_author=False)
 
-    @lychecks.has_permissions(manage_channels=True)
     @commands.hybrid_command(
         name="unlock", description="Unlocks the current or specified channel.", usage="#channel"
     )
+    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.guild_only()
     async def unlock(self, ctx: commands.Context, channel: discord.TextChannel | None = None):
         assert ctx.guild is not None
         assert isinstance(ctx.channel, discord.TextChannel)

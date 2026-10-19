@@ -34,8 +34,11 @@ def has_permissions(**perms: bool):
         if await ctx.bot.is_owner(ctx.author):
             return True
 
+        # has_permissions is to block you when you're not allowed to do something in a server
+        # but if you aren't even in a server
+        # nobody cares, do yo thing buddy
         if ctx.guild is None:
-            raise lyerrors.TakinaPermissionError("This command can only be used in a server.")
+            return True
 
         if not isinstance(ctx.author, discord.Member):
             raise lyerrors.TakinaPermissionError("Unable to determine your permissions.")
@@ -110,7 +113,13 @@ def slash_only():
 # but for some reason commands.guild_only doesn't work
 # don't ask me why
 def guild_only():
+    async def predicate(ctx: commands.Context) -> bool:
+        if ctx.guild is None:
+            return False
+        return True
+
     def decorator(command):
+        command = commands.check(predicate)(command)
         command = app_commands.allowed_installs(users=False, guilds=True)(command)
         command = app_commands.allowed_contexts(guilds=True, dms=False, private_channels=True)(
             command
