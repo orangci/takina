@@ -9,6 +9,11 @@ from takina import config
 
 T = TypeVar("T", bound=SQLModel)
 
+if not config.POSTGRESQL_URI:
+    raise EnvironmentError(
+        "You must set the POSTGRESQL_URI environment variable in order for the database (and by extension, the bot itself) to function."
+    )
+
 engine = create_async_engine(config.POSTGRESQL_URI, echo=False)
 SessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 

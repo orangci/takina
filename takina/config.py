@@ -1,15 +1,18 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from os import getenv, environ
 from dotenv import load_dotenv
 from pathlib import Path
+from os import getenv
 import tomllib
 import random
 
 load_dotenv()
 
 BOT_NAME = getenv("BOT_NAME", "Takina")
-POSTGRESQL_URI = environ["POSTGRESQL_URI"].replace("postgresql://", "postgresql+asyncpg://")
+POSTGRESQL_URI = getenv("POSTGRESQL_URI")
+if POSTGRESQL_URI:
+    POSTGRESQL_URI = POSTGRESQL_URI.replace("postgresql://", "postgresql+asyncpg://")
+
 GITHUB_AUTH_TOKEN = getenv("GITHUB_AUTH_TOKEN")
 REDDIT_CLIENT_ID = getenv("REDDIT_CLIENT_ID")
 REDDIT_CLIENT_SECRET = getenv("REDDIT_CLIENT_SECRET")
@@ -17,6 +20,7 @@ LIBRETRANSLATE_API_KEY = getenv("LIBRETRANSLATE_API_KEY")
 LIBRETRANSLATE_API_URL = getenv("LIBRETRANSLATE_API_URL")
 if LIBRETRANSLATE_API_URL:
     LIBRETRANSLATE_API_URL = LIBRETRANSLATE_API_URL.removesuffix("/")
+
 HYPIXEL_API_KEY = getenv("HYPIXEL_API_KEY")
 GOOGLE_API_KEY = getenv("GOOGLE_API_KEY")
 STEAM_REGION = getenv("STEAM_REGION", "US")
