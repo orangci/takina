@@ -124,6 +124,9 @@ class Ban(commands.Cog):
         self, ctx: commands.Context, user: int, *, reason: str = "No reason provided"
     ) -> None:
         assert ctx.guild is not None
+        member = ctx.guild.get_member(user)
+        if member:
+            await lyhelpers.permissions_check(ctx, member, True, True, True)
 
         try:
             user_obj = await self._bot.fetch_user(user)
