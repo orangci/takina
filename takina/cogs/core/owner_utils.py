@@ -118,15 +118,17 @@ class OwnerUtils(commands.Cog):
     async def maintainers(self, ctx: commands.Context):
         owner_names = []
         assert self._bot.owner_ids is not None
+
+        is_owner = None
         for owner_id in self._bot.owner_ids:
             owner = self._bot.get_user(owner_id) or await self._bot.fetch_user(owner_id)
+            if ctx.author.id == owner_id:
+                is_owner = True
             if owner:
                 owner_names.append("**" + owner.display_name + "**")
             else:
                 owner_names.append(f"Unknown User (ID: {owner_id})")
 
-        assert isinstance(ctx.author, discord.User)
-        is_owner = await self._bot.is_owner(ctx.author)
         owner_names_str = ", ".join(owner_names)
         if is_owner:
             embed = discord.Embed(colour=config.EMBED_COLOUR)
