@@ -87,7 +87,7 @@ class Wynncraft(commands.Cog):
         if characters:
             embed.description += f"\n> **Characters**: {character_list}"
         embed.description += f"\n> **Raids**: {global_data.get('raids', {}).get('total', 0)}"
-        embed.description += f"\n> **Wars**: {global_data.get('wars', 0):}"
+        embed.description += f"\n> **Wars**: {global_data.get('wars', 0)}"
         if forum := player.get("forumLink"):
             embed.description += (
                 f"\n> **Forum account**: [Linked](https://forums.wynncraft.com/members/{forum}/)"
