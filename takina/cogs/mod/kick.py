@@ -74,7 +74,7 @@ class Kick(commands.Cog):
             raise lyerrors.TakinaError("You must specify at least two members to kick.")
 
         if len(members) > 10:
-            raise lyerrors.TakinaError("You cannote kick more than 10 members at once.")
+            raise lyerrors.TakinaError("You cannot kick more than 10 members at once.")
 
         for member in members:
             await lyhelpers.permissions_check(ctx, member, True, True, True)
