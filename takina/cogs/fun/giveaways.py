@@ -276,7 +276,7 @@ class Giveaways(commands.Cog):
     @giveaway.command(
         name="start", description="Start a giveaway.", usage='5h "title" "description" 2'
     )
-    # @lychecks.has_permissions(manage_events=True)
+    @lychecks.has_permissions(manage_events=True)
     @lychecks.guild_only()
     async def start(
         self,
@@ -356,7 +356,7 @@ class Giveaways(commands.Cog):
             await ctx.send(embed=embed, ephemeral=True)
 
     @giveaway.command(name="stop", aliases=["end"], description="End a giveaway.", usage="1")
-    # @lychecks.has_permissions(manage_events=True)
+    @lychecks.has_permissions(manage_events=True)
     @lychecks.guild_only()
     async def stop(self, ctx: commands.Context, giveaway_id: int):
         assert ctx.guild is not None
@@ -380,7 +380,7 @@ class Giveaways(commands.Cog):
             await ctx.message.add_reaction(config.emojis.SUCCESS)
 
     @giveaway.command(description="Reroll a giveaway winner.", usage="1")
-    # @lychecks.has_permissions(manage_events=True)
+    @lychecks.has_permissions(manage_events=True)
     @lychecks.guild_only()
     async def reroll(self, ctx: commands.Context, giveaway_id: int):
         assert ctx.guild is not None
@@ -410,7 +410,7 @@ class Giveaways(commands.Cog):
             await ctx.message.add_reaction(config.emojis.SUCCESS)
 
     @giveaway.command(description="View the details of a past giveaway.", usage="1")
-    # @lychecks.has_permissions(manage_events=True)
+    @lychecks.has_permissions(manage_events=True)
     @lychecks.guild_only()
     async def view(self, ctx: commands.Context, giveaway_id: int):
         assert ctx.guild is not None
