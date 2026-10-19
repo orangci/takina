@@ -21,7 +21,7 @@ class Reports(commands.Cog):
     @report.command(
         name="channel", description="Set the channel where reports will be sent.", usage="#channel"
     )
-    @commands.has_permissions(manage_channels=True)
+    @lychecks.has_permissions(manage_channels=True)
     @lychecks.guild_only()
     async def report_channel(
         self,
