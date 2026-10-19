@@ -4,9 +4,12 @@ from takina.libs import lychecks, lyerrors, lyhelpers, lyviews
 from datetime import datetime, timedelta, timezone
 from takina import config, database, models
 from discord.ext import commands, tasks
+import logging
 import discord
 
 MAX_REMINDERS = 25
+
+logger = logging.getLogger("takina.reminders")
 
 
 class Reminders(commands.Cog):
@@ -152,10 +155,13 @@ class Reminders(commands.Cog):
                 )
 
                 await user.send(embed=embed)
-            except discord.Forbidden:
-                pass
-            finally:
                 await database.delete(reminder)
+            except discord.Forbidden:
+                # dms are closed, so delivery can never succeed
+                await database.delete(reminder)
+            except Exception:
+                # keep the reminder for the next tick and keep the loop alive
+                logger.exception(f"failed to deliver reminder {reminder.id}")
 
     @_check_reminders.before_loop
     async def _before_check_reminders(self):
