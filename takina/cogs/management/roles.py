@@ -54,7 +54,7 @@ class Roles(commands.Cog):
 
         if role not in member.roles:
             raise lyerrors.TakinaError(
-                f"{member.mention} already didn't have the {role.mention} role."
+                f"Nothing was removed, as {member.mention} did not have the {role.mention} role."
             )
 
         await lyhelpers.permissions_check(ctx, member, False, False, False)
