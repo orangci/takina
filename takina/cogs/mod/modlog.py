@@ -131,7 +131,9 @@ class ModLog(commands.Cog):
         await database.save(settings)
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"Modlog channel has been set to {channel.mention}."
+        embed.description = (
+            f"{config.emojis.SUCCESS} Modlog channel has been set to {channel.mention}."
+        )
 
         await ctx.reply(embed=embed, mention_author=False)
 
