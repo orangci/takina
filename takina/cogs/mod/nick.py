@@ -30,7 +30,7 @@ class Nick(commands.Cog):
                 raise lyerrors.TakinaError("This command can only be used in a server.")
             member = ctx.author
 
-        await lyhelpers.permissions_check(ctx, member, True, True, True)
+        await lyhelpers.permissions_check(ctx, member, False, True, True)
 
         if not nickname:
             nickname = member.global_name
