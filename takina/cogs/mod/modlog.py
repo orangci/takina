@@ -3,8 +3,11 @@
 from takina.libs import lychecks, lyerrors, lyviews
 from datetime import datetime, timedelta, timezone
 from takina import config, database, models
+from sqlalchemy.exc import IntegrityError
 from discord.ext import commands
 import discord
+
+MAX_CASE_ATTEMPTS = 5
 
 
 class ModLog(commands.Cog):
@@ -13,7 +16,6 @@ class ModLog(commands.Cog):
 
     async def get_next_case_id(self, guild_id: int) -> int:
         cases = await database.get_all(models.ModLogCaseModel, guild_id=guild_id)
-
         if not cases:
             # we start the server's cases with case #0, not #1
             # because #0 has more aura
@@ -41,23 +43,32 @@ class ModLog(commands.Cog):
             members = [member]
             mass_action = False
 
-        case_id = await self.get_next_case_id(ctx.guild.id)
         timestamp = datetime.now(timezone.utc)
 
-        case = models.ModLogCaseModel(
-            guild_id=ctx.guild.id,
-            case_id=case_id,
-            action=action,
-            member_ids=[member.id for member in members],
-            member_names=[str(member) for member in members],
-            moderator_id=moderator.id,
-            reason=reason,
-            duration=duration,
-            timestamp=timestamp,
-            mass_action=mass_action,
-        )
+        # another action may claim the same case id first, so retry with a fresh one
+        for _ in range(MAX_CASE_ATTEMPTS):
+            case = models.ModLogCaseModel(
+                guild_id=ctx.guild.id,
+                case_id=await self.get_next_case_id(ctx.guild.id),
+                action=action,
+                member_ids=[member.id for member in members],
+                member_names=[str(member) for member in members],
+                moderator_id=moderator.id,
+                reason=reason,
+                duration=duration,
+                timestamp=timestamp,
+                mass_action=mass_action,
+            )
 
-        await database.save(case)
+            try:
+                await database.save(case)
+                break
+            except IntegrityError:
+                continue
+        else:
+            raise lyerrors.TakinaError("Could not allocate a modlog case ID, please try again.")
+
+        case_id = case.case_id
 
         if not settings or not settings.modlog_channel_id:
             return

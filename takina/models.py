@@ -3,7 +3,7 @@
 from sqlmodel import Field, SQLModel, Column, DateTime, String, JSON
 from sqlalchemy.dialects.postgresql import ARRAY as PGArray
 from sqlalchemy.ext.mutable import MutableList, MutableDict
-from sqlalchemy import BigInteger
+from sqlalchemy import BigInteger, UniqueConstraint
 from datetime import datetime
 from secrets import token_hex
 
@@ -74,6 +74,7 @@ class ReminderModel(SQLModel, table=True):
 
 class ModLogCaseModel(SQLModel, table=True):
     __tablename__ = "modlog_cases"
+    __table_args__ = (UniqueConstraint("guild_id", "case_id", name="uq_modlog_guild_case"),)
 
     id: int | None = Field(default=None, primary_key=True)
     guild_id: int = Field(sa_type=BigInteger)
