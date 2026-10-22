@@ -186,7 +186,7 @@ class Ban(commands.Cog):
             raise lyerrors.TakinaNotFoundError("That Discord user could not be found.") from error
 
         confirmation = lyviews.ModerationConfirmationView(
-            ctx=ctx, member=user_obj, action="hackban", reason=reason
+            ctx=ctx, member=user_obj, action="unban", reason=reason
         )
         if not await confirmation.prompt():
             return
