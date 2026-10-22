@@ -125,7 +125,13 @@ def sesp_guild_only(guild_id: int):
 # yes. yes, i know this is really damned stupid.
 def slash_only():
     async def predicate(ctx: commands.Context) -> bool:
-        return ctx.interaction is not None
+        if ctx.interaction is None:
+            # a plain check failure is silent, which leaves prefix users guessing
+            raise lyerrors.TakinaUserInputError(
+                f"This command only works as a slash command: `/{ctx.command}`."
+            )
+
+        return True
 
     return commands.check(predicate)
 
