@@ -1,9 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyhelpers, lyerrors
+from takina.libs import lychecks, lyerrors, lyhelpers
 from discord.ext import commands
 from takina import config
+from typing import cast
 import discord
+
+# discord's limit for nicknames
+MAX_NICKNAME_LENGTH = 32
 
 
 class Nick(commands.Cog):
@@ -12,8 +16,8 @@ class Nick(commands.Cog):
 
     @commands.hybrid_command(
         aliases=["setnick"],
-        description="Change a member's nickname.",
-        usage='@member "new nickname"',
+        description="Change a member's nickname, or reset it if no nickname is given.",
+        usage="@member Marisa the Ordinary",
     )
     @lychecks.has_permissions(manage_nicknames=True)
     @lychecks.guild_only()
@@ -24,20 +28,26 @@ class Nick(commands.Cog):
         *,
         nickname: str | None = None,
     ) -> None:
-        assert ctx.guild is not None
-        if member is None:
-            if not isinstance(ctx.author, discord.Member):
-                raise lyerrors.TakinaError("This command can only be used in a server.")
-            member = ctx.author
+        # Range does not survive the | None on slash commands, hence the manual check
+        if nickname is not None and len(nickname) > MAX_NICKNAME_LENGTH:
+            raise lyerrors.TakinaUserInputError(
+                f"Nicknames can be at most {MAX_NICKNAME_LENGTH} characters long."
+            )
 
-        await lyhelpers.permissions_check(ctx, member, False, True, True)
+        member = member or cast(discord.Member, ctx.author)
 
-        if not nickname:
-            nickname = member.global_name
+        # your top role never outranks itself, so only compare roles for someone else
+        await lyhelpers.permissions_check(ctx, member, False, True, member != ctx.author)
         await member.edit(nick=nickname)
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"{config.emojis.SUCCESS} **{member.mention}**'s nickname has been changed to **{nickname}**."
+        if nickname is None:
+            embed.description = (
+                f"{config.emojis.SUCCESS} {member.mention}'s nickname has been reset."
+            )
+        else:
+            embed.description = f"{config.emojis.SUCCESS} {member.mention}'s nickname has been changed to **{nickname}**."
+
         await ctx.reply(embed=embed, mention_author=False)
 
 
