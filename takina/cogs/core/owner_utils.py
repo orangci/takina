@@ -22,6 +22,8 @@ logger = logging.getLogger("takina.owner_utils")
 class OwnerUtils(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
+        # owners outside the cache would otherwise be fetched on every .maintainers
+        self._owner_cache: dict[int, discord.User] = {}
 
     def cleanup_code(self, content):
         # for cleaning up codeblocks
@@ -64,12 +66,11 @@ class OwnerUtils(commands.Cog):
         else:
             return f"```py\n{value}{result}\n```"
 
-    @commands.hybrid_command(hidden=True, name="eval")
+    @commands.command(hidden=True, name="eval")
     @commands.is_owner()
     async def eval(self, ctx: commands.Context, *, code: str):
         result = await self.run_eval(ctx, code)
-        if not ctx.interaction:
-            await ctx.message.add_reaction("✅")
+        await ctx.message.add_reaction("✅")
         if result:
             await ctx.reply(result, mention_author=False)
 
@@ -95,55 +96,59 @@ class OwnerUtils(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def disable(self, ctx: commands.Context, cmd: str):
-        if cmd in ["enable", "disable"]:
-            raise lyerrors.TakinaUserInputError(f"You cannot disable the `{cmd}` command.")
-        else:
-            command = self._bot.get_command(cmd)
-            if command is None:
-                raise lyerrors.TakinaNotFoundError("Command not found.")
-            command.enabled = False
-            embed = discord.Embed(colour=config.EMBED_COLOUR)
-            embed.description = f"{config.emojis.SUCCESS} Successfully disabled `{command}`."
-            await ctx.reply(embed=embed, mention_author=False)
+        await self._set_enabled(ctx, cmd, False)
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def enable(self, ctx: commands.Context, cmd: str):
-        if cmd in ["enable", "disable"]:
-            raise lyerrors.TakinaUserInputError(f"You cannot enable the `{cmd}` command.")
-        else:
-            command = self._bot.get_command(cmd)
-            if command is None:
-                raise lyerrors.TakinaNotFoundError("Command not found.")
-            command.enabled = True
-            embed = discord.Embed(colour=config.EMBED_COLOUR)
-            embed.description = f"{config.emojis.SUCCESS} Successfully enabled `{command}`."
-            await ctx.reply(embed=embed, mention_author=False)
+        await self._set_enabled(ctx, cmd, True)
+
+    async def _set_enabled(self, ctx: commands.Context, name: str, enabled: bool) -> None:
+        action = "enable" if enabled else "disable"
+        command = self._bot.get_command(name)
+        if command is None:
+            raise lyerrors.TakinaNotFoundError("Command not found.")
+
+        # resolved first, so an alias of enable or disable cannot switch them off
+        if command.qualified_name in ("enable", "disable"):
+            raise lyerrors.TakinaUserInputError(f"You cannot {action} the `{command}` command.")
+
+        command.enabled = enabled
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
+        embed.description = f"{config.emojis.SUCCESS} Successfully {action}d `{command}`."
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(hidden=True, aliases=["maintainer", "perms", "owner", "owners"])
     async def maintainers(self, ctx: commands.Context):
-        owner_names = []
         assert self._bot.owner_ids is not None
+        owner_names = ", ".join(
+            [await self._owner_name(owner_id) for owner_id in self._bot.owner_ids]
+        )
 
-        is_owner = None
-        for owner_id in self._bot.owner_ids:
-            owner = self._bot.get_user(owner_id) or await self._bot.fetch_user(owner_id)
-            if ctx.author.id == owner_id:
-                is_owner = True
-            if owner:
-                owner_names.append("**" + owner.display_name + "**")
-            else:
-                owner_names.append(f"Unknown User (ID: {owner_id})")
-
-        owner_names_str = ", ".join(owner_names)
-        if is_owner:
-            embed = discord.Embed(colour=config.EMBED_COLOUR)
-            embed.description = f"You have maintainer level permissions when interacting with {config.BOT_NAME}. Current users who hold maintainer level permissions: {owner_names_str}"
-            await ctx.reply(embed=embed, mention_author=False)
+        if ctx.author.id in self._bot.owner_ids:
+            intro = (
+                f"You have maintainer-level permissions when interacting with {config.BOT_NAME}."
+            )
         else:
-            embed = discord.Embed(colour=config.EMBED_COLOUR)
-            embed.description = f"You are not a maintainer of {config.BOT_NAME}. Current users who hold maintainer-level permissions: {owner_names_str}"
-            await ctx.reply(embed=embed, mention_author=False)
+            intro = f"You are not a maintainer of {config.BOT_NAME}."
+
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
+        embed.description = (
+            f"{intro} Current users who hold maintainer-level permissions: {owner_names}"
+        )
+        await ctx.reply(embed=embed, mention_author=False)
+
+    async def _owner_name(self, owner_id: int) -> str:
+        owner = self._bot.get_user(owner_id) or self._owner_cache.get(owner_id)
+        if owner is None:
+            try:
+                owner = await self._bot.fetch_user(owner_id)
+            except discord.NotFound:
+                return f"Unknown User (ID: {owner_id})"
+
+            self._owner_cache[owner_id] = owner
+
+        return f"**{owner.display_name}**"
 
     @commands.command(hidden=True, aliases=["rx"])
     @commands.is_owner()
@@ -245,6 +250,7 @@ class OwnerUtils(commands.Cog):
             await ctx.reply(embed=embed, ephemeral=True)
 
     @commands.command(hidden=True, aliases=["ci"])
+    @commands.is_owner()
     async def command_info(self, ctx: commands.Context, *, name: str):
         command = self._bot.get_command(name)
 
