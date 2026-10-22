@@ -46,7 +46,7 @@ class Reminders(commands.Cog):
 
         reminders = await database.get_all(models.ReminderModel, user_id=ctx.author.id)
 
-        if len(reminders) > MAX_REMINDERS:
+        if len(reminders) > (MAX_REMINDERS - 1):
             raise lyerrors.TakinaError(f"You can only have {MAX_REMINDERS} active reminders.")
 
         remind_at = datetime.now(timezone.utc) + timedelta(seconds=duration)
