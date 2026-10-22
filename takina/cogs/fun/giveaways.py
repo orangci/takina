@@ -4,11 +4,14 @@ from takina.libs import lyerrors, lyhelpers, lychecks
 from datetime import datetime, timedelta, UTC
 from takina import config, database, models
 from discord.ext import commands, tasks
+import logging
 import discord
 import random
 
 
 MAXIMUM_GUILD_GIVEAWAYS = 25
+
+logger = logging.getLogger("takina.giveaways")
 
 
 class GiveawayView(discord.ui.View):
@@ -254,13 +257,24 @@ class Giveaways(commands.Cog):
 
     @tasks.loop(seconds=30)
     async def _expiry_loop(self):
-        giveaways = await database.get_all(models.GiveawayModel, ended=False)
+        try:
+            giveaways = await database.get_all(models.GiveawayModel, ended=False)
+        except Exception:
+            # an unhandled error stops tasks.loop for good, so wait for the next tick instead
+            logger.exception("failed to fetch giveaways")
+            return
 
         now = datetime.now(UTC)
 
         for giveaway in giveaways:
-            if giveaway.ends_at <= now:
+            if giveaway.ends_at > now:
+                continue
+
+            try:
                 await self._end_giveaway(giveaway)
+            except Exception:
+                # one broken giveaway must not stop the others from ending
+                logger.exception(f"failed to end giveaway {giveaway.id}")
 
     @_expiry_loop.before_loop
     async def _before_expiry_loop(self):
