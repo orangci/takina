@@ -82,7 +82,7 @@ class Help(commands.HelpCommand):
 
         filtered = await self.filter_commands(group.commands, sort=True)
         if not filtered:
-            raise lyerrors.TakinaNotFoundError("That command does not exist.")
+            raise lyerrors.TakinaNotFoundError("There are no commands here that you can use.")
 
         description.append("")
         description.append("**Subcommands**")
@@ -97,7 +97,7 @@ class Help(commands.HelpCommand):
     async def send_cog_help(self, cog: commands.Cog):
         filtered = await self.filter_commands(cog.get_commands(), sort=True)
         if not filtered:
-            raise lyerrors.TakinaNotFoundError("That command does not exist.")
+            raise lyerrors.TakinaNotFoundError("There are no commands here that you can use.")
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
 
