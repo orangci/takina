@@ -36,6 +36,7 @@ dependencies = [
     "asyncpg>=0.31.0",
     "psycopg2-binary>=2.9.12",
     "greenlet>=3.5.4",
+    "alembic>=1.20.1",
 ]
 
 [tool.setuptools]
@@ -64,6 +65,10 @@ skip-magic-trailing-comma = true
 [tool.ruff.lint]
 # import order is longest first by convention, which isort cannot express
 ignore = ["I001"]
+
+[tool.ruff.lint.per-file-ignores]
+# generated revisions import sa and sqlmodel whether or not they use them
+"takina/migrations/versions/*" = ["F401"]
 
 [tool.ruff.analyze]
 detect-string-imports = true

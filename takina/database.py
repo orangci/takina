@@ -3,7 +3,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from collections.abc import Iterable
 from sqlmodel import SQLModel, select
+from sqlalchemy.engine import Connection
+from alembic.config import Config
 from sqlalchemy import inspect
+from alembic import command
+from pathlib import Path
 from typing import Any
 from takina import config
 
@@ -17,9 +21,20 @@ engine = create_async_engine(config.POSTGRESQL_URI, echo=False, pool_pre_ping=Tr
 SessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
+MIGRATIONS = Path(__file__).parent / "migrations"
+
+
+def _upgrade(connection: Connection) -> None:
+    alembic_config = Config()
+    alembic_config.set_main_option("script_location", str(MIGRATIONS))
+    alembic_config.attributes["connection"] = connection
+    command.upgrade(alembic_config, "head")
+
+
 async def initiate_database() -> None:
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
+    # migrations, not create_all, so existing databases pick up schema changes too
+    async with engine.begin() as connection:
+        await connection.run_sync(_upgrade)
 
 
 def _has_primary_key(instance: SQLModel) -> bool:

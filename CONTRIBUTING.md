@@ -161,7 +161,12 @@ class PrefixModel(SQLModel, table=True):
     prefix: str
 ```
 
-Tables are created on startup with `create_all`, which doesn't alter existing tables. There are no migrations yet, so mention schema changes to existing models in your pull request.
+Schema changes go through [Alembic](https://alembic.sqlalchemy.org) migrations in `takina/migrations`, which the bot applies on startup. After changing a model, generate a revision, then read it before committing, as autogenerate cannot guess everything (renames, for one):
+
+```sh
+uv run alembic revision --autogenerate -m "add marisa's stolen books"
+uv run alembic upgrade head
+```
 
 ## Example cog
 Read [the prefix cog](./takina/cogs/core/prefix_command.py). It's short, uses the database, and is a jolly good starting point.
