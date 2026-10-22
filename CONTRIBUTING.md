@@ -91,6 +91,7 @@ Takina uses a centralised error system. Do **not** build error embeds inside com
 
 ```py
 from takina.libs import lyerrors
+
 raise lyerrors.TakinaNotFoundError("Cirno could not be found.")
 ```
 
