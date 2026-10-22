@@ -1,8 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyerrors, lyviews, lyhelpers, lymodlog
+from takina.libs import lychecks, lyerrors, lyhelpers, lymodlog
 from discord.ext import commands
-from takina import config
 import discord
 
 
@@ -27,36 +26,22 @@ class Ban(commands.Cog):
     @lychecks.has_permissions(ban_members=True)
     @lychecks.guild_only()
     async def ban(
-        self, ctx: commands.Context, member: discord.Member, *, reason: str = "No reason provided"
+        self,
+        ctx: commands.Context,
+        member: discord.Member,
+        *,
+        reason: lymodlog.Reason = "No reason provided",
     ) -> None:
-        assert ctx.guild is not None
         await lyhelpers.permissions_check(ctx, member, True, True, True)
-
-        confirmation = lyviews.ModerationConfirmationView(
-            ctx=ctx, member=member, action="ban", reason=reason
+        await lymodlog.moderate(
+            ctx,
+            [member],
+            "ban",
+            reason,
+            lambda member, audit_reason: member.ban(reason=audit_reason),
+            f"You were banned in **{ctx.guild}**.",
+            dm_first=True,
         )
-        if not await confirmation.prompt():
-            return
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-
-        try:
-            dm_embed = discord.Embed(colour=config.EMBED_COLOUR)
-            dm_embed.description = (
-                f"You were banned in **{ctx.guild}**. \n\n{config.emojis.NOTE} **Reason**: {reason}"
-            )
-            await member.send(embed=dm_embed)
-        except discord.HTTPException:
-            embed.set_footer(text="I was unable to DM the user.")
-
-        await member.ban(reason=f"Banned by {ctx.author} for: {reason}")
-
-        embed.description = f"{config.emojis.SUCCESS} Successfully banned **{member.mention}**."
-        embed.description += f"\n\n{config.emojis.NOTE} **Reason**: {reason}"
-        embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
-
-        await confirmation.edit_success(embed)
-        await lymodlog.log_action(ctx.guild, "ban", [member], reason, ctx.author)
 
     @commands.command(
         aliases=["groupban", "massb"],
@@ -70,51 +55,20 @@ class Ban(commands.Cog):
         ctx: commands.Context,
         members: commands.Greedy[discord.Member],
         *,
-        reason: str = "No reason provided",
+        reason: lymodlog.Reason = "No reason provided",
     ) -> None:
-        assert ctx.guild is not None
-
-        if not members or len(members) < 2:
-            raise lyerrors.TakinaError("You must specify at least two members to ban.")
-
-        if len(members) > 10:
-            raise lyerrors.TakinaError("You cannot ban more than 10 members at once.")
-
-        for member in members:
+        targets = lymodlog.mass_targets(members, "ban")
+        for member in targets:
             await lyhelpers.permissions_check(ctx, member, True, True, True)
 
-        confirmation = lyviews.ModerationConfirmationView(
-            ctx=ctx,
-            member=", ".join(member.mention for member in members),
-            action="mass ban",
-            reason=reason,
-        )
-
-        if not await confirmation.prompt():
-            return
-
-        failed_dms = 0
-        for member in members:
-            try:
-                dm_embed = discord.Embed(colour=config.EMBED_COLOUR)
-                dm_embed.description = f"You were banned in **{ctx.guild}**.\n\n{config.emojis.NOTE} **Reason**: {reason}"
-                await member.send(embed=dm_embed)
-            except discord.HTTPException:
-                failed_dms += 1
-
-            await member.ban(reason=f"Banned by {ctx.author} for: {reason}")
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"{config.emojis.SUCCESS} Successfully banned the following {len(members)} members: {', '.join(member.mention for member in members)}."
-        embed.description += f"\n\n{config.emojis.NOTE} **Reason**: {reason}"
-        embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
-
-        if failed_dms:
-            embed.set_footer(text=f"I was unable to DM {failed_dms} user(s).")
-
-        await confirmation.edit_success(embed)
-        await lymodlog.log_action(
-            ctx.guild, "mass ban", list(members), reason, ctx.author, mass_action=True
+        await lymodlog.moderate(
+            ctx,
+            targets,
+            "ban",
+            reason,
+            lambda member, audit_reason: member.ban(reason=audit_reason),
+            f"You were banned in **{ctx.guild}**.",
+            dm_first=True,
         )
 
     @commands.hybrid_command(
@@ -125,10 +79,13 @@ class Ban(commands.Cog):
     @lychecks.has_permissions(ban_members=True)
     @lychecks.guild_only()
     async def hackban(
-        self, ctx: commands.Context, user: str, *, reason: str = "No reason provided"
+        self, ctx: commands.Context, user: str, *, reason: lymodlog.Reason = "No reason provided"
     ) -> None:
         assert ctx.guild is not None
         user_id = parse_user_id(user)
+        if user_id == ctx.me.id:
+            raise lyerrors.TakinaUserInputError("I cannot ban myself.")
+
         member = ctx.guild.get_member(user_id)
         if member:
             await lyhelpers.permissions_check(ctx, member, True, True, True)
@@ -145,23 +102,15 @@ class Ban(commands.Cog):
         else:
             raise lyerrors.TakinaError(f"**{user_obj}** (`{user_obj.id}`) is already banned.")
 
-        confirmation = lyviews.ModerationConfirmationView(
-            ctx=ctx, member=user_obj, action="hackban", reason=reason
+        guild = ctx.guild
+        await lymodlog.moderate(
+            ctx,
+            [user_obj],
+            "hackban",
+            reason,
+            lambda user, audit_reason: guild.ban(user, reason=audit_reason),
+            None,
         )
-        if not await confirmation.prompt():
-            return
-
-        await ctx.guild.ban(user_obj, reason=f"Hackbanned by {ctx.author} for: {reason}")
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = (
-            f"{config.emojis.SUCCESS} Successfully hackbanned **{user_obj}** (`{user_obj.id}`)."
-        )
-        embed.description += f"\n\n{config.emojis.NOTE} **Reason**: {reason}"
-        embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
-
-        await confirmation.edit_success(embed)
-        await lymodlog.log_action(ctx.guild, "hackban", [user_obj], reason, ctx.author)
 
     @commands.hybrid_command(
         aliases=["pardon"],
@@ -171,33 +120,23 @@ class Ban(commands.Cog):
     @lychecks.has_permissions(ban_members=True)
     @lychecks.guild_only()
     async def unban(
-        self, ctx: commands.Context, user: str, *, reason: str = "No reason provided"
+        self, ctx: commands.Context, user: str, *, reason: lymodlog.Reason = "No reason provided"
     ) -> None:
         assert ctx.guild is not None
+        guild = ctx.guild
 
         try:
             user_obj = await self._bot.fetch_user(parse_user_id(user))
         except discord.NotFound as error:
             raise lyerrors.TakinaNotFoundError("That Discord user could not be found.") from error
 
-        confirmation = lyviews.ModerationConfirmationView(
-            ctx=ctx, member=user_obj, action="unban", reason=reason
-        )
-        if not await confirmation.prompt():
-            return
+        async def unban_user(user: discord.User, audit_reason: str) -> None:
+            try:
+                await guild.unban(user, reason=audit_reason)
+            except discord.NotFound as error:
+                raise lyerrors.TakinaNotFoundError(f"**{user}** is not banned.") from error
 
-        try:
-            await ctx.guild.unban(user_obj, reason=f"Unbanned by {ctx.author} for: {reason}")
-        except discord.NotFound as error:
-            raise lyerrors.TakinaNotFoundError(f"**{user_obj}** is not banned.") from error
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"{config.emojis.SUCCESS} Successfully unbanned **{user_obj}**."
-        embed.description += f"\n\n{config.emojis.NOTE} **Reason**: {reason}"
-        embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
-
-        await confirmation.edit_success(embed)
-        await lymodlog.log_action(ctx.guild, "unban", [user_obj], reason, ctx.author)
+        await lymodlog.moderate(ctx, [user_obj], "unban", reason, unban_user, None)
 
 
 async def setup(bot: commands.Bot):

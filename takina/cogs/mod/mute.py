@@ -1,10 +1,27 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyerrors, lyviews, lyhelpers, lymodlog
+from takina.libs import lychecks, lyerrors, lyhelpers, lymodlog
 from discord.ext import commands
 from datetime import timedelta
-from takina import config
 import discord
+
+# discord caps timeouts at 28 days
+MAX_TIMEOUT = timedelta(days=28)
+MIN_TIMEOUT = timedelta(seconds=30)
+
+
+def parse_timeout(duration: str) -> timedelta:
+    timeout = timedelta(seconds=lyhelpers.duration_calculator(duration))
+
+    if timeout > MAX_TIMEOUT:
+        raise lyerrors.TakinaUserInputError(
+            "The duration you've specified is too long. The maximum timeout you may set is 28 days."
+        )
+
+    if timeout < MIN_TIMEOUT:
+        raise lyerrors.TakinaUserInputError("You must specify a minimum duration of 30 seconds.")
+
+    return timeout
 
 
 class Mute(commands.Cog):
@@ -24,49 +41,20 @@ class Mute(commands.Cog):
         member: discord.Member,
         duration: str,
         *,
-        reason: str = "No reason provided",
+        reason: lymodlog.Reason = "No reason provided",
     ) -> None:
-        assert ctx.guild is not None
-        duration_parsed = lyhelpers.duration_calculator(duration)
-
-        if duration_parsed > 2419200:
-            raise lyerrors.TakinaUserInputError(
-                "The duration you've specified is too long. The maximum timeout you may set is 28 days."
-            )
-        elif duration_parsed < 30:
-            raise lyerrors.TakinaUserInputError(
-                "You must specify a minimum duration of 30 seconds."
-            )
-
+        timeout = parse_timeout(duration)
         await lyhelpers.permissions_check(ctx, member, True, True, True)
 
-        confirmation = lyviews.ModerationConfirmationView(
-            ctx=ctx, member=member, action="mute", reason=reason
+        await lymodlog.moderate(
+            ctx,
+            [member],
+            "mute",
+            reason,
+            lambda member, audit_reason: member.timeout(timeout, reason=audit_reason),
+            f"You were muted in **{ctx.guild}** for {duration}.",
+            duration=duration,
         )
-        if not await confirmation.prompt():
-            return
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-
-        try:
-            dm_embed = discord.Embed(colour=config.EMBED_COLOUR)
-            dm_embed.description = f"You were muted in **{ctx.guild}** for {duration}.\n\n{config.emojis.NOTE} **Reason**: {reason}"
-            await member.send(embed=dm_embed)
-        except discord.HTTPException:
-            embed.set_footer(text="I was unable to DM the user.")
-
-        await member.timeout(
-            timedelta(seconds=duration_parsed), reason=f"Muted by {ctx.author} for: {reason}"
-        )
-
-        embed.description = (
-            f"{config.emojis.SUCCESS} Successfully muted **{member.mention}** for {duration}."
-        )
-        embed.description += f"\n\n{config.emojis.NOTE} **Reason**: {reason}"
-        embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
-
-        await confirmation.edit_success(embed)
-        await lymodlog.log_action(ctx.guild, "mute", [member], reason, ctx.author, duration)
 
     @commands.command(
         aliases=["groupmute"],
@@ -81,63 +69,21 @@ class Mute(commands.Cog):
         members: commands.Greedy[discord.Member],
         duration: str,
         *,
-        reason: str = "No reason provided",
+        reason: lymodlog.Reason = "No reason provided",
     ) -> None:
-        assert ctx.guild is not None
-
-        if not members or len(members) < 2:
-            raise lyerrors.TakinaError("You must specify at least two members to mute.")
-
-        if len(members) > 10:
-            raise lyerrors.TakinaError("You cannot mute more than 10 members at once.")
-
-        duration_parsed = lyhelpers.duration_calculator(duration)
-        if duration_parsed > 2419200:
-            raise lyerrors.TakinaUserInputError(
-                "The duration you've specified is too long. The maximum timeout you may set is 28 days."
-            )
-        elif duration_parsed < 30:
-            raise lyerrors.TakinaUserInputError(
-                "You must specify a minimum duration of 30 seconds."
-            )
-
-        for member in members:
+        targets = lymodlog.mass_targets(members, "mute")
+        timeout = parse_timeout(duration)
+        for member in targets:
             await lyhelpers.permissions_check(ctx, member, True, True, True)
 
-        confirmation = lyviews.ModerationConfirmationView(
-            ctx=ctx,
-            member=", ".join(member.mention for member in members),
-            action="mass mute",
-            reason=reason,
-        )
-
-        if not await confirmation.prompt():
-            return
-
-        failed_dms = 0
-        for member in members:
-            try:
-                dm_embed = discord.Embed(colour=config.EMBED_COLOUR)
-                dm_embed.description = f"You were muted in **{ctx.guild}** for {duration}.\n\n{config.emojis.NOTE} **Reason**: {reason}"
-                await member.send(embed=dm_embed)
-            except discord.HTTPException:
-                failed_dms += 1
-
-            await member.timeout(
-                timedelta(seconds=duration_parsed), reason=f"Muted by {ctx.author} for: {reason}"
-            )
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"{config.emojis.SUCCESS} Successfully muted the following {len(members)} members for {duration}: {', '.join(member.mention for member in members)}."
-        embed.description += f"\n\n{config.emojis.NOTE} **Reason**: {reason}"
-        embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
-
-        if failed_dms:
-            embed.set_footer(text=f"I was unable to DM {failed_dms} user(s).")
-
-        await confirmation.edit_success(embed)
-        await lymodlog.log_action(
-            ctx.guild, "mass mute", list(members), reason, ctx.author, duration, mass_action=True
+        await lymodlog.moderate(
+            ctx,
+            targets,
+            "mute",
+            reason,
+            lambda member, audit_reason: member.timeout(timeout, reason=audit_reason),
+            f"You were muted in **{ctx.guild}** for {duration}.",
+            duration=duration,
         )
 
     @commands.hybrid_command(
@@ -148,37 +94,21 @@ class Mute(commands.Cog):
     @lychecks.has_permissions(moderate_members=True)
     @lychecks.guild_only()
     async def unmute(
-        self, ctx: commands.Context, member: discord.Member, *, reason: str = "No reason provided"
+        self,
+        ctx: commands.Context,
+        member: discord.Member,
+        *,
+        reason: lymodlog.Reason = "No reason provided",
     ) -> None:
-        assert ctx.guild is not None
         await lyhelpers.permissions_check(ctx, member, True, True, True)
-
-        confirmation = lyviews.ModerationConfirmationView(
-            ctx=ctx, member=member, action="unmute", reason=reason
+        await lymodlog.moderate(
+            ctx,
+            [member],
+            "unmute",
+            reason,
+            lambda member, audit_reason: member.timeout(None, reason=audit_reason),
+            f"You were unmuted in **{ctx.guild}**.",
         )
-
-        if not await confirmation.prompt():
-            return
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-
-        try:
-            dm_embed = discord.Embed(colour=config.EMBED_COLOUR)
-            dm_embed.description = (
-                f"You were unmuted in **{ctx.guild}**.\n\n{config.emojis.NOTE} **Reason**: {reason}"
-            )
-            await member.send(embed=dm_embed)
-        except discord.HTTPException:
-            embed.set_footer(text="I was unable to DM the user.")
-
-        await member.timeout(None, reason=f"Unmuted by {ctx.author} for: {reason}")
-
-        embed.description = f"{config.emojis.SUCCESS} Successfully unmuted **{member.mention}**."
-        embed.description += f"\n\n{config.emojis.NOTE} **Reason**: {reason}"
-        embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
-
-        await confirmation.edit_success(embed)
-        await lymodlog.log_action(ctx.guild, "unmute", [member], reason, ctx.author)
 
 
 async def setup(bot: commands.Bot):

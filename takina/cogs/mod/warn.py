@@ -1,8 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyerrors, lyviews, lyhelpers, lymodlog
+from takina.libs import lychecks, lyhelpers, lymodlog
 from discord.ext import commands
-from takina import config
 import discord
 
 
@@ -14,35 +13,16 @@ class Warnings(commands.Cog):
     @lychecks.has_permissions(moderate_members=True)
     @lychecks.guild_only()
     async def warn(
-        self, ctx: commands.Context, member: discord.Member, *, reason: str = "No reason provided"
+        self,
+        ctx: commands.Context,
+        member: discord.Member,
+        *,
+        reason: lymodlog.Reason = "No reason provided",
     ) -> None:
-        assert ctx.guild is not None
         await lyhelpers.permissions_check(ctx, member, True, True, True)
-
-        confirmation = lyviews.ModerationConfirmationView(
-            ctx=ctx, member=member, action="warn", reason=reason
+        await lymodlog.moderate(
+            ctx, [member], "warn", reason, None, f"You were warned in **{ctx.guild}**."
         )
-
-        if not await confirmation.prompt():
-            return
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-
-        try:
-            dm_embed = discord.Embed(colour=config.EMBED_COLOUR)
-            dm_embed.description = (
-                f"You were warned in **{ctx.guild}**.\n\n{config.emojis.NOTE} **Reason**: {reason}"
-            )
-            await member.send(embed=dm_embed)
-        except discord.HTTPException:
-            embed.set_footer(text="I was unable to DM the user.")
-
-        embed.description = f"{config.emojis.SUCCESS} Successfully warned **{member.mention}**."
-        embed.description += f"\n\n{config.emojis.NOTE} **Reason**: {reason}"
-        embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
-
-        await confirmation.edit_success(embed)
-        await lymodlog.log_action(ctx.guild, "warn", [member], reason, ctx.author)
 
     @commands.command(
         aliases=["groupwarn"],
@@ -56,50 +36,14 @@ class Warnings(commands.Cog):
         ctx: commands.Context,
         members: commands.Greedy[discord.Member],
         *,
-        reason: str = "No reason provided",
+        reason: lymodlog.Reason = "No reason provided",
     ) -> None:
-        assert ctx.guild is not None
-
-        if not members or len(members) < 2:
-            raise lyerrors.TakinaError("You must specify at least two members to warn.")
-
-        if len(members) > 10:
-            raise lyerrors.TakinaError("You cannot warn more than 10 members at once.")
-
-        for member in members:
+        targets = lymodlog.mass_targets(members, "warn")
+        for member in targets:
             await lyhelpers.permissions_check(ctx, member, True, True, True)
 
-        confirmation = lyviews.ModerationConfirmationView(
-            ctx=ctx,
-            member=", ".join(member.mention for member in members),
-            action="mass warn",
-            reason=reason,
-        )
-
-        if not await confirmation.prompt():
-            return
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-
-        failed_dms = 0
-        for member in members:
-            try:
-                dm_embed = discord.Embed(colour=config.EMBED_COLOUR)
-                dm_embed.description = f"You were warned in **{ctx.guild}**.\n\n{config.emojis.NOTE} **Reason**: {reason}"
-                await member.send(embed=dm_embed)
-            except discord.HTTPException:
-                failed_dms += 1
-
-        embed.description = f"{config.emojis.SUCCESS} Successfully warned the following {len(members)} members: {', '.join(member.mention for member in members)}."
-        embed.description += f"\n\n{config.emojis.NOTE} **Reason**: {reason}"
-        embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
-
-        if failed_dms:
-            embed.set_footer(text=f"I was unable to DM {failed_dms} user(s).")
-
-        await confirmation.edit_success(embed)
-        await lymodlog.log_action(
-            ctx.guild, "mass warn", list(members), reason, ctx.author, mass_action=True
+        await lymodlog.moderate(
+            ctx, targets, "warn", reason, None, f"You were warned in **{ctx.guild}**."
         )
 
 
