@@ -9,7 +9,7 @@ from secrets import token_hex
 
 
 class PrefixModel(SQLModel, table=True):
-    __tablename__: str = "prefixes"
+    __tablename__ = "prefixes"
 
     guild_id: int = Field(sa_type=BigInteger, primary_key=True)
     prefix: str
@@ -31,7 +31,7 @@ class GuildSettingsModel(SQLModel, table=True):
 
 
 class AFKStatusModel(SQLModel, table=True):
-    __tablename__: str = "afk_statuses"
+    __tablename__ = "afk_statuses"
 
     user_id: int = Field(sa_type=BigInteger, primary_key=True)
     status: str

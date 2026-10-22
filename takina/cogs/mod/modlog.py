@@ -119,15 +119,8 @@ class ModLog(commands.Cog):
     async def channel(self, ctx: commands.Context, channel: discord.TextChannel):
         assert ctx.guild is not None
 
-        settings = await database.get(models.GuildSettingsModel, guild_id=ctx.guild.id)
-
-        if settings is None:
-            settings = models.GuildSettingsModel(
-                guild_id=ctx.guild.id, modlog_channel_id=channel.id
-            )
-        else:
-            settings.modlog_channel_id = channel.id
-
+        settings = await database.get_or_create(models.GuildSettingsModel, guild_id=ctx.guild.id)
+        settings.modlog_channel_id = channel.id
         await database.save(settings)
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)

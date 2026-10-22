@@ -31,15 +31,10 @@ class Reports(commands.Cog):
     ) -> None:
         assert ctx.guild is not None
 
-        settings = await database.get(GuildSettingsModel, guild_id=ctx.guild.id)
-        if not settings:
-            settings = GuildSettingsModel(
-                guild_id=ctx.guild.id,
-                reports_channel_id=channel.id,
-                reports_notification_role_id=notification_role.id if notification_role else None,
-            )
-        else:
-            settings.reports_channel_id = channel.id
+        settings = await database.get_or_create(GuildSettingsModel, guild_id=ctx.guild.id)
+        settings.reports_channel_id = channel.id
+        if notification_role is not None:
+            settings.reports_notification_role_id = notification_role.id
         await database.save(settings)
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)

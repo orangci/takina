@@ -70,10 +70,7 @@ class Honeypot(commands.Cog):
     async def honeypot(self, ctx: commands.Context, channel: discord.TextChannel) -> None:
         assert ctx.guild is not None
 
-        settings = await database.get(GuildSettingsModel, guild_id=ctx.guild.id)
-        if settings is None:
-            settings = GuildSettingsModel(guild_id=ctx.guild.id)
-
+        settings = await database.get_or_create(GuildSettingsModel, guild_id=ctx.guild.id)
         settings.honeypot_channel_id = channel.id
         await database.save(settings)
 

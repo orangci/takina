@@ -132,14 +132,23 @@ Takina uses PostgreSQL through SQLModel and asyncpg. Cogs must never open sessio
 from takina import database, models
 
 prefix = await database.get(models.PrefixModel, guild_id=ctx.guild.id)
-prefixes = await database.get_all(models.ReminderModel, user_id=ctx.author.id)
-await database.save(prefix)
+reminders = await database.get_all(
+    models.ReminderModel,
+    where=[models.ReminderModel.remind_at <= now],
+    order_by=models.ReminderModel.remind_at,
+    limit=10,
+    user_id=ctx.author.id,
+)
+settings = await database.get_or_create(models.GuildSettingsModel, guild_id=ctx.guild.id)
+settings.modlog_channel_id = channel.id
+await database.save(settings)
 await database.delete(prefix)
 ```
 
 - `get()` returns the single matching row, or `None`. It raises if more than one row matches.
-- `get_all()` returns a list of matching rows.
-- `save()` inserts or updates.
+- `get_all()` returns a list of matching rows. Keyword arguments filter by equality; `where`, `order_by` and `limit` take SQLAlchemy expressions for anything else.
+- `get_or_create()` returns the matching row, or a new unsaved one built from the filters and `defaults`.
+- `save()` inserts or updates by primary key, and returns the saved instance.
 - `delete()` removes the row.
 
 Define models in `takina/models.py`, one class per table. Use `BigInteger` for Discord IDs, as snowflakes don't fit in a normal SQL integer.

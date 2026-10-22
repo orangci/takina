@@ -17,12 +17,8 @@ class TriggerResponses(commands.Cog):
         self._bot = bot
 
     async def get_guild_triggers(self, guild_id: int) -> models.TriggerResponsesModel:
-        settings = await database.get(models.TriggerResponsesModel, guild_id=guild_id)
-        if settings is None:
-            settings = models.TriggerResponsesModel(guild_id=guild_id)
-            await database.save(settings)
-
-        return settings
+        # unsaved for a new guild; the commands that change triggers save it themselves
+        return await database.get_or_create(models.TriggerResponsesModel, guild_id=guild_id)
 
     @commands.hybrid_group(
         name="trigger", description="Manage trigger responses.", invoke_without_command=True

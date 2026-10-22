@@ -126,16 +126,9 @@ class Starboard(commands.Cog):
         if reaction_count < 1:
             raise lyerrors.TakinaUserInputError("The minimum reaction count must be at least 1.")
 
-        settings = await self._get_settings(ctx.guild.id)
-        if settings is None:
-            settings = StarboardSettingsModel(
-                guild_id=ctx.guild.id,
-                starboard_channel_id=channel.id,
-                minimum_reaction_count=reaction_count,
-            )
-        else:
-            settings.starboard_channel_id = channel.id
-            settings.minimum_reaction_count = reaction_count
+        settings = await database.get_or_create(StarboardSettingsModel, guild_id=ctx.guild.id)
+        settings.starboard_channel_id = channel.id
+        settings.minimum_reaction_count = reaction_count
         await database.save(settings)
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
@@ -167,9 +160,7 @@ class Starboard(commands.Cog):
         if not channels:
             raise lyerrors.TakinaUserInputError("You must specify at least one text channel.")
 
-        settings = await self._get_settings(ctx.guild.id)
-        if settings is None:
-            settings = StarboardSettingsModel(guild_id=ctx.guild.id)
+        settings = await database.get_or_create(StarboardSettingsModel, guild_id=ctx.guild.id)
 
         added_channels = []
         for channel in channels:
