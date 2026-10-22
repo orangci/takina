@@ -34,7 +34,7 @@ class Mute(commands.Cog):
         reason: str = "No reason provided",
     ) -> None:
         assert ctx.guild is not None
-        duration_parsed = lyhelpers.duration_calculator(duration, timeout=True)
+        duration_parsed = lyhelpers.duration_calculator(duration)
 
         if duration_parsed > 2419200:
             raise lyerrors.TakinaUserInputError(
@@ -98,7 +98,7 @@ class Mute(commands.Cog):
         if len(members) > 10:
             raise lyerrors.TakinaError("You cannot mute more than 10 members at once.")
 
-        duration_parsed = lyhelpers.duration_calculator(duration, timeout=True)
+        duration_parsed = lyhelpers.duration_calculator(duration)
         if duration_parsed > 2419200:
             raise lyerrors.TakinaUserInputError(
                 "The duration you've specified is too long. The maximum timeout you may set is 28 days."

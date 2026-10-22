@@ -30,7 +30,7 @@ class Channels(commands.Cog):
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         if duration:
             duration = "0s" if duration.lower() in ["off", "disable"] else duration
-            duration_parsed = lyhelpers.duration_calculator(duration, slowmode=True)
+            duration_parsed = lyhelpers.duration_calculator(duration)
             if duration_parsed > 21600:
                 raise lyerrors.TakinaUserInputError(
                     "The duration you've specified is too long. The maximum slowmode you may set is six hours."

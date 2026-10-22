@@ -67,21 +67,21 @@ async def request(
             raise lyerrors.TakinaError("The service returned something other than JSON.") from error
 
 
-# for calculating durations, e.g. 1d, 2h, 5s, 34m
-def duration_calculator(duration: str, slowmode=False, timeout=False, purge=False) -> int:
-    pattern = r"(\d+)([smhdw])"
-    match = re.fullmatch(pattern, duration)
+# largest first, which reverse_duration_calculator relies on
+DURATION_UNITS = {"y": 31557600, "w": 604800, "d": 86400, "h": 3600, "m": 60, "s": 1}
 
-    if not match:
-        raise lyerrors.TakinaUserInputError("Invalid duration format. Use <number>[s|m|h|d|w].")
 
-    time_value, time_unit = match.groups()
-    time_value = int(time_value)
+def duration_calculator(duration: str) -> int:
+    # accepts "90m", "1h30m" and "1h 30m", the last being what reverse_duration_calculator prints
+    compact = duration.replace(" ", "").lower()
+    parts = re.findall(r"(\d+)([ywdhms])", compact)
 
-    multipliers = {"s": 1, "m": 60, "h": 3600, "d": 86400, "w": 604800, "y": 31557600}
-    time_value *= multipliers[time_unit]
+    if not parts or "".join(amount + unit for amount, unit in parts) != compact:
+        raise lyerrors.TakinaUserInputError(
+            "Invalid duration format. Use something like `1h30m`, with the units s, m, h, d, w and y."
+        )
 
-    return time_value
+    return sum(int(amount) * DURATION_UNITS[unit] for amount, unit in parts)
 
 
 def reverse_duration_calculator(seconds: int) -> str:
@@ -92,10 +92,8 @@ def reverse_duration_calculator(seconds: int) -> str:
         return "0s"
 
     # largest first, so 5400 becomes "1h 30m" rather than "5400s"
-    time_units = {"y": 31557600, "w": 604800, "d": 86400, "h": 3600, "m": 60, "s": 1}
-
     parts: list[str] = []
-    for unit, value in time_units.items():
+    for unit, value in DURATION_UNITS.items():
         amount, seconds = divmod(seconds, value)
         if amount:
             parts.append(f"{amount}{unit}")
