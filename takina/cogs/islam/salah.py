@@ -10,12 +10,12 @@ class Salawat(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
 
-    @lychecks.is_user_app()
     @commands.hybrid_command(
         description="Fetch a list of the Islāmic prayer times in the specified location.",
         aliases=["salah", "prayer_times", "prayer", "prayers"],
         usage="Riyadh Saudi Arabia",
     )
+    @lychecks.is_user_app()
     async def salawat(self, ctx: commands.Context, location_name: str):
         response = await lyhelpers.request(
             "https://api.aladhan.com/v1/timingsByAddress", params={"address": location_name}

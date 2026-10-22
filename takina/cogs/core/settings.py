@@ -22,8 +22,8 @@ class Settings(commands.Cog):
     async def guild_settings(self, ctx: commands.Context):
         pass
 
-    @lychecks.is_user_app()
     @settings.command(name="user", description="Manage user settings.")
+    @lychecks.is_user_app()
     async def user_settings(self, ctx: commands.Context):
         pass
 

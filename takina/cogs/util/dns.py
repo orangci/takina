@@ -32,10 +32,10 @@ class DNS(commands.Cog):
             except WhodapError:
                 return None
 
-    @lychecks.is_user_app()
     @commands.hybrid_command(
         name="whois", description="Perform a WHOIS search on a domain name.", usage="orangc.net"
     )
+    @lychecks.is_user_app()
     async def whois(self, ctx: commands.Context, domain: str):
         try:
             response = await self.resolve_domain(domain)
@@ -72,10 +72,10 @@ class DNS(commands.Cog):
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @lychecks.is_user_app()
     @commands.hybrid_command(
         name="dig", description="Dig a URL for its DNS records.", usage="orangc.net"
     )
+    @lychecks.is_user_app()
     async def dig(self, ctx: commands.Context, url: str):
         record_types = ["A", "CNAME", "AAAA", "MX", "TXT", "SRV", "NS"]
         url = url.removeprefix("https://").removeprefix("http://")

@@ -10,10 +10,10 @@ class Minecraft(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @lychecks.is_user_app()
     @commands.hybrid_command(
         name="mcskin", description="Fetch and display a Minecraft player's skin.", usage="orangci"
     )
+    @lychecks.is_user_app()
     async def mcskin(self, ctx: commands.Context, username: str):
         data = await lyhelpers.request(
             f"https://api.mojang.com/users/profiles/minecraft/{username}",

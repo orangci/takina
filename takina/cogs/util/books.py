@@ -11,12 +11,12 @@ class Books(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @lychecks.is_user_app()
     @commands.hybrid_command(
         description="Fetch information on a book title or ISBN.",
         usage="Yumi and the Nightmare Painter",
         aliases=["books"],
     )
+    @lychecks.is_user_app()
     async def book(self, ctx: commands.Context, *, book: str):
         book_data = await lyhelpers.request(
             f"https://www.googleapis.com/books/v1/volumes?q=intitle:{book}&key={config.GOOGLE_API_KEY}"

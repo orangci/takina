@@ -10,11 +10,11 @@ class Prefix(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
 
-    @lychecks.guild_only()
-    @lychecks.has_permissions(administrator=True)
     @commands.hybrid_command(
         name="prefix", description=f"Set a custom prefix for {config.BOT_NAME}"
     )
+    @lychecks.guild_only()
+    @lychecks.has_permissions(administrator=True)
     async def set_prefix(self, ctx: commands.Context, new_prefix: str):
         assert ctx.guild is not None
 

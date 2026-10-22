@@ -10,11 +10,11 @@ class AFK(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
 
-    @lychecks.is_user_app()
     @commands.hybrid_command(
         description=f"Toggle AFK status. When AFK, {config.BOT_NAME} will notify others if they mention you.",
         usage="reading a book",
     )
+    @lychecks.is_user_app()
     async def afk(self, ctx: commands.Context, *, status: str = "AFK"):
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         current_status = await database.get(models.AFKStatusModel, user_id=ctx.author.id)
