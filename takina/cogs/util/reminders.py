@@ -125,7 +125,12 @@ class Reminders(commands.Cog):
     async def _check_reminders(self):
         now = datetime.now(UTC)
 
-        reminders = await database.get_all(models.ReminderModel)
+        try:
+            reminders = await database.get_all(models.ReminderModel)
+        except Exception:
+            # an unhandled error stops tasks.loop for good, so wait for the next tick instead
+            logger.exception("failed to fetch reminders")
+            return
 
         for reminder in reminders:
             remind_at = reminder.remind_at
@@ -136,29 +141,34 @@ class Reminders(commands.Cog):
             if remind_at > now:
                 continue
 
-            user = self._bot.get_user(reminder.user_id)
-
-            if user is None:
-                try:
-                    user = await self._bot.fetch_user(reminder.user_id)
-                except discord.NotFound:
-                    await database.delete(reminder)
-                    continue
-
             try:
-                embed = discord.Embed(colour=config.EMBED_COLOUR)
-                embed.description = (
-                    f"{await lyhelpers.fetch_random_emoji()} **Reminder**: {reminder.reminder}"
-                )
-
-                await user.send(embed=embed)
-                await database.delete(reminder)
-            except discord.Forbidden:
-                # dms are closed, so delivery can never succeed
-                await database.delete(reminder)
+                await self._deliver_reminder(reminder)
             except Exception:
                 # keep the reminder for the next tick and keep the loop alive
                 logger.exception(f"failed to deliver reminder {reminder.id}")
+
+    async def _deliver_reminder(self, reminder: models.ReminderModel) -> None:
+        user = self._bot.get_user(reminder.user_id)
+
+        if user is None:
+            try:
+                user = await self._bot.fetch_user(reminder.user_id)
+            except discord.NotFound:
+                await database.delete(reminder)
+                return
+
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
+        embed.description = (
+            f"{await lyhelpers.fetch_random_emoji()} **Reminder**: {reminder.reminder}"
+        )
+
+        try:
+            await user.send(embed=embed)
+        except discord.Forbidden:
+            # dms are closed, so delivery can never succeed
+            pass
+
+        await database.delete(reminder)
 
     @_check_reminders.before_loop
     async def _before_check_reminders(self):
