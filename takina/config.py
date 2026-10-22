@@ -46,6 +46,9 @@ if BOT_VERSION is None:
 # it's friendlier to provide a proper user agent when utilising public APIs!
 USER_AGENT = f"{BOT_NAME}/{BOT_VERSION} (https://takina.is-a.bot)"
 
+# changelog headings become anchors with the dots turned into dashes
+CHANGELOG_URL = f"https://git.orangc.net/c/takina/src/branch/master/CHANGELOG.md#{BOT_VERSION.replace('.', '-')}"
+
 EMBED_COLOUR_STR = getenv("EMBED_COLOUR", "#2B2D31").strip().strip('"').strip("'")
 if EMBED_COLOUR_STR.startswith("#"):
     EMBED_COLOUR = int(EMBED_COLOUR_STR[1:], 16)  # Remove "#" and convert hex to int

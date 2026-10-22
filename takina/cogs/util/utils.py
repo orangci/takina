@@ -120,7 +120,7 @@ class Utils(commands.Cog):
     )
     @lychecks.is_user_app()
     async def version(self, ctx: commands.Context):
-        version_link = f"[**{config.BOT_VERSION}**](https://git.orangc.net/c/takina/src/branch/master/CHANGELOG.md#{config.BOT_VERSION.replace('.', '-')})"
+        version_link = f"[**{config.BOT_VERSION}**]({config.CHANGELOG_URL})"
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.description = f"{config.BOT_NAME} is currently on version {version_link}."

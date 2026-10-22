@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lyhelpers, lychecks, lyerrors
-from discord.ext import commands
+from discord.ext import commands, tasks
 from takina import config
 import discord
 import aiohttp
+
+ORANGC_ID = 961063229168164864
 
 
 class PingResponse(commands.Cog):
@@ -12,8 +14,15 @@ class PingResponse(commands.Cog):
         self._bot = bot
         self.stars = 0
         self.forks = 0
-        bot.loop.create_task(self.fetch_repo_data())
+        self._author: discord.User | None = None
 
+    async def cog_load(self) -> None:
+        self.fetch_repo_data.start()
+
+    async def cog_unload(self) -> None:
+        self.fetch_repo_data.cancel()
+
+    @tasks.loop(hours=6)
     async def fetch_repo_data(self) -> None:
         try:
             repo_data = await lyhelpers.request("https://api.github.com/repos/orangci/takina")
@@ -25,7 +34,13 @@ class PingResponse(commands.Cog):
         except (lyerrors.TakinaError, aiohttp.ClientError, TimeoutError):
             return
 
-    async def construct_info_embed(self, ctx: discord.Message) -> discord.Embed:
+    async def author(self) -> discord.User:
+        if self._author is None:
+            self._author = self._bot.get_user(ORANGC_ID) or await self._bot.fetch_user(ORANGC_ID)
+
+        return self._author
+
+    async def construct_info_embed(self, message: discord.Message) -> discord.Embed:
         embed = discord.Embed(
             title=f"{await lyhelpers.fetch_random_emoji()} Takina",
             url="https://takina.orangc.net",
@@ -42,7 +57,7 @@ class PingResponse(commands.Cog):
         )
 
         guild_count = len(self._bot.guilds)
-        embed.description += f"\n> **Prefix**: `{'`, `'.join(await self._bot.get_prefix(ctx))}`"
+        embed.description += f"\n> **Prefix**: `{'`, `'.join(await self._bot.get_prefix(message))}`"
         embed.description += (
             f"\n> **Guilds**: Takina is in {guild_count:,} server{'s' if guild_count != 1 else ''}"
         )
@@ -50,9 +65,9 @@ class PingResponse(commands.Cog):
             f"\n> **Stars**: [{self.stars:,}](https://github.com/orangci/takina/stargazers)"
         )
         embed.description += f"\n> **Uptime**: {lyhelpers.uptime_fetcher()}"
-        embed.description += f"\n> **Version**: [{config.BOT_VERSION}](https://git.orangc.net/c/takina/src/branch/master/CHANGELOG.md#{config.BOT_VERSION.replace('.', '-')})"
+        embed.description += f"\n> **Version**: [{config.BOT_VERSION}]({config.CHANGELOG_URL})"
 
-        orangc = await self._bot.fetch_user(961063229168164864)
+        orangc = await self.author()
         embed.set_author(
             name="orangc",
             url="https://orangc.net",
