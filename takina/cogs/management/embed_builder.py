@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks
 from discord.ext import commands
 from takina import config
 import discord
@@ -11,7 +10,7 @@ class EmbedBuilder(commands.Cog):
         self._bot = bot
 
     @discord.app_commands.command(name="embed", description="Create an embed.")
-    @lychecks.has_permissions(manage_channels=True)
+    @discord.app_commands.default_permissions(manage_channels=True)
     async def embed_command(self, interaction: discord.Interaction):
         await interaction.response.send_modal(EmbedModal())
 
