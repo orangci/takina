@@ -61,5 +61,9 @@ indent-style = "space"
 line-ending = "lf"
 skip-magic-trailing-comma = true
 
+[tool.ruff.lint]
+# import order is longest first by convention, which isort cannot express
+ignore = ["I001"]
+
 [tool.ruff.analyze]
 detect-string-imports = true
