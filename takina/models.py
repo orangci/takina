@@ -6,6 +6,7 @@ from sqlalchemy.ext.mutable import MutableList, MutableDict
 from sqlalchemy import BigInteger, UniqueConstraint
 from datetime import datetime
 from secrets import token_hex
+from typing import TypedDict
 
 
 class PrefixModel(SQLModel, table=True):
@@ -113,8 +114,16 @@ class StarboardMessageModel(SQLModel, table=True):
     starboard_message_id: int = Field(sa_type=BigInteger)
 
 
+class TriggerData(TypedDict):
+    trigger: str
+    response: str
+
+
 class TriggerResponsesModel(SQLModel, table=True):
     __tablename__ = "trigger_responses"
 
     guild_id: int = Field(sa_type=BigInteger, primary_key=True)
-    triggers: dict = Field(default_factory=dict, sa_column=Column(MutableDict.as_mutable(JSON)))
+    # entries are replaced whole; MutableDict does not see nested edits
+    triggers: dict[str, TriggerData] = Field(
+        default_factory=dict, sa_column=Column(MutableDict.as_mutable(JSON))
+    )
