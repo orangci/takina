@@ -8,9 +8,12 @@ from takina import config
 import importlib
 import traceback
 import textwrap
+import logging
 import discord
 import time
 import io
+
+logger = logging.getLogger("takina.owner_utils")
 
 
 class OwnerUtils(commands.Cog):
@@ -160,7 +163,7 @@ class OwnerUtils(commands.Cog):
                 error_message = "Reloaded all except the following cogs:\n\n" + "\n> ".join(
                     failed_cogs
                 )
-                print(f"\n\n❌ {error_message}")
+                logger.warning(error_message)
                 raise lyerrors.TakinaError(error_message)
             else:
                 embed = discord.Embed(
@@ -168,7 +171,7 @@ class OwnerUtils(commands.Cog):
                     description=f"{config.emojis.SUCCESS} Successfully reloaded all cogs.",
                 )
                 await ctx.reply(embed=embed, mention_author=False)
-                print(f"\n\n{embed.description}".replace(config.emojis.SUCCESS, "✅"))
+                logger.info("reloaded all cogs")
 
         else:
             full_cog_name = f"takina.cogs.{cog}" if not cog.startswith("takina.cogs.") else cog
@@ -181,7 +184,7 @@ class OwnerUtils(commands.Cog):
                         description=f"{config.emojis.SUCCESS} Successfully reloaded `{full_cog_name}`.",
                     )
                     await ctx.reply(embed=embed, mention_author=False)
-                    print(f"\n\n{embed.description}".replace(config.emojis.SUCCESS, "✅"))
+                    logger.info(f"reloaded {full_cog_name}")
                 except commands.ExtensionError as e:
                     raise lyerrors.TakinaError(f"Failed to reload `{full_cog_name}`: {e}")
             else:

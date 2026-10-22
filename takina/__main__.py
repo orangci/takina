@@ -5,10 +5,13 @@ from takina.libs import lychecks
 from discord.ext import commands
 from pathlib import Path
 import discord
+import logging
 import aiohttp
 import os
 
 start_time = discord.utils.utcnow()
+
+logger = logging.getLogger("takina.main")
 
 
 async def get_prefix(bot: commands.Bot, message: discord.Message) -> list[str]:
@@ -66,8 +69,8 @@ class Bot(commands.Bot):
             if cog not in cogs_blacklist:
                 try:
                     await self.load_extension(f"takina.cogs.{cog}")
-                except commands.ExtensionError as e:
-                    print(f"Failed to load {cog}: {e}")
+                except commands.ExtensionError:
+                    logger.exception(f"failed to load {cog}")
 
     async def close(self):
         await self.http_session.close()
@@ -117,4 +120,10 @@ cogs_blacklist = [cog.strip() for cog in os.getenv("COGS_BLACKLIST", "").split("
 cogs = load_exts(Path(__file__).parent / "cogs")
 
 if __name__ == "__main__":
-    bot.run(os.environ["TOKEN"])
+    # one handler on the root logger, so takina.* logs share discord.py's format.
+    # third-party libraries stay at warnings; only discord.py and takina log at info
+    discord.utils.setup_logging(level=logging.WARNING, root=True)
+    logging.getLogger("discord").setLevel(logging.INFO)
+    logging.getLogger("takina").setLevel(logging.INFO)
+
+    bot.run(os.environ["TOKEN"], log_handler=None)
