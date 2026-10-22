@@ -15,6 +15,9 @@ _cooldown = commands.CooldownMapping.from_cooldown(
 def setup(bot: commands.Bot) -> None:
     @bot.before_invoke
     async def global_cooldown(ctx: commands.Context) -> None:
+        if await ctx.bot.is_owner(ctx.author):
+            return
+
         bucket = _cooldown.get_bucket(ctx.message)
         if bucket is None:
             return
@@ -22,6 +25,25 @@ def setup(bot: commands.Bot) -> None:
         retry_after = bucket.update_rate_limit()
         if retry_after is not None:
             raise commands.CommandOnCooldown(bucket, retry_after, commands.BucketType.user)
+
+
+def cooldown(rate: int, per: float, type: commands.BucketType = commands.BucketType.member):
+    """
+    `commands.cooldown`, except bot owners are never rate limited.
+
+    Example:
+        @lychecks.cooldown(1, 60)  # once a minute per member
+    """
+
+    def factory(ctx: commands.Context) -> commands.Cooldown | None:
+        owner_ids = ctx.bot.owner_ids or {ctx.bot.owner_id}
+        if ctx.author.id in owner_ids:
+            return None
+
+        # a fresh cooldown per bucket, as discord.py keeps one per member
+        return commands.Cooldown(rate, per)
+
+    return commands.dynamic_cooldown(factory, type)
 
 
 def has_permissions(**perms: bool):
