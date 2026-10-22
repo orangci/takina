@@ -1,15 +1,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from collections.abc import Iterable
-from sqlmodel import SQLModel, select
 from sqlalchemy import case, func, inspect, update
 from sqlalchemy.engine import Connection
+from sqlmodel import SQLModel, select
+from collections.abc import Iterable
 from alembic.config import Config
+from typing import Any, cast
 from alembic import command
-from pathlib import Path
-from typing import Any
 from takina import config
+from pathlib import Path
+import time
+import copy
 
 if not config.POSTGRESQL_URI:
     raise OSError(
@@ -37,12 +39,94 @@ async def initiate_database() -> None:
         await connection.run_sync(_upgrade)
 
 
+# rows read on every message or reaction, cached by primary key so the hot path skips postgres.
+# save(), delete() and toggle_in_array() keep it current; the expiry only covers changes made
+# outside the bot, such as by hand in psql
+CACHED_TABLES = {
+    "prefixes",
+    "guild_settings",
+    "trigger_responses",
+    "starboard_settings",
+    "afk_statuses",
+}
+CACHE_SECONDS = 5 * 60
+MAX_CACHE_ENTRIES = 10_000
+
+type CacheKey = tuple[str, tuple[Any, ...]]
+
+# a miss is cached as None, since most servers have no settings row at all
+_cache: dict[CacheKey, tuple[float, SQLModel | None]] = {}
+# bumped by every write, so a read that raced a write does not cache what it saw
+_generations: dict[CacheKey, int] = {}
+
+
+def _cache_key(model: type[SQLModel], filters: dict[str, Any]) -> CacheKey | None:
+    table = getattr(model, "__tablename__", None)
+    if table not in CACHED_TABLES:
+        return None
+
+    primary_key = [column.key for column in inspect(model).primary_key]
+    if sorted(filters) != sorted(primary_key):
+        return None
+
+    return str(table), tuple(filters[key] for key in primary_key)
+
+
+def _forget(instance: SQLModel) -> None:
+    model = type(instance)
+    primary_key = {
+        column.key: getattr(instance, column.key) for column in inspect(model).primary_key
+    }
+    if (key := _cache_key(model, primary_key)) is not None:
+        _cache.pop(key, None)
+        _generations[key] = _generations.get(key, 0) + 1
+
+
+def _forget_table(model: type[SQLModel]) -> None:
+    table = getattr(model, "__tablename__", None)
+    for key in [key for key in _cache if key[0] == table]:
+        _cache.pop(key, None)
+        _generations[key] = _generations.get(key, 0) + 1
+
+
+def _copy[T: SQLModel](instance: T | None) -> T | None:
+    # callers change the rows they get back, so the cache only ever hands out copies
+    if instance is None:
+        return None
+
+    fields = type(instance).model_fields
+    return type(instance)(**{name: copy.deepcopy(getattr(instance, name)) for name in fields})
+
+
+def _remember(key: CacheKey, generation: int, instance: SQLModel | None) -> None:
+    if _generations.get(key, 0) != generation:
+        return
+
+    now = time.monotonic()
+    if len(_cache) >= MAX_CACHE_ENTRIES:
+        for stale_key in [k for k, (at, _) in _cache.items() if now - at >= CACHE_SECONDS]:
+            del _cache[stale_key]
+
+        if len(_cache) >= MAX_CACHE_ENTRIES:
+            _cache.clear()
+
+    _cache[key] = (now, _copy(instance))
+
+
 def _has_primary_key(instance: SQLModel) -> bool:
     mapper = inspect(type(instance))
     return all(getattr(instance, column.key) is not None for column in mapper.primary_key)
 
 
 async def get[T: SQLModel](model: type[T], **filters) -> T | None:
+    cache_key = _cache_key(model, filters)
+    if cache_key is not None:
+        cached = _cache.get(cache_key)
+        if cached is not None and time.monotonic() - cached[0] < CACHE_SECONDS:
+            return cast("T | None", _copy(cached[1]))
+
+        generation = _generations.get(cache_key, 0)
+
     async with SessionLocal() as session:
         statement = select(model)
 
@@ -50,7 +134,12 @@ async def get[T: SQLModel](model: type[T], **filters) -> T | None:
             statement = statement.where(getattr(model, key) == value)
 
         result = await session.execute(statement)
-        return result.scalar_one_or_none()
+        instance = result.scalar_one_or_none()
+
+    if cache_key is not None:
+        _remember(cache_key, generation, instance)
+
+    return instance
 
 
 async def get_all[T: SQLModel](
@@ -103,7 +192,9 @@ async def save[T: SQLModel](instance: T) -> T:
 
         await session.commit()
         await session.refresh(instance)
-        return instance
+
+    _forget(instance)
+    return instance
 
 
 async def toggle_in_array[T: SQLModel](
@@ -129,10 +220,15 @@ async def toggle_in_array[T: SQLModel](
         result = await session.execute(statement)
         instance = result.scalar_one_or_none()
         await session.commit()
-        return instance
+
+    _forget_table(model)
+    return instance
 
 
 async def delete[T: SQLModel](instance: T) -> None:
     async with SessionLocal() as session:
-        await session.delete(instance)
+        # merge first: rows from the cache are copies the session has never seen
+        await session.delete(await session.merge(instance))
         await session.commit()
+
+    _forget(instance)
