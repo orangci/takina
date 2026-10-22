@@ -24,14 +24,13 @@ class Errors(commands.Cog):
         error = getattr(error, "original", error)
 
         # ignore these
-        if (
-            isinstance(error, commands.CommandNotFound)
-            or (
-                isinstance(error, commands.CheckFailure)
-                and not isinstance(error, lyerrors.TakinaError)
-            )
-            or isinstance(error, commands.CommandOnCooldown)
+        if isinstance(error, commands.CommandNotFound) or (
+            isinstance(error, commands.CheckFailure) and not isinstance(error, lyerrors.TakinaError)
         ):
+            return
+
+        if isinstance(error, commands.CommandOnCooldown):
+            await self.notify_cooldown(ctx, error)
             return
 
         if isinstance(error, commands.DisabledCommand):
@@ -94,6 +93,21 @@ class Errors(commands.Cog):
             else:
                 await ctx.reply(embed=embed, mention_author=False)
             return
+
+    async def notify_cooldown(
+        self, ctx: commands.Context, error: commands.CommandOnCooldown
+    ) -> None:
+        if ctx.interaction:
+            embed = discord.Embed(colour=config.ERROR_COLOUR)
+            embed.description = f"⏳ Slow down! Try again in {error.retry_after:.1f}s."
+            await ctx.send(embed=embed, ephemeral=True)
+            return
+
+        # a reaction rather than a reply, so spamming a prefix command doesn't spam the channel
+        try:
+            await ctx.message.add_reaction("⏳")
+        except discord.HTTPException:
+            pass
 
 
 async def setup(bot: commands.Bot):
