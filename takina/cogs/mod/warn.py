@@ -1,21 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyerrors, lyviews, lyhelpers
-from takina.cogs.mod.modlog import ModLog
+from takina.libs import lychecks, lyerrors, lyviews, lyhelpers, lymodlog
 from discord.ext import commands
 from takina import config
-from typing import cast
 import discord
 
 
 class Warnings(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot = bot
-
-    @property
-    def modlog(self) -> ModLog:
-        modlog = self._bot.get_cog("ModLog")
-        return cast(ModLog, modlog)
 
     @commands.hybrid_command(description="Warn a member.", usage="@member spamming in #manga")
     @lychecks.has_permissions(moderate_members=True)
@@ -49,7 +42,7 @@ class Warnings(commands.Cog):
         embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
 
         await confirmation.edit_success(embed)
-        await self.modlog.log_action(ctx, "warn", member, reason, ctx.author)
+        await lymodlog.log_action(ctx.guild, "warn", [member], reason, ctx.author)
 
     @commands.command(
         aliases=["groupwarn"],
@@ -105,7 +98,9 @@ class Warnings(commands.Cog):
             embed.set_footer(text=f"I was unable to DM {failed_dms} user(s).")
 
         await confirmation.edit_success(embed)
-        await self.modlog.log_action(ctx, "mass warn", list(members), reason, ctx.author)
+        await lymodlog.log_action(
+            ctx.guild, "mass warn", list(members), reason, ctx.author, mass_action=True
+        )
 
 
 async def setup(bot: commands.Bot) -> None:

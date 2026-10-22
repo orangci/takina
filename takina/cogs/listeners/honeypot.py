@@ -1,23 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from takina.models import GuildSettingsModel
-from takina.cogs.mod.modlog import ModLog
+from takina.libs import lychecks, lymodlog
 from takina import config, database
-from takina.libs import lychecks
 from discord.ext import commands
 from datetime import timedelta
-from typing import cast
 import discord
 
 
 class Honeypot(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot = bot
-
-    @property
-    def modlog(self) -> ModLog:
-        modlog = self._bot.get_cog("ModLog")
-        return cast(ModLog, modlog)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
@@ -60,7 +53,7 @@ class Honeypot(commands.Cog):
                 pass
 
         if moderator := self._bot.user:
-            await self.modlog.log_action(message, "mute", member, reason, moderator, "4w")
+            await lymodlog.log_action(message.guild, "mute", [member], reason, moderator, "4w")
 
     @commands.hybrid_command(
         name="honeypot", description="Configure the honeypot channel.", usage="#channel"

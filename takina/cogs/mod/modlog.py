@@ -3,101 +3,13 @@
 from takina.libs import lychecks, lyerrors, lyviews
 from datetime import datetime, timedelta, UTC
 from takina import config, database, models
-from sqlalchemy.exc import IntegrityError
 from discord.ext import commands
 import discord
-
-MAX_CASE_ATTEMPTS = 5
 
 
 class ModLog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
-
-    async def get_next_case_id(self, guild_id: int) -> int:
-        cases = await database.get_all(models.ModLogCaseModel, guild_id=guild_id)
-        if not cases:
-            # we start the server's cases with case #0, not #1
-            # because #0 has more aura
-            return 0
-
-        return max(case.case_id for case in cases) + 1
-
-    async def log_action(
-        self,
-        ctx: commands.Context,
-        action: str,
-        member: discord.Member | discord.User | list[discord.Member | discord.User],
-        reason: str,
-        moderator: discord.Member | discord.User | discord.ClientUser,
-        duration: str | None = None,
-    ) -> None:
-        assert ctx.guild is not None
-
-        settings = await database.get(models.GuildSettingsModel, guild_id=ctx.guild.id)
-
-        if isinstance(member, list):
-            members = member
-            mass_action = True
-        else:
-            members = [member]
-            mass_action = False
-
-        timestamp = datetime.now(UTC)
-
-        # another action may claim the same case id first, so retry with a fresh one
-        for _ in range(MAX_CASE_ATTEMPTS):
-            case = models.ModLogCaseModel(
-                guild_id=ctx.guild.id,
-                case_id=await self.get_next_case_id(ctx.guild.id),
-                action=action,
-                member_ids=[member.id for member in members],
-                member_names=[str(member) for member in members],
-                moderator_id=moderator.id,
-                reason=reason,
-                duration=duration,
-                timestamp=timestamp,
-                mass_action=mass_action,
-            )
-
-            try:
-                await database.save(case)
-                break
-            except IntegrityError:
-                continue
-        else:
-            raise lyerrors.TakinaError("Could not allocate a modlog case ID, please try again.")
-
-        case_id = case.case_id
-
-        if not settings or not settings.modlog_channel_id:
-            return
-
-        channel = self._bot.get_channel(settings.modlog_channel_id)
-        if not isinstance(channel, discord.TextChannel):
-            return
-
-        action_name = f"{action.title()} ({duration})" if duration else action.title()
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.timestamp = timestamp
-        embed.add_field(name="Action", value=action_name, inline=True)
-        embed.add_field(name="Case", value=f"#{case_id}", inline=True)
-        embed.add_field(name="Moderator", value=moderator.mention, inline=True)
-
-        if mass_action:
-            embed.add_field(
-                name="Targets", value=", ".join(member.mention for member in members), inline=False
-            )
-        else:
-            embed.add_field(name="Target", value=members[0].mention, inline=False)
-
-        embed.add_field(name="Reason", value=reason, inline=False)
-
-        if not mass_action and members[0].avatar:
-            embed.set_thumbnail(url=members[0].avatar.url)
-
-        await channel.send(embed=embed)
 
     @commands.hybrid_group(
         name="modlog",

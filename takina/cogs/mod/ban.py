@@ -1,10 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyerrors, lyviews, lyhelpers
-from takina.cogs.mod.modlog import ModLog
+from takina.libs import lychecks, lyerrors, lyviews, lyhelpers, lymodlog
 from discord.ext import commands
 from takina import config
-from typing import cast
 import discord
 
 
@@ -20,11 +18,6 @@ def parse_user_id(user: str) -> int:
 class Ban(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot = bot
-
-    @property
-    def modlog(self) -> ModLog:
-        modlog = self._bot.get_cog("ModLog")
-        return cast(ModLog, modlog)
 
     @commands.hybrid_command(
         aliases=["b"],
@@ -63,7 +56,7 @@ class Ban(commands.Cog):
         embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
 
         await confirmation.edit_success(embed)
-        await self.modlog.log_action(ctx, "ban", member, reason, ctx.author)
+        await lymodlog.log_action(ctx.guild, "ban", [member], reason, ctx.author)
 
     @commands.command(
         aliases=["groupban", "massb"],
@@ -120,7 +113,9 @@ class Ban(commands.Cog):
             embed.set_footer(text=f"I was unable to DM {failed_dms} user(s).")
 
         await confirmation.edit_success(embed)
-        await self.modlog.log_action(ctx, "mass ban", list(members), reason, ctx.author)
+        await lymodlog.log_action(
+            ctx.guild, "mass ban", list(members), reason, ctx.author, mass_action=True
+        )
 
     @commands.hybrid_command(
         aliases=["hb"],
@@ -166,7 +161,7 @@ class Ban(commands.Cog):
         embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
 
         await confirmation.edit_success(embed)
-        await self.modlog.log_action(ctx, "hackban", user_obj, reason, ctx.author)
+        await lymodlog.log_action(ctx.guild, "hackban", [user_obj], reason, ctx.author)
 
     @commands.hybrid_command(
         aliases=["pardon"],
@@ -202,7 +197,7 @@ class Ban(commands.Cog):
         embed.description += f"\n{config.emojis.MODERATOR} **Moderator**: {ctx.author}"
 
         await confirmation.edit_success(embed)
-        await self.modlog.log_action(ctx, "unban", user_obj, reason, ctx.author)
+        await lymodlog.log_action(ctx.guild, "unban", [user_obj], reason, ctx.author)
 
 
 async def setup(bot: commands.Bot):
