@@ -24,8 +24,13 @@ class Errors(commands.Cog):
         error = getattr(error, "original", error)
 
         # ignore these
+        # discord.py's permission checks are check failures too, but they deserve a message
         if isinstance(error, commands.CommandNotFound) or (
-            isinstance(error, commands.CheckFailure) and not isinstance(error, lyerrors.TakinaError)
+            isinstance(error, commands.CheckFailure)
+            and not isinstance(
+                error,
+                (lyerrors.TakinaError, commands.MissingPermissions, commands.BotMissingPermissions),
+            )
         ):
             return
 
@@ -46,7 +51,7 @@ class Errors(commands.Cog):
         elif isinstance(error, commands.BotMissingPermissions):
             perms = ", ".join(perm.replace("_", " ").title() for perm in error.missing_permissions)
             error = lyerrors.TakinaBotPermissionError(
-                f"I am missing the following permissions required to use this command: `{perms}`."
+                f"I am missing the following permissions required to use this command: {perms}."
             )
 
         elif isinstance(error, discord.Forbidden):
@@ -57,7 +62,7 @@ class Errors(commands.Cog):
         elif isinstance(error, commands.MissingPermissions):
             perms = ", ".join(perm.replace("_", " ").title() for perm in error.missing_permissions)
             error = lyerrors.TakinaPermissionError(
-                f"You are missing the following permissions required to use this command: {perms}"
+                f"You are missing the following permissions required to use this command: {perms}."
             )
 
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -65,8 +70,14 @@ class Errors(commands.Cog):
                 f"Missing required argument: `{error.param.name}`."
             )
 
-        elif isinstance(error, commands.BadArgument):
-            error = lyerrors.TakinaUserInputError("One or more arguments provided are invalid.")
+        elif isinstance(error, commands.UserInputError):
+            # discord.py words these for users already, e.g. 'Member "Cirno" not found.'
+            error = lyerrors.TakinaUserInputError(str(error))
+
+        elif isinstance(error, TimeoutError):
+            error = lyerrors.TakinaError(
+                "The service took too long to respond. Please try again later."
+            )
 
         elif not isinstance(error, lyerrors.TakinaError):
             # if *not* because if *yes* is handled earlier in this file
@@ -77,8 +88,9 @@ class Errors(commands.Cog):
                     f"Error [{error.status}](https://http.cat/{error.status}.png): {error.message}."
                 )
             else:
+                # the details are in the log; users only need to know it was not their fault
                 error = lyerrors.TakinaError(
-                    f"Unexpected Error: {str(error) or 'We encountered an unexpected error.'} Please report this issue if it persists."
+                    "Something went wrong on our end. It has been logged; please report it if it keeps happening."
                 )
 
         if isinstance(error, lyerrors.TakinaError):
