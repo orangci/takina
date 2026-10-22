@@ -93,9 +93,7 @@ class Wikipedia(commands.Cog):
             await ctx.reply(embed=embeds[0], mention_author=False)
             return
 
-        await ctx.reply(
-            embed=embeds[0], view=lyviews.PaginatorView(ctx.author, embeds), mention_author=False
-        )
+        await lyviews.PaginatorView.send(ctx, embeds)
 
     @commands.hybrid_command(
         name="randomwiki",
@@ -154,9 +152,7 @@ class Wikipedia(commands.Cog):
             await ctx.reply(embed=embeds[0], mention_author=False)
             return
 
-        await ctx.reply(
-            embed=embeds[0], view=lyviews.PaginatorView(ctx.author, embeds), mention_author=False
-        )
+        await lyviews.PaginatorView.send(ctx, embeds)
 
 
 async def setup(bot: commands.Bot):

@@ -108,8 +108,7 @@ class DNS(commands.Cog):
             embed.description = "\n".join(chunk)
             pages.append(embed)
 
-        view = lyviews.PaginatorView(ctx.author, pages)
-        view.message = await ctx.reply(embed=pages[0], view=view, mention_author=False)
+        await lyviews.PaginatorView.send(ctx, pages)
 
 
 async def setup(bot: commands.Bot):

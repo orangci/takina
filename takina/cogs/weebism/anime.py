@@ -110,8 +110,7 @@ class Anime(commands.Cog):
 
             embeds.append(embed)
 
-        view = lyviews.PaginatorView(ctx.author, embeds)
-        view.message = await ctx.reply(embed=embeds[0], view=view, mention_author=False)
+        await lyviews.PaginatorView.send(ctx, embeds)
 
 
 async def setup(bot: commands.Bot) -> None:

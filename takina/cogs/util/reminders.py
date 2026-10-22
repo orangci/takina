@@ -98,9 +98,7 @@ class Reminders(commands.Cog):
             await ctx.reply(embed=embeds[0], mention_author=False)
             return
 
-        await ctx.reply(
-            embed=embeds[0], view=lyviews.PaginatorView(ctx.author, embeds), mention_author=False
-        )
+        await lyviews.PaginatorView.send(ctx, embeds)
 
     @reminder.command(
         name="delete", description="Delete a reminder by its ID.", usage="c617671342a58aeef597f911"

@@ -233,9 +233,7 @@ class ModLog(commands.Cog):
             await ctx.reply(embed=embeds[0], mention_author=False)
             return
 
-        await ctx.reply(
-            embed=embeds[0], view=lyviews.PaginatorView(ctx.author, embeds), mention_author=False
-        )
+        await lyviews.PaginatorView.send(ctx, embeds)
 
     @commands.hybrid_command(
         description="List moderation cases performed by a moderator.", usage="@user"
@@ -275,9 +273,7 @@ class ModLog(commands.Cog):
             await ctx.reply(embed=embeds[0], mention_author=False)
             return
 
-        await ctx.reply(
-            embed=embeds[0], view=lyviews.PaginatorView(ctx.author, embeds), mention_author=False
-        )
+        await lyviews.PaginatorView.send(ctx, embeds)
 
     @commands.hybrid_command(
         aliases=["ms"], description="List moderation statistics for a user.", usage="@user"

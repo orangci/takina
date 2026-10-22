@@ -134,8 +134,7 @@ class TriggerResponses(commands.Cog):
                 embed.description = current
                 embeds.append(embed)
 
-            paginator = lyviews.PaginatorView(ctx.author, embeds)
-            await ctx.reply(embed=embeds[0], view=paginator, mention_author=False)
+            await lyviews.PaginatorView.send(ctx, embeds)
             return
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)

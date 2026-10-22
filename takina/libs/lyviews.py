@@ -89,8 +89,7 @@ class PaginatorView(AuthorView):
     Very small embed paginator.
 
     Example:
-        view = PaginatorView(ctx.author, embeds)
-        view.message = await ctx.reply(embed=embeds[0], view=view, mention_author=False)
+        await PaginatorView.send(ctx, embeds)
     """
 
     def __init__(self, author: discord.User | discord.Member, embeds: list[discord.Embed]):
@@ -102,6 +101,13 @@ class PaginatorView(AuthorView):
         self.embeds = embeds
         self.page = 0
         self._update_buttons()
+
+    @classmethod
+    async def send(cls, ctx: commands.Context, embeds: list[discord.Embed]) -> "PaginatorView":
+        # setting message is what lets on_timeout disable the buttons
+        view = cls(ctx.author, embeds)
+        view.message = await ctx.reply(embed=embeds[0], view=view, mention_author=False)
+        return view
 
     def _update_buttons(self):
         self.first.disabled = self.page == 0
