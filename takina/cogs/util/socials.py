@@ -66,7 +66,7 @@ class Socials(commands.Cog):
             embed.description += f"\n> **Following**: {following}"
 
         if created := data.get("created_at"):
-            created_at = datetime.datetime.fromisoformat(created.replace("Z", "+00:00"))
+            created_at = datetime.datetime.fromisoformat(created)
             embed.description += f"\n> **Joined GitHub**: <t:{int(created_at.timestamp())}:D> (<t:{int(created_at.timestamp())}:R>)"
 
         if public_repos := data.get("public_repos"):
@@ -129,7 +129,7 @@ class Socials(commands.Cog):
             embed.description += f"\n> **Public Repositories**: {len(repo_data)}"
 
         if created := data.get("created"):
-            created_at = datetime.datetime.fromisoformat(created.replace("Z", "+00:00"))
+            created_at = datetime.datetime.fromisoformat(created)
             embed.description += f"\n> **Joined Codeberg**: <t:{int(created_at.timestamp())}:D> (<t:{int(created_at.timestamp())}:R>)"
 
         if data.get("is_admin"):

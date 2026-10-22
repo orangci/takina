@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lyerrors, lyhelpers, lychecks
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 from takina import config, database, models
 from discord.ext import commands, tasks
 import discord
@@ -256,7 +256,7 @@ class Giveaways(commands.Cog):
     async def _expiry_loop(self):
         giveaways = await database.get_all(models.GiveawayModel, ended=False)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for giveaway in giveaways:
             if giveaway.ends_at <= now:
@@ -316,9 +316,7 @@ class Giveaways(commands.Cog):
 
         giveaway_id = await self._get_next_id(ctx.guild.id)
 
-        ends_at = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(
-            seconds=duration_parsed
-        )
+        ends_at = datetime.now(UTC).replace(microsecond=0) + timedelta(seconds=duration_parsed)
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = title

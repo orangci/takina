@@ -27,13 +27,13 @@ class AWCC_HOF(commands.Cog):
         embed.title = username
         embed.url = f"https://anime.jhiday.net/hof/user/{username}"
         embed.description = f"> **MAL Profile**: https://myanimelist.net/profile/{username}"
-        embed.description += f"\n> **Turnins**: {str(data.get('turnins'))}"
-        embed.description += f"\n> **Total Score**: {str(data.get('totalScore'))}"
-        embed.description += f"\n> **Total Rank**: {str(data.get('totalRank'))}"
-        embed.description += f"\n> **Validated Score**: {str(data.get('validatedScore'))}"
-        embed.description += f"\n> **Validated Rank**: {str(data.get('validatedRank'))}"
-        embed.description += f"\n> **HiScore Level**: {str(data.get('hsacLevel'))}"
-        embed.description += f"\n> **LoScore Level**: {str(data.get('lsacLevel'))}"
+        embed.description += f"\n> **Turnins**: {data.get('turnins')}"
+        embed.description += f"\n> **Total Score**: {data.get('totalScore')}"
+        embed.description += f"\n> **Total Rank**: {data.get('totalRank')}"
+        embed.description += f"\n> **Validated Score**: {data.get('validatedScore')}"
+        embed.description += f"\n> **Validated Rank**: {data.get('validatedRank')}"
+        embed.description += f"\n> **HiScore Level**: {data.get('hsacLevel')}"
+        embed.description += f"\n> **LoScore Level**: {data.get('lsacLevel')}"
         embed.set_footer(
             text="Looking for MyAnimeList information or statistics? Try the mal or malstats commands."
         )

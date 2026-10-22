@@ -112,7 +112,7 @@ REQUIRED_ENV_VARS = ["TOKEN", "POSTGRESQL_URI"]
 missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
 if missing_vars:
     # raise an error if one of the required variables are missing
-    raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}.")
+    raise OSError(f"Missing required environment variables: {', '.join(missing_vars)}.")
 
 # these are *individual* cogs to be blacklisted. e.g. "util.dns"
 cogs_blacklist = [cog.strip() for cog in os.getenv("COGS_BLACKLIST", "").split(",") if cog.strip()]

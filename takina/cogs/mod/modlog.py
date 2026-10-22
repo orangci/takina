@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lychecks, lyerrors, lyviews
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 from takina import config, database, models
 from sqlalchemy.exc import IntegrityError
 from discord.ext import commands
@@ -43,7 +43,7 @@ class ModLog(commands.Cog):
             members = [member]
             mass_action = False
 
-        timestamp = datetime.now(timezone.utc)
+        timestamp = datetime.now(UTC)
 
         # another action may claim the same case id first, so retry with a fresh one
         for _ in range(MAX_CASE_ATTEMPTS):
@@ -294,7 +294,7 @@ class ModLog(commands.Cog):
         cases = await database.get_all(models.ModLogCaseModel, guild_id=ctx.guild.id)
         user_cases = [case for case in cases if case.moderator_id == user.id]
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         past_7_days = now - timedelta(days=7)
         past_30_days = now - timedelta(days=30)
 

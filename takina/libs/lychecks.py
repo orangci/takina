@@ -103,10 +103,7 @@ def sesp_guild_only(guild_id: int):
 # yes. yes, i know this is really damned stupid.
 def slash_only():
     async def predicate(ctx: commands.Context) -> bool:
-        if ctx.interaction is None:
-            return False
-
-        return True
+        return ctx.interaction is not None
 
 
 # this is also stupid
@@ -114,9 +111,7 @@ def slash_only():
 # don't ask me why
 def guild_only():
     async def predicate(ctx: commands.Context) -> bool:
-        if ctx.guild is None:
-            return False
-        return True
+        return ctx.guild is not None
 
     def decorator(command):
         command = commands.check(predicate)(command)

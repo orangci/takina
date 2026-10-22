@@ -72,7 +72,6 @@ def reverse_duration_calculator(seconds) -> str:
 
 # uptime checker
 async def uptime_fetcher():
-    global start_time
     current_time = datetime.datetime.now(datetime.UTC)
     uptime_duration = current_time - start_time
 

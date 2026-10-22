@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lychecks, lyerrors, lyhelpers, lyviews
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 from takina import config, database, models
 from discord.ext import commands, tasks
 import logging
@@ -49,7 +49,7 @@ class Reminders(commands.Cog):
         if len(reminders) > (MAX_REMINDERS - 1):
             raise lyerrors.TakinaError(f"You can only have {MAX_REMINDERS} active reminders.")
 
-        remind_at = datetime.now(timezone.utc) + timedelta(seconds=duration)
+        remind_at = datetime.now(UTC) + timedelta(seconds=duration)
         reminder_model = models.ReminderModel(
             user_id=ctx.author.id, reminder=reminder, remind_at=remind_at
         )
@@ -77,9 +77,8 @@ class Reminders(commands.Cog):
         )
         current_embed.description = ""
 
-        count = 0
         for reminder in reminders:
-            remind_at = reminder.remind_at.astimezone(timezone.utc)
+            remind_at = reminder.remind_at.astimezone(UTC)
 
             entry = f"\n\n> **ID**: `{reminder.id}`"
             entry += f"\n> **Reminder**: {reminder.reminder}"
@@ -92,8 +91,6 @@ class Reminders(commands.Cog):
                 current_embed.description = entry
             else:
                 current_embed.description += entry
-
-            count += 1
 
         embeds.append(current_embed)
 
@@ -126,7 +123,7 @@ class Reminders(commands.Cog):
 
     @tasks.loop(seconds=60)
     async def _check_reminders(self):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         reminders = await database.get_all(models.ReminderModel)
 
@@ -134,7 +131,7 @@ class Reminders(commands.Cog):
             remind_at = reminder.remind_at
 
             if remind_at.tzinfo is None:
-                remind_at = remind_at.replace(tzinfo=timezone.utc)
+                remind_at = remind_at.replace(tzinfo=UTC)
 
             if remind_at > now:
                 continue

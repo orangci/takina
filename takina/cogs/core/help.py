@@ -19,7 +19,7 @@ class Help(commands.HelpCommand):
     async def send_bot_help(self, mapping: Mapping, /) -> None:
         lines: list[str] = []
 
-        for _, cog_commands in mapping.items():
+        for cog_commands in mapping.values():
             filtered = await self.filter_commands(cog_commands, sort=True)
 
             for command in filtered:

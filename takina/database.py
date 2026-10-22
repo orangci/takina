@@ -3,14 +3,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from collections.abc import AsyncGenerator
 from sqlmodel import SQLModel, select
-from typing import TypeVar
 from takina import config
 
-
-T = TypeVar("T", bound=SQLModel)
-
 if not config.POSTGRESQL_URI:
-    raise EnvironmentError(
+    raise OSError(
         "You must set the POSTGRESQL_URI environment variable in order for the database (and by extension, the bot itself) to function."
     )
 
@@ -28,7 +24,7 @@ async def get_session() -> AsyncGenerator[AsyncSession]:
         yield session
 
 
-async def get(model: type[T], **filters) -> T | None:
+async def get[T: SQLModel](model: type[T], **filters) -> T | None:
     async with SessionLocal() as session:
         statement = select(model)
 
@@ -39,7 +35,7 @@ async def get(model: type[T], **filters) -> T | None:
         return result.scalar_one_or_none()
 
 
-async def get_all(model: type[T], **filters) -> list[T]:
+async def get_all[T: SQLModel](model: type[T], **filters) -> list[T]:
     async with SessionLocal() as session:
         statement = select(model)
 
@@ -50,14 +46,14 @@ async def get_all(model: type[T], **filters) -> list[T]:
         return list(result.scalars().all())
 
 
-async def save(instance: T) -> None:
+async def save[T: SQLModel](instance: T) -> None:
     async with SessionLocal() as session:
         session.add(instance)
         await session.commit()
         await session.refresh(instance)
 
 
-async def delete(instance: T) -> None:
+async def delete[T: SQLModel](instance: T) -> None:
     async with SessionLocal() as session:
         await session.delete(instance)
         await session.commit()
