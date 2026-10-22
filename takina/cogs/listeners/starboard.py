@@ -118,6 +118,9 @@ class Starboard(commands.Cog):
         description="Configure the starboard channel and reaction threshold.",
         usage="#channel 4",
     )
+    # slash subcommands do not run the group's checks
+    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.guild_only()
     async def starboard_settings(
         self, ctx: commands.Context, channel: discord.TextChannel, reaction_count: int
     ) -> None:
@@ -143,6 +146,8 @@ class Starboard(commands.Cog):
         description="Manage starboard whitelisted channels.",
         invoke_without_command=True,
     )
+    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.guild_only()
     async def starboard_whitelist(self, ctx: commands.Context) -> None:
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
@@ -152,6 +157,8 @@ class Starboard(commands.Cog):
         description="Add channels to the starboard whitelist.",
         usage="#channel #channel2",
     )
+    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.guild_only()
     async def whitelist_add(
         self, ctx: commands.Context, channels: commands.Greedy[discord.TextChannel]
     ) -> None:
@@ -184,6 +191,8 @@ class Starboard(commands.Cog):
         description="Remove channels from the starboard whitelist.",
         usage="#channel #channel2",
     )
+    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.guild_only()
     async def whitelist_remove(
         self, ctx: commands.Context, channels: commands.Greedy[discord.TextChannel]
     ) -> None:
@@ -216,6 +225,8 @@ class Starboard(commands.Cog):
     @starboard_whitelist.command(
         name="list", description="List all starboard whitelisted channels."
     )
+    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.guild_only()
     async def whitelist_list(self, ctx: commands.Context) -> None:
         assert ctx.guild is not None
 
