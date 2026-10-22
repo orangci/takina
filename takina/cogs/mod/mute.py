@@ -59,7 +59,7 @@ class Mute(commands.Cog):
             dm_embed = discord.Embed(colour=config.EMBED_COLOUR)
             dm_embed.description = f"You were muted in **{ctx.guild}** for {duration}.\n\n{config.emojis.NOTE} **Reason**: {reason}"
             await member.send(embed=dm_embed)
-        except Exception:
+        except discord.HTTPException:
             embed.set_footer(text="I was unable to DM the user.")
 
         await member.timeout(
@@ -127,7 +127,7 @@ class Mute(commands.Cog):
                 dm_embed = discord.Embed(colour=config.EMBED_COLOUR)
                 dm_embed.description = f"You were muted in **{ctx.guild}** for {duration}.\n\n{config.emojis.NOTE} **Reason**: {reason}"
                 await member.send(embed=dm_embed)
-            except Exception:
+            except discord.HTTPException:
                 failed_dms += 1
 
             await member.timeout(
@@ -173,7 +173,7 @@ class Mute(commands.Cog):
                 f"You were unmuted in **{ctx.guild}**.\n\n{config.emojis.NOTE} **Reason**: {reason}"
             )
             await member.send(embed=dm_embed)
-        except Exception:
+        except discord.HTTPException:
             embed.set_footer(text="I was unable to DM the user.")
 
         await member.timeout(None, reason=f"Unmuted by {ctx.author} for: {reason}")

@@ -68,7 +68,7 @@ class Bot(commands.Bot):
             if cog not in cogs_blacklist:
                 try:
                     await self.load_extension(f"takina.cogs.{cog}")
-                except Exception as e:
+                except commands.ExtensionError as e:
                     print(f"Failed to load {cog}: {e}")
 
     async def close(self):

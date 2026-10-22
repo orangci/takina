@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lychecks, lyerrors, lyhelpers, lyviews
+from whodap.errors import WhodapError
 from discord.ext import commands
 from takina import config
 from dns import resolver
@@ -28,7 +29,7 @@ class DNS(commands.Cog):
                 return response
             except NotImplementedError:
                 raise
-            except Exception:
+            except WhodapError:
                 return None
 
     @lychecks.is_user_app()

@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lyhelpers, lychecks
+from takina.libs import lyhelpers, lychecks, lyerrors
 from discord.ext import commands
 from takina import config
 import discord
+import aiohttp
 
 
 class PingResponse(commands.Cog):
@@ -21,7 +22,7 @@ class PingResponse(commands.Cog):
 
             self.stars = repo_data.get("stargazers_count", 0)
             self.forks = repo_data.get("forks_count", 0)
-        except Exception:
+        except (lyerrors.TakinaError, aiohttp.ClientError, TimeoutError):
             return
 
     async def construct_info_embed(self, ctx: discord.Message) -> discord.Embed:

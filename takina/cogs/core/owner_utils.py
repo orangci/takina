@@ -39,14 +39,14 @@ class OwnerUtils(commands.Cog):
         code = f"async def _eval():\n{textwrap.indent(body, '    ')}"
 
         try:
-            exec(code, env)
-        except Exception as e:
+            exec(code, env)  # noqa: S102
+        except Exception as e:  # noqa: BLE001
             return f"```py\n{e.__class__.__name__}: {e}\n```"
 
         try:
             with redirect_stdout(stdout):
                 result = await cast(Any, env["_eval"])()
-        except Exception:
+        except Exception:  # noqa: BLE001
             return f"```py\n{stdout.getvalue()}{traceback.format_exc()}\n```"
 
         value = stdout.getvalue()
@@ -150,11 +150,11 @@ class OwnerUtils(commands.Cog):
 
         if cog is None:
             failed_cogs = []
-            for cog in list(self._bot.extensions.keys()):  # Iterate over loaded extensions
+            for extension in list(self._bot.extensions.keys()):
                 try:
-                    await self._bot.reload_extension(cog)
-                except Exception as e:
-                    failed_cogs.append(f"{cog}: {e}")
+                    await self._bot.reload_extension(extension)
+                except commands.ExtensionError as e:
+                    failed_cogs.append(f"{extension}: {e}")
 
             if failed_cogs:
                 error_message = "Reloaded all except the following cogs:\n\n" + "\n> ".join(
@@ -182,7 +182,7 @@ class OwnerUtils(commands.Cog):
                     )
                     await ctx.reply(embed=embed, mention_author=False)
                     print(f"\n\n{embed.description}".replace(config.emojis.SUCCESS, "✅"))
-                except Exception as e:
+                except commands.ExtensionError as e:
                     raise lyerrors.TakinaError(f"Failed to reload `{full_cog_name}`: {e}")
             else:
                 raise lyerrors.TakinaError(f"Cog `{full_cog_name}` is not loaded.")

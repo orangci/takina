@@ -41,7 +41,7 @@ class Warnings(commands.Cog):
                 f"You were warned in **{ctx.guild}**.\n\n{config.emojis.NOTE} **Reason**: {reason}"
             )
             await member.send(embed=dm_embed)
-        except Exception:
+        except discord.HTTPException:
             embed.set_footer(text="I was unable to DM the user.")
 
         embed.description = f"{config.emojis.SUCCESS} Successfully warned **{member.mention}**."
@@ -94,7 +94,7 @@ class Warnings(commands.Cog):
                 dm_embed = discord.Embed(colour=config.EMBED_COLOUR)
                 dm_embed.description = f"You were warned in **{ctx.guild}**.\n\n{config.emojis.NOTE} **Reason**: {reason}"
                 await member.send(embed=dm_embed)
-            except Exception:
+            except discord.HTTPException:
                 failed_dms += 1
 
         embed.description = f"{config.emojis.SUCCESS} Successfully warned the following {len(members)} members: {', '.join(member.mention for member in members)}."
