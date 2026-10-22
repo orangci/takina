@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from takina.libs import lyerrors, lychecks, lymodlog
 from takina.models import GuildSettingsModel
-from takina.libs import lyerrors, lychecks
 from takina import config, database
 from discord.ext import commands
 import discord
@@ -49,10 +49,15 @@ class Reports(commands.Cog):
         usage="@member reason",
     )
     @lychecks.guild_only()
+    @lychecks.slash_only()
+    @lychecks.cooldown(1, 60)
     async def report_member(
-        self, ctx: commands.Context, member: discord.Member, *, reason: str
+        self, ctx: commands.Context, member: discord.Member, *, reason: lymodlog.Reason
     ) -> None:
         assert ctx.guild is not None
+
+        if member == ctx.author:
+            raise lyerrors.TakinaUserInputError("You cannot report yourself.")
 
         settings = await database.get(GuildSettingsModel, guild_id=ctx.guild.id)
         if settings is None or not settings.reports_channel_id:
@@ -64,26 +69,24 @@ class Reports(commands.Cog):
         if not isinstance(reports_channel, discord.TextChannel):
             raise lyerrors.TakinaError("The configured reports channel could not be found.")
 
-        incident_channel = ctx.channel
-        if not isinstance(incident_channel, discord.TextChannel):
-            raise lyerrors.TakinaError("The incident channel could not be determined.")
-
         embed = discord.Embed(title="New Report", colour=config.EMBED_COLOUR)
         embed.description = (
             f"A new report has been submitted about {member.mention} by {ctx.author.mention}."
         )
         embed.add_field(name=f"{config.emojis.NOTE} Reason", value=reason, inline=True)
         embed.add_field(name="👤 Subject", value=member.mention, inline=True)
+        embed.add_field(name="📍 Channel", value=ctx.channel.jump_url, inline=True)
         embed.set_footer(text=f"Reported by {ctx.author}", icon_url=ctx.author.display_avatar.url)
         if member.avatar:
             embed.set_thumbnail(url=member.avatar.url)
 
+        role_id = settings.reports_notification_role_id
         await reports_channel.send(
-            f"<@&{settings.reports_notification_role_id}>"
-            if settings.reports_notification_role_id
-            else None,
+            f"<@&{role_id}>" if role_id else None,
             embed=embed,
-            allowed_mentions=discord.AllowedMentions(roles=True),
+            allowed_mentions=discord.AllowedMentions(
+                everyone=False, users=False, roles=[discord.Object(role_id)] if role_id else False
+            ),
         )
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.description = f"{config.emojis.SUCCESS} Report successfully submitted."
