@@ -54,7 +54,7 @@ class GiveawayModel(SQLModel, table=True):
         default_factory=list, sa_column=Column(MutableList.as_mutable(PGArray(BigInteger)))
     )
 
-    ends_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))
+    ends_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
 
     ended: bool = False
     winner_ids: list[int] = Field(
@@ -67,9 +67,11 @@ class ReminderModel(SQLModel, table=True):
     __tablename__ = "reminders"
 
     id: str = Field(default_factory=lambda: token_hex(12), primary_key=True)
-    user_id: int = Field(sa_type=BigInteger)
+    user_id: int = Field(sa_type=BigInteger, index=True)
     reminder: str
-    remind_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))
+    remind_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), nullable=False, index=True)
+    )
 
 
 class ModLogCaseModel(SQLModel, table=True):
@@ -77,7 +79,7 @@ class ModLogCaseModel(SQLModel, table=True):
     __table_args__ = (UniqueConstraint("guild_id", "case_id", name="uq_modlog_guild_case"),)
 
     id: int | None = Field(default=None, primary_key=True)
-    guild_id: int = Field(sa_type=BigInteger)
+    guild_id: int = Field(sa_type=BigInteger, index=True)
     case_id: int
     action: str
     member_ids: list[int] = Field(
@@ -89,7 +91,7 @@ class ModLogCaseModel(SQLModel, table=True):
     moderator_id: int = Field(sa_type=BigInteger)
     reason: str
     duration: str | None = None
-    timestamp: datetime = Field(sa_column=Column(DateTime(timezone=True)))
+    timestamp: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
     mass_action: bool = False
 
 
