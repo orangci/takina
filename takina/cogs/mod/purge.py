@@ -6,34 +6,43 @@ from datetime import timedelta
 from takina import config
 import discord
 
+MAX_PURGE = 200
+# discord refuses to bulk delete anything older
+BULK_DELETE_AGE = timedelta(weeks=2)
+
 
 class Purge(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot = bot
 
-    @commands.hybrid_command(description="Purge/mass delete messages in a channel.")
+    @commands.hybrid_command(description="Purge/mass delete messages in a channel.", usage="50")
     @lychecks.has_permissions(manage_messages=True)
     @lychecks.guild_only()
-    async def purge(self, ctx: commands.Context, amount: int) -> None:
-        if amount <= 0 or amount > 200:
-            raise lyerrors.TakinaUserInputError("Please specify a number between 1 and 200.")
+    async def purge(self, ctx: commands.Context, amount: commands.Range[int, 1, MAX_PURGE]) -> None:
+        channel = ctx.channel
+        if not isinstance(channel, discord.TextChannel | discord.Thread | discord.VoiceChannel):
+            raise lyerrors.TakinaError("This command can only be used in a text channel or thread.")
 
-        assert ctx.channel is not None
-        if not isinstance(ctx.channel, discord.TextChannel):
-            raise lyerrors.TakinaError("This command can only be used in a text channel.")
+        if ctx.interaction is not None:
+            await ctx.defer(ephemeral=True)
+        else:
+            # the command message is not part of the amount
+            await ctx.message.delete()
 
-        deleted = await ctx.channel.purge(
-            limit=amount + 1,
-            check=lambda message: message.created_at > discord.utils.utcnow() - timedelta(weeks=2),
+        deleted = await channel.purge(
+            limit=amount,
+            after=discord.utils.utcnow() - BULK_DELETE_AGE,
+            oldest_first=False,
             bulk=True,
         )
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = (
-            f"{config.emojis.SUCCESS} Successfully purged {len(deleted) - 1} messages."
-        )
+        embed.description = f"{config.emojis.SUCCESS} Successfully purged {len(deleted)} messages."
 
-        await ctx.send(embed=embed, delete_after=2)
+        if ctx.interaction is not None:
+            await ctx.send(embed=embed, ephemeral=True)
+        else:
+            await ctx.send(embed=embed, delete_after=2)
 
 
 async def setup(bot: commands.Bot) -> None:
