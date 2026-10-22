@@ -57,17 +57,23 @@ def duration_calculator(duration: str, slowmode=False, timeout=False, purge=Fals
     return time_value
 
 
-def reverse_duration_calculator(seconds) -> str:
+def reverse_duration_calculator(seconds: int) -> str:
     if seconds < 0:
         raise ValueError("Duration cannot be negative.")
 
-    time_units = {"s": 1, "m": 60, "h": 3600, "d": 86400, "w": 604800, "y": 31557600}
+    if seconds == 0:
+        return "0s"
 
+    # largest first, so 5400 becomes "1h 30m" rather than "5400s"
+    time_units = {"y": 31557600, "w": 604800, "d": 86400, "h": 3600, "m": 60, "s": 1}
+
+    parts: list[str] = []
     for unit, value in time_units.items():
-        if seconds >= value:
-            return f"{seconds // value}{unit}"
+        amount, seconds = divmod(seconds, value)
+        if amount:
+            parts.append(f"{amount}{unit}")
 
-    return f"{seconds}s"  # Default to seconds if less than 1 minute
+    return " ".join(parts)
 
 
 # uptime checker
