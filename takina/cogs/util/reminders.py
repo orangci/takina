@@ -32,7 +32,7 @@ class Reminders(commands.Cog):
 
     @reminder.command(
         name="set",
-        description="Set a reminder. Minimum duration is 10 minutes.",
+        description="Set a reminder. Minimum duration is 5 minutes.",
         usage="4h feed the cat",
     )
     @lychecks.is_user_app()
