@@ -172,7 +172,8 @@ async def permissions_check(
             f"You cannot perform this action on the server owner ({member.mention})."
         )
 
-    if role_check and member.top_role >= ctx.author.top_role:
+    # the owner outranks everyone in discord regardless of roles
+    if role_check and ctx.author != ctx.guild.owner and member.top_role >= ctx.author.top_role:
         raise lyerrors.TakinaPermissionError(
             f"You cannot perform this action on a member ({member.mention}) with a role that is higher than or equal to your own."
         )
