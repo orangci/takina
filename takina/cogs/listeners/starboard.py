@@ -5,12 +5,44 @@ from takina.libs import lychecks, lyerrors
 from discord.ui import Button, View
 from takina import config, database
 from discord.ext import commands
+from contextlib import suppress
+import asyncio
 import discord
+import weakref
+
+
+# discord's limit per message
+MAX_EMBEDS = 10
+
+type StarrableChannel = discord.TextChannel | discord.Thread
+
+
+def is_public_source(
+    channel: StarrableChannel,
+    starboard_channel: discord.TextChannel,
+    settings: StarboardSettingsModel,
+) -> bool:
+    if channel.is_nsfw() and not starboard_channel.is_nsfw():
+        return False
+
+    # threads are whitelisted through their parent channel
+    channel_id = channel.parent_id if isinstance(channel, discord.Thread) else channel.id
+    if settings.whitelisted_channel_ids:
+        # whitelisting a channel opts it in, private or not
+        return channel_id in settings.whitelisted_channel_ids
+
+    if isinstance(channel, discord.Thread) and channel.is_private():
+        return False
+
+    return channel.permissions_for(channel.guild.default_role).read_messages
 
 
 class Starboard(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot = bot
+        # one lock per starred message, so concurrent reactions cannot post it twice;
+        # weak values drop each lock once no reaction is waiting on it
+        self._locks: weakref.WeakValueDictionary[int, asyncio.Lock] = weakref.WeakValueDictionary()
 
     async def _get_settings(self, guild_id: int) -> StarboardSettingsModel | None:
         return await database.get(StarboardSettingsModel, guild_id=guild_id)
@@ -24,80 +56,78 @@ class Starboard(commands.Cog):
         await self._update_starboard(payload)
 
     async def _update_starboard(self, payload: discord.RawReactionActionEvent) -> None:
-        if not payload.guild_id:
+        if not payload.guild_id or (guild := self._bot.get_guild(payload.guild_id)) is None:
             return
 
         settings = await self._get_settings(payload.guild_id)
         if not settings or not settings.starboard_channel_id:
             return
 
-        # checks if the message is in the whitelist
-        # but only if there IS a whitelist
-        if (
-            settings.whitelisted_channel_ids
-            and payload.channel_id not in settings.whitelisted_channel_ids
-        ):
-            return
-
-        starboard_channel = self._bot.get_channel(settings.starboard_channel_id)
+        starboard_channel = guild.get_channel(settings.starboard_channel_id)
         if not isinstance(starboard_channel, discord.TextChannel):
             return
 
-        channel = self._bot.get_channel(payload.channel_id)
-        if not isinstance(channel, discord.TextChannel):
+        channel = guild.get_channel_or_thread(payload.channel_id)
+        if not isinstance(channel, discord.TextChannel | discord.Thread):
             return
 
+        if not is_public_source(channel, starboard_channel, settings):
+            return
+
+        lock = self._locks.get(payload.message_id)
+        if lock is None:
+            lock = self._locks[payload.message_id] = asyncio.Lock()
+
+        async with lock:
+            await self._sync_message(payload, channel, starboard_channel, settings)
+
+    async def _sync_message(
+        self,
+        payload: discord.RawReactionActionEvent,
+        channel: StarrableChannel,
+        starboard_channel: discord.TextChannel,
+        settings: StarboardSettingsModel,
+    ) -> None:
         try:
             message = await channel.fetch_message(payload.message_id)
         except discord.NotFound:
             return
 
-        reaction = next(
-            (
-                reaction
-                for reaction in message.reactions
-                if str(reaction.emoji) == str(payload.emoji)
-            ),
-            None,
-        )
+        if message.author.bot:
+            return
 
+        # any emoji counts, so judge by the most popular one rather than the one just changed
+        reaction = max(message.reactions, key=lambda reaction: reaction.count, default=None)
         reaction_count = reaction.count if reaction else 0
+        if reaction is not None and reaction_count >= settings.minimum_reaction_count:
+            # starring your own message does not count; only worth asking once it could matter
+            async for user in reaction.users():
+                if user.id == message.author.id:
+                    reaction_count -= 1
+                    break
+
         existing = await database.get(StarboardMessageModel, message_id=message.id)
 
-        if reaction_count < settings.minimum_reaction_count:
+        if reaction is None or reaction_count < settings.minimum_reaction_count:
             if existing is None:
                 return
 
-            try:
-                starboard_message = await starboard_channel.fetch_message(
-                    existing.starboard_message_id
-                )
-            except discord.NotFound:
-                starboard_message = None
-
-            if starboard_message is not None:
-                await starboard_message.delete()
+            with suppress(discord.NotFound, discord.Forbidden):
+                await starboard_channel.get_partial_message(existing.starboard_message_id).delete()
 
             await database.delete(existing)
             return
 
-        if reaction is None:
-            return
-
-        embeds, view = self._create_embed(message, reaction)
+        embeds, view = self._create_embed(message, reaction, reaction_count)
         if existing is not None:
             try:
-                starboard_message = await starboard_channel.fetch_message(
-                    existing.starboard_message_id
+                await starboard_channel.get_partial_message(existing.starboard_message_id).edit(
+                    embeds=embeds, view=view
                 )
-            except discord.NotFound:
-                starboard_message = None
-
-            if starboard_message is None:
-                await database.delete(existing)
-            else:
-                await starboard_message.edit(embeds=embeds, view=view)
                 return
+            except discord.NotFound:
+                # the starboard post was deleted by hand, so post it again
+                await database.delete(existing)
 
         starboard_message = await starboard_channel.send(embeds=embeds, view=view)
         await database.save(
@@ -139,7 +169,25 @@ class Starboard(commands.Cog):
             f"{config.emojis.SUCCESS} Starboard channel has been set to {channel.mention}."
         )
         embed.description += f"\n{config.emojis.NOTE} **Minimum reactions**: {reaction_count:,}"
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @starboard.command(name="disable", description="Turn the starboard off.")
+    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.guild_only()
+    async def starboard_disable(self, ctx: commands.Context) -> None:
+        assert ctx.guild is not None
+
+        settings = await self._get_settings(ctx.guild.id)
+        if settings is None or settings.starboard_channel_id is None:
+            raise lyerrors.TakinaError("The starboard is not set up in this server.")
+
+        # the threshold and whitelist stay, so setting it up again picks them back up
+        settings.starboard_channel_id = None
+        await database.save(settings)
+
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
+        embed.description = f"{config.emojis.SUCCESS} The starboard has been disabled."
+        await ctx.reply(embed=embed, mention_author=False)
 
     @starboard.group(
         name="whitelist",
@@ -249,7 +297,7 @@ class Starboard(commands.Cog):
 
     @staticmethod
     def _create_embed(
-        message: discord.Message, reaction: discord.Reaction
+        message: discord.Message, reaction: discord.Reaction, reaction_count: int
     ) -> tuple[list[discord.Embed], View]:
         embed = discord.Embed(
             title="Starred Message", colour=config.EMBED_COLOUR, url=message.jump_url
@@ -263,7 +311,7 @@ class Starboard(commands.Cog):
 
         embed.add_field(
             name=":star: Reactions",
-            value=f"{reaction.count:,} {reaction.emoji} reaction{'s' if reaction.count > 1 else ''}",
+            value=f"{reaction_count:,} {reaction.emoji} reaction{'s' if reaction_count > 1 else ''}",
             inline=True,
         )
 
@@ -272,19 +320,31 @@ class Starboard(commands.Cog):
             Button(style=discord.ButtonStyle.primary, label="Jump to Message", url=message.jump_url)
         )
 
+        # images sharing the jump url show up as one gallery under the first embed
+        image_urls = [
+            attachment.url
+            for attachment in message.attachments
+            if attachment.content_type and attachment.content_type.startswith("image/")
+        ]
+        image_urls += [
+            source.thumbnail.url or source.url
+            for source in message.embeds
+            if source.type in ("image", "gifv") and (source.thumbnail.url or source.url)
+        ]
+        image_urls += [sticker.url for sticker in message.stickers]
+
         embeds = [embed]
-        for attachment in message.attachments:
-            if not attachment.content_type or not attachment.content_type.startswith("image/"):
-                continue
-
+        for image_url in image_urls:
             if not embed.image.url:
-                embed.set_image(url=attachment.url)
+                embed.set_image(url=image_url)
             else:
-                attachment_embed = discord.Embed(colour=config.EMBED_COLOUR, url=message.jump_url)
-                attachment_embed.set_image(url=attachment.url)
-                embeds.append(attachment_embed)
+                image_embed = discord.Embed(colour=config.EMBED_COLOUR, url=message.jump_url)
+                image_embed.set_image(url=image_url)
+                embeds.append(image_embed)
 
-        return embeds, view
+        embeds += [source for source in message.embeds if source.type == "rich"]
+
+        return embeds[:MAX_EMBEDS], view
 
 
 async def setup(bot: commands.Bot) -> None:
