@@ -3,9 +3,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from collections.abc import Iterable
 from sqlmodel import SQLModel, select
+from sqlalchemy import case, func, inspect, update
 from sqlalchemy.engine import Connection
 from alembic.config import Config
-from sqlalchemy import inspect
 from alembic import command
 from pathlib import Path
 from typing import Any
@@ -103,6 +103,32 @@ async def save[T: SQLModel](instance: T) -> T:
 
         await session.commit()
         await session.refresh(instance)
+        return instance
+
+
+async def toggle_in_array[T: SQLModel](
+    model: type[T], column: str, value: Any, **filters
+) -> T | None:
+    # one atomic update, so concurrent toggles cannot overwrite each other
+    array = getattr(model, column)
+    statement = (
+        update(model)
+        .where(*(getattr(model, key) == filter_value for key, filter_value in filters.items()))
+        .values(
+            {
+                column: case(
+                    (array.any(value), func.array_remove(array, value)),
+                    else_=func.array_append(array, value),
+                )
+            }
+        )
+        .returning(model)
+    )
+
+    async with SessionLocal() as session:
+        result = await session.execute(statement)
+        instance = result.scalar_one_or_none()
+        await session.commit()
         return instance
 
 

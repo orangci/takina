@@ -27,30 +27,27 @@ class GiveawayView(discord.ui.View):
         if interaction.guild is None:
             return
 
-        giveaway = await database.get(
-            models.GiveawayModel, guild_id=interaction.guild.id, id=self.giveaway_id
+        user_id = interaction.user.id
+        giveaway = await database.toggle_in_array(
+            models.GiveawayModel,
+            "participants",
+            user_id,
+            guild_id=interaction.guild.id,
+            id=self.giveaway_id,
         )
         if not giveaway:
             return
 
-        user_id = interaction.user.id
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-
-        if user_id in giveaway.participants:
-            giveaway.participants.remove(user_id)
-            await database.save(giveaway)
-            await self.cog.update_giveaway_message(giveaway)
-            embed.description = f"{config.emojis.SUCCESS} You have withdrawn from the giveaway."
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-            return
-
-        giveaway.participants.append(user_id)
-        await database.save(giveaway)
         await self.cog.update_giveaway_message(giveaway)
 
-        embed.description = (
-            f"{config.emojis.SUCCESS} You have entered giveaway #{self.giveaway_id}."
-        )
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
+        if user_id in giveaway.participants:
+            embed.description = (
+                f"{config.emojis.SUCCESS} You have entered giveaway #{self.giveaway_id}."
+            )
+        else:
+            embed.description = f"{config.emojis.SUCCESS} You have withdrawn from the giveaway."
+
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
