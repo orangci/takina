@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lyhelpers
+from takina.libs import lyhelpers, lyerrors
 from discord.ext import commands
 from datetime import datetime
 from takina import config
@@ -25,7 +25,13 @@ class GitHub(commands.Cog):
         repo_match = self.REPO_PATTERN.search(message.content)
         if repo_match:
             owner, repo_name = repo_match.groups()
-            repo_data = await lyhelpers.request(f"https://api.github.com/repos/{owner}/{repo_name}")
+            try:
+                repo_data = await lyhelpers.request(
+                    f"https://api.github.com/repos/{owner}/{repo_name}"
+                )
+            except lyerrors.TakinaNotFoundError:
+                # a pattern match is not necessarily a real repository
+                return
 
             if not repo_data:
                 return
@@ -63,9 +69,12 @@ class GitHub(commands.Cog):
             return
 
         owner, repo_name, number = pr_issue_match.groups()
-        data = await lyhelpers.request(
-            f"https://api.github.com/repos/{owner}/{repo_name}/issues/{number}"
-        )
+        try:
+            data = await lyhelpers.request(
+                f"https://api.github.com/repos/{owner}/{repo_name}/issues/{number}"
+            )
+        except lyerrors.TakinaNotFoundError:
+            return
 
         if not data:
             return

@@ -7,6 +7,7 @@ from takina import config
 from typing import TYPE_CHECKING, Any
 import datetime
 import discord
+import aiohttp
 import random
 import re
 
@@ -36,18 +37,21 @@ async def request(
     headers: dict | None = None,
     disable_json: bool = False,
     *args,
+    not_found: str = "That could not be found.",
     **kwargs,
-):
+) -> Any:
     bot = get_bot()
     if not bot.http_session:
         raise RuntimeError("Client HTTP session has not been initialised.")
 
     user_agent_header = {"User-Agent": config.USER_AGENT}
     kwargs["headers"] = user_agent_header | (headers or {})
+    # without a timeout, a hung api leaves the command thinking forever
+    kwargs.setdefault("timeout", aiohttp.ClientTimeout(total=10))
 
     async with bot.http_session.request(method, url, *args, **kwargs) as response:
         if response.status == 404:
-            return False
+            raise lyerrors.TakinaNotFoundError(not_found)
 
         if not response.ok:
             raise lyerrors.TakinaError(
@@ -56,8 +60,11 @@ async def request(
 
         if disable_json:
             return await response.text()
-        else:
+
+        try:
             return await response.json()
+        except aiohttp.ContentTypeError as error:
+            raise lyerrors.TakinaError("The service returned something other than JSON.") from error
 
 
 # for calculating durations, e.g. 1d, 2h, 5s, 34m

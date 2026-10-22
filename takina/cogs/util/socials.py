@@ -28,9 +28,13 @@ class Socials(commands.Cog):
                     "Accept": "application/vnd.github+json",
                     "Authorization": f"Bearer {config.GITHUB_AUTH_TOKEN}",
                 },
+                not_found="That GitHub account does not exist.",
             )
         else:
-            data = await lyhelpers.request(f"https://api.github.com/users/{username}")
+            data = await lyhelpers.request(
+                f"https://api.github.com/users/{username}",
+                not_found="That GitHub account does not exist.",
+            )
 
         if not data:
             raise lyerrors.TakinaNotFoundError("That GitHub account does not exist.")
@@ -94,7 +98,10 @@ class Socials(commands.Cog):
     )
     @lychecks.is_user_app()
     async def codeberg(self, ctx: commands.Context, *, username: str):
-        data = await lyhelpers.request(f"https://codeberg.org/api/v1/users/{username}")
+        data = await lyhelpers.request(
+            f"https://codeberg.org/api/v1/users/{username}",
+            not_found="That Codeberg account does not exist.",
+        )
 
         if not data or data.get("message"):
             raise lyerrors.TakinaNotFoundError("That Codeberg account does not exist.")

@@ -25,16 +25,23 @@ class Wynncraft(commands.Cog):
         usage="orangci",
     )
     async def player(self, ctx: commands.Context, username: str):
-        player = await lyhelpers.request(f"https://api.wynncraft.com/v3/player/{username}")
+        player = await lyhelpers.request(
+            f"https://api.wynncraft.com/v3/player/{username}",
+            not_found=f"Could not find a Wynncraft member with the username `{username}`.",
+        )
 
         if not player:
             raise lyerrors.TakinaNotFoundError(
                 f"Could not find a Wynncraft member with the username `{username}`."
             )
 
-        characters = await lyhelpers.request(
-            f"https://api.wynncraft.com/v3/player/{username}/characters"
-        )
+        try:
+            characters = await lyhelpers.request(
+                f"https://api.wynncraft.com/v3/player/{username}/characters"
+            )
+        except lyerrors.TakinaNotFoundError:
+            # characters are optional; the player embed works without them
+            characters = None
 
         if characters:
             sorted_characters = sorted(
@@ -102,11 +109,16 @@ class Wynncraft(commands.Cog):
         name="guild", description="Fetch and display a Wynncraft guild's data.", usage="Juniper"
     )
     async def guild(self, ctx: commands.Context, *, guild_name: str):
-        guild = await lyhelpers.request(f"https://api.wynncraft.com/v3/guild/{guild_name}")
+        try:
+            guild = await lyhelpers.request(f"https://api.wynncraft.com/v3/guild/{guild_name}")
+        except lyerrors.TakinaNotFoundError:
+            # not a guild name, so try it as a prefix
+            guild = None
 
         if not guild:
             guild = await lyhelpers.request(
-                f"https://api.wynncraft.com/v3/guild/prefix/{guild_name.upper()}"
+                f"https://api.wynncraft.com/v3/guild/prefix/{guild_name.upper()}",
+                not_found="No guild found with that identifier.",
             )
 
             if not guild:

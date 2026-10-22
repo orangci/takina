@@ -17,7 +17,10 @@ class MinecraftServerStatus(commands.Cog):
         aliases=["mcserver"],
     )
     async def mcstatus(self, ctx: commands.Context, *, server_name: str):
-        data = await lyhelpers.request(f"https://api.mcstatus.io/v2/status/java/{server_name}")
+        data = await lyhelpers.request(
+            f"https://api.mcstatus.io/v2/status/java/{server_name}",
+            not_found="Server not found or is offline.",
+        )
 
         if not data or not data.get("online"):
             raise lyerrors.TakinaNotFoundError("Server not found or is offline.")

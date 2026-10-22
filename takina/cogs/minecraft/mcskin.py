@@ -16,7 +16,8 @@ class Minecraft(commands.Cog):
     )
     async def mcskin(self, ctx: commands.Context, username: str):
         data = await lyhelpers.request(
-            f"https://api.mojang.com/users/profiles/minecraft/{username}"
+            f"https://api.mojang.com/users/profiles/minecraft/{username}",
+            not_found=f"Could not find a Minecraft player with the username `{username}`.",
         )
         if not data:
             raise lyerrors.TakinaNotFoundError(

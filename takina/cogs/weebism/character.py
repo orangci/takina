@@ -18,7 +18,8 @@ class Characters(commands.Cog):
     @lychecks.is_user_app()
     async def character(self, ctx: commands.Context, *, character: str) -> None:
         data = await lyhelpers.request(
-            f"https://api.tenrai.org/v1/characters?q={character}&limit=1&sfw=true"
+            f"https://api.tenrai.org/v1/characters?q={character}&limit=1&sfw=true",
+            not_found="Character not found.",
         )
 
         if not data or not data.get("data"):

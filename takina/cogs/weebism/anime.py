@@ -12,7 +12,8 @@ class Anime(commands.Cog):
 
     async def fetch_anime(self, anime_name: str) -> dict | None:
         data = await lyhelpers.request(
-            f"https://api.tenrai.org/v1/anime?q={anime_name}&limit=1&sfw=true"
+            f"https://api.tenrai.org/v1/anime?q={anime_name}&limit=1&sfw=true",
+            not_found="Anime not found.",
         )
         if data and data.get("data"):
             return data["data"][0]

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyhelpers, lyerrors
+from takina.libs import lychecks, lyhelpers
 from discord.ext import commands
 from takina import config
 import discord
@@ -19,11 +19,10 @@ class Neko(commands.Cog):
     @lychecks.is_user_app()
     async def neko(self, ctx: commands.Context, category: str = "neko"):
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        data = await lyhelpers.request(f"https://nekos.best/api/v2/{category}")
-        if not data:
-            raise lyerrors.TakinaUserInputError(
-                f"{category.lower().capitalize()} is not a valid [nekos.best](https://nekos.best) endpoint. For a list of available endpoints such as 'kitsune', see the [list of endpoints](https://nekos.best/api/v2/endpoints)."
-            )
+        data = await lyhelpers.request(
+            f"https://nekos.best/api/v2/{category}",
+            not_found=f"{category.lower().capitalize()} is not a valid [nekos.best](https://nekos.best) endpoint. For a list of available endpoints such as 'kitsune', see the [list of endpoints](https://nekos.best/api/v2/endpoints).",
+        )
 
         result = data.get("results", [])[0]
         embed.set_image(url=result.get("url"))

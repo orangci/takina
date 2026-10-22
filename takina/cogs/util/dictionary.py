@@ -18,7 +18,8 @@ class Dictionary(commands.Cog):
     @lychecks.is_user_app()
     async def define(self, ctx: commands.Context, *, word: str) -> None:
         response = await lyhelpers.request(
-            f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
+            f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}",
+            not_found="No definition found.",
         )
 
         if not response or (

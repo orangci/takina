@@ -18,7 +18,10 @@ class AWCC_HOF(commands.Cog):
     )
     async def hof(self, ctx: commands.Context, *, username: str):
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        data = await lyhelpers.request(f"https://anime.jhiday.net/hof/api/user/{username}")
+        data = await lyhelpers.request(
+            f"https://anime.jhiday.net/hof/api/user/{username}",
+            not_found="This username has no data in the AWCC/MRCC Hall of Fame.",
+        )
         if not data:
             raise lyerrors.TakinaNotFoundError(
                 "This username has no data in the AWCC/MRCC Hall of Fame."
