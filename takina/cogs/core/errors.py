@@ -24,12 +24,17 @@ class Errors(commands.Cog):
         error = getattr(error, "original", error)
 
         # ignore these
-        # discord.py's permission checks are check failures too, but they deserve a message
+        # discord.py's permission and owner checks are check failures too, but they deserve a message
         if isinstance(error, commands.CommandNotFound) or (
             isinstance(error, commands.CheckFailure)
             and not isinstance(
                 error,
-                (lyerrors.TakinaError, commands.MissingPermissions, commands.BotMissingPermissions),
+                (
+                    lyerrors.TakinaError,
+                    commands.MissingPermissions,
+                    commands.BotMissingPermissions,
+                    commands.NotOwner,
+                ),
             )
         ):
             return
