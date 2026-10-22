@@ -8,6 +8,15 @@ from typing import cast
 import discord
 
 
+def parse_user_id(user: str) -> int:
+    # slash integer options are capped at 2^53, far below real snowflakes, so ids arrive as text
+    user_id = user.strip().removeprefix("<@").removeprefix("!").removesuffix(">")
+    if not user_id.isdigit():
+        raise lyerrors.TakinaUserInputError("Please provide a valid Discord user ID.")
+
+    return int(user_id)
+
+
 class Ban(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self._bot = bot
@@ -121,15 +130,16 @@ class Ban(commands.Cog):
     @lychecks.has_permissions(ban_members=True)
     @lychecks.guild_only()
     async def hackban(
-        self, ctx: commands.Context, user: int, *, reason: str = "No reason provided"
+        self, ctx: commands.Context, user: str, *, reason: str = "No reason provided"
     ) -> None:
         assert ctx.guild is not None
-        member = ctx.guild.get_member(user)
+        user_id = parse_user_id(user)
+        member = ctx.guild.get_member(user_id)
         if member:
             await lyhelpers.permissions_check(ctx, member, True, True, True)
 
         try:
-            user_obj = await self._bot.fetch_user(user)
+            user_obj = await self._bot.fetch_user(user_id)
         except discord.NotFound:
             raise lyerrors.TakinaNotFoundError("That Discord user could not be found.")
 
@@ -166,12 +176,12 @@ class Ban(commands.Cog):
     @lychecks.has_permissions(ban_members=True)
     @lychecks.guild_only()
     async def unban(
-        self, ctx: commands.Context, user: int, *, reason: str = "No reason provided"
+        self, ctx: commands.Context, user: str, *, reason: str = "No reason provided"
     ) -> None:
         assert ctx.guild is not None
 
         try:
-            user_obj = await self._bot.fetch_user(user)
+            user_obj = await self._bot.fetch_user(parse_user_id(user))
         except discord.NotFound as error:
             raise lyerrors.TakinaNotFoundError("That Discord user could not be found.") from error
 
