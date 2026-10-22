@@ -1,20 +1,32 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lyerrors, lychecks, lyhelpers
+from takina.libs import lyerrors, lychecks, lyhelpers, lyviews
 from takina import config, database, models
 from discord.ext import commands
-from takina.libs import lyviews
 import discord
+import time
+import re
 
 MAX_TRIGGERS = 30
+MIN_TRIGGER_LEN = 2
 MAX_TRIGGER_NAME_LEN = 20
 MAX_TRIGGER_LEN = 75
 MAX_RESPONSE_LEN = 500
+# seconds before the same trigger may fire again in a channel
+TRIGGER_COOLDOWN = 10
+TRIGGERS_PER_PAGE = 5
+
+
+def trigger_pattern(trigger: str) -> re.Pattern[str]:
+    # lookarounds rather than \b, so triggers that start or end with punctuation still match
+    return re.compile(rf"(?<!\w){re.escape(trigger)}(?!\w)", re.IGNORECASE)
 
 
 class TriggerResponses(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
+        # (channel id, trigger name) to when it last fired, on the monotonic clock
+        self._last_fired: dict[tuple[int, str], float] = {}
 
     async def get_guild_triggers(self, guild_id: int) -> models.TriggerResponsesModel:
         # unsaved for a new guild; the commands that change triggers save it themselves
@@ -39,6 +51,12 @@ class TriggerResponses(commands.Cog):
         self, ctx: commands.Context, name: str, trigger: str, response: str
     ) -> None:
         assert ctx.guild is not None
+        trigger = trigger.strip()
+
+        if len(trigger) < MIN_TRIGGER_LEN:
+            raise lyerrors.TakinaUserInputError(
+                f"Trigger text must be at least {MIN_TRIGGER_LEN} characters long."
+            )
 
         if len(name) > MAX_TRIGGER_NAME_LEN:
             raise lyerrors.TakinaUserInputError(
@@ -58,7 +76,7 @@ class TriggerResponses(commands.Cog):
         settings = await self.get_guild_triggers(ctx.guild.id)
 
         for trigger_data in settings.triggers.values():
-            if trigger_data["trigger"] == trigger:
+            if trigger_data["trigger"].casefold() == trigger.casefold():
                 raise lyerrors.TakinaError(f"A trigger with the text `{trigger}` already exists.")
 
         if len(settings.triggers) >= MAX_TRIGGERS:
@@ -105,38 +123,24 @@ class TriggerResponses(commands.Cog):
         if not settings.triggers:
             raise lyerrors.TakinaError("No triggers are set for this server.")
 
-        description = ""
-        for name, data in settings.triggers.items():
-            description += f"\n- `{name}`:\nTrigger — {data['trigger']}"
-            description += f"\nResponse — {data['response']}"
-
         title = f"{await lyhelpers.fetch_random_emoji()}Trigger List"
+        entries = [
+            f"- `{name}`:\nTrigger — {data['trigger']}\nResponse — {data['response']}"
+            for name, data in settings.triggers.items()
+        ]
 
-        if len(description) > 700:
-            embeds = []
-            current = ""
+        # whole entries per page, so a trigger never ends up apart from its response
+        embeds: list[discord.Embed] = []
+        for chunk in lyhelpers.chunked(entries, TRIGGERS_PER_PAGE):
+            embed = discord.Embed(title=title, colour=config.EMBED_COLOUR)
+            embed.description = "\n".join(chunk)
+            embeds.append(embed)
 
-            for line in description.splitlines():
-                if current and len(current) + len(line) + 1 > 700:
-                    embed = discord.Embed(title=title, colour=config.EMBED_COLOUR)
-                    embed.description = current
-                    embeds.append(embed)
-                    current = ""
-
-                current += f"\n{line}" if current else line
-
-            if current:
-                embed = discord.Embed(title=title, colour=config.EMBED_COLOUR)
-                embed.description = current
-                embeds.append(embed)
-
-            await lyviews.PaginatorView.send(ctx, embeds)
+        if len(embeds) == 1:
+            await ctx.reply(embed=embeds[0], mention_author=False)
             return
 
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.title = title
-        embed.description = description
-        await ctx.reply(embed=embed, mention_author=False)
+        await lyviews.PaginatorView.send(ctx, embeds)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
@@ -154,10 +158,20 @@ class TriggerResponses(commands.Cog):
         if not settings:
             return
 
-        for data in settings.triggers.values():
-            if data["trigger"].lower() in message.content.lower():
-                await message.channel.send(data["response"])
+        for name, data in settings.triggers.items():
+            if not trigger_pattern(data["trigger"]).search(message.content):
+                continue
+
+            key = (message.channel.id, name)
+            now = time.monotonic()
+            if now - self._last_fired.get(key, -TRIGGER_COOLDOWN) < TRIGGER_COOLDOWN:
                 return
+
+            self._last_fired[key] = now
+            await message.channel.send(
+                data["response"], allowed_mentions=discord.AllowedMentions.none()
+            )
+            return
 
 
 async def setup(bot: commands.Bot) -> None:
