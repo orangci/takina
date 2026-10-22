@@ -1,15 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from takina import database, models
-from takina.libs import lychecks
+from takina.libs import lychecks, lyhelpers
 from discord.ext import commands
 from pathlib import Path
 import discord
 import logging
 import aiohttp
 import os
-
-start_time = discord.utils.utcnow()
 
 logger = logging.getLogger("takina.main")
 
@@ -59,6 +57,10 @@ class Bot(commands.Bot):
             ),
         )
 
+        # read by lyhelpers.uptime_fetcher; on the bot so .rx reloading lyhelpers keeps it
+        self.start_time = discord.utils.utcnow()
+        self.http_session: aiohttp.ClientSession | None = None
+
     async def setup_hook(self):
         await database.initiate_database()
 
@@ -73,13 +75,15 @@ class Bot(commands.Bot):
                     logger.exception(f"failed to load {cog}")
 
     async def close(self):
-        await self.http_session.close()
+        if self.http_session is not None:
+            await self.http_session.close()
         await super().close()
 
 
 bot = Bot()
 # our lovely checks
 lychecks.setup(bot)
+lyhelpers.setup(bot)
 
 
 # this will automatically load cogs in from the different subfolders

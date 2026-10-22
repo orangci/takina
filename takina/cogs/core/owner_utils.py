@@ -3,7 +3,7 @@
 from takina.libs import lyerrors, lychecks, lyhelpers, lyviews
 from contextlib import redirect_stdout
 from discord.ext import commands
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 from takina import config
 import importlib
 import traceback
@@ -12,6 +12,9 @@ import logging
 import discord
 import time
 import io
+
+if TYPE_CHECKING:
+    from takina.__main__ import Bot
 
 logger = logging.getLogger("takina.owner_utils")
 
@@ -147,6 +150,7 @@ class OwnerUtils(commands.Cog):
     async def reload_exts(self, ctx: commands.Context, cog: str | None = None):
         importlib.reload(config)
         importlib.reload(lyhelpers)
+        lyhelpers.setup(cast("Bot", self._bot))
         importlib.reload(lyerrors)
         importlib.reload(lychecks)
         importlib.reload(lyviews)

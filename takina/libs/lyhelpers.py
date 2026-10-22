@@ -1,15 +1,32 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from collections.abc import Iterator
-from __main__ import bot, start_time
 from takina.libs import lyerrors
 from discord.ext import commands
 from takina import config
-from typing import Any
+from typing import TYPE_CHECKING, Any
 import datetime
 import discord
 import random
 import re
+
+if TYPE_CHECKING:
+    from takina.__main__ import Bot
+
+_bot: "Bot | None" = None
+
+
+def setup(bot: "Bot") -> None:
+    # called by __main__ at startup, and again by .rx after reloading this module
+    global _bot
+    _bot = bot
+
+
+def get_bot() -> "Bot":
+    if _bot is None:
+        raise RuntimeError("lyhelpers.setup(bot) has not been called.")
+
+    return _bot
 
 
 # for requesting data from APIs
@@ -21,6 +38,7 @@ async def request(
     *args,
     **kwargs,
 ):
+    bot = get_bot()
     if not bot.http_session:
         raise RuntimeError("Client HTTP session has not been initialised.")
 
@@ -81,7 +99,7 @@ def reverse_duration_calculator(seconds: int) -> str:
 # uptime checker
 def uptime_fetcher() -> str:
     current_time = datetime.datetime.now(datetime.UTC)
-    uptime_duration = current_time - start_time
+    uptime_duration = current_time - get_bot().start_time
 
     # Format the uptime duration
     days, seconds = uptime_duration.days, uptime_duration.seconds
@@ -95,7 +113,7 @@ def uptime_fetcher() -> str:
 
 
 async def fetch_random_emoji() -> str:
-    emojis = await bot.fetch_application_emojis()
+    emojis = await get_bot().fetch_application_emojis()
     if not emojis:
         return ""
     random_emoji = random.choice(emojis)
