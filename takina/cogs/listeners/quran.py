@@ -3,8 +3,12 @@
 from takina.libs import lyhelpers, lyerrors
 from discord.ext import commands
 from takina import config
+import logging
 import discord
+import aiohttp
 import re
+
+logger = logging.getLogger("takina.quran")
 
 
 class Quran(commands.Cog):
@@ -26,22 +30,29 @@ class Quran(commands.Cog):
         surah = int(match.group(1))
         ayah = int(match.group(2))
 
-        if not (1 <= surah <= 114):
+        # an ayah past the end of its surah is refused by the api, and skipped below
+        if not (1 <= surah <= 114) or ayah < 1:
             return
 
         try:
             english_data = await lyhelpers.request(
                 f"https://api.alquran.cloud/v1/ayah/{surah}:{ayah}/en.hilali"
             )
-        except lyerrors.TakinaError:
+            data = english_data["data"]
+            surah_data = data["surah"]
+            title = f"The Holy Qu'rān, Āyah {ayah} of Surah {surah_data['englishName']} ({surah_data['englishNameTranslation']})"
+            text = data["text"]
+        except (lyerrors.TakinaError, aiohttp.ClientError, TimeoutError) as error:
+            logger.debug(f"quran lookup for {surah}:{ayah} failed: {error}")
             return
-
-        if not english_data:
+        except (KeyError, TypeError) as error:
+            # the api changed shape under us
+            logger.warning(f"unexpected quran api response for {surah}:{ayah}: {error!r}")
             return
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.title = f"The Holy Qu'rān, Āyah {ayah} of Surah {english_data['data']['surah']['englishName']} ({english_data['data']['surah']['englishNameTranslation']})"
-        embed.description = english_data["data"]["text"]
+        embed.title = title
+        embed.description = text
         embed.set_footer(text="English translation by Hilali & Khan")
         await message.reply(embed=embed, mention_author=False)
 
