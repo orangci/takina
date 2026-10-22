@@ -88,10 +88,13 @@ class Starboard(commands.Cog):
         starboard_channel: discord.TextChannel,
         settings: StarboardSettingsModel,
     ) -> None:
-        try:
-            message = await channel.fetch_message(payload.message_id)
-        except discord.NotFound:
-            return
+        # discord.py keeps reactions current on cached messages, which saves a fetch per reaction
+        message = discord.utils.get(self._bot.cached_messages, id=payload.message_id)
+        if message is None:
+            try:
+                message = await channel.fetch_message(payload.message_id)
+            except discord.NotFound:
+                return
 
         if message.author.bot:
             return
