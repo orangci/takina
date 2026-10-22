@@ -7,7 +7,11 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime, UTC
 from discord.ext import commands
 from contextlib import suppress
+from sqlmodel import col
+import logging
 import discord
+
+logger = logging.getLogger("takina.modlog")
 
 MAX_CASE_ATTEMPTS = 5
 MAX_MASS_TARGETS = 10
@@ -28,13 +32,46 @@ PAST_TENSE = {
 
 
 async def next_case_id(guild_id: int) -> int:
-    cases = await database.get_all(models.ModLogCaseModel, guild_id=guild_id)
-    if not cases:
+    latest = await database.get_all(
+        models.ModLogCaseModel,
+        guild_id=guild_id,
+        order_by=col(models.ModLogCaseModel.case_id).desc(),
+        limit=1,
+    )
+    if not latest:
         # we start the server's cases with case #0, not #1
         # because #0 has more aura
         return 0
 
-    return max(case.case_id for case in cases) + 1
+    return latest[0].case_id + 1
+
+
+def case_embed(
+    case: models.ModLogCaseModel,
+    avatar_url: str | None = None,
+    edited_by: discord.Member | discord.User | None = None,
+) -> discord.Embed:
+    action = f"{case.action.title()} ({case.duration})" if case.duration else case.action.title()
+    targets = ", ".join(f"<@{member_id}>" for member_id in case.member_ids) or "Unknown"
+
+    embed = discord.Embed(colour=config.EMBED_COLOUR)
+    embed.timestamp = case.timestamp
+    embed.add_field(name="Action", value=action, inline=True)
+    embed.add_field(name="Case", value=f"#{case.case_id}", inline=True)
+    embed.add_field(name="Moderator", value=f"<@{case.moderator_id}>", inline=True)
+    embed.add_field(name="Targets" if case.mass_action else "Target", value=targets, inline=False)
+    embed.add_field(name="Reason", value=case.reason, inline=False)
+
+    if edited_by is not None:
+        edited_at = int(datetime.now(UTC).timestamp())
+        embed.add_field(
+            name="Edited", value=f"By {edited_by.mention} <t:{edited_at}:R>", inline=False
+        )
+
+    if avatar_url and not case.mass_action:
+        embed.set_thumbnail(url=avatar_url)
+
+    return embed
 
 
 async def log_action(
@@ -80,27 +117,40 @@ async def log_action(
     if not isinstance(channel, discord.TextChannel):
         return
 
-    action_name = f"{action.title()} ({duration})" if duration else action.title()
+    avatar = targets[0].avatar
+    embed = case_embed(case, avatar.url if avatar else None)
 
-    embed = discord.Embed(colour=config.EMBED_COLOUR)
-    embed.timestamp = timestamp
-    embed.add_field(name="Action", value=action_name, inline=True)
-    embed.add_field(name="Case", value=f"#{case.case_id}", inline=True)
-    embed.add_field(name="Moderator", value=moderator.mention, inline=True)
+    try:
+        message = await channel.send(embed=embed)
+    except discord.HTTPException as error:
+        # the case is saved and the action done, so a broken log channel must not fail them
+        logger.warning(f"could not post case #{case.case_id} in guild {guild.id}: {error}")
+        return
 
-    if mass_action:
-        embed.add_field(
-            name="Targets", value=", ".join(target.mention for target in targets), inline=False
+    case.log_channel_id = channel.id
+    case.log_message_id = message.id
+    await database.save(case)
+
+
+async def update_logged_case(
+    guild: discord.Guild, case: models.ModLogCaseModel, edited_by: discord.Member | discord.User
+) -> None:
+    if case.log_channel_id is None or case.log_message_id is None:
+        return
+
+    channel = guild.get_channel(case.log_channel_id)
+    if not isinstance(channel, discord.TextChannel):
+        return
+
+    target = guild.get_member(case.member_ids[0]) if case.member_ids else None
+    avatar_url = target.display_avatar.url if target else None
+
+    try:
+        await channel.get_partial_message(case.log_message_id).edit(
+            embed=case_embed(case, avatar_url, edited_by)
         )
-    else:
-        embed.add_field(name="Target", value=targets[0].mention, inline=False)
-
-    embed.add_field(name="Reason", value=reason, inline=False)
-
-    if not mass_action and targets[0].avatar:
-        embed.set_thumbnail(url=targets[0].avatar.url)
-
-    await channel.send(embed=embed)
+    except discord.HTTPException as error:
+        logger.warning(f"could not update case #{case.case_id} in guild {guild.id}: {error}")
 
 
 def mass_targets[T: (discord.Member, discord.User)](targets: Sequence[T], action: str) -> list[T]:

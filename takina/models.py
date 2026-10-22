@@ -94,6 +94,9 @@ class ModLogCaseModel(SQLModel, table=True):
     duration: str | None = None
     timestamp: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
     mass_action: bool = False
+    # where the case was posted, so edits can update that message
+    log_channel_id: int | None = Field(default=None, sa_type=BigInteger)
+    log_message_id: int | None = Field(default=None, sa_type=BigInteger)
 
 
 class StarboardSettingsModel(SQLModel, table=True):

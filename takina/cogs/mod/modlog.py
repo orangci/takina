@@ -1,9 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyerrors, lyviews
+from takina.libs import lychecks, lyerrors, lyhelpers, lymodlog, lyviews
 from datetime import datetime, timedelta, UTC
 from takina import config, database, models
 from discord.ext import commands
+from sqlmodel import col
+from typing import cast
 import discord
 
 
@@ -52,33 +54,10 @@ class ModLog(commands.Cog):
         if case is None:
             raise lyerrors.TakinaNotFoundError(f"Case `#{case_id}` does not exist.")
 
-        action = (
-            f"{case.action.title()} ({case.duration})" if case.duration else case.action.title()
-        )
+        target = self._bot.get_user(case.member_ids[0]) if case.member_ids else None
+        avatar_url = target.avatar.url if target and target.avatar else None
 
-        if case.mass_action:
-            targets = ", ".join(f"<@{member_id}>" for member_id in case.member_ids)
-        else:
-            targets = f"<@{case.member_ids[0]}>"
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.timestamp = case.timestamp
-
-        embed.add_field(name="Action", value=action, inline=True)
-        embed.add_field(name="Case", value=f"#{case.case_id}", inline=True)
-        embed.add_field(name="Moderator", value=f"<@{case.moderator_id}>", inline=True)
-        embed.add_field(
-            name="Targets" if case.mass_action else "Target", value=targets, inline=False
-        )
-        embed.add_field(name="Reason", value=case.reason, inline=False)
-
-        if not case.mass_action:
-            target = self._bot.get_user(case.member_ids[0])
-
-            if target is not None and target.avatar:
-                embed.set_thumbnail(url=target.avatar.url)
-
-        await ctx.reply(embed=embed, mention_author=False)
+        await ctx.reply(embed=lymodlog.case_embed(case, avatar_url), mention_author=False)
 
     @commands.hybrid_command(
         aliases=["caseedit", "editc"],
@@ -87,7 +66,7 @@ class ModLog(commands.Cog):
     )
     @lychecks.has_permissions(moderate_members=True)
     @lychecks.guild_only()
-    async def edit_case(self, ctx: commands.Context, case_id: int, *, new_reason: str):
+    async def edit_case(self, ctx: commands.Context, case_id: int, *, new_reason: lymodlog.Reason):
         assert ctx.guild is not None
 
         case = await database.get(models.ModLogCaseModel, guild_id=ctx.guild.id, case_id=case_id)
@@ -96,41 +75,31 @@ class ModLog(commands.Cog):
 
         case.reason = new_reason
         await database.save(case)
+        await lymodlog.update_logged_case(ctx.guild, case, ctx.author)
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"Case `#{case_id}`'s reason has been updated."
+        embed.description = f"{config.emojis.SUCCESS} Case `#{case_id}`'s reason has been updated."
 
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(description="List moderation cases for a user.", usage="@user")
-    @lychecks.has_permissions(moderate_members=True)
-    @lychecks.guild_only()
-    async def cases(self, ctx: commands.Context, user: discord.Member | None = None):
-        assert ctx.guild is not None
-
-        cases = await database.get_all(models.ModLogCaseModel, guild_id=ctx.guild.id)
-        if user is not None:
-            cases = [case for case in cases if user.id in case.member_ids]
-
-        # sort cases by newest to oldest
-        # ..like wick!
-        cases.sort(key=lambda case: case.case_id, reverse=True)
-        if not cases:
-            raise lyerrors.TakinaNotFoundError("This server has no moderation cases yet.")
-
+    async def send_case_list(
+        self,
+        ctx: commands.Context,
+        cases: list[models.ModLogCaseModel],
+        title: str,
+        footer: str | None = None,
+    ) -> None:
         embeds: list[discord.Embed] = []
-        for chunk_start in range(0, len(cases), 10):
-            chunk = cases[chunk_start : chunk_start + 10]
-
+        for chunk in lyhelpers.chunked(cases, 10):
             embed = discord.Embed(colour=config.EMBED_COLOUR)
-            embed.title = "Moderation Cases"
+            embed.title = title
             embed.description = "\n".join(
                 f"`#{case.case_id}`: **{case.action.title()}** <t:{int(case.timestamp.timestamp())}:R>"
                 for case in chunk
             )
 
-            if user is not None:
-                embed.set_footer(text=f"Cases for {user}")
+            if footer is not None:
+                embed.set_footer(text=footer)
 
             embeds.append(embed)
 
@@ -139,6 +108,27 @@ class ModLog(commands.Cog):
             return
 
         await lyviews.PaginatorView.send(ctx, embeds)
+
+    @commands.hybrid_command(description="List moderation cases for a user.", usage="@user")
+    @lychecks.has_permissions(moderate_members=True)
+    @lychecks.guild_only()
+    async def cases(self, ctx: commands.Context, user: discord.Member | None = None):
+        assert ctx.guild is not None
+
+        where = [] if user is None else [col(models.ModLogCaseModel.member_ids).contains([user.id])]
+        # sort cases by newest to oldest
+        # ..like wick!
+        cases = await database.get_all(
+            models.ModLogCaseModel,
+            guild_id=ctx.guild.id,
+            where=where,
+            order_by=col(models.ModLogCaseModel.case_id).desc(),
+        )
+        if not cases:
+            raise lyerrors.TakinaNotFoundError("This server has no moderation cases yet.")
+
+        footer = f"Cases for {user}" if user is not None else None
+        await self.send_case_list(ctx, cases, "Moderation Cases", footer)
 
     @commands.hybrid_command(
         description="List moderation cases performed by a moderator.", usage="@user"
@@ -147,38 +137,20 @@ class ModLog(commands.Cog):
     @lychecks.guild_only()
     async def modcases(self, ctx: commands.Context, moderator: discord.Member | None = None):
         assert ctx.guild is not None
+        moderator = moderator or cast(discord.Member, ctx.author)
 
-        moderator = moderator or ctx.guild.get_member(ctx.author.id)
-        if moderator is None:
-            raise lyerrors.TakinaNotFoundError("Could not resolve the moderator.")
-
-        cases = await database.get_all(models.ModLogCaseModel, guild_id=ctx.guild.id)
-        cases = [case for case in cases if case.moderator_id == moderator.id]
-        cases.sort(key=lambda case: case.case_id)
-
+        cases = await database.get_all(
+            models.ModLogCaseModel,
+            guild_id=ctx.guild.id,
+            moderator_id=moderator.id,
+            order_by=col(models.ModLogCaseModel.case_id).desc(),
+        )
         if not cases:
             raise lyerrors.TakinaNotFoundError(
                 f"{moderator.mention} has not performed any moderation actions."
             )
 
-        embeds: list[discord.Embed] = []
-        for chunk_start in range(0, len(cases), 10):
-            chunk = cases[chunk_start : chunk_start + 10]
-
-            embed = discord.Embed(colour=config.EMBED_COLOUR)
-            embed.title = f"Moderation Cases — {moderator.display_name}"
-            embed.description = "\n".join(
-                f"`#{case.case_id}`: **{case.action.title()}** <t:{int(case.timestamp.timestamp())}:R>"
-                for case in chunk
-            )
-
-            embeds.append(embed)
-
-        if len(embeds) == 1:
-            await ctx.reply(embed=embeds[0], mention_author=False)
-            return
-
-        await lyviews.PaginatorView.send(ctx, embeds)
+        await self.send_case_list(ctx, cases, f"Moderation Cases — {moderator.display_name}")
 
     @commands.hybrid_command(
         aliases=["ms"], description="List moderation statistics for a user.", usage="@user"
@@ -187,22 +159,25 @@ class ModLog(commands.Cog):
     @lychecks.guild_only()
     async def modstats(self, ctx: commands.Context, user: discord.Member | None = None):
         assert ctx.guild is not None
+        user = user or cast(discord.Member, ctx.author)
 
-        user = user or ctx.guild.get_member(ctx.author.id)
-        if user is None:
-            raise lyerrors.TakinaNotFoundError("Could not resolve the user.")
-
-        cases = await database.get_all(models.ModLogCaseModel, guild_id=ctx.guild.id)
-        user_cases = [case for case in cases if case.moderator_id == user.id]
+        user_cases = await database.get_all(
+            models.ModLogCaseModel, guild_id=ctx.guild.id, moderator_id=user.id
+        )
 
         now = datetime.now(UTC)
         past_7_days = now - timedelta(days=7)
         past_30_days = now - timedelta(days=30)
 
+        def base_action(case: models.ModLogCaseModel) -> str:
+            # a mass ban is still a ban, and so is a hackban
+            action = case.action.removeprefix("mass ")
+            return "ban" if action == "hackban" else action
+
         def count_actions(cases: list[models.ModLogCaseModel]) -> str:
             return "\n".join(
-                f"> **{action.title()}s**: {sum(case.action == action for case in cases):,}"
-                for action in ("warn", "mute", "ban")
+                f"> **{action.title()}s**: {sum(base_action(case) == action for case in cases):,}"
+                for action in ("warn", "mute", "kick", "ban")
             )
 
         last_7_days = [case for case in user_cases if case.timestamp >= past_7_days]
