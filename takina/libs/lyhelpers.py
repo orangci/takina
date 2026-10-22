@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from takina.__main__ import Bot
 
 _bot: "Bot | None" = None
+_application_emojis: list[discord.Emoji] | None = None
 
 
 def setup(bot: "Bot") -> None:
@@ -118,11 +119,15 @@ def uptime_fetcher() -> str:
 
 
 async def fetch_random_emoji() -> str:
-    emojis = await get_bot().fetch_application_emojis()
-    if not emojis:
+    # fetched once; new application emojis show up after a restart or .rx
+    global _application_emojis
+    if _application_emojis is None:
+        _application_emojis = await get_bot().fetch_application_emojis()
+
+    if not _application_emojis:
         return ""
-    random_emoji = random.choice(emojis)
-    return "" if not random_emoji else str(random_emoji) + " "
+
+    return f"{random.choice(_application_emojis)} "
 
 
 def get_ordinal(n: int) -> str:
