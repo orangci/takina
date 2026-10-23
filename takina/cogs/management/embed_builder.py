@@ -23,7 +23,7 @@ class EmbedBuilder(commands.Cog):
 
 
 async def send_error(interaction: discord.Interaction, description: str) -> None:
-    embed = discord.Embed(colour=config.EMBED_COLOUR)
+    embed = discord.Embed(colour=config.ERROR_COLOUR)
     embed.description = f"{config.emojis.ERROR} {description}"
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
