@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lyerrors, lyhelpers, lychecks
 from discord.ext import commands
+from urllib.parse import quote
 from takina import config
 import discord
 
@@ -16,7 +17,7 @@ class Minecraft(commands.Cog):
     @lychecks.is_user_app()
     async def mcskin(self, ctx: commands.Context, username: str):
         data = await lyhelpers.request(
-            f"https://api.mojang.com/users/profiles/minecraft/{username}",
+            f"https://api.mojang.com/users/profiles/minecraft/{quote(username, safe='')}",
             not_found=f"Could not find a Minecraft player with the username `{username}`.",
         )
         if not data:
@@ -26,8 +27,10 @@ class Minecraft(commands.Cog):
 
         uuid = data["id"]
 
+        # mojang's spelling, not whatever capitalisation was typed
         embed = discord.Embed(
-            title=await lyhelpers.fetch_random_emoji() + username, colour=config.EMBED_COLOUR
+            title=await lyhelpers.fetch_random_emoji() + data.get("name", username),
+            colour=config.EMBED_COLOUR,
         )
         embed.set_image(url=f"https://visage.surgeplay.com/full/384/{uuid}")
         embed.set_footer(text=f"UUID: {uuid}")
