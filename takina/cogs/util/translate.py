@@ -6,6 +6,9 @@ from takina import config
 import discord
 import re
 
+# both texts share one embed description, which holds 4096 characters
+MAX_TEXT_LENGTH = 2000
+
 
 class Translate(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -18,11 +21,15 @@ class Translate(commands.Cog):
         usage="en-ar peace be upon you",
     )
     @lychecks.is_user_app()
-    async def translate(self, ctx: commands.Context, lang: str, *, text: str):
+    async def translate(
+        self, ctx: commands.Context, lang: str, *, text: commands.Range[str, 1, MAX_TEXT_LENGTH]
+    ):
         if not re.fullmatch(r"[a-z]{2}(?:-[a-z]{2})?", lang):
             raise lyerrors.TakinaUserInputError(
                 f"Invalid language format: `{lang}`. Use `from-to`, e.g. `en-ar` for English to Arabic."
             )
+
+        await ctx.defer()
 
         source, target = ("auto", lang) if "-" not in lang else lang.split("-", 1)
         data = await lyhelpers.request(
@@ -44,7 +51,9 @@ class Translate(commands.Cog):
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.description = f"> **Original**: {text}"
-        embed.description += f"\n> **Translation**: {translated_text}"
+        embed.description += (
+            f"\n> **Translation**: {lyhelpers.truncate(translated_text, MAX_TEXT_LENGTH)}"
+        )
         await ctx.reply(embed=embed, mention_author=False)
 
 
