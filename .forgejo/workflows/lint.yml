@@ -1,0 +1,26 @@
+name: Lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - name: Set up uv
+        uses: https://github.com/astral-sh/setup-uv@v10
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Ruff format
+        run: uv run ruff format --check
+      - name: Ruff check
+        # the config fixes by default, which would hide problems here
+        run: uv run ruff check --no-fix
+      - name: Ty check
+        run: uv run ty check
+      - name: Import order
+        run: uv run python scripts/check_imports.py

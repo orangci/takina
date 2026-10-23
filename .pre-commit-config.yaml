@@ -19,6 +19,14 @@ repos:
         language: system
         pass_filenames: false
 
+      # longest line first, which ruff's isort cannot express
+      - id: import-order
+        name: import order
+        entry: python3 scripts/check_imports.py
+        language: system
+        types: [python]
+        exclude: ^takina/migrations/
+
       - id: uv-lock
         name: uv lock
         entry: uv lock
