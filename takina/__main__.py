@@ -12,20 +12,17 @@ import os
 logger = logging.getLogger("takina.main")
 
 
+# these work everywhere, alongside the server's prefix or the default one
+NAME_PREFIXES = ["takina ", "Takina "]
+
+
 async def get_prefix(bot: commands.Bot, message: discord.Message) -> list[str]:
-    default_prefixes = [".", "takina ", "Takina "]
+    if message.guild is not None:
+        prefix = await database.get(models.PrefixModel, guild_id=message.guild.id)
+        if prefix is not None:
+            return [prefix.prefix, *NAME_PREFIXES]
 
-    if message.guild is None:
-        return default_prefixes
-
-    prefix = await database.get(models.PrefixModel, guild_id=message.guild.id)
-    if prefix is not None:
-        return [prefix.prefix, "takina ", "Takina "]
-
-    if env_prefix := os.getenv("PREFIX"):
-        return [env_prefix]
-
-    return default_prefixes
+    return [os.getenv("PREFIX") or ".", *NAME_PREFIXES]
 
 
 class Bot(commands.Bot):
