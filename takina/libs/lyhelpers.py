@@ -1,15 +1,21 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from geopy.adapters import AioHTTPAdapter
+from typing import TYPE_CHECKING, Any
+from geopy.geocoders import Nominatim
 from collections.abc import Iterator
+from geopy.location import Location
 from takina.libs import lyerrors
 from discord.ext import commands
+from geopy.exc import GeopyError
 from takina import config
-from typing import TYPE_CHECKING, Any
 import datetime
+import asyncio
 import discord
 import aiohttp
 import random
 import html
+import time
 import re
 
 if TYPE_CHECKING:
@@ -17,6 +23,10 @@ if TYPE_CHECKING:
 
 _bot: "Bot | None" = None
 _application_emojis: list[discord.Emoji] | None = None
+
+# nominatim allows one request a second from the whole bot, so every caller queues here
+_geocode_lock = asyncio.Lock()
+_last_geocode = 0.0
 
 
 def setup(bot: "Bot") -> None:
@@ -221,6 +231,24 @@ def strip_html(text: str) -> str:
     # api descriptions often arrive as html, with <br> where paragraphs should be
     text = re.sub(r"<br\s*/?>|</p>", "\n", text, flags=re.IGNORECASE)
     return html.unescape(re.sub(r"<[^>]+>", "", text)).strip()
+
+
+async def geocode(query: str) -> Location | None:
+    global _last_geocode
+
+    async with _geocode_lock:
+        if (wait := _last_geocode + 1 - time.monotonic()) > 0:
+            await asyncio.sleep(wait)
+
+        try:
+            async with Nominatim(
+                user_agent=config.USER_AGENT, adapter_factory=AioHTTPAdapter, timeout=10
+            ) as geolocator:
+                return await geolocator.geocode(query, language="en")
+        except GeopyError as error:
+            raise lyerrors.TakinaError("The location service could not be reached.") from error
+        finally:
+            _last_geocode = time.monotonic()
 
 
 async def fetch_member_count(guild: discord.Guild) -> int:
