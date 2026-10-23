@@ -3,19 +3,19 @@ repos:
     hooks:
       - id: ruff-format
         name: ruff format
-        entry: sh -c 'if command -v ruff >/dev/null 2>&1; then ruff format; else uv run ruff format; fi'
+        entry: uv run ruff format
         language: system
         pass_filenames: false
 
       - id: ruff-check
         name: ruff check
-        entry: sh -c 'if command -v ruff >/dev/null 2>&1; then ruff check; else uv run ruff check; fi'
+        entry: uv run ruff check
         language: system
         pass_filenames: false
 
       - id: ty-check
         name: ty check
-        entry: sh -c 'if command -v ty >/dev/null 2>&1; then ty check; else uv run ty check; fi'
+        entry: uv run ty check
         language: system
         pass_filenames: false
 
