@@ -5,7 +5,6 @@ from datetime import datetime, timedelta, UTC
 from takina import config, database, models
 from discord.ext import commands
 from sqlmodel import col
-from typing import cast
 import discord
 
 
@@ -99,7 +98,7 @@ class ModLog(commands.Cog):
     @commands.hybrid_command(description="List moderation cases for a user.", usage="@user")
     @lychecks.has_permissions(moderate_members=True)
     @lychecks.guild_only()
-    async def cases(self, ctx: commands.Context, user: discord.Member | None = None):
+    async def cases(self, ctx: commands.Context, user: discord.Member | discord.User | None = None):
         assert ctx.guild is not None
 
         where = [] if user is None else [col(models.ModLogCaseModel.member_ids).contains([user.id])]
@@ -122,9 +121,11 @@ class ModLog(commands.Cog):
     )
     @lychecks.has_permissions(moderate_members=True)
     @lychecks.guild_only()
-    async def modcases(self, ctx: commands.Context, moderator: discord.Member | None = None):
+    async def modcases(
+        self, ctx: commands.Context, moderator: discord.Member | discord.User | None = None
+    ):
         assert ctx.guild is not None
-        moderator = moderator or cast(discord.Member, ctx.author)
+        moderator = moderator or ctx.author
 
         cases = await database.get_all(
             models.ModLogCaseModel,
@@ -144,9 +145,11 @@ class ModLog(commands.Cog):
     )
     @lychecks.has_permissions(moderate_members=True)
     @lychecks.guild_only()
-    async def modstats(self, ctx: commands.Context, user: discord.Member | None = None):
+    async def modstats(
+        self, ctx: commands.Context, user: discord.Member | discord.User | None = None
+    ):
         assert ctx.guild is not None
-        user = user or cast(discord.Member, ctx.author)
+        user = user or ctx.author
 
         user_cases = await database.get_all(
             models.ModLogCaseModel, guild_id=ctx.guild.id, moderator_id=user.id
