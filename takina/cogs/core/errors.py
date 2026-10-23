@@ -44,9 +44,6 @@ class Errors(commands.Cog):
                 "This command is restricted to Takina's maintainers (`/maintainers`)."
             )
 
-        elif str(error) in {"That command does not exist.", "That subcommand does not exist."}:
-            error = lyerrors.TakinaNotFoundError(str(error))
-
         elif isinstance(error, commands.BotMissingPermissions):
             perms = ", ".join(perm.replace("_", " ").title() for perm in error.missing_permissions)
             error = lyerrors.TakinaBotPermissionError(
@@ -96,10 +93,6 @@ class Errors(commands.Cog):
                 await ctx.send(embed=embed, ephemeral=True)
             else:
                 await ctx.reply(embed=embed, mention_author=False)
-            return
-
-        if isinstance(error, lyerrors.TakinaMissingEnvironmentVariableError):
-            print(error.message)
             return
 
 
