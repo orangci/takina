@@ -126,7 +126,7 @@ class Settings(commands.Cog):
         description="Set the channel where reports are sent, and optionally a role to ping.",
         usage="#reports @Moderators",
     )
-    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.has_permissions(manage_guild=True)
     @lychecks.guild_only()
     async def reports(
         self,
@@ -149,7 +149,7 @@ class Settings(commands.Cog):
         description="Set the starboard channel and how many reactions a message needs.",
         usage="#starboard 4",
     )
-    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.has_permissions(manage_guild=True)
     @lychecks.guild_only()
     async def starboard(
         self,

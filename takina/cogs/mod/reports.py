@@ -23,7 +23,7 @@ class Reports(commands.Cog):
     @report.command(
         name="channel", description="Moved to /settings guild reports.", usage="#channel"
     )
-    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.has_permissions(manage_guild=True)
     @lychecks.guild_only()
     async def report_channel(
         self,

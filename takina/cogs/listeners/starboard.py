@@ -137,10 +137,11 @@ class Starboard(commands.Cog):
             StarboardMessageModel(message_id=message.id, starboard_message_id=starboard_message.id)
         )
 
+    # permissions sit on each subcommand only, as slash never runs the group's checks, and the
+    # moved ones need manage_guild where the whitelist needs manage_channels
     @commands.hybrid_group(
         name="starboard", description="Configure the starboard.", invoke_without_command=True
     )
-    @lychecks.has_permissions(manage_channels=True)
     @lychecks.guild_only()
     async def starboard(self, ctx: commands.Context) -> None:
         if ctx.invoked_subcommand is None:
@@ -149,8 +150,7 @@ class Starboard(commands.Cog):
     @starboard.command(
         name="settings", description="Moved to /settings guild starboard.", usage="#channel 4"
     )
-    # slash subcommands do not run the group's checks
-    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.has_permissions(manage_guild=True)
     @lychecks.guild_only()
     async def starboard_settings(
         self, ctx: commands.Context, channel: discord.TextChannel, reaction_count: int
@@ -160,7 +160,7 @@ class Starboard(commands.Cog):
         )
 
     @starboard.command(name="disable", description="Moved to /settings guild disable.")
-    @lychecks.has_permissions(manage_channels=True)
+    @lychecks.has_permissions(manage_guild=True)
     @lychecks.guild_only()
     async def starboard_disable(self, ctx: commands.Context) -> None:
         await lyhelpers.invoke_moved(ctx, "settings guild disable", feature="starboard")
