@@ -31,22 +31,37 @@
       ...
     }:
     let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-      inherit (pkgs) lib;
-      inherit (lib) singleton composeManyExtensions;
-      python = pkgs.python313;
+      inherit (nixpkgs) lib;
+      inherit (lib) singleton composeManyExtensions genAttrs;
+
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+
       workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };
       uvLockedOverlay = workspace.mkPyprojectOverlay { sourcePreference = "wheel"; };
-      pythonSet =
-        (pkgs.callPackage pyproject-nix.build.packages { inherit python; }).overrideScope
-          (composeManyExtensions [
-            pyproject-build-systems.overlays.default
-            uvLockedOverlay
-          ]);
 
-      takina = pythonSet."takina";
-      appPythonEnv = pythonSet.mkVirtualEnv (takina.pname + "-env") workspace.deps.default;
+      # everything below is built once per system
+      forAllSystems =
+        f:
+        genAttrs systems (
+          system:
+          let
+            pkgs = import nixpkgs { inherit system; };
+            pythonSet =
+              (pkgs.callPackage pyproject-nix.build.packages { python = pkgs.python313; }).overrideScope
+                (composeManyExtensions [
+                  pyproject-build-systems.overlays.default
+                  uvLockedOverlay
+                ]);
+            takina = pythonSet."takina";
+          in
+          f {
+            inherit system pkgs takina;
+            appPythonEnv = pythonSet.mkVirtualEnv (takina.pname + "-env") workspace.deps.default;
+          }
+        );
     in
     {
       nixosModules = {
@@ -54,50 +69,70 @@
         takina = import ./nix/module.nix self;
       };
 
-      devShells.${system}.default = pkgs.mkShell {
-        packages = [
-          appPythonEnv
-          pkgs.ruff
-          pkgs.uv
-          pkgs.gcc.cc.lib
-        ];
+      devShells = forAllSystems (
+        { pkgs, appPythonEnv, ... }:
+        {
+          default = pkgs.mkShell {
+            packages = [
+              appPythonEnv
+              pkgs.ruff
+              pkgs.uv
+              pkgs.gcc.cc.lib
+            ];
 
-        shellHook = ''
-          export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.gcc.cc.lib ]}:$LD_LIBRARY_PATH"
+            shellHook = ''
+              export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.gcc.cc.lib ]}:$LD_LIBRARY_PATH"
 
-          if [ -f .env ]; then
-            set -a
-            . .env
-            set +a
-          fi
-        '';
-      };
+              if [ -f .env ]; then
+                set -a
+                . .env
+                set +a
+              fi
+            '';
+          };
+        }
+      );
 
-      packages.${system}.default = pkgs.stdenv.mkDerivation {
-        inherit (takina) pname;
-        inherit (takina) version;
-        meta.mainProgram = "takina";
-        src = ./.;
+      packages = forAllSystems (
+        {
+          pkgs,
+          takina,
+          appPythonEnv,
+          ...
+        }:
+        {
+          default = pkgs.stdenv.mkDerivation {
+            inherit (takina) pname;
+            inherit (takina) version;
+            meta.mainProgram = "takina";
+            src = ./.;
 
-        nativeBuildInputs = singleton pkgs.makeWrapper;
-        buildInputs = singleton appPythonEnv;
-        installPhase = ''
-          mkdir -p $out/app
-          cp -r ./* $out/app/
+            nativeBuildInputs = singleton pkgs.makeWrapper;
+            buildInputs = singleton appPythonEnv;
+            # --chdir puts the app on python's path for -m, so no PYTHONPATH is needed
+            installPhase = ''
+              mkdir -p $out/app
+              cp -r ./* $out/app/
 
-          mkdir -p $out/bin
-          makeWrapper ${appPythonEnv}/bin/python $out/bin/takina \
-            --chdir $out/app \
-            --set PYTHONPATH ${./takina} \
-            --set QALC ${pkgs.libqalculate}/bin/qalc \
-            --set BOT_VERSION ${takina.version} \
-            --add-flags "-m takina"
-        '';
-      };
+              mkdir -p $out/bin
+              makeWrapper ${appPythonEnv}/bin/python $out/bin/takina \
+                --chdir $out/app \
+                --set QALC ${pkgs.libqalculate}/bin/qalc \
+                --set BOT_VERSION ${takina.version} \
+                --add-flags "-m takina"
+            '';
+          };
+        }
+      );
 
-      apps.${system}.default = {
-        type = "app";
-        program = "${self.packages.${system}.default}/bin/${takina.pname}";
-      };
+      apps = forAllSystems (
+        { system, takina, ... }:
+        {
+          default = {
+            type = "app";
+            program = "${self.packages.${system}.default}/bin/${takina.pname}";
+          };
+        }
+      );
     };
 }
