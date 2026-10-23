@@ -84,12 +84,11 @@ class Help(commands.HelpCommand):
         if not filtered:
             raise lyerrors.TakinaNotFoundError("That command does not exist.")
 
-        if filtered:
-            description.append("")
-            description.append("**Subcommands**")
+        description.append("")
+        description.append("**Subcommands**")
 
-            for command in filtered:
-                description.append(f"> {self.get_command_signature(command)}")
+        for command in filtered:
+            description.append(f"> {self.get_command_signature(command)}")
 
         embed.description = "\n".join(description)
 
@@ -109,7 +108,8 @@ class Help(commands.HelpCommand):
         await self.get_destination().send(embed=embed)
 
     async def send_error_message(self, error: str, /):
-        raise lyerrors.TakinaError(error)
+        # only reached through command_not_found and subcommand_not_found below
+        raise lyerrors.TakinaNotFoundError(error)
 
     def subcommand_not_found(self, command: commands.Command, string: str, /) -> str:
         return "That subcommand does not exist."
