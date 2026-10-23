@@ -248,3 +248,8 @@ class TestNotFound:
 async def test_setup_installs_help(bot: commands.Bot) -> None:
     await help_module.setup(bot)
     assert isinstance(bot.help_command, Help)
+
+    # or the bot's own help would list it as "No description."
+    command = bot.get_command("help")
+    assert command is not None
+    assert command.description

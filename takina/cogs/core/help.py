@@ -119,4 +119,4 @@ class Help(commands.HelpCommand):
 
 
 async def setup(bot: commands.Bot):
-    bot.help_command = Help()
+    bot.help_command = Help(command_attrs={"description": "List the commands, or explain one."})

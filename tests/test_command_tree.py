@@ -87,16 +87,9 @@ def test_descriptions(bot: commands.Bot) -> None:
     missing = [
         command.qualified_name
         for command in every_command(bot)
-        if not command.hidden and not command.description and command.name != "help"
+        if not command.hidden and not command.description
     ]
     assert missing == []
-
-
-@pytest.mark.xfail(strict=True, reason="the help command lists itself as having no description")
-def test_help_description(bot: commands.Bot) -> None:
-    command = bot.get_command("help")
-    assert command is not None
-    assert command.description
 
 
 def test_guild_assertions_have_guild_checks(bot: commands.Bot) -> None:
