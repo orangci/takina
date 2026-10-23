@@ -18,7 +18,11 @@ let
     singleton
     optional
     optionalAttrs
+    concatMapStrings
     ;
+
+  # the peer map tying system users to the database user
+  identMapName = "takina-${cfg.database.name}";
 in
 {
   options.services.takina = {
@@ -66,18 +70,6 @@ in
         description = "Create the PostgreSQL database and user locally.";
       };
 
-      hostname = mkOption {
-        type = types.str;
-        default = "localhost";
-        description = "Database hostname.";
-      };
-
-      port = mkOption {
-        type = types.port;
-        default = 5432;
-        description = "Database port.";
-      };
-
       name = mkOption {
         type = types.str;
         default = "takina";
@@ -88,6 +80,16 @@ in
         type = types.str;
         default = "takina";
         description = "PostgreSQL user.";
+      };
+
+      peerUsers = mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+        example = [ "reimu" ];
+        description = ''
+          Extra system users allowed to connect as the database user over the local socket,
+          without a password, e.g. for `psql -U takina takina`.
+        '';
       };
     };
   };
@@ -108,27 +110,28 @@ in
         ensureDBOwnership = true;
       };
 
+      # peer over the socket only, so no other local user or process can pose as the bot
       authentication = ''
-        local ${cfg.database.name} ${cfg.database.user} trust
-        host ${cfg.database.name} ${cfg.database.user} 127.0.0.1/32 trust
-        host ${cfg.database.name} ${cfg.database.user} ::1/128 trust
+        local ${cfg.database.name} ${cfg.database.user} peer map=${identMapName}
       '';
+
+      identMap = ''
+        ${identMapName} ${cfg.user} ${cfg.database.user}
+      ''
+      + concatMapStrings (user: "${identMapName} ${user} ${cfg.database.user}\n") cfg.database.peerUsers;
     };
 
     systemd.services.takina = {
       description = "Takina Discord bot";
       wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ] ++ optional cfg.database.createLocally "postgresql.service";
+      wants = [ "network-online.target" ];
+      after = [ "network-online.target" ] ++ optional cfg.database.createLocally "postgresql.service";
+      requires = optional cfg.database.createLocally "postgresql.service";
 
       environment =
         cfg.config
-        // {
-          NIXOS_INSTANCE = "yes";
-          DB_NAME = cfg.database.name;
-          DB_USER = cfg.database.user;
-        }
         // optionalAttrs cfg.database.createLocally {
-          POSTGRESQL_URI = "postgresql://${cfg.database.user}@${cfg.database.hostname}:${toString cfg.database.port}/${cfg.database.name}";
+          POSTGRESQL_URI = "postgresql://${cfg.database.user}@/${cfg.database.name}?host=/run/postgresql";
         };
 
       serviceConfig = {
@@ -141,6 +144,33 @@ in
         StandardOutput = "inherit";
         StandardError = "inherit";
         EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
+
+        # the bot evaluates user input (owner eval, qalc), so it gets as little as it can work with.
+        # it writes no files, and ping3 uses unprivileged icmp sockets, so no capabilities either
+        NoNewPrivileges = true;
+        CapabilityBoundingSet = "";
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        PrivateTmp = true;
+        PrivateDevices = true;
+        ProtectKernelTunables = true;
+        ProtectKernelModules = true;
+        ProtectKernelLogs = true;
+        ProtectControlGroups = true;
+        ProtectClock = true;
+        ProtectHostname = true;
+        ProtectProc = "invisible";
+        RestrictAddressFamilies = [
+          "AF_UNIX"
+          "AF_INET"
+          "AF_INET6"
+        ];
+        RestrictNamespaces = true;
+        RestrictRealtime = true;
+        RestrictSUIDSGID = true;
+        LockPersonality = true;
+        SystemCallArchitectures = "native";
+        UMask = "0077";
       };
     };
   };

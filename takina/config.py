@@ -25,7 +25,6 @@ HYPIXEL_API_KEY = getenv("HYPIXEL_API_KEY")
 GOOGLE_API_KEY = getenv("GOOGLE_API_KEY")
 STEAM_REGION = getenv("STEAM_REGION", "US")
 ERROR_COLOUR = 0xFF0037
-NIXOS_INSTANCE = getenv("NIXOS_INSTANCE")
 # how many commands can be used in five seconds
 COMMANDS_COOLDOWN = int(getenv("COMMANDS_COOLDOWN") or 5)
 # timeout for libqalculate in seconds
