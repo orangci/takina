@@ -23,21 +23,24 @@ class Errors(commands.Cog):
 
         error = getattr(error, "original", error)
 
-        # ignore these
-        # discord.py's permission and owner checks are check failures too, but they deserve a message
-        if isinstance(error, commands.CommandNotFound) or (
-            isinstance(error, commands.CheckFailure)
-            and not isinstance(
-                error,
-                (
-                    lyerrors.TakinaError,
-                    commands.MissingPermissions,
-                    commands.BotMissingPermissions,
-                    commands.NotOwner,
-                ),
-            )
-        ):
+        if isinstance(error, commands.CommandNotFound):
             return
+
+        # discord.py's permission and owner checks are check failures too, but they deserve a message
+        if isinstance(error, commands.CheckFailure) and not isinstance(
+            error,
+            (
+                lyerrors.TakinaError,
+                commands.MissingPermissions,
+                commands.BotMissingPermissions,
+                commands.NotOwner,
+            ),
+        ):
+            # prefix commands fail quietly, but an unanswered interaction says it did not respond
+            if ctx.interaction is None:
+                return
+
+            error = lyerrors.TakinaUserInputError("This command is not available here.")
 
         if isinstance(error, commands.CommandOnCooldown):
             await self.notify_cooldown(ctx, error)
