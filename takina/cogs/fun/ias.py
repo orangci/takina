@@ -22,8 +22,7 @@ class Ias(commands.Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(
-        aliases=["umamusume"],
-        description="Fetch a random Uma Musume. Utilises [iostpa's](https://api.iostpa.com) API.",
+        aliases=["umamusume"], description="Fetch a random Uma Musume from iostpa's API."
     )
     @lychecks.has_permissions(embed_links=True)
     @lychecks.is_user_app()
@@ -31,8 +30,7 @@ class Ias(commands.Cog):
         await self.request_api(ctx, "uma")
 
     @commands.hybrid_command(
-        aliases=["2hu"],
-        description="Fetch a random Touhou. Utilises [iostpa's](https://api.iostpa.com) API.",
+        aliases=["2hu"], description="Fetch a random Touhou from iostpa's API."
     )
     @lychecks.has_permissions(embed_links=True)
     @lychecks.is_user_app()

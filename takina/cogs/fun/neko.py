@@ -26,7 +26,7 @@ class Neko(commands.Cog):
     @commands.hybrid_command(
         name="neko",
         aliases=["kitsune"],
-        description="GIF interaction command that utilizes the [nekos.best](https://nekos.best) API.",
+        description="Fetch a GIF or image from nekos.best.",
         usage="kitsune",
     )
     @lychecks.has_permissions(embed_links=True)
