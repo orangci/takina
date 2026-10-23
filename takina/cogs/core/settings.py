@@ -81,6 +81,9 @@ class Settings(commands.Cog):
         )
         embed.description += f"\n> **Reports channel**: {reports}"
         embed.description += f"\n> **Starboard**: {starboard_text}"
+        embed.description += (
+            f"\n> **GitHub previews**: {'On' if settings.github_previews else 'Off'}"
+        )
         await ctx.reply(embed=embed, mention_author=False)
 
     @guild_settings.command(
@@ -165,6 +168,22 @@ class Settings(commands.Cog):
             ctx,
             f"Starboard channel has been set to {channel.mention}.\n{config.emojis.NOTE} **Minimum reactions**: {reaction_count:,}",
         )
+
+    @guild_settings.command(
+        name="github-previews",
+        description="Preview GitHub repositories, issues and pull requests mentioned in chat.",
+        usage="False",
+    )
+    @lychecks.has_permissions(manage_guild=True)
+    @lychecks.guild_only()
+    async def github_previews(self, ctx: commands.Context, enabled: bool):
+        assert ctx.guild is not None
+
+        settings = await database.get_or_create(GuildSettingsModel, guild_id=ctx.guild.id)
+        settings.github_previews = enabled
+        await database.save(settings)
+
+        await self.reply(ctx, f"GitHub previews are now {'on' if enabled else 'off'}.")
 
     @guild_settings.command(name="disable", description="Turn a feature off.", usage="honeypot")
     @lychecks.has_permissions(manage_guild=True)

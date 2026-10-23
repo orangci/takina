@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from takina.models import GuildSettingsModel
 from takina.libs import lyhelpers, lyerrors
+from takina import config, database
 from discord.ext import commands
 from datetime import datetime
-from takina import config
 from typing import Any
 import logging
 import discord
@@ -58,6 +59,13 @@ class GitHub(commands.Cog):
         self._cache[url] = (now, data)
         return data
 
+    async def previews_enabled(self, guild: discord.Guild | None) -> bool:
+        if guild is None:
+            return True
+
+        settings = await database.get(GuildSettingsModel, guild_id=guild.id)
+        return settings is None or settings.github_previews
+
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
         if message.author.bot:
@@ -67,6 +75,10 @@ class GitHub(commands.Cog):
         pr_issue_match = None if repo_match else PR_ISSUE_PATTERN.search(message.content)
         match = repo_match or pr_issue_match
         if match is None or match.group(2) in (".", ".."):
+            return
+
+        # only asked once something matched, so ordinary messages cost no query
+        if not await self.previews_enabled(message.guild):
             return
 
         if repo_match:

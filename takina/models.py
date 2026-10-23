@@ -3,7 +3,7 @@
 from sqlmodel import Field, SQLModel, Column, DateTime, String, JSON
 from sqlalchemy.dialects.postgresql import ARRAY as PGArray
 from sqlalchemy.ext.mutable import MutableList, MutableDict
-from sqlalchemy import BigInteger, UniqueConstraint
+from sqlalchemy import BigInteger, UniqueConstraint, true
 from datetime import datetime
 from secrets import token_hex
 from typing import TypedDict
@@ -29,6 +29,8 @@ class GuildSettingsModel(SQLModel, table=True):
     honeypot_channel_id: int | None = Field(default=None, sa_type=BigInteger)
     reports_channel_id: int | None = Field(default=None, sa_type=BigInteger)
     reports_notification_role_id: int | None = Field(default=None, sa_type=BigInteger)
+    # server_default so existing rows get previews on too
+    github_previews: bool = Field(default=True, sa_column_kwargs={"server_default": true()})
 
 
 class AFKStatusModel(SQLModel, table=True):
