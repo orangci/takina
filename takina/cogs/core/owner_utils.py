@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lyerrors, lychecks, lyhelpers, lyviews
+from takina.libs import lyerrors, lychecks, lyhelpers, lymal, lymodlog, lyviews
 from typing import TYPE_CHECKING, Any, cast
 from contextlib import redirect_stdout
 from discord.ext import commands
@@ -159,6 +159,9 @@ class OwnerUtils(commands.Cog):
         importlib.reload(lyerrors)
         importlib.reload(lychecks)
         importlib.reload(lyviews)
+        # after the libs they import
+        importlib.reload(lymodlog)
+        importlib.reload(lymal)
 
         if cog is None:
             failed_cogs = []
