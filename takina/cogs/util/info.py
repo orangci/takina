@@ -139,10 +139,8 @@ class Info(commands.Cog):
         embed.description = f"> **Server ID**: {guild.id}"
         embed.description += f"\n> **Server Name**: {guild.name}"
 
-        if guild.owner:
-            embed.description += f"\n> **Owner**: {guild.owner.mention}"
-        else:
-            embed.description += "\n> **Owner**: Unknown"
+        # owner_id, as without the members intent the owner is rarely cached
+        embed.description += f"\n> **Owner**: <@{guild.owner_id}>"
 
         embed.description += (
             f"\n> **Created**: <t:{int(guild.created_at.timestamp())}:D>"
