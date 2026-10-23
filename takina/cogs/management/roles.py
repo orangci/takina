@@ -1,9 +1,38 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyerrors, lyhelpers
+from takina.libs import lychecks, lyerrors
 from discord.ext import commands
 from takina import config
 import discord
+
+
+def check_assignable(ctx: commands.Context, member: discord.Member, role: discord.Role) -> None:
+    assert ctx.guild is not None and isinstance(ctx.author, discord.Member)
+
+    if role.is_default() or role.managed:
+        raise lyerrors.TakinaUserInputError(
+            f"{role.mention} is managed by Discord or an integration, so it cannot be given out."
+        )
+
+    # without this, manage roles alone would let anyone hand out roles above their own
+    if ctx.author != ctx.guild.owner and role >= ctx.author.top_role:
+        raise lyerrors.TakinaPermissionError(
+            f"You cannot manage {role.mention}, as it is higher than or equal to your top role."
+        )
+
+    if (
+        ctx.author != ctx.guild.owner
+        and member != ctx.author
+        and member.top_role >= ctx.author.top_role
+    ):
+        raise lyerrors.TakinaPermissionError(
+            f"You cannot manage the roles of {member.mention}, who is higher than or equal to you."
+        )
+
+    if role >= ctx.guild.me.top_role:
+        raise lyerrors.TakinaBotPermissionError(
+            f"I cannot manage {role.mention}, as it is higher than or equal to my top role."
+        )
 
 
 class Roles(commands.Cog):
@@ -20,17 +49,15 @@ class Roles(commands.Cog):
     @lychecks.has_permissions(manage_roles=True)
     @lychecks.guild_only()
     async def add(
-        self, ctx: commands.Context, member: discord.Member | None, *, role: discord.Role
+        self, ctx: commands.Context, member: discord.Member | None = None, *, role: discord.Role
     ):
-        if member is None:
-            if not isinstance(ctx.author, discord.Member):
-                raise lyerrors.TakinaError("This command can only be used in a server.")
-            member = ctx.author
+        assert isinstance(ctx.author, discord.Member)
+        member = member or ctx.author
+        check_assignable(ctx, member, role)
 
         if role in member.roles:
             raise lyerrors.TakinaError(f"{member.mention} already has the {role.mention} role.")
 
-        await lyhelpers.permissions_check(ctx, member, False, False, False)
         await member.add_roles(role, reason=f"Role added by {ctx.author}")
 
         embed = discord.Embed(
@@ -45,19 +72,17 @@ class Roles(commands.Cog):
     @lychecks.has_permissions(manage_roles=True)
     @lychecks.guild_only()
     async def remove(
-        self, ctx: commands.Context, member: discord.Member | None, *, role: discord.Role
+        self, ctx: commands.Context, member: discord.Member | None = None, *, role: discord.Role
     ):
-        if member is None:
-            if not isinstance(ctx.author, discord.Member):
-                raise lyerrors.TakinaError("This command can only be used in a server.")
-            member = ctx.author
+        assert isinstance(ctx.author, discord.Member)
+        member = member or ctx.author
+        check_assignable(ctx, member, role)
 
         if role not in member.roles:
             raise lyerrors.TakinaError(
                 f"Nothing was removed, as {member.mention} did not have the {role.mention} role."
             )
 
-        await lyhelpers.permissions_check(ctx, member, False, False, False)
         await member.remove_roles(role, reason=f"Role removed by {ctx.author}")
 
         embed = discord.Embed(
