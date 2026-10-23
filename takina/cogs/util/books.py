@@ -5,8 +5,6 @@ from datetime import datetime, UTC
 from discord.ext import commands
 from takina import config
 import discord
-import html
-import re
 
 
 def format_published(published_date: str) -> str:
@@ -24,12 +22,6 @@ def format_published(published_date: str) -> str:
         return published_date
 
     return f"<t:{int(published.timestamp())}:D>"
-
-
-def strip_html(text: str) -> str:
-    # descriptions arrive as html, with <br> where paragraphs should be
-    text = re.sub(r"<br\s*/?>|</p>", "\n", text, flags=re.IGNORECASE)
-    return html.unescape(re.sub(r"<[^>]+>", "", text)).strip()
 
 
 class Books(commands.Cog):
@@ -75,7 +67,9 @@ class Books(commands.Cog):
         if publisher := book_data.get("publisher"):
             embed.description += f"\n> **Publisher**: {publisher}"
         if book_description := book_data.get("description"):
-            embed.description += f"\n\n{lyhelpers.truncate(strip_html(book_description), 300)}"
+            embed.description += (
+                f"\n\n{lyhelpers.truncate(lyhelpers.strip_html(book_description), 300)}"
+            )
         if thumbnail := book_data.get("imageLinks", {}).get("smallThumbnail"):
             embed.set_thumbnail(url=thumbnail)
 

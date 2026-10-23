@@ -9,6 +9,7 @@ import datetime
 import discord
 import aiohttp
 import random
+import html
 import re
 
 if TYPE_CHECKING:
@@ -214,6 +215,12 @@ def truncate(text: str, limit: int) -> str:
         return text
 
     return text[: limit - 1].rstrip() + "…"
+
+
+def strip_html(text: str) -> str:
+    # api descriptions often arrive as html, with <br> where paragraphs should be
+    text = re.sub(r"<br\s*/?>|</p>", "\n", text, flags=re.IGNORECASE)
+    return html.unescape(re.sub(r"<[^>]+>", "", text)).strip()
 
 
 async def fetch_member_count(guild: discord.Guild) -> int:
