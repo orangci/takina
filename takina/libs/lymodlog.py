@@ -83,7 +83,7 @@ async def log_action(
     duration: str | None = None,
     *,
     mass_action: bool = False,
-) -> None:
+) -> discord.Message | None:
     settings = await database.get(models.GuildSettingsModel, guild_id=guild.id)
     timestamp = datetime.now(UTC)
 
@@ -111,11 +111,11 @@ async def log_action(
         raise lyerrors.TakinaError("Could not allocate a modlog case ID, please try again.")
 
     if not settings or not settings.modlog_channel_id:
-        return
+        return None
 
     channel = guild.get_channel(settings.modlog_channel_id)
     if not isinstance(channel, discord.TextChannel):
-        return
+        return None
 
     avatar = targets[0].avatar
     embed = case_embed(case, avatar.url if avatar else None)
@@ -125,11 +125,13 @@ async def log_action(
     except discord.HTTPException as error:
         # the case is saved and the action done, so a broken log channel must not fail them
         logger.warning(f"could not post case #{case.case_id} in guild {guild.id}: {error}")
-        return
+        return None
 
     case.log_channel_id = channel.id
     case.log_message_id = message.id
     await database.save(case)
+
+    return message
 
 
 async def update_logged_case(
