@@ -97,6 +97,8 @@ class Socials(commands.Cog):
     )
     @lychecks.is_user_app()
     async def codeberg(self, ctx: commands.Context, *, username: str):
+        # two requests, which a slow codeberg can stretch past discord's three seconds
+        await ctx.defer()
         user_url = f"https://codeberg.org/api/v1/users/{quote(username.removeprefix('@'), safe='')}"
         data = await lyhelpers.request(user_url, not_found="That Codeberg account does not exist.")
 
