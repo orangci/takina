@@ -8,6 +8,8 @@ import discord
 
 # beyond this, a mass ping would turn into a wall of afk notices
 MAX_LISTED_AFK = 5
+# short enough that five of them still fit in one embed
+MAX_STATUS_LENGTH = 200
 
 
 class AFK(commands.Cog):
@@ -19,7 +21,9 @@ class AFK(commands.Cog):
         usage="reading a book",
     )
     @lychecks.is_user_app()
-    async def afk(self, ctx: commands.Context, *, status: str = "AFK"):
+    async def afk(
+        self, ctx: commands.Context, *, status: commands.Range[str, 1, MAX_STATUS_LENGTH] = "AFK"
+    ):
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         emoji = await lyhelpers.fetch_random_emoji()
         current_status = await database.get(models.AFKStatusModel, user_id=ctx.author.id)
