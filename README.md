@@ -53,7 +53,7 @@ services.takina = {
 Or even install the Takina package directly:
 
 ```
-environment.systemPackages = [ inputs.takina."x86_64-linux".default ];
+environment.systemPackages = [ inputs.takina.packages.${pkgs.stdenv.hostPlatform.system}.default ];
 ```
 
 Happy nixxing!
