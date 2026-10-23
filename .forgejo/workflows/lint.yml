@@ -13,6 +13,10 @@ jobs:
         uses: actions/checkout@v7
       - name: Set up uv
         uses: https://github.com/astral-sh/setup-uv@v10.3.2
+        with:
+          # the floor in requires-python and what the docker image runs; uv would
+          # otherwise take the newest python, which not every wheel supports yet
+          python-version: "3.13"
       - name: Install dependencies
         run: uv sync --locked
       - name: Ruff format
