@@ -197,3 +197,17 @@ async def invoke_moved(ctx: commands.Context, qualified_name: str, **kwargs: Any
 
     # invoke skips the new command's checks, so the old command keeps its own
     await ctx.invoke(command, **kwargs)
+
+
+def truncate(text: str, limit: int) -> str:
+    # discord rejects oversized embeds outright, so long text is cut instead
+    if len(text) <= limit:
+        return text
+
+    return text[: limit - 1].rstrip() + "…"
+
+
+async def fetch_member_count(guild: discord.Guild) -> int:
+    # without the members intent, guild.member_count is only as fresh as the last connect
+    fetched = await get_bot().fetch_guild(guild.id, with_counts=True)
+    return fetched.approximate_member_count or guild.member_count or 0
