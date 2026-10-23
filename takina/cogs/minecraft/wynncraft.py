@@ -2,9 +2,17 @@
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lyhelpers, lychecks, lyerrors
 from discord.ext import commands
+from urllib.parse import quote
 from datetime import datetime
 from takina import config
 import discord
+
+
+def discord_timestamp(value: str | None, style: str = "R") -> str:
+    if not value:
+        return "Unknown"
+
+    return f"<t:{int(datetime.fromisoformat(value).timestamp())}:{style}>"
 
 
 class Wynncraft(commands.Cog):
@@ -25,8 +33,10 @@ class Wynncraft(commands.Cog):
         usage="orangci",
     )
     async def player(self, ctx: commands.Context, username: str):
+        await ctx.defer()
+
         player = await lyhelpers.request(
-            f"https://api.wynncraft.com/v3/player/{username}",
+            f"https://api.wynncraft.com/v3/player/{quote(username, safe='')}",
             not_found=f"Could not find a Wynncraft member with the username `{username}`.",
         )
 
@@ -35,9 +45,17 @@ class Wynncraft(commands.Cog):
                 f"Could not find a Wynncraft member with the username `{username}`."
             )
 
+        # a name several players have used gets a 300 listing them instead of a player
+        if "uuid" not in player:
+            raise lyerrors.TakinaUserInputError(
+                f"Several Wynncraft players have gone by `{username}`. Try their UUID instead."
+            )
+
+        uuid = player["uuid"]
+
         try:
             characters = await lyhelpers.request(
-                f"https://api.wynncraft.com/v3/player/{username}/characters"
+                f"https://api.wynncraft.com/v3/player/{uuid}/characters"
             )
         except lyerrors.TakinaNotFoundError:
             # characters are optional; the player embed works without them
@@ -45,15 +63,14 @@ class Wynncraft(commands.Cog):
 
         if characters:
             sorted_characters = sorted(
-                characters.values(), key=lambda character: character["level"], reverse=True
+                characters.values(), key=lambda character: character.get("level", 0), reverse=True
             )
 
             character_list = ", ".join(
-                f"Lvl {character['level']} {character['reskin'] or character['type'].capitalize()}"
+                f"Lvl {character.get('level', 0)} {character.get('reskin') or str(character.get('type', '')).capitalize()}"
                 for character in sorted_characters
             )
 
-        uuid = player.get("uuid")
         guild = player.get("guild")
 
         global_data = player.get("globalData", {})
@@ -69,22 +86,21 @@ class Wynncraft(commands.Cog):
         if player.get("online"):
             embed.description = f"-# Currently online on {player.get('server')}."
         else:
-            embed.description = f"-# Last seen <t:{int(datetime.fromisoformat(player.get('lastJoin')).timestamp())}:R>"
+            embed.description = f"-# Last seen {discord_timestamp(player.get('lastJoin'))}"
 
         if guild:
             guild_name = guild.get("name")
             guild_prefix = guild.get("prefix")
-            guild_rank = guild.get("rank")
-            embed.description += f"\n\n> **Guild**: {guild_rank.lower().capitalize()} of [{guild_prefix}] {guild_name}"
+            guild_rank = str(guild.get("rank") or "Member").capitalize()
+            embed.description += f"\n\n> **Guild**: {guild_rank} of [{guild_prefix}] {guild_name}"
 
-        if (rank := player.get("rank")) != "Player":
+        if (rank := player.get("rank")) not in ("Player", None):
             embed.description += f"\n> **Rank**: {rank}"
 
         embed.description += f"\n> **Playtime**: {player.get('playtime')} hours"
 
-        join_date_timestamp = int(datetime.fromisoformat(player.get("firstJoin")).timestamp())
-        formatted_join_date = f"<t:{join_date_timestamp}> (<t:{join_date_timestamp}:R>)"
-        embed.description += f"\n> **Joined**: {formatted_join_date}"
+        first_join = player.get("firstJoin")
+        embed.description += f"\n> **Joined**: {discord_timestamp(first_join, 'f')} ({discord_timestamp(first_join)})"
         embed.description += f"\n> **Mobs killed**: {global_data.get('mobsKilled')}"
         embed.description += f"\n> **Chests opened**: {global_data.get('chestsFound')}"
         embed.description += f"\n> **Quests completed**: {global_data.get('completedQuests')}"
@@ -103,21 +119,26 @@ class Wynncraft(commands.Cog):
         if (pvp_kills := pvp.get("kills", 0)) and (pvp_deaths := pvp.get("deaths", 0)):
             embed.description += f"\n> **PVP**: {pvp_kills} kills / {pvp_deaths} deaths"
 
+        embed.description = lyhelpers.truncate(embed.description, 4096)
         await ctx.reply(embed=embed, mention_author=False)
 
     @wynn.command(
         name="guild", description="Fetch and display a Wynncraft guild's data.", usage="Juniper"
     )
     async def guild(self, ctx: commands.Context, *, guild_name: str):
+        await ctx.defer()
+
         try:
-            guild = await lyhelpers.request(f"https://api.wynncraft.com/v3/guild/{guild_name}")
+            guild = await lyhelpers.request(
+                f"https://api.wynncraft.com/v3/guild/{quote(guild_name, safe='')}"
+            )
         except lyerrors.TakinaNotFoundError:
             # not a guild name, so try it as a prefix
             guild = None
 
         if not guild:
             guild = await lyhelpers.request(
-                f"https://api.wynncraft.com/v3/guild/prefix/{guild_name.upper()}",
+                f"https://api.wynncraft.com/v3/guild/prefix/{quote(guild_name.upper(), safe='')}",
                 not_found="No guild found with that identifier.",
             )
 
@@ -125,7 +146,7 @@ class Wynncraft(commands.Cog):
                 raise lyerrors.TakinaNotFoundError("No guild found with that identifier.")
 
         prefix = guild.get("prefix")
-        created_at = int(datetime.fromisoformat(guild.get("created")).timestamp())
+        created = guild.get("created")
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = f"[{prefix}] {guild.get('name')}"
@@ -134,7 +155,9 @@ class Wynncraft(commands.Cog):
         embed.description = (
             f"> **Owner(s)**: {', '.join(guild.get('members', {}).get('owner', {}).keys())}\n"
         )
-        embed.description += f"> **Created**: <t:{created_at}> (<t:{created_at}:R>)\n"
+        embed.description += (
+            f"> **Created**: {discord_timestamp(created, 'f')} ({discord_timestamp(created)})\n"
+        )
         embed.description += f"> **Level**: {guild.get('level')} ({guild.get('xpPercent')}% XP)\n"
         embed.description += f"> **Territories controlled**: {guild.get('territories')}\n"
         embed.description += f"> **Wars participated**: {guild.get('wars')}\n"
