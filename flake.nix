@@ -34,9 +34,14 @@
       inherit (nixpkgs) lib;
       inherit (lib) singleton composeManyExtensions genAttrs;
 
+      # every system with a wheel for each dependency. riscv64 and powerpc64le would build
+      # orjson, tzfpy, asyncpg and others from source, which needs overrides nobody has
+      # written; nixpkgs refuses uv on i686 and 32-bit arm and gnuplot on freebsd, and has
+      # dropped x86_64-darwin
       systems = [
         "x86_64-linux"
         "aarch64-linux"
+        "aarch64-darwin"
       ];
 
       workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };
