@@ -60,9 +60,8 @@ class Info(commands.Cog):
             timestamp = int(member.joined_at.timestamp())
             embed.description += f"\n> **Joined on**: <t:{timestamp}:D> (<t:{timestamp}:R>)"
 
-        embed.description += (
-            f"\n> **Roles ({len(roles)})**: {' '.join(role.mention for role in reversed(roles))}"
-        )
+        role_mentions = lyhelpers.truncate(" ".join(role.mention for role in reversed(roles)), 1000)
+        embed.description += f"\n> **Roles ({len(roles)})**: {role_mentions or 'None'}"
 
         embed.set_author(
             name=member.name,
@@ -80,7 +79,7 @@ class Info(commands.Cog):
         if member.guild_banner:
             embed.set_image(url=member.guild_banner.url)
         else:
-            # refetch the user to be able to access banner assets
+            # banners only come with a fetched user, so this costs one request per userinfo
             user = await self._bot.fetch_user(member.id)
             if user.banner:
                 embed.set_image(url=user.banner.url)
@@ -112,14 +111,13 @@ class Info(commands.Cog):
         embed.description += f"\n> **Mentionable**: {role.mentionable}"
         embed.description += f"\n> **Hoisted**: {role.hoist}"
         embed.description += f"\n> **Managed**: {role.managed}"
-        embed.description += f"\n> **Members**: {len(role.members)}"
         embed.description += f"\n> **Created**: <t:{int(role.created_at.timestamp())}:D> (<t:{int(role.created_at.timestamp())}:R>)"
-        if role.permissions:
-            embed.description += "\n> **Permissions**: " + ", ".join(
-                permission[0].replace("_", " ").title()
-                for permission in role.permissions
-                if permission[1]
-            )
+        permissions = ", ".join(
+            permission[0].replace("_", " ").title()
+            for permission in role.permissions
+            if permission[1]
+        )
+        embed.description += f"\n> **Permissions**: {permissions or 'None'}"
 
         if role.icon:
             embed.set_thumbnail(url=role.icon.url)
@@ -150,7 +148,7 @@ class Info(commands.Cog):
             f"\n> **Created**: <t:{int(guild.created_at.timestamp())}:D>"
             f" (<t:{int(guild.created_at.timestamp())}:R>)"
         )
-        embed.description += f"\n> **Members**: {guild.member_count}"
+        embed.description += f"\n> **Members**: {await lyhelpers.fetch_member_count(guild):,}"
         embed.description += f"\n> **Verification Level**: {guild.verification_level}"
         embed.description += f"\n> **Roles**: {len(guild.roles)}"
         embed.description += f"\n> **Channels**: {len(guild.channels)}"
