@@ -12,6 +12,10 @@ import whodap
 RECORD_TYPES = ["A", "CNAME", "AAAA", "MX", "TXT", "SRV", "NS"]
 # public resolvers rather than the host's, which would answer for internal names too
 PUBLIC_NAMESERVERS = ["1.1.1.1", "9.9.9.9"]
+# the longest a domain name can be
+MAX_DOMAIN_LENGTH = 253
+# registered names sit at most this many labels above the tld, as in example.co.uk
+MAX_LOOKUPS = 3
 
 
 class DNS(commands.Cog):
@@ -28,10 +32,11 @@ class DNS(commands.Cog):
 
         # rdap wants the name and the top-level domain apart, so example.co.uk is example.co + uk.
         # longest first: shorter names like co.uk are registries that answer for themselves,
-        # and www.example.com still falls back to example.com
+        # and www.example.com still falls back to example.com. only the last few, so a name
+        # with hundreds of labels cannot turn one command into hundreds of requests
         tld = parts[-1]
         async with whodap.DNSClient.new_aio_client_context() as client:
-            for start in range(len(parts) - 1):
+            for start in range(max(0, len(parts) - 1 - MAX_LOOKUPS), len(parts) - 1):
                 try:
                     return await client.aio_lookup(".".join(parts[start:-1]), tld)
                 except WhodapError:
@@ -43,7 +48,7 @@ class DNS(commands.Cog):
         name="whois", description="Perform a WHOIS search on a domain name.", usage="orangc.net"
     )
     @lychecks.is_user_app()
-    async def whois(self, ctx: commands.Context, domain: str):
+    async def whois(self, ctx: commands.Context, domain: commands.Range[str, 1, MAX_DOMAIN_LENGTH]):
         await ctx.defer()
         try:
             response = await self.resolve_domain(domain)
@@ -58,7 +63,7 @@ class DNS(commands.Cog):
         data = response.to_whois_dict()
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.title = f"WHOIS Information for {domain}"
+        embed.title = lyhelpers.truncate(f"WHOIS Information for {domain}", 256)
         embed.description = ""
 
         for key, value in data.items():
@@ -117,7 +122,7 @@ class DNS(commands.Cog):
 
         for chunk in lyhelpers.chunked(lines, 3):
             embed = discord.Embed(colour=config.EMBED_COLOUR)
-            embed.title = f"DNS Records for {url}"
+            embed.title = lyhelpers.truncate(f"DNS Records for {url}", 256)
             embed.description = "\n".join(chunk)
             pages.append(embed)
 
