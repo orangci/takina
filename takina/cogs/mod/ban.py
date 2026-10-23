@@ -86,8 +86,15 @@ class Ban(commands.Cog):
         if user_id == ctx.me.id:
             raise lyerrors.TakinaUserInputError("I cannot ban myself.")
 
+        # without the members intent the cache misses most members, so ask discord directly
         member = ctx.guild.get_member(user_id)
-        if member:
+        if member is None:
+            try:
+                member = await ctx.guild.fetch_member(user_id)
+            except discord.NotFound:
+                member = None
+
+        if member is not None:
             await lyhelpers.permissions_check(ctx, member, True, True, True)
 
         try:
