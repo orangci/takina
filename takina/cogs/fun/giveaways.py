@@ -25,6 +25,10 @@ EDIT_DELAY = 5
 Title = commands.Range[str, 1, 256]
 
 type GiveawayKey = tuple[int, int]
+# everywhere a giveaway can be started; voice and stage channels have a text chat too
+type GiveawayChannel = (
+    discord.TextChannel | discord.Thread | discord.VoiceChannel | discord.StageChannel
+)
 
 logger = logging.getLogger("takina.giveaways")
 
@@ -151,7 +155,7 @@ class Giveaways(commands.Cog):
         )
         return latest[0].id + 1 if latest else 1
 
-    async def _get_channel(self, channel_id: int) -> discord.TextChannel | discord.Thread | None:
+    async def _get_channel(self, channel_id: int) -> GiveawayChannel | None:
         channel = self._bot.get_channel(channel_id)
 
         if channel is None:
@@ -160,7 +164,10 @@ class Giveaways(commands.Cog):
             except discord.NotFound:
                 return None
 
-        if isinstance(channel, (discord.TextChannel, discord.Thread)):
+        if isinstance(
+            channel,
+            discord.TextChannel | discord.Thread | discord.VoiceChannel | discord.StageChannel,
+        ):
             return channel
 
         return None
