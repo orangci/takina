@@ -18,22 +18,27 @@ class Steam(commands.Cog):
     )
     @lychecks.is_user_app()
     async def steam(self, ctx: commands.Context, *, game: str):
+        await ctx.defer()
+
         search_results = await lyhelpers.request(
-            f"https://store.steampowered.com/api/storesearch/?term={game}&l=english&cc={config.STEAM_REGION}"
+            "https://store.steampowered.com/api/storesearch/",
+            params={"term": game, "l": "english", "cc": config.STEAM_REGION},
         )
 
-        items = search_results.get("items", [])
-
-        if not search_results or not items:
+        if not (items := search_results.get("items")):
             raise lyerrors.TakinaNotFoundError("Game not found.")
 
         app_id = items[0]["id"]
 
         response = await lyhelpers.request(
-            f"https://store.steampowered.com/api/appdetails?appids={app_id}&cc={config.STEAM_REGION}"
+            "https://store.steampowered.com/api/appdetails",
+            params={"appids": app_id, "cc": config.STEAM_REGION},
         )
 
-        data = response[str(app_id)]["data"]
+        # delisted and region-locked games still show up in search, but without details
+        details = response.get(str(app_id), {})
+        if not details.get("success") or not (data := details.get("data")):
+            raise lyerrors.TakinaNotFoundError("That game's store page is not available.")
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.description = ""
@@ -71,7 +76,9 @@ class Steam(commands.Cog):
             embed.description += f"\n> **Website**: {website}"
 
         if short_description := data.get("short_description"):
-            embed.description += f"\n\n{short_description}"
+            embed.description += f"\n\n{lyhelpers.strip_html(short_description)}"
+
+        embed.description = lyhelpers.truncate(embed.description, 4096)
 
         await ctx.reply(embed=embed, mention_author=False)
 
