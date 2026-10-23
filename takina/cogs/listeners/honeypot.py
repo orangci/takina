@@ -14,6 +14,8 @@ logger = logging.getLogger("takina.honeypot")
 HONEYPOT_TIMEOUT = timedelta(weeks=4)
 # how far back the member's messages are cleared
 PURGE_WINDOW = timedelta(minutes=10)
+# discord takes at most ten files per message
+MAX_EVIDENCE_FILES = 10
 
 type PurgeableChannel = discord.TextChannel | discord.Thread | discord.VoiceChannel
 
@@ -44,6 +46,47 @@ class Honeypot(commands.Cog):
                     await channel.delete_messages(chunk, reason="Honeypot triggered.")
                 except discord.HTTPException as error:
                     logger.warning(f"honeypot could not purge {channel.id}: {error}")
+
+    async def fetch_evidence_files(self, message: discord.Message) -> list[discord.File]:
+        # attachment urls die with the message, so the files are fetched before the purge
+        assert message.guild is not None
+        budget = message.guild.filesize_limit
+        files: list[discord.File] = []
+
+        for attachment in message.attachments[:MAX_EVIDENCE_FILES]:
+            if attachment.size > budget:
+                continue
+
+            try:
+                # spoilered, as honeypot catches are often scams or worse
+                files.append(await attachment.to_file(spoiler=True))
+            except discord.HTTPException as error:
+                logger.warning(f"honeypot could not fetch attachment {attachment.id}: {error}")
+                continue
+
+            budget -= attachment.size
+
+        return files
+
+    async def post_evidence(
+        self, log_message: discord.Message, message: discord.Message, files: list[discord.File]
+    ) -> None:
+        content = discord.utils.escape_markdown(message.content) or "*No text.*"
+        skipped = len(message.attachments) - len(files)
+
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
+        embed.set_author(name=str(message.author), icon_url=message.author.display_avatar.url)
+        embed.description = lyhelpers.truncate(
+            f"{config.emojis.NOTE} **Caught message** in {message.channel.mention}:\n{content}",
+            4096,
+        )
+        if skipped:
+            embed.set_footer(text=f"{skipped} attachment(s) could not be kept.")
+
+        try:
+            await log_message.reply(embed=embed, files=files, mention_author=False)
+        except discord.HTTPException as error:
+            logger.warning(f"honeypot could not post evidence in {log_message.channel.id}: {error}")
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
@@ -78,10 +121,17 @@ class Honeypot(commands.Cog):
         except discord.HTTPException:
             pass
 
+        files = await self.fetch_evidence_files(message)
         await self.delete_recent_messages(member)
 
-        if moderator := self._bot.user:
-            await lymodlog.log_action(message.guild, "mute", [member], reason, moderator, "4w")
+        if not (moderator := self._bot.user):
+            return
+
+        log_message = await lymodlog.log_action(
+            message.guild, "mute", [member], reason, moderator, "4w"
+        )
+        if log_message is not None:
+            await self.post_evidence(log_message, message, files)
 
     @commands.hybrid_group(
         name="honeypot", description="Configure the honeypot channel.", invoke_without_command=True
