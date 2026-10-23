@@ -30,6 +30,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=9.0.0",
+    "pytest-asyncio>=1.4.0",
     "ruff>=0.17.1",
     "ty>=0.0.84",
 ]
@@ -38,6 +39,9 @@ dev = [
 testpaths = ["tests"]
 # the project is virtual, so the package is imported from the checkout
 pythonpath = ["."]
+# async tests and fixtures without a marker on each
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 # deprecations inside dependencies are theirs to fix
 filterwarnings = ["ignore::DeprecationWarning:discord", "ignore::DeprecationWarning:hypixel"]
 
