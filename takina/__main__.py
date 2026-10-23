@@ -3,6 +3,7 @@
 from takina import database, models
 from takina.libs import lychecks
 from discord.ext import commands
+from pathlib import Path
 import discord
 import aiohttp
 import os
@@ -56,9 +57,6 @@ class Bot(commands.Bot):
         )
 
     async def setup_hook(self):
-        if not os.getenv("POSTGRESQL_URI"):
-            raise RuntimeError("No PostgreSQL database configured.")
-
         await database.initiate_database()
 
         # for lyhelpers.request() to work
@@ -82,7 +80,7 @@ lychecks.setup(bot)
 
 
 # this will automatically load cogs in from the different subfolders
-def load_exts(directory):
+def load_exts(directory: Path) -> list[str]:
     # the folders to NOT load cogs from
     blacklist_subfolders = {
         category.strip()
@@ -116,7 +114,7 @@ if missing_vars:
 
 # these are *individual* cogs to be blacklisted. e.g. "util.dns"
 cogs_blacklist = [cog.strip() for cog in os.getenv("COGS_BLACKLIST", "").split(",") if cog.strip()]
-cogs = load_exts("takina/cogs")
+cogs = load_exts(Path(__file__).parent / "cogs")
 
 if __name__ == "__main__":
     bot.run(os.environ["TOKEN"])
