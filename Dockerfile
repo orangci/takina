@@ -1,36 +1,20 @@
-# Use the latest official Python image as a base image
-FROM python:latest
+# the official uv image, pinned, so builds don't drift with python:latest
+FROM ghcr.io/astral-sh/uv:0.13.5-python3.13-trixie-slim
 
-# The installer requires curl (and certificates) to download the release archive
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
+# bytecode is compiled once here, and copying beats hardlinking out of the build cache
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_NO_DEV=1
 
-# Download the uv installer
-ADD https://astral.sh/uv/0.12.2/install.sh /uv-installer.sh
-
-# Run the installer then remove it
-RUN sh /uv-installer.sh && rm /uv-installer.sh
-
-# Ensure the installed binary is on the `PATH`
-ENV PATH="/root/.local/bin/:$PATH"
-
-# Set the working directory in the container to /app
 WORKDIR /app
 
-# Copy the rest of the application code to the working directory
+# dependencies get their own layer, so a code change doesn't reinstall them
+COPY pyproject.toml uv.lock ./
+RUN uv sync --locked --no-install-project
+
 COPY . .
+RUN uv sync --locked
 
-# Disable development dependencies
-ENV UV_NO_DEV=1
+RUN useradd --system --no-create-home takina
+USER takina
 
-RUN uv sync
-
-# git owo
-RUN mkdir test && \
-    cd test && \
-    git clone https://github.com/orangci/takina && \
-    cp -r takina/.git ../.git && \
-    cd .. && \
-    rm -rf test
-
-# Specify the command to run the application
-CMD ["uv", "run", "-m", "takina"]
+ENV PATH="/app/.venv/bin:$PATH"
+CMD ["python", "-m", "takina"]

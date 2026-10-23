@@ -1,7 +1,25 @@
+# secrets: anything here would be baked into the image
+.env
+.env.*
+!.env.example
+
+# local state and tooling
+.git
+.venv
+venv
+takina/venv
+.direnv
+.ruff_cache
+**/__pycache__
+.claude
+CLAUDE.local.md
+result
+
 .forgejo
 .github
 flake*
 *.nix
+nix
 .pre-commit-config.yaml
 *.md
 renovate.json

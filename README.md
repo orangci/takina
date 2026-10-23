@@ -68,14 +68,14 @@ Before proceeding, I am assuming that you have a running PostgreSQL database. Th
 - `git clone https://git.orangc.net/c/takina && cd takina`
 - Set all the required environment variables in the `.env` file. You can find a list of what those are in the `.env.example` file. You can leave most of them as their defaults, but you at a minimum must set the `TOKEN` (Discord bot token) and  `POSTGRESQL_URI` (your PostgreSQL database URI).
 - `docker build --tag 'takina' .`
-- `docker run 'takina'`
+- `docker run --env-file .env 'takina'`. The `.env` file is never copied into the image, so the token stays out of it.
 
 ##### Docker Compose
 
 *Assuming you have `git` and `docker` installed.*
 
 - `git clone https://git.orangc.net/c/takina && cd takina`
-- Set all the required environment variables in the `docker-compose.yml` file. You can find a list of what those are in the `docker-compose.yml` file, don't forget to make a `.env` file for the passwords or tokens as well! You can find out which enviroment variables need to go to the `.env` file if its for example `${TOKEN}`.
+- Make a `.env` file from `.env.example`. Set at least `TOKEN` and `POSTGRES_PASSWORD`; compose builds `POSTGRESQL_URI` for the bundled database itself, so leave that one out. Keep the password to letters and digits, as it goes into a URI.
 - `docker compose up -d`
 
 ## Contributing

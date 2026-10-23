@@ -2,18 +2,29 @@ services:
   db:
     image: postgres:18
     restart: always
-    ports:
-      - "5432:5432"
+    # no published port: only the bot needs it, and it reaches it over the compose network
     volumes:
-      - database:/data/db
+      # postgres 18 keeps its data in a versioned directory under this path
+      - database:/var/lib/postgresql
     environment:
-      - POSTGRES_USER=bot
-      - POSTGRES_DB=takina
-      - POSTGRES_PASSWORD=password
+      POSTGRES_USER: bot
+      POSTGRES_DB: takina
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bot -d takina"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   takina:
     image: ghcr.io/orangci/takina:latest
     restart: always
     env_file: ".env"
+    environment:
+      POSTGRESQL_URI: postgresql://bot:${POSTGRES_PASSWORD}@db/takina
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   database:
