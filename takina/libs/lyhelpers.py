@@ -39,8 +39,13 @@ async def request(
     disable_json: bool = False,
     *args,
     not_found: str = "That could not be found.",
+    with_headers: bool = False,
     **kwargs,
 ) -> Any:
+    """
+    Fetch a url, returning its json (or text with `disable_json`), and with `with_headers`,
+    a `(body, headers)` tuple for apis that put counts or pagination in headers.
+    """
     bot = get_bot()
     if not bot.http_session:
         raise RuntimeError("Client HTTP session has not been initialised.")
@@ -60,12 +65,16 @@ async def request(
             )
 
         if disable_json:
-            return await response.text()
+            body = await response.text()
+        else:
+            try:
+                body = await response.json()
+            except aiohttp.ContentTypeError as error:
+                raise lyerrors.TakinaError(
+                    "The service returned something other than JSON."
+                ) from error
 
-        try:
-            return await response.json()
-        except aiohttp.ContentTypeError as error:
-            raise lyerrors.TakinaError("The service returned something other than JSON.") from error
+        return (body, response.headers) if with_headers else body
 
 
 # largest first, which reverse_duration_calculator relies on
