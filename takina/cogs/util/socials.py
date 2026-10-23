@@ -45,6 +45,9 @@ class Socials(commands.Cog):
 
         if website := data.get("blog"):
             website_display = website.removeprefix("https://").removeprefix("http://")
+            # github takes bare domains, which discord will not render as a link
+            if not website.startswith(("https://", "http://")):
+                website = f"https://{website}"
             embed.description += f"\n> **Website**: [{website_display}]({website})"
 
         if email_address := data.get("email"):
