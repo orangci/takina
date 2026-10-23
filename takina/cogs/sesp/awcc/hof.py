@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lyerrors, lychecks, lyhelpers
 from discord.ext import commands
+from urllib.parse import quote
 from takina import config
 import discord
 
@@ -19,7 +20,7 @@ class AWCC_HOF(commands.Cog):
     async def hof(self, ctx: commands.Context, *, username: str):
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         data = await lyhelpers.request(
-            f"https://anime.jhiday.net/hof/api/user/{username}",
+            f"https://anime.jhiday.net/hof/api/user/{quote(username, safe='')}",
             not_found="This username has no data in the AWCC/MRCC Hall of Fame.",
         )
         if not data:
@@ -28,8 +29,10 @@ class AWCC_HOF(commands.Cog):
             )
 
         embed.title = username
-        embed.url = f"https://anime.jhiday.net/hof/user/{username}"
-        embed.description = f"> **MAL Profile**: https://myanimelist.net/profile/{username}"
+        embed.url = f"https://anime.jhiday.net/hof/user/{quote(username, safe='')}"
+        embed.description = (
+            f"> **MAL Profile**: https://myanimelist.net/profile/{quote(username, safe='')}"
+        )
         embed.description += f"\n> **Turnins**: {data.get('turnins')}"
         embed.description += f"\n> **Total Score**: {data.get('totalScore')}"
         embed.description += f"\n> **Total Rank**: {data.get('totalRank')}"
