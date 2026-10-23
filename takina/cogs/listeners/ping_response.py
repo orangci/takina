@@ -49,7 +49,7 @@ class PingResponse(commands.Cog):
         embed.description += (
             f"\n> **Stars**: [{self.stars:,}](https://github.com/orangci/takina/stargazers)"
         )
-        embed.description += f"\n> **Uptime**: {await lyhelpers.uptime_fetcher()}"
+        embed.description += f"\n> **Uptime**: {lyhelpers.uptime_fetcher()}"
         embed.description += f"\n> **Version**: [{config.BOT_VERSION}](https://git.orangc.net/c/takina/src/branch/master/CHANGELOG.md#{config.BOT_VERSION.replace('.', '-')})"
 
         orangc = await self._bot.fetch_user(961063229168164864)

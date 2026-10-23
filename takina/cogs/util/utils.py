@@ -46,7 +46,7 @@ class Utils(commands.Cog):
     @lychecks.is_user_app()
     async def uptime(self, ctx: commands.Context):
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"{await lyhelpers.fetch_random_emoji()} {config.BOT_NAME} has been up for {await lyhelpers.uptime_fetcher()}."
+        embed.description = f"{await lyhelpers.fetch_random_emoji()} {config.BOT_NAME} has been up for {lyhelpers.uptime_fetcher()}."
 
         await ctx.reply(embed=embed, mention_author=False)
 

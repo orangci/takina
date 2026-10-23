@@ -1,9 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
+from collections.abc import Iterator
 from __main__ import bot, start_time
 from takina.libs import lyerrors
 from discord.ext import commands
 from takina import config
+from typing import Any
 import datetime
 import discord
 import random
@@ -77,7 +79,7 @@ def reverse_duration_calculator(seconds: int) -> str:
 
 
 # uptime checker
-async def uptime_fetcher():
+def uptime_fetcher() -> str:
     current_time = datetime.datetime.now(datetime.UTC)
     uptime_duration = current_time - start_time
 
@@ -103,7 +105,7 @@ async def fetch_random_emoji() -> str:
 def get_ordinal(n: int) -> str:
     """Helper function to return the ordinal representation of a number."""
     suffix = ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"]
-    if 10 <= n % 100 <= 20:
+    if 11 <= n % 100 <= 13:
         return "th"
     else:
         return suffix[n % 10]
@@ -111,7 +113,7 @@ def get_ordinal(n: int) -> str:
 
 def randint_from_seed(
     seed: str | int, array: list | None = None, minimum: int = 1, maximum: int = 10
-):
+) -> Any:
     """Based on a string (the 'seed'), produce a random integer. Apparently this is called a deterministic pseudorandom value."""
     if array:
         return array[random.Random(seed).randint(0, len(array) - 1)]
@@ -119,7 +121,7 @@ def randint_from_seed(
         return random.Random(seed).randint(minimum, maximum)
 
 
-def chunked[T](items: list[T], size: int):
+def chunked[T](items: list[T], size: int) -> Iterator[list[T]]:
     for i in range(0, len(items), size):
         yield items[i : i + size]
 
