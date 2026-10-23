@@ -7,13 +7,22 @@ from discord.ext import commands
 from typing import Literal
 import discord
 
-Feature = Literal["modlog", "honeypot", "reports", "starboard"]
+Feature = Literal["modlog", "honeypot", "reports", "reports-ping", "starboard"]
 
 FEATURE_NAMES: dict[str, str] = {
     "modlog": "The modlog",
     "honeypot": "The honeypot",
     "reports": "Reports",
+    "reports-ping": "The reports ping",
     "starboard": "The starboard",
+}
+
+# the guild settings column each feature lives in; the starboard has a table of its own
+FEATURE_COLUMNS: dict[str, str] = {
+    "modlog": "modlog_channel_id",
+    "honeypot": "honeypot_channel_id",
+    "reports": "reports_channel_id",
+    "reports-ping": "reports_notification_role_id",
 }
 
 
@@ -200,7 +209,7 @@ class Settings(commands.Cog):
             starboard.starboard_channel_id = None
             await database.save(starboard)
         else:
-            column = f"{feature}_channel_id"
+            column = FEATURE_COLUMNS[feature]
             settings = await database.get(GuildSettingsModel, guild_id=ctx.guild.id)
             if settings is None or getattr(settings, column) is None:
                 raise lyerrors.TakinaError(
