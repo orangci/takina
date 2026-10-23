@@ -1,10 +1,41 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyerrors, lyhelpers
 from takina.libs.fate_responses import fates
+from takina.libs import lychecks, lyhelpers
 from discord.ext import commands
 from takina import config
 import discord
+
+EIGHT_BALL_RESPONSES = [
+    # positive
+    "It is certain.",
+    "It is decidedly so.",
+    "Without a doubt.",
+    "Yes, definitely.",
+    "You may rely on it.",
+    "As I see it, yes.",
+    "Most likely.",
+    "Outlook good.",
+    "Yes.",
+    "All signs point to yes.",
+    # negative
+    "Don't count on it.",
+    "My reply is no.",
+    "My sources say no.",
+    "Outlook not so good.",
+    "Very doubtful.",
+    "Absolutely not.",
+    "The answer is no.",
+    "Highly unlikely.",
+    "The odds are against it.",
+    "All signs point to no.",
+]
+
+# the easter eggs in fate
+ORANGC_ID = 961063229168164864
+ETHAN_ID = 716306888492318790
+# the main instance, so other instances answer for her too
+TAKINA_ID = 1287074090783604797
 
 
 class Mysteries(commands.Cog):
@@ -18,38 +49,8 @@ class Mysteries(commands.Cog):
         usage="are you sentient",
     )
     @lychecks.is_user_app()
-    async def eight_ball(self, ctx: commands.Context, *, question: str | None = None) -> None:
-        responses = [
-            # positive
-            "It is certain.",
-            "It is decidedly so.",
-            "Without a doubt.",
-            "Yes, definitely.",
-            "You may rely on it.",
-            "As I see it, yes.",
-            "Most likely.",
-            "Outlook good.",
-            "Yes.",
-            "All Signs point to yes.",
-            # negative
-            "Don't count on it.",
-            "My reply is no.",
-            "My sources say no.",
-            "Outlook not so good.",
-            "Very doubtful.",
-            "Absolutely not.",
-            "The answer is no.",
-            "Highly unlikely.",
-            "The odds are against it.",
-            "All signs point to no.",
-        ]
-
-        if not question:
-            raise lyerrors.TakinaUserInputError(
-                "You need to ask a question to the 8ball for this command to work!"
-            )
-
-        response = lyhelpers.randint_from_seed(question, responses)
+    async def eight_ball(self, ctx: commands.Context, *, question: str) -> None:
+        response = lyhelpers.randint_from_seed(question, EIGHT_BALL_RESPONSES)
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = "🎱 The 8ball"
@@ -73,10 +74,10 @@ class Mysteries(commands.Cog):
             embed.description = f"{emoji} You and {user.mention} are the same person!"
             embed.remove_footer()
 
-        if user.id in {self._bot.application_id, 1287074090783604797}:
-            if ctx.author.id == 961063229168164864:
+        if user.id in {self._bot.application_id, TAKINA_ID}:
+            if ctx.author.id == ORANGC_ID:
                 embed.description = f"{emoji} I'm your daughter! How could you forget..?"
-            elif ctx.author.id == 716306888492318790:
+            elif ctx.author.id == ETHAN_ID:
                 embed.description = f"{emoji} I'm your niece! How could you forget..?"
             else:
                 embed.description = f"{emoji} I won't tell you! Hmph, mind your own business!"
