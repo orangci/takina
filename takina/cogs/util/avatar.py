@@ -2,8 +2,19 @@
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lychecks, lyerrors
 from discord.ext import commands
+from typing import Literal
 from takina import config
 import discord
+
+
+ImageType = Literal["display_avatar", "guild_avatar", "banner", "guild_banner"]
+
+IMAGE_NAMES: dict[ImageType, str] = {
+    "display_avatar": "Avatar",
+    "guild_avatar": "Server Avatar",
+    "banner": "Banner",
+    "guild_banner": "Server Banner",
+}
 
 
 class Avatars(commands.Cog):
@@ -13,29 +24,34 @@ class Avatars(commands.Cog):
     async def fetch_user_image(
         self,
         ctx: commands.Context,
-        user: discord.Member | discord.User | None = None,
-        image_type: str = "display_avatar",
+        user: discord.Member | discord.User | None,
+        image_type: ImageType,
     ) -> discord.Embed:
-        image_type_str = image_type.replace("_", " ").title()
+        user = user or ctx.author
 
-        if not user:
-            if not isinstance(ctx.author, discord.Member | discord.User):
-                raise lyerrors.TakinaError("This command can only be used in a server.")
-            user = ctx.author
+        # banners only arrive when the user or member is fetched, never from the cache
+        # https://discordpy.readthedocs.io/en/stable/api.html#discord.User.banner
+        match image_type:
+            case "display_avatar":
+                image = user.display_avatar
+            case "guild_avatar":
+                image = user.guild_avatar if isinstance(user, discord.Member) else None
+            case "banner":
+                image = (await self._bot.fetch_user(user.id)).banner
+            case "guild_banner":
+                assert ctx.guild is not None
+                try:
+                    image = (await ctx.guild.fetch_member(user.id)).guild_banner
+                except discord.NotFound:
+                    raise lyerrors.TakinaNotFoundError("That user is not in this server.")
 
-        if "banner" in image_type:
-            # why are we refetching the user?
-            # well, you cannot get User.banner
-            # if you do not specifically do Client.fetch_user
-            # https://discordpy.readthedocs.io/en/stable/api.html#discord.User.banner
-            user = await self._bot.fetch_user(user.id)
-
-        image = getattr(user, image_type)
         if not image:
-            raise lyerrors.TakinaError(f"This user does not have a {image_type_str.lower()} set.")
+            raise lyerrors.TakinaError(
+                f"This user does not have a {IMAGE_NAMES[image_type].lower()} set."
+            )
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.title = f"{user}'s {image_type_str}"
+        embed.title = f"{user}'s {IMAGE_NAMES[image_type]}"
         embed.set_image(url=image.url)
 
         return embed
