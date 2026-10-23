@@ -83,6 +83,8 @@
               pkgs.ruff
               pkgs.uv
               pkgs.gcc.cc.lib
+              # initdb and pg_ctl, for the database tests' throwaway server
+              pkgs.postgresql
             ];
 
             shellHook = ''
