@@ -9,7 +9,6 @@ For a list of features and other information please visit: https://takina.is-a.b
 > Don't want to selfhost Takina? Our public instance is always up-to-date, and usually has excellent uptime.
 > Invite link: https://takina.is-a.bot/invite
 
-Note: Our documentation is WIP, and our website is also WIP, since it is severely outdated.
 
 ## Selfhosting
 
@@ -86,8 +85,8 @@ Takina is currently maintained by [orangc](https://orang.ci) and [iostpa](https:
 
 ## License
 - [License: GNU AGPLv3](./LICENSE)
-- [Terms of Service](https://takina.orangc.net/tos.html)
-- [Privacy Policy](https://takina.orangc.net/privacy.html)
+- [Terms of Service](https://takina.is-a.bot/tos)
+- [Privacy Policy](https://takina.is-a.bot/privacy)
 
 ## Specifications
 - This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specification as of 2025-04-14. You may see the current version and changelog [here](./CHANGELOG.md).
