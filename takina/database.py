@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy import case, func, inspect, update
+from sqlalchemy import case, func, inspect, update, delete as delete_rows
 from sqlalchemy.engine import Connection
 from sqlmodel import SQLModel, select
 from collections.abc import Iterable
@@ -238,9 +238,16 @@ async def toggle_in_array[T: SQLModel](
 
 
 async def delete[T: SQLModel](instance: T) -> None:
+    # a statement by primary key, so a row someone else deleted first is not an error;
+    # session.delete refuses rows that are already gone, which concurrent handlers hit
+    model = type(instance)
+    primary_key = inspect(model, raiseerr=True).primary_key
+    statement = delete_rows(model).where(
+        *(column == getattr(instance, column.key) for column in primary_key)
+    )
+
     async with SessionLocal() as session:
-        # merge first: rows from the cache are copies the session has never seen
-        await session.delete(await session.merge(instance))
+        await session.execute(statement)
         await session.commit()
 
     _forget(instance)
