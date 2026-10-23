@@ -29,9 +29,17 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pytest>=9.0.0",
     "ruff>=0.17.1",
     "ty>=0.0.84",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# the project is virtual, so the package is imported from the checkout
+pythonpath = ["."]
+# deprecations inside dependencies are theirs to fix
+filterwarnings = ["ignore::DeprecationWarning:discord", "ignore::DeprecationWarning:hypixel"]
 
 [tool.ruff]
 line-length = 100

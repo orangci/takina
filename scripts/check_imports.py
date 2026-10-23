@@ -4,7 +4,7 @@
 Check that module-level imports follow the house order: `from` imports above plain ones,
 each group longest line first. Ruff's isort cannot express this, hence a script.
 
-Usage: python scripts/check_imports.py [files...]  (defaults to every file under takina/)
+Usage: python scripts/check_imports.py [files...]  (defaults to takina/, tests/ and scripts/)
 """
 
 from pathlib import Path
@@ -38,7 +38,9 @@ def misordered(path: Path) -> list[str] | None:
 
 
 def main(arguments: list[str]) -> int:
-    paths = [Path(argument) for argument in arguments] or sorted(Path("takina").rglob("*.py"))
+    paths = [Path(argument) for argument in arguments] or sorted(
+        path for root in ("takina", "tests", "scripts") for path in Path(root).rglob("*.py")
+    )
     failed = False
 
     for path in paths:
