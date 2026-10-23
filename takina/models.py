@@ -63,6 +63,13 @@ class GiveawayModel(SQLModel, table=True):
     winner_ids: list[int] = Field(
         default_factory=list, sa_column=Column(MutableList.as_mutable(PGArray(BigInteger)))
     )
+    # everyone drawn before the current winners, so rerolls never pick them again
+    past_winner_ids: list[int] = Field(
+        default_factory=list,
+        sa_column=Column(
+            MutableList.as_mutable(PGArray(BigInteger)), nullable=False, server_default="{}"
+        ),
+    )
     winners: int = 1
 
 
