@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from takina.models import StarboardMessageModel, StarboardSettingsModel
-from takina.libs import lychecks, lyerrors
+from takina.libs import lychecks, lyerrors, lyhelpers
 from discord.ui import Button, View
 from takina import config, database
 from discord.ext import commands
@@ -144,9 +144,7 @@ class Starboard(commands.Cog):
             await ctx.send_help(ctx.command)
 
     @starboard.command(
-        name="settings",
-        description="Configure the starboard channel and reaction threshold.",
-        usage="#channel 4",
+        name="settings", description="Moved to /settings guild starboard.", usage="#channel 4"
     )
     # slash subcommands do not run the group's checks
     @lychecks.has_permissions(manage_channels=True)
@@ -154,40 +152,15 @@ class Starboard(commands.Cog):
     async def starboard_settings(
         self, ctx: commands.Context, channel: discord.TextChannel, reaction_count: int
     ) -> None:
-        assert ctx.guild is not None
-
-        if reaction_count < 1:
-            raise lyerrors.TakinaUserInputError("The minimum reaction count must be at least 1.")
-
-        settings = await database.get_or_create(StarboardSettingsModel, guild_id=ctx.guild.id)
-        settings.starboard_channel_id = channel.id
-        settings.minimum_reaction_count = reaction_count
-        await database.save(settings)
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = (
-            f"{config.emojis.SUCCESS} Starboard channel has been set to {channel.mention}."
+        await lyhelpers.invoke_moved(
+            ctx, "settings guild starboard", channel=channel, reaction_count=reaction_count
         )
-        embed.description += f"\n{config.emojis.NOTE} **Minimum reactions**: {reaction_count:,}"
-        await ctx.reply(embed=embed, mention_author=False)
 
-    @starboard.command(name="disable", description="Turn the starboard off.")
+    @starboard.command(name="disable", description="Moved to /settings guild disable.")
     @lychecks.has_permissions(manage_channels=True)
     @lychecks.guild_only()
     async def starboard_disable(self, ctx: commands.Context) -> None:
-        assert ctx.guild is not None
-
-        settings = await self._get_settings(ctx.guild.id)
-        if settings is None or settings.starboard_channel_id is None:
-            raise lyerrors.TakinaError("The starboard is not set up in this server.")
-
-        # the threshold and whitelist stay, so setting it up again picks them back up
-        settings.starboard_channel_id = None
-        await database.save(settings)
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"{config.emojis.SUCCESS} The starboard has been disabled."
-        await ctx.reply(embed=embed, mention_author=False)
+        await lyhelpers.invoke_moved(ctx, "settings guild disable", feature="starboard")
 
     @starboard.group(
         name="whitelist",

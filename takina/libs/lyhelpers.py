@@ -182,3 +182,18 @@ async def permissions_check(
         raise lyerrors.TakinaBotPermissionError(
             f"I cannot perform this action on a member ({member.mention}) with a role that is higher than or equal to my own."
         )
+
+
+async def invoke_moved(ctx: commands.Context, qualified_name: str, **kwargs: Any) -> None:
+    """
+    Run a command from its new home, so the old one keeps working as an alias.
+
+    Example:
+        await lyhelpers.invoke_moved(ctx, "settings guild honeypot", channel=channel)
+    """
+    command = ctx.bot.get_command(qualified_name)
+    if command is None:
+        raise lyerrors.TakinaDisabledError(f"`{qualified_name}` is not available right now.")
+
+    # invoke skips the new command's checks, so the old command keeps its own
+    await ctx.invoke(command, **kwargs)

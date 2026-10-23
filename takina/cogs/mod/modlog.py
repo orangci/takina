@@ -24,25 +24,12 @@ class ModLog(commands.Cog):
             await ctx.send_help(ctx.command)
 
     @modlog.command(
-        name="channel",
-        description="Set the channel where moderation actions are logged.",
-        usage="#channel",
+        name="channel", description="Moved to /settings guild modlog-channel.", usage="#channel"
     )
     @lychecks.has_permissions(manage_guild=True)
     @lychecks.guild_only()
     async def channel(self, ctx: commands.Context, channel: discord.TextChannel):
-        assert ctx.guild is not None
-
-        settings = await database.get_or_create(models.GuildSettingsModel, guild_id=ctx.guild.id)
-        settings.modlog_channel_id = channel.id
-        await database.save(settings)
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = (
-            f"{config.emojis.SUCCESS} Modlog channel has been set to {channel.mention}."
-        )
-
-        await ctx.reply(embed=embed, mention_author=False)
+        await lyhelpers.invoke_moved(ctx, "settings guild modlog-channel", channel=channel)
 
     @commands.hybrid_command(description="Fetch information on a moderation case.", usage="42")
     @lychecks.has_permissions(moderate_members=True)

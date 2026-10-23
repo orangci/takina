@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyerrors, lyhelpers, lymodlog
+from takina.libs import lychecks, lyhelpers, lymodlog
 from takina.models import GuildSettingsModel
 from takina import config, database
 from collections import defaultdict
@@ -92,41 +92,18 @@ class Honeypot(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @honeypot.command(
-        name="set",
-        description="Mute anyone who posts in this channel, and clear their recent messages.",
-        usage="#channel",
+        name="set", description="Moved to /settings guild honeypot.", usage="#channel"
     )
     @lychecks.has_permissions(manage_guild=True)
     @lychecks.guild_only()
     async def honeypot_set(self, ctx: commands.Context, channel: discord.TextChannel) -> None:
-        assert ctx.guild is not None
+        await lyhelpers.invoke_moved(ctx, "settings guild honeypot", channel=channel)
 
-        settings = await database.get_or_create(GuildSettingsModel, guild_id=ctx.guild.id)
-        settings.honeypot_channel_id = channel.id
-        await database.save(settings)
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"{config.emojis.SUCCESS} Honeypot channel has been set to {channel.mention}. Please remember to give me permissions to manage messages and to timeout members."
-
-        await ctx.reply(embed=embed, mention_author=False)
-
-    @honeypot.command(name="disable", description="Turn the honeypot off.")
+    @honeypot.command(name="disable", description="Moved to /settings guild disable.")
     @lychecks.has_permissions(manage_guild=True)
     @lychecks.guild_only()
     async def honeypot_disable(self, ctx: commands.Context) -> None:
-        assert ctx.guild is not None
-
-        settings = await database.get(GuildSettingsModel, guild_id=ctx.guild.id)
-        if settings is None or settings.honeypot_channel_id is None:
-            raise lyerrors.TakinaError("The honeypot is not set up in this server.")
-
-        settings.honeypot_channel_id = None
-        await database.save(settings)
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"{config.emojis.SUCCESS} The honeypot has been disabled."
-
-        await ctx.reply(embed=embed, mention_author=False)
+        await lyhelpers.invoke_moved(ctx, "settings guild disable", feature="honeypot")
 
 
 async def setup(bot: commands.Bot) -> None:

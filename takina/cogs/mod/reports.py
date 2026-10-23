@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lyerrors, lychecks, lymodlog
+from takina.libs import lyerrors, lychecks, lyhelpers, lymodlog
 from takina.models import GuildSettingsModel
 from takina import config, database
 from discord.ext import commands
@@ -19,7 +19,7 @@ class Reports(commands.Cog):
         pass
 
     @report.command(
-        name="channel", description="Set the channel where reports will be sent.", usage="#channel"
+        name="channel", description="Moved to /settings guild reports.", usage="#channel"
     )
     @lychecks.has_permissions(manage_channels=True)
     @lychecks.guild_only()
@@ -29,19 +29,9 @@ class Reports(commands.Cog):
         channel: discord.TextChannel,
         notification_role: discord.Role | None = None,
     ) -> None:
-        assert ctx.guild is not None
-
-        settings = await database.get_or_create(GuildSettingsModel, guild_id=ctx.guild.id)
-        settings.reports_channel_id = channel.id
-        if notification_role is not None:
-            settings.reports_notification_role_id = notification_role.id
-        await database.save(settings)
-
-        embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = (
-            f"{config.emojis.SUCCESS} Successfully set the reports channel to {channel.mention}."
+        await lyhelpers.invoke_moved(
+            ctx, "settings guild reports", channel=channel, notification_role=notification_role
         )
-        await ctx.send(embed=embed, ephemeral=True)
 
     @report.command(
         name="member",
@@ -62,7 +52,7 @@ class Reports(commands.Cog):
         settings = await database.get(GuildSettingsModel, guild_id=ctx.guild.id)
         if settings is None or not settings.reports_channel_id:
             raise lyerrors.TakinaError(
-                "The reports system has not been configured for this server. Ask an administrator to run `/report channel`."
+                "The reports system has not been configured for this server. Ask an administrator to run `/settings guild reports`."
             )
 
         reports_channel = self._bot.get_channel(settings.reports_channel_id)
