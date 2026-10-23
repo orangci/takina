@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina import database, models
 from takina.libs import lychecks, lyhelpers
+from takina import database, models
 from discord.ext import commands
 from pathlib import Path
 import discord
