@@ -37,6 +37,7 @@ dependencies = [
     "psycopg2-binary>=2.9.12",
     "greenlet>=3.5.4",
     "alembic>=1.20.1",
+    "dnspython>=2.8.0",
 ]
 
 [tool.setuptools]
