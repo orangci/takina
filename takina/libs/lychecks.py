@@ -105,6 +105,8 @@ def slash_only():
     async def predicate(ctx: commands.Context) -> bool:
         return ctx.interaction is not None
 
+    return commands.check(predicate)
+
 
 # this is also stupid
 # but for some reason commands.guild_only doesn't work
