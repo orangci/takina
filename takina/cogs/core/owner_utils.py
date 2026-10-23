@@ -19,7 +19,7 @@ class OwnerUtils(commands.Cog):
 
     def cleanup_code(self, content):
         # for cleaning up codeblocks
-        if content.startswith("```py") or content.startswith("```") and content.endswith("```"):
+        if content.startswith("```") and content.endswith("```"):
             return "\n".join(content.split("\n")[1:-1])
         return content.strip("` \n")
 
@@ -141,7 +141,7 @@ class OwnerUtils(commands.Cog):
 
     @commands.command(hidden=True, aliases=["rx"])
     @commands.is_owner()
-    async def reload_exts(self, ctx: commands.Context, cog: str | None):
+    async def reload_exts(self, ctx: commands.Context, cog: str | None = None):
         importlib.reload(config)
         importlib.reload(lyhelpers)
         importlib.reload(lyerrors)
@@ -213,8 +213,12 @@ class OwnerUtils(commands.Cog):
     async def load(self, ctx: commands.Context, cog: str) -> None:
         try:
             await self._bot.load_extension("takina.cogs." + cog)
-        except commands.ExtensionNotLoaded:
+        except commands.ExtensionAlreadyLoaded:
             raise lyerrors.TakinaError(f"`cogs.{cog}` was already loaded.")
+        except commands.ExtensionNotFound:
+            raise lyerrors.TakinaNotFoundError(f"`cogs.{cog}` does not exist.")
+        except commands.ExtensionError as e:
+            raise lyerrors.TakinaError(f"Failed to load `cogs.{cog}`: {e}")
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.description = f"{config.emojis.SUCCESS} Successfully loaded `cogs.{cog}`."
         await ctx.reply(embed=embed, mention_author=False)
@@ -227,14 +231,11 @@ class OwnerUtils(commands.Cog):
     ):
         channel = channel or cast(discord.TextChannel, ctx.channel)
 
-        if channel and message:
-            await channel.send(message)
-            embed = discord.Embed(colour=config.EMBED_COLOUR)
-            embed.description = f"{config.emojis.SUCCESS} Message sent."
-            if ctx.interaction is not None:
-                await ctx.reply(embed=embed, ephemeral=True)
-        else:
-            raise commands.UserInputError
+        await channel.send(message)
+        embed = discord.Embed(colour=config.EMBED_COLOUR)
+        embed.description = f"{config.emojis.SUCCESS} Message sent."
+        if ctx.interaction is not None:
+            await ctx.reply(embed=embed, ephemeral=True)
 
     @commands.command(hidden=True, aliases=["ci"])
     async def command_info(self, ctx: commands.Context, *, name: str):
