@@ -18,7 +18,7 @@ class AuthorView(View):
         if interaction.user.id == self.author.id:
             return True
 
-        embed = discord.Embed()
+        embed = discord.Embed(colour=config.ERROR_COLOUR)
         embed.description = (
             f"{config.emojis.ERROR} You cannot interact with someone else's message."
         )
@@ -32,7 +32,11 @@ class AuthorView(View):
                 item.disabled = True
 
         if self.message is not None:
-            await self.message.edit(view=self)
+            try:
+                await self.message.edit(view=self)
+            except discord.NotFound:
+                # the message was deleted before the view timed out
+                pass
 
 
 class ModerationConfirmationView(AuthorView):
