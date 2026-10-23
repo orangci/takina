@@ -40,7 +40,7 @@ class Quran(commands.Cog):
             )
             data = english_data["data"]
             surah_data = data["surah"]
-            title = f"The Holy Qu'rān, Āyah {ayah} of Surah {surah_data['englishName']} ({surah_data['englishNameTranslation']})"
+            title = f"The Holy Qur'ān, Āyah {ayah} of Surah {surah_data['englishName']} ({surah_data['englishNameTranslation']})"
             text = data["text"]
         except (lyerrors.TakinaError, aiohttp.ClientError, TimeoutError) as error:
             logger.debug(f"quran lookup for {surah}:{ayah} failed: {error}")
