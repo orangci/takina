@@ -197,6 +197,18 @@ async def save[T: SQLModel](instance: T) -> T:
     return instance
 
 
+async def insert[T: SQLModel](instance: T) -> T:
+    # unlike save, an existing row with this primary key raises IntegrityError instead of
+    # being overwritten, so callers can allocate ids and retry
+    async with SessionLocal() as session:
+        session.add(instance)
+        await session.commit()
+        await session.refresh(instance)
+
+    _forget(instance)
+    return instance
+
+
 async def toggle_in_array[T: SQLModel](
     model: type[T], column: str, value: Any, **filters
 ) -> T | None:
