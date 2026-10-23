@@ -49,10 +49,12 @@ class Fun(commands.Cog):
                 f"https://v2.jokeapi.dev/joke/{JOKE_CATEGORIES}?safe-mode"
             )
             joke = data.get("joke")
-            if not joke:
-                setup = data.get("setup")
-                delivery = data.get("delivery")
+            if not joke and (setup := data.get("setup")) and (delivery := data.get("delivery")):
                 joke = f"{setup}\n{delivery}"
+
+        # jokeapi answers errors with a json body of its own, which has neither
+        if not joke:
+            raise lyerrors.TakinaError("The joke service returned no joke.")
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.description = f"{joke} {await lyhelpers.fetch_random_emoji()}"
