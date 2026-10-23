@@ -208,7 +208,6 @@ result
 .direnv
 
 # Misc
-.nltk_data
 
 # fret not, this is for code reviews, not for writing code
 CLAUDE.local.md

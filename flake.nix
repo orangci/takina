@@ -89,7 +89,6 @@
           makeWrapper ${appPythonEnv}/bin/python $out/bin/takina \
             --chdir $out/app \
             --set PYTHONPATH ${./takina} \
-            --set NLTK_DATA ${pkgs.nltk-data.cmudict} \
             --set QALC ${pkgs.libqalculate}/bin/qalc \
             --set BOT_VERSION ${takina.version} \
             --add-flags "-m takina"
