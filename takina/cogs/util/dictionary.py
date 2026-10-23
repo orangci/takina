@@ -17,15 +17,11 @@ class Dictionary(commands.Cog):
     )
     @lychecks.is_user_app()
     async def define(self, ctx: commands.Context, *, word: str) -> None:
+        await ctx.defer()
         response = await lyhelpers.request(
-            f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}",
+            f"https://api.dictionaryapi.dev/api/v2/entries/en/{urllib.parse.quote(word, safe='')}",
             not_found="No definition found.",
         )
-
-        if not response or (
-            isinstance(response, dict) and response.get("title") == "No Definitions Found"
-        ):
-            raise lyerrors.TakinaError("No definition found.")
 
         data = response[0]
         word = data.get("word", "N/A")
@@ -36,7 +32,7 @@ class Dictionary(commands.Cog):
             raise lyerrors.TakinaError("No definition found.")
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.title = word
+        embed.title = lyhelpers.truncate(word, 256)
         description = f"*{phonetic}*\n\n" if phonetic else ""
 
         for meaning in meanings:
@@ -59,7 +55,8 @@ class Dictionary(commands.Cog):
 
             description += "\n"
 
-        embed.description = description.strip()
+        # a word with many senses easily outgrows an embed
+        embed.description = lyhelpers.truncate(description.strip(), 4096)
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(
@@ -67,17 +64,20 @@ class Dictionary(commands.Cog):
     )
     @lychecks.is_user_app()
     async def ubdict(self, ctx: commands.Context, *, word: str) -> None:
+        await ctx.defer()
         response = await lyhelpers.request(
             "https://api.urbandictionary.com/v0/define", params={"term": word}
         )
 
-        if not response or not response.get("list"):
+        if not response.get("list"):
             raise lyerrors.TakinaError("No results found.")
 
         data = response["list"][0]
 
-        def format_text(text: str) -> str:
-            text = re.sub(
+        def format_text(text: str, limit: int) -> str:
+            # cut before expanding [terms] into links, so a link is never cut in half
+            text = lyhelpers.truncate(text, 300)
+            linked = re.sub(
                 r"\[(.*?)\]",
                 lambda match: (
                     f"[{match.group(1)}](https://www.urbandictionary.com/define.php?term={urllib.parse.quote(match.group(1))})"
@@ -85,13 +85,11 @@ class Dictionary(commands.Cog):
                 text,
             )
 
-            if len(text) > 300:
-                return f"{text[:300].strip()}..."
+            # many short terms can still outgrow the limit once linked
+            return linked if len(linked) <= limit else text.replace("[", "").replace("]", "")
 
-            return text
-
-        definition = format_text(data["definition"])
-        example = format_text(data["example"]) if data["example"] else "No examples provided."
+        definition = format_text(data["definition"], 4096)
+        example = format_text(data["example"], 1024) if data["example"] else "No examples provided."
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.title = data["word"]
