@@ -5,10 +5,43 @@ This project follows the [Semantic Versioning 2.0.0](https://semver.org/) specif
 ## 2.0.0
 For a good scope of what changed in this major release, see the relevant [pull request](https://git.orangc.net/c/takina/pulls/131) and [milestone](https://git.orangc.net/c/takina/milestone/1).
 
-I will shortly list some of the biggest changes.
-- Migrated the Discord API wrapper/commands framework from nextcord to [discord.py](https://github.com/Rapptz/discord.py).
-- Migrated the database from MongoDB to PostgreSQL.
-CHANGELOG WIP
+The biggest changes, in short:
+- Migrated the Discord API wrapper/commands framework from nextcord to [discord.py](https://github.com/Rapptz/discord.py), and rewrote every cog in the process. Commands are hybrid now, working both as slash and prefix commands, and many are available as a user app in DMs and other servers.
+- Migrated the database from MongoDB to PostgreSQL, with the schema managed by Alembic.
+- Gathered server configuration under `settings guild`.
+- Reviewed every cog line by line and fixed what turned up, which was rather a lot.
+
+**Upgrading.** Nothing from MongoDB is carried over, so settings, cases, reminders and the like start afresh. Point `POSTGRESQL_URI` at an empty database and the bot creates the schema on its first start. A database made by a pre-release build of the rewrite, before Alembic arrived, must be backed up and stamped at the baseline first (`alembic stamp b26edad3bb48`). `MONGO`, `DB_NAME` and `HASDB` are gone, and `EMBED_COLOR` is now `EMBED_COLOUR`. The new variables are:
+- `BOT_STATUS`, for the bot's status;
+- `COGS_BLACKLIST` and `COGS_CATEGORY_BLACKLIST`, to skip cogs;
+- `ENABLE_SESP_COGS`, for the server-specific cogs;
+- `GOOGLE_API_KEY`, which books needs;
+- `EMOJIS_SUCCESS`, `EMOJIS_ERROR`, `EMOJIS_NOTE` and `EMOJIS_MODERATOR`, for custom status emojis.
+
+Cogs moved, so blacklist entries need the new names:
+- the core cogs now live in `core` (errors, help, owner utilities, prefix, settings);
+- `util.channels`, `util.embed_builder` and `util.roles` are now in `management`;
+- `util.giveaways` is now in `fun`;
+- `fun.dictionary` is now in `util`;
+- the 8ball and fate moved to `fun.mysteries`;
+- the minecraft server cog is now `minecraft.mcserver`;
+- the triggers listener is now `listeners.triggers`.
+
+**Removed.** Sniping, the haiku listener, the reddit command, `join-position` (which needs the members intent the bot no longer asks for), and the MyAnimeList profile, stats, updates and seasonals commands. `admin_report` became `settings guild reports`, and the long-deprecated `remindme` alias is finally gone.
+
+**Security.** `util.qalc` could run programs and read or write files through libqalculate's `command()`, `load()` and `export()`. These and the functions that can assemble them are now refused, and qalc runs with an empty `PATH` and a minimal environment. `/role add` and `/role remove` let anyone with Manage Roles hand out roles above their own; they now compare against the invoker's top role. The starboard's slash subcommands, `/embed` and the giveaway commands had permission checks that never ran, and `/ping <host>` would happily probe the network the bot runs on. All four are closed. The bot also asks only for the intents it uses.
+
+**Settings.** Server configuration now lives under `settings guild`: the modlog, honeypot, reports and starboard channels, GitHub previews (new, and on by default), and `settings guild disable` to turn any of them off again, the reports ping included. The old per-feature commands (`modlog channel`, `honeypot set`, `report channel`, `starboard settings` and so on) still work as aliases for now. Every server setting needs Manage Server. Custom prefixes are offered longest first, so a prefix of `takina` no longer swallows `takina ` (#138), and setting `PREFIX` no longer drops the `takina ` prefix.
+
+**Moderation.** Ban, kick, mute and warn, singly and en masse, share one flow: confirm, act, DM, report and log. Bans and kicks DM first, as the target can't be reached afterwards, and delete that DM if the action fails. Mass actions refuse duplicates and more than ten targets. `/hackban` and `/unban` take user IDs as text, since slash integers can't hold a snowflake, and hackban checks members the cache doesn't know about. Case IDs can no longer collide, cases are listed newest first, `/edit_case` updates the logged message, `/modstats` counts kicks, and `/cases`, `/modcases` and `/modstats` accept users who have left or been banned. `/nick` resets nicknames properly and lets you change your own, `/purge` deletes the amount asked for, and reports stay private with narrower pings.
+
+**Listeners.** Triggers match whole words only, cool down per channel, never ping, and allow responses of up to 500 characters. The starboard keeps private and NSFW messages off a public board, no longer posts the same message twice, and uses cached messages rather than fetching on every reaction. The honeypot skips members it can't touch and clears messages from the cache instead of every channel's history. GitHub previews authenticate, cache, link to the actual repository and stop matching inside URLs. AFK answers when toggled off, stops clearing itself straight away, and caps statuses at 200 characters. The Qur'ān listener survives network errors, and spells Qur'ān correctly.
+
+**Utilities.** Reminders fetch only those that are due, can be at most a year away, accept `1h 30m` and warn that they arrive by DM. Translations check language codes against the instance, so `zh-Hans` and `pt-BR` work. DNS lookups resolve asynchronously through public resolvers, and WHOIS makes at most three lookups. Weather describes the conditions in words, time and weather share one politely rate-limited geocoder, Wikipedia no longer crashes on empty pages, and books, the dictionary, Steam, socials, info and avatars all received fixes for escaping, embed limits and missing data. `/role info` works again.
+
+**Fun and the rest.** Gary, Goober, topics and roasts moved into `fun.fun`, and Urban Dictionary joined the dictionary in `util.dictionary`. Giveaways end atomically, are saved before they are announced, draw winners in voice and stage chats too, and reroll a full set of fresh winners. The 8ball needs a question, neko checks its categories and `kitsune` asks for kitsunes, and jokes no longer arrive as `None`. Hypixel, Wynncraft, Minecraft server status and skins handle missing data; Wynncraft talks to the API directly rather than through a wrapper. The anime, manga and character commands moved from Jikan to tenrai, ask for safe-for-work results only, and share one MyAnimeList library. Pagination gained first and last buttons. Prefix group commands no longer post their help before every answer, and slash commands that fail a check now say so rather than leaving Discord to report that the application did not respond.
+
+**Under the hood.** The database helpers gained `get_or_create`, `insert`, query options, a real upsert, an in-memory cache for the rows read on every message, and idempotent deletes. Every request goes through one shared HTTP session with a proper User-Agent and a timeout. Logging goes through `logging` rather than `print`. Every file carries an SPDX licence identifier, and the line length is 100, as 88 was simply too short. The Docker image runs without root and keeps secrets out of its layers, the NixOS module talks to PostgreSQL rather than MongoDB, authenticates by peer over the socket and runs hardened, and the flake builds for aarch64 too. Unused dependencies are gone. CI now lints every push and pull request and runs a smoke test that loads every cog and validates the slash command tree.
 
 ### 1.28.0
 Fixed a bug where the bot didn't check the env file for the prefix, added links to the stars and forks fields in the GitHub repository embed in `listeners.github`, and added a Codeberg command in `util.socials`.
