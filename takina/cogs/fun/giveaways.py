@@ -262,6 +262,7 @@ class Giveaways(commands.Cog):
     @commands.hybrid_group(
         name="giveaway", description="Giveaway management commands.", invoke_without_command=True
     )
+    @lychecks.guild_only()
     async def giveaway(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
