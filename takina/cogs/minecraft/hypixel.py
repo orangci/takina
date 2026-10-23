@@ -46,6 +46,11 @@ def social_link(name: str, value: str) -> str:
     return f"[{name}](<{url.translate(str.maketrans('', '', '<>'))}>)"
 
 
+def accuracy(hits: int, attempts: int) -> str:
+    # hypixel.py's ar and mr are hits per miss, like a kdr, so not a percentage
+    return f"{hits / attempts:.2%}" if attempts else "0.00%"
+
+
 @contextmanager
 def hypixel_errors() -> Generator[None]:
     try:
@@ -232,7 +237,7 @@ class Hypixel(commands.Cog):
 
         if blitz.arrows_shot > 0:
             lines.append(
-                f"> **Archery**: {blitz.arrows_hit:,} hits, {blitz.arrows_shot:,} shots ({blitz.ar:.2%} accuracy)"
+                f"> **Archery**: {blitz.arrows_hit:,} hits, {blitz.arrows_shot:,} shots ({accuracy(blitz.arrows_hit, blitz.arrows_shot)} accuracy)"
             )
 
         return await self.stats_embed(player, f"{player.name}'s Blitz Statistics", lines)
@@ -256,12 +261,12 @@ class Hypixel(commands.Cog):
 
         if duels.melee_swings > 0:
             lines.append(
-                f"> **Melee**: {duels.melee_hits:,} hits, {duels.melee_swings:,} swings ({duels.mr:.2%} accuracy)"
+                f"> **Melee**: {duels.melee_hits:,} hits, {duels.melee_swings:,} swings ({accuracy(duels.melee_hits, duels.melee_swings)} accuracy)"
             )
 
         if duels.arrows_shot > 0:
             lines.append(
-                f"> **Archery**: {duels.arrows_hit:,} hits, {duels.arrows_shot:,} shots ({duels.ar:.2%} accuracy)"
+                f"> **Archery**: {duels.arrows_hit:,} hits, {duels.arrows_shot:,} shots ({accuracy(duels.arrows_hit, duels.arrows_shot)} accuracy)"
             )
 
         return await self.stats_embed(player, f"{player.name}'s Duels Statistics", lines)
@@ -325,7 +330,7 @@ class Hypixel(commands.Cog):
 
         if skywars.arrows_shot > 0:
             lines.append(
-                f"> **Archery**: {skywars.arrows_hit:,} hits, {skywars.arrows_shot:,} shots ({skywars.ar:.2%} accuracy)"
+                f"> **Archery**: {skywars.arrows_hit:,} hits, {skywars.arrows_shot:,} shots ({accuracy(skywars.arrows_hit, skywars.arrows_shot)} accuracy)"
             )
 
         return await self.stats_embed(player, f"{player.name}'s Skywars Statistics", lines)

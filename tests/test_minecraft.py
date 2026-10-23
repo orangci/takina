@@ -3,8 +3,8 @@
 from takina.cogs.minecraft.hypixel import SOCIAL_SITES, Hypixel, hypixel_errors, social_link
 from takina.cogs.minecraft.wynncraft import Wynncraft, discord_timestamp
 from takina.cogs.minecraft.mcserver import MinecraftServerStatus
+from takina.cogs.minecraft.hypixel import accuracy, zero_missing
 from takina.cogs.minecraft import hypixel as hypixel_cog
-from takina.cogs.minecraft.hypixel import zero_missing
 from takina.cogs.minecraft.mcskin import Minecraft
 from unittest.mock import AsyncMock, MagicMock
 from hypixel.models.player import Player
@@ -130,6 +130,24 @@ class TestSocialLink:
     def test_every_site_formats(self) -> None:
         for name in SOCIAL_SITES:
             assert "{}" not in social_link(name, "reimu")
+
+
+class TestAccuracy:
+    @pytest.mark.parametrize(
+        ("hits", "attempts", "expected"),
+        [
+            (5, 10, "50.00%"),
+            (9, 10, "90.00%"),
+            (10, 10, "100.00%"),
+            (1, 3, "33.33%"),
+            (0, 7, "0.00%"),
+        ],
+    )
+    def test_share_of_attempts(self, hits: int, attempts: int, expected: str) -> None:
+        assert accuracy(hits, attempts) == expected
+
+    def test_no_attempts(self) -> None:
+        assert accuracy(0, 0) == "0.00%"
 
 
 class TestHypixelErrors:
@@ -319,8 +337,7 @@ class TestHypixelEmbeds:
         embed = await getattr(cog, f"build_hypixel_{builder}_embed")("reimu")
         assert line in (embed.description or "")
 
-    # hypixel.py's ar and mr are hits per miss, like a kdr, not hits per shot
-    @pytest.mark.xfail(strict=True, reason="ar and mr are formatted as accuracy, but are ratios")
+    # hypixel.py's ar and mr are hits per miss, like a kdr, so not what is shown
     @pytest.mark.parametrize(("builder", "stats", "line"), SHOOTING)
     async def test_accuracy(self, builder: str, stats: dict, line: str) -> None:
         cog = hypixel_cog_with(player=make_player(stats=stats))
