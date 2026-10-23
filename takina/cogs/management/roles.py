@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyerrors
+from takina.libs import lychecks, lyerrors, lyhelpers
 from discord.ext import commands
 from takina import config
 import discord
@@ -94,11 +94,7 @@ class Roles(commands.Cog):
     @role.command(name="info", description="Fetch information about a role.", usage="Moderator")
     @lychecks.guild_only()
     async def info(self, ctx: commands.Context, *, role: discord.Role):
-        info_cog = self._bot.get_cog("Info")
-        if not info_cog:
-            return
-
-        await info_cog.roleinfo.callback(ctx, role=role)  # type: ignore
+        await lyhelpers.invoke_moved(ctx, "roleinfo", role=role)
 
 
 async def setup(bot: commands.Bot):
