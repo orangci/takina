@@ -17,12 +17,16 @@ NAME_PREFIXES = ["takina ", "Takina "]
 
 
 async def get_prefix(bot: commands.Bot, message: discord.Message) -> list[str]:
-    if message.guild is not None:
-        prefix = await database.get(models.PrefixModel, guild_id=message.guild.id)
-        if prefix is not None:
-            return [prefix.prefix, *NAME_PREFIXES]
+    prefix = os.getenv("PREFIX") or "."
 
-    return [os.getenv("PREFIX") or ".", *NAME_PREFIXES]
+    if message.guild is not None:
+        custom = await database.get(models.PrefixModel, guild_id=message.guild.id)
+        if custom is not None:
+            prefix = custom.prefix
+
+    # discord.py takes the first prefix that matches, so longest first: a custom prefix of
+    # "takina" would otherwise swallow "takina " and leave " serverinfo" as the command
+    return sorted([prefix, *NAME_PREFIXES], key=len, reverse=True)
 
 
 class Bot(commands.Bot):
