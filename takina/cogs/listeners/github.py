@@ -149,10 +149,10 @@ class GitHub(commands.Cog):
             colour=config.EMBED_COLOUR,
         )
 
+        # repository_url is the api's, so link the page github itself shows
+        repository = data["repository_url"].removeprefix("https://api.github.com/repos/")
         embed.add_field(
-            name="Repository",
-            value=f"[{data['repository_url'].rsplit('/', 2)[-2]}/{data['repository_url'].rsplit('/', 1)[-1]}]({data['repository_url']})",
-            inline=True,
+            name="Repository", value=f"[{repository}](https://github.com/{repository})", inline=True
         )
         embed.add_field(name="Status", value=status.capitalize(), inline=True)
         embed.add_field(name="Comments", value=f"{data['comments']:,}", inline=True)
