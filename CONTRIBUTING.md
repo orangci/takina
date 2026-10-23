@@ -32,10 +32,12 @@ Before committing, run:
 ruff format
 ruff check
 ty check
+python scripts/check_imports.py
+uv run python -m pytest
 uv lock
 ```
 
-Resolve all `ruff check` and `ty check` diagnostics before submitting. The line length is 100.
+Resolve every diagnostic before submitting; CI runs the same checks on each push and pull request. The line length is 100. The test only loads every extension and checks the slash command tree against Discord's limits, so it says nothing about whether a command works.
 
 > [!IMPORTANT]
 > Takina has [pre-commit](https://pre-commit.com) hooks that run all of the above (plus `nixfmt`, `statix` and `deadnix` when installed). Run `pre-commit install` inside the repository to avoid running them by hand.
@@ -57,7 +59,7 @@ async def build_profile_embed(ctx: commands.Context, member: discord.Member) -> 
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 ```
-- Order imports by line length, longest first, with `from` imports above plain `import` statements. Ruff does not enforce this, so check it yourself.
+- Order imports by line length, longest first, with `from` imports above plain `import` statements. Ruff cannot express this, so `scripts/check_imports.py` checks it instead.
 - Give commands a useful `description`, understandable parameter names, and a `usage` example where it helps.
 - Use emojis in responses, but don't overdo it.
 - Put helpers used by more than one cog in `takina/libs/lyhelpers.py`.
@@ -149,6 +151,7 @@ await database.delete(prefix)
 - `get_all()` returns a list of matching rows. Keyword arguments filter by equality; `where`, `order_by` and `limit` take SQLAlchemy expressions for anything else.
 - `get_or_create()` returns the matching row, or a new unsaved one built from the filters and `defaults`.
 - `save()` inserts or updates by primary key, and returns the saved instance.
+- `insert()` only inserts, raising `IntegrityError` if the primary key is taken where `save()` would overwrite the row. Use it when you allocate ids yourself, and retry on the error.
 - `delete()` removes the row.
 
 Define models in `takina/models.py`, one class per table. Use `BigInteger` for Discord IDs, as snowflakes don't fit in a normal SQL integer.
