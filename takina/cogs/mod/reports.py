@@ -12,11 +12,13 @@ class Reports(commands.Cog):
         self._bot = bot
 
     @commands.hybrid_group(
-        name="report", description="Report something to the server's moderation team."
+        name="report",
+        description="Report something to the server's moderation team.",
+        invoke_without_command=True,
     )
     @lychecks.guild_only()
     async def report(self, ctx: commands.Context) -> None:
-        pass
+        await ctx.send_help(ctx.command)
 
     @report.command(
         name="channel", description="Moved to /settings guild reports.", usage="#channel"

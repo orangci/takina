@@ -39,7 +39,12 @@ class Roles(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
 
-    @commands.hybrid_group(name="role", aliases=["rank"], description="Role management commands.")
+    @commands.hybrid_group(
+        name="role",
+        aliases=["rank"],
+        description="Role management commands.",
+        invoke_without_command=True,
+    )
     @lychecks.guild_only()
     async def role(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:

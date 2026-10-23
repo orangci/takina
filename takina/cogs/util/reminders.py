@@ -33,6 +33,7 @@ class Reminders(commands.Cog):
         name="reminder",
         description="Manage your reminders.",
         aliases=["reminders", "remind", "todo"],
+        invoke_without_command=True,
     )
     @lychecks.is_user_app()
     async def reminder(self, ctx: commands.Context):
