@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lychecks, lyerrors, lyhelpers
 from discord.ext import commands
+from urllib.parse import quote
 from takina import config
 import datetime
 import discord
@@ -21,20 +22,15 @@ class Socials(commands.Cog):
     async def github(self, ctx: commands.Context, *, username: str):
         username = username.removeprefix("@")
 
+        headers = {"Accept": "application/vnd.github+json"}
         if config.GITHUB_AUTH_TOKEN:
-            data = await lyhelpers.request(
-                f"https://api.github.com/users/{username}",
-                headers={
-                    "Accept": "application/vnd.github+json",
-                    "Authorization": f"Bearer {config.GITHUB_AUTH_TOKEN}",
-                },
-                not_found="That GitHub account does not exist.",
-            )
-        else:
-            data = await lyhelpers.request(
-                f"https://api.github.com/users/{username}",
-                not_found="That GitHub account does not exist.",
-            )
+            headers["Authorization"] = f"Bearer {config.GITHUB_AUTH_TOKEN}"
+
+        data = await lyhelpers.request(
+            f"https://api.github.com/users/{quote(username, safe='')}",
+            headers=headers,
+            not_found="That GitHub account does not exist.",
+        )
 
         if not data:
             raise lyerrors.TakinaNotFoundError("That GitHub account does not exist.")
@@ -98,15 +94,16 @@ class Socials(commands.Cog):
     )
     @lychecks.is_user_app()
     async def codeberg(self, ctx: commands.Context, *, username: str):
-        data = await lyhelpers.request(
-            f"https://codeberg.org/api/v1/users/{username}",
-            not_found="That Codeberg account does not exist.",
-        )
+        user_url = f"https://codeberg.org/api/v1/users/{quote(username.removeprefix('@'), safe='')}"
+        data = await lyhelpers.request(user_url, not_found="That Codeberg account does not exist.")
 
         if not data or data.get("message"):
             raise lyerrors.TakinaNotFoundError("That Codeberg account does not exist.")
 
-        repo_data = await lyhelpers.request(f"https://codeberg.org/api/v1/users/{username}/repos")
+        # one repository is enough, as forgejo puts the full count in a header
+        _, repo_headers = await lyhelpers.request(
+            f"{user_url}/repos", params={"limit": 1}, with_headers=True
+        )
 
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         embed.description = ""
@@ -132,8 +129,8 @@ class Socials(commands.Cog):
         if following := data.get("following_count"):
             embed.description += f"\n> **Following**: {following}"
 
-        if isinstance(repo_data, list):
-            embed.description += f"\n> **Public Repositories**: {len(repo_data)}"
+        if (repo_count := repo_headers.get("X-Total-Count")) is not None:
+            embed.description += f"\n> **Public Repositories**: {int(repo_count):,}"
 
         if created := data.get("created"):
             created_at = datetime.datetime.fromisoformat(created)
