@@ -4,7 +4,6 @@ from takina.libs import lychecks, lyerrors, lyhelpers
 from discord.ext import commands
 from takina import config
 import discord
-import re
 
 # both texts share one embed description, which holds 4096 characters
 MAX_TEXT_LENGTH = 2000
@@ -13,6 +12,35 @@ MAX_TEXT_LENGTH = 2000
 class Translate(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
+        # casefolded code to the instance's spelling, e.g. "zh-hans" to "zh-Hans"; fetched once
+        self._languages: dict[str, str] | None = None
+
+    async def languages(self) -> dict[str, str]:
+        if self._languages is None:
+            data = await lyhelpers.request(f"{config.LIBRETRANSLATE_API_URL}/languages")
+            self._languages = {language["code"].casefold(): language["code"] for language in data}
+
+        return self._languages
+
+    async def parse_languages(self, lang: str) -> tuple[str, str]:
+        languages = await self.languages()
+
+        if target := languages.get(lang.casefold()):
+            return "auto", target
+
+        # codes such as zh-Hans hold a dash themselves, so try every place to split
+        for index, character in enumerate(lang):
+            if character != "-":
+                continue
+
+            source = languages.get(lang[:index].casefold())
+            target = languages.get(lang[index + 1 :].casefold())
+            if source and target:
+                return source, target
+
+        raise lyerrors.TakinaUserInputError(
+            f"Unknown language: `{lang.replace('`', '')[:50]}`. Use `from-to`, e.g. `en-ar` for English to Arabic, or just the target language."
+        )
 
     @commands.hybrid_command(
         name="translate",
@@ -24,14 +52,9 @@ class Translate(commands.Cog):
     async def translate(
         self, ctx: commands.Context, lang: str, *, text: commands.Range[str, 1, MAX_TEXT_LENGTH]
     ):
-        if not re.fullmatch(r"[a-z]{2}(?:-[a-z]{2})?", lang):
-            raise lyerrors.TakinaUserInputError(
-                f"Invalid language format: `{lang}`. Use `from-to`, e.g. `en-ar` for English to Arabic."
-            )
-
         await ctx.defer()
 
-        source, target = ("auto", lang) if "-" not in lang else lang.split("-", 1)
+        source, target = await self.parse_languages(lang)
         data = await lyhelpers.request(
             f"{config.LIBRETRANSLATE_API_URL}/translate",
             method="POST",
