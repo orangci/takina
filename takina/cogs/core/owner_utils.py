@@ -70,7 +70,7 @@ class OwnerUtils(commands.Cog):
     @commands.is_owner()
     async def eval(self, ctx: commands.Context, *, code: str):
         result = await self.run_eval(ctx, code)
-        await ctx.message.add_reaction("✅")
+        await ctx.message.add_reaction(config.emojis.SUCCESS)
         if result:
             await ctx.reply(result, mention_author=False)
 
