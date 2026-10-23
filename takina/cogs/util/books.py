@@ -1,14 +1,39 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lychecks, lyerrors, lyhelpers
+from datetime import datetime, UTC
 from discord.ext import commands
-from datetime import datetime
 from takina import config
 import discord
+import html
+import re
+
+
+def format_published(published_date: str) -> str:
+    # google gives 2008, 2008-05 or 2008-05-14, depending on what the publisher listed
+    parts = published_date.split("-")
+    try:
+        if len(parts) == 1:
+            return parts[0]
+
+        if len(parts) == 2:
+            return datetime(int(parts[0]), int(parts[1]), 1, tzinfo=UTC).strftime("%B %Y")
+
+        published = datetime(int(parts[0]), int(parts[1]), int(parts[2]), tzinfo=UTC)
+    except ValueError:
+        return published_date
+
+    return f"<t:{int(published.timestamp())}:D>"
+
+
+def strip_html(text: str) -> str:
+    # descriptions arrive as html, with <br> where paragraphs should be
+    text = re.sub(r"<br\s*/?>|</p>", "\n", text, flags=re.IGNORECASE)
+    return html.unescape(re.sub(r"<[^>]+>", "", text)).strip()
 
 
 class Books(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self._bot = bot
 
     @commands.hybrid_command(
@@ -18,14 +43,11 @@ class Books(commands.Cog):
     )
     @lychecks.is_user_app()
     async def book(self, ctx: commands.Context, *, book: str):
-        book_data = await lyhelpers.request(
-            f"https://www.googleapis.com/books/v1/volumes?q=intitle:{book}&key={config.GOOGLE_API_KEY}"
-        )
+        await ctx.defer()
 
+        book_data = await self.search(f"intitle:{book}")
         if not book_data.get("items"):
-            book_data = await lyhelpers.request(
-                f"https://www.googleapis.com/books/v1/volumes?q=isbn:{book}&key={config.GOOGLE_API_KEY}"
-            )
+            book_data = await self.search(f"isbn:{book}")
 
         if not book_data.get("items"):
             raise lyerrors.TakinaNotFoundError(
@@ -34,28 +56,26 @@ class Books(commands.Cog):
 
         book_data = book_data["items"][0]["volumeInfo"]
 
-        embed = discord.Embed(title=book_data["title"], colour=config.EMBED_COLOUR)
+        embed = discord.Embed(
+            title=lyhelpers.truncate(book_data["title"], 256), colour=config.EMBED_COLOUR
+        )
         embed.description = f"-# {book_data['subtitle']}\n" if book_data.get("subtitle") else ""
 
         if authors := book_data.get("authors"):
-            embed.description += f"> **Authors**: {', '.join(author for author in authors)}"
+            embed.description += f"> **Authors**: {', '.join(authors)}"
         if subjects := book_data.get("categories"):
-            embed.description += f"\n> **Subjects**: {', '.join(subject for subject in subjects)}"
+            embed.description += f"\n> **Subjects**: {', '.join(subjects)}"
 
         if page_count := book_data.get("pageCount"):
             embed.description += f"\n> **Pagecount**: {page_count}"
 
         if published_date := book_data.get("publishedDate"):
-            published = datetime.fromisoformat(
-                published_date + ("-01-01" if len(published_date) == 4 else "")
-            ).date()
-
-            embed.description += f"\n> **Published**: <t:{int(datetime.combine(published, datetime.min.time()).timestamp())}:D>"
+            embed.description += f"\n> **Published**: {format_published(published_date)}"
 
         if publisher := book_data.get("publisher"):
             embed.description += f"\n> **Publisher**: {publisher}"
         if book_description := book_data.get("description"):
-            embed.description += f"\n\n{book_description[:300] + '...' if len(book_description) > 300 else book_description}"
+            embed.description += f"\n\n{lyhelpers.truncate(strip_html(book_description), 300)}"
         if thumbnail := book_data.get("imageLinks", {}).get("smallThumbnail"):
             embed.set_thumbnail(url=thumbnail)
 
@@ -70,6 +90,12 @@ class Books(commands.Cog):
             )
 
         await ctx.reply(embed=embed, mention_author=False)
+
+    async def search(self, query: str) -> dict:
+        return await lyhelpers.request(
+            "https://www.googleapis.com/books/v1/volumes",
+            params={"q": query, "key": config.GOOGLE_API_KEY},
+        )
 
 
 async def setup(bot: commands.Bot):
