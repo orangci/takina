@@ -11,12 +11,12 @@ class AWCC_HOF(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
 
-    @lychecks.sesp_guild_only(275341388554698753)
     @commands.hybrid_command(
         description="Fetch Hall of Fame information on an AWCC member.",
         usage="orangc",
         aliases=["awcc", "mrcc"],
     )
+    @lychecks.sesp_guild_only(275341388554698753)
     async def hof(self, ctx: commands.Context, *, username: str):
         embed = discord.Embed(colour=config.EMBED_COLOUR)
         data = await lyhelpers.request(
@@ -40,9 +40,6 @@ class AWCC_HOF(commands.Cog):
         embed.description += f"\n> **Validated Rank**: {data.get('validatedRank')}"
         embed.description += f"\n> **HiScore Level**: {data.get('hsacLevel')}"
         embed.description += f"\n> **LoScore Level**: {data.get('lsacLevel')}"
-        embed.set_footer(
-            text="Looking for MyAnimeList information or statistics? Try the mal or malstats commands."
-        )
         await ctx.reply(embed=embed, mention_author=False)
 
 
