@@ -1,12 +1,22 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
-from takina.libs import lychecks, lyhelpers
+from takina.libs import lychecks, lyerrors, lyhelpers
 from takina.libs.topics_list import topics
 from discord.ext import commands
 from takina import config
 from urllib import parse
 import discord
 import random
+
+# every jokeapi category bar christmas, which wears thin by february
+JOKE_CATEGORIES = "Misc,Programming,Pun,Spooky"
+
+
+def image_url(data: dict) -> str:
+    if not (url := data.get("url")):
+        raise lyerrors.TakinaError("The image service returned no image.")
+
+    return url
 
 
 class Fun(commands.Cog):
@@ -17,8 +27,11 @@ class Fun(commands.Cog):
     @lychecks.is_user_app()
     async def fact(self, ctx: commands.Context) -> None:
         data = await lyhelpers.request("https://uselessfacts.jsph.pl/api/v2/facts/random")
+        if not (fact := data.get("text")):
+            raise lyerrors.TakinaError("The fact service returned no fact.")
+
         embed = discord.Embed(colour=config.EMBED_COLOUR)
-        embed.description = f"{data.get('text')} {await lyhelpers.fetch_random_emoji()}"
+        embed.description = f"{fact} {await lyhelpers.fetch_random_emoji()}"
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(aliases=["dadjoke"], description="Fetch a random joke.")
@@ -32,10 +45,9 @@ class Fun(commands.Cog):
             joke = data.get("joke")
 
         else:
-            data = await lyhelpers.request("https://v2.jokeapi.dev/joke/Any?safe-mode")
-            while data.get("category") == "Christmas":
-                data = await lyhelpers.request("https://v2.jokeapi.dev/joke/Any?safe-mode")
-
+            data = await lyhelpers.request(
+                f"https://v2.jokeapi.dev/joke/{JOKE_CATEGORIES}?safe-mode"
+            )
             joke = data.get("joke")
             if not joke:
                 setup = data.get("setup")
@@ -97,7 +109,7 @@ class Fun(commands.Cog):
     async def gary(self, ctx: commands.Context) -> None:
         data = await lyhelpers.request("https://api.garythe.cat/gary")
         embed = discord.Embed(colour=config.EMBED_COLOUR, title="Gary")
-        embed.set_image(url=data.get("url"))
+        embed.set_image(url=image_url(data))
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(description="Fetch a random image of Goober.")
@@ -106,7 +118,7 @@ class Fun(commands.Cog):
     async def goober(self, ctx: commands.Context) -> None:
         data = await lyhelpers.request("https://api.garythe.cat/goober")
         embed = discord.Embed(colour=config.EMBED_COLOUR, title="Goober")
-        embed.set_image(url=data.get("url"))
+        embed.set_image(url=image_url(data))
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.hybrid_command(description="Get roasted by the bot.")
