@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: orangc
 from takina.libs import lychecks, lyerrors, lyhelpers
+from open_meteo import OpenMeteo, HourlyParameters
 from discord.ext import commands
-from open_meteo import OpenMeteo
 from takina import config
 import discord
 
@@ -58,11 +58,22 @@ class Weather(commands.Cog):
             forecast = await open_meteo.forecast(
                 latitude=location_data.latitude,
                 longitude=location_data.longitude,
-                current_weather=True,
+                current=[
+                    HourlyParameters.TEMPERATURE_2M,
+                    HourlyParameters.WEATHER_CODE,
+                    HourlyParameters.WIND_SPEED_10M,
+                    HourlyParameters.WIND_DIRECTION_10M,
+                ],
             )
 
-        weather = forecast.current_weather
-        if not weather:
+        weather = forecast.current
+        if (
+            weather is None
+            or weather.temperature_2m is None
+            or weather.weather_code is None
+            or weather.wind_speed_10m is None
+            or weather.wind_direction_10m is None
+        ):
             raise lyerrors.TakinaNotFoundError(
                 "No forecast found for the current weather in that location."
             )
@@ -70,7 +81,7 @@ class Weather(commands.Cog):
         # i had to google this btw
         # you'd think i would remember from when we learnt this
         # in middle school, but nah
-        temperature_f = weather.temperature * (9 / 5) + 32
+        temperature_f = weather.temperature_2m * (9 / 5) + 32
         conditions = WEATHER_CODES.get(
             weather.weather_code, f"Unknown (code {weather.weather_code})"
         )
@@ -79,11 +90,11 @@ class Weather(commands.Cog):
         embed.description = f"{await lyhelpers.fetch_random_emoji()} Weather in **{lyhelpers.truncate(location_data.address, 200)}**\n"
         embed.description += f"\n> **Conditions**: {conditions}"
         embed.description += (
-            f"\n> **Current Temperature**: {weather.temperature:.1f}°C / {temperature_f:.1f}°F"
+            f"\n> **Current Temperature**: {weather.temperature_2m:.1f}°C / {temperature_f:.1f}°F"
         )
         embed.description += f"\n> **Elevation**: {int(forecast.elevation):,} metres"
-        embed.description += f"\n> **Wind Speed**: {weather.wind_speed:,} km/h"
-        embed.description += f"\n> **Wind Direction**: {weather.wind_direction:,}°"
+        embed.description += f"\n> **Wind Speed**: {weather.wind_speed_10m:,} km/h"
+        embed.description += f"\n> **Wind Direction**: {weather.wind_direction_10m:,}°"
         await ctx.reply(embed=embed, mention_author=False)
 
 

@@ -594,8 +594,8 @@ class TestLocations:
     async def test_weather(self, located: SimpleNamespace, monkeypatch: pytest.MonkeyPatch) -> None:
         forecast = SimpleNamespace(
             elevation=612.0,
-            current_weather=SimpleNamespace(
-                temperature=40.0, weather_code=0, wind_speed=12.5, wind_direction=270
+            current=SimpleNamespace(
+                temperature_2m=40.0, weather_code=0, wind_speed_10m=12.5, wind_direction_10m=270
             ),
         )
 
@@ -620,7 +620,7 @@ class TestLocations:
         assert "40.0°C / 104.0°F" in description
         assert "> **Elevation**: 612 metres" in description
 
-        forecast.current_weather.weather_code = 1000
+        forecast.current.weather_code = 1000
         context = fakes.make_ctx()
         await fakes.call(fakes.make_cog(Weather).weather, context, location="Riyadh")
         assert "Unknown (code 1000)" in (fakes.sent_embed(context.reply).description or "")
