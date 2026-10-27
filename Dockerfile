@@ -1,5 +1,5 @@
 # the official uv image, pinned, so builds don't drift with python:latest
-FROM ghcr.io/astral-sh/uv:0.13.5-python3.13-trixie-slim
+FROM ghcr.io/astral-sh/uv:0.13.6-python3.13-trixie-slim
 
 # bytecode is compiled once here, and copying beats hardlinking out of the build cache
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_NO_DEV=1
