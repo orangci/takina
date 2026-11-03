@@ -71,7 +71,7 @@ class Utils(commands.Cog):
 
     @commands.hybrid_command(
         name="member-count",
-        aliases=["mc", "membercount", "members"],
+        aliases=["mc", "membercount", "members", "minecraft"],
         description="Fetch the server's current member count.",
     )
     @lychecks.guild_only()
