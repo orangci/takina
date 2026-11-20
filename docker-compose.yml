@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:18
+    image: postgres:19
     restart: always
     # no published port: only the bot needs it, and it reaches it over the compose network
     volumes:
